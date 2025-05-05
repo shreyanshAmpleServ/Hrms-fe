@@ -11,8 +11,7 @@ import moment from "moment";
 
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { clearMessages, fetchManufacturer } from "../../../redux/manufacturer";
-import { deleteTaxSetup, fetchTaxSetup } from "../../../redux/taxSetUp";
+import { clearMessages, deleteTaxSetup, fetchTaxSetup } from "../../../redux/taxSetUp";
 import ManageTaxModal from "./modal/ManageTaxModal";
 import { Helmet } from "react-helmet-async";
 
