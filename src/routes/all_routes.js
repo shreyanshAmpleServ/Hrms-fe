@@ -118,7 +118,7 @@ export const all_routes = {
   activityKanban:"/crm/activity-kanban",
 
   productCategory: "/product-category",
-  manufacturer:"/manufacturer",
+ banks:"/banks",
   products:"/products",
   taxSetUp:"/tax-setup",
   order:"/order",

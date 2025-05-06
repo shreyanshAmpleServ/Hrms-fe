@@ -25,7 +25,7 @@ import ContactStage from "../pages/crm-settings/contact-stages";
 import Industries from "../pages/crm-settings/industries";
 import LostReason from "../pages/crm-settings/lost-reasons";
 import SourceList from "../pages/crm-settings/sources";
-
+import BanksList from "../pages/crm-settings/bank";
 import Calls from "../pages/call";
 import CallResult from "../pages/crm-settings/callResult";
 import CallStatus from "../pages/crm-settings/calls";
@@ -88,7 +88,7 @@ import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
 
 import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
-import ManufacturerList from "../pages/crm-settings/Manufacturer";
+// import ManufacturerList from "../pages/crm-settings/Manufacturer";
 import ProductCategory from "../pages/crm-settings/ProductCategory";
 import Documents from "../pages/Documents";
 import Product from "../pages/Product";
@@ -287,10 +287,10 @@ export const privateRoutes = [
     title: "Product Category",
   },
   {
-    path: route.manufacturer,
-    element: <ManufacturerList />,
+    path: route.banks,
+    element: <BanksList />,
     route: Route,
-    title: "Manufacturer",
+    title: "banks",
   },
   
   {

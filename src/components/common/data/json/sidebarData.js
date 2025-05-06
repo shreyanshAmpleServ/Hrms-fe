@@ -152,99 +152,244 @@ export const SidebarData = [
     submenu: false,
     showSubRoute: false,
     submenuItems: [
-      {
-        label: "Vendor",
-        link: route.vendor,
-        icon: "ti ti-user-filled",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Products",
-        link: route.products,
-        icon: "ti ti-sitemap",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Price Book",
-        link: route.priceBook,
-        icon: "ti ti-clipboard-text",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Cases",
-        link: route.cases,
-        icon: "ti ti-coin",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Solutions",
-        link: route.solutions,
-        icon: "ti ti-notes",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Sources",
-        link: route.sources,
-        icon: "ti ti-artboard",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Lead Status",
-        link: route.lostReason,
-        icon: "ti ti-message-exclamation",
-        showSubRoute: false,
-        submenu: false,
-      },
+      // {
+      //   label: "Vendor",
+      //   link: route.vendor,
+      //   icon: "ti ti-user-filled",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Products",
+      //   link: route.products,
+      //   icon: "ti ti-sitemap",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Price Book",
+      //   link: route.priceBook,
+      //   icon: "ti ti-clipboard-text",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Cases",
+      //   link: route.cases,
+      //   icon: "ti ti-coin",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Solutions",
+      //   link: route.solutions,
+      //   icon: "ti ti-notes",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Sources",
+      //   link: route.sources,
+      //   icon: "ti ti-artboard",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Lead Status",
+      //   link: route.lostReason,
+      //   icon: "ti ti-message-exclamation",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
 
 
+      // {
+      //   label: "Contact Stage",
+      //   link: route.contactStage,
+      //   icon: "ti ti-steam",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Industry",
+      //   link: route.industries,
+      //   icon: "ti ti-building-factory",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Call",
+      //   link: route.callStatus,
+      //   icon: "ti ti-phone-check",
+      //   showSubRoute: false,
+      //   submenu: true,
+      //   submenuItems: [
+      //     {
+      //       label: "Call Status",
+      //       link: route.callStatus,
+      //       icon: "ti ti-phone-check",
+      //       showSubRoute: true,
+      //     },
+      //     {
+      //       label: "Call Purpose",
+      //       link: route.callPurpose,
+      //       showSubRoute: false,
+      //     },
+      //     {
+      //       label: "Call Result",
+      //       link: route.callResult,
+      //       showSubRoute: false,
+      //     },
+      //     {
+      //       label: "Call Types",
+      //       link: route.callType,
+      //       showSubRoute: false,
+      //     },
+      //   ]
+      // },
       {
-        label: "Contact Stage",
-        link: route.contactStage,
-        icon: "ti ti-steam",
+        label: "Core HR",
+        link: route.callStatus,
+        icon: "ti ti-user-cog", 
         showSubRoute: false,
-        submenu: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Company",
+            link: route.callStatus,
+            icon: "ti ti-phone-check",
+            showSubRoute: true,
+          },
+          {
+            label: "Branch",
+            link: route.callPurpose,
+            showSubRoute: false,
+          },
+          {
+            label: "Department",
+            link: route.callResult,
+            showSubRoute: false,
+          },
+          {
+            label: "Designation",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Employee Category",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Employment Type",
+            link: route.callType,
+            showSubRoute: false,
+            
+          },
+        ]
       },
       {
-        label: "Industry",
-        link: route.industries,
-        icon: "ti ti-building-factory",
+        label: "Payroll & Statutory",
+        link: route.callStatus,
+          icon: "ti ti-receipt-tax",
         showSubRoute: false,
-        submenu: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "banks",
+            link: route.banks,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Pay Component",
+            link: route.callPurpose,
+            showSubRoute: false,
+          },
+          {
+            label: "Salary Structure",
+            link: route.callResult,
+            showSubRoute: false,
+          },
+          {
+            label: "Currency",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Statutory Rates",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Tax Regime",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Provident Fund",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Tax Relief",
+            link: route.callType,
+            showSubRoute: false,
+          },
+        ]
       },
       {
-        label: "Call",
+        label: "performane",
+        link: route.callStatus,
+        icon: "ti ti-phone-check",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          
+
+        ]
+      },
+      {
+        label: "Recruitment & Talent",
+        link: route.callStatus,
+        icon: "ti ti-phone-check",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          
+
+        ]
+      },
+
+      {
+        label: "Leave & Attandance",
         link: route.callStatus,
         icon: "ti ti-phone-check",
         showSubRoute: false,
         submenu: true,
         submenuItems: [
           {
-            label: "Call Status",
-            link: route.callStatus,
-            icon: "ti ti-phone-check",
-            showSubRoute: true,
-          },
-          {
-            label: "Call Purpose",
-            link: route.callPurpose,
-            showSubRoute: false,
-          },
-          {
-            label: "Call Result",
-            link: route.callResult,
-            showSubRoute: false,
-          },
-          {
-            label: "Call Types",
+            label: "Shift",
             link: route.callType,
             showSubRoute: false,
           },
+          {
+            label: "Leave Type",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Holiday Calendar",
+            link: route.callType,
+            showSubRoute: false,
+          },
+          {
+            label: "Work Schedule",
+            link: route.callType,
+            showSubRoute: false,
+          },
+
         ]
       },
       {
@@ -261,13 +406,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-      {
-        label: "Manufacturer",
-        link: route.manufacturer,
-        icon: "ti ti-building-factory", // Icon for Country
-        showSubRoute: false,
-        submenu: false,
-      },
+     
       {
         label: "Tax Setup",
         link: route.taxSetUp,

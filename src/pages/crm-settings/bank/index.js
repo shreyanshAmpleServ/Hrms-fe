@@ -1,5 +1,6 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-import React, { useCallback, useMemo, useState } from "react";
+
+import React, { useCallback, useMemo} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
@@ -16,11 +17,11 @@ import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 import { clearMessages, deleteBank, fetchBank } from "../../../redux/bank";
 
-const ManufacturerList = () => {
-  const [mode, setMode] = useState("add"); // 'add' or 'edit'
-  const [paginationData , setPaginationData] = useState()
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+const BanksList = () => {
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [paginationData , setPaginationData] = React.useState()
+  const [searchText, setSearchText] = React.useState("");
+  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions =JSON?.parse(localStorage.getItem("permissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Manufacturer")?.[0]?.permissions
  const isAdmin = localStorage.getItem("role")?.includes("admin")
@@ -30,9 +31,10 @@ const ManufacturerList = () => {
   const isDelete = isAdmin || allPermissions?.delete
 
   const dispatch = useDispatch();
+  
   const columns = [
     {
-      title: "Manufacturer Name",
+      title: "Bank Name",
       dataIndex: "name",
       render: (text, record) => (
         <Link to={`#`}>{record.name}</Link>
@@ -105,8 +107,8 @@ const ManufacturerList = () => {
     }]:[])
   ];
 
-  const { manufacturers, loading, error, success } = useSelector(
-    (state) => state.manufacturers
+  const { banks, loading, error, success } = useSelector(
+    (state) => state.banks
   );
 
   React.useEffect(() => {
@@ -114,12 +116,12 @@ const ManufacturerList = () => {
   }, [dispatch , searchText]);
       React.useEffect(()=>{
           setPaginationData({
-            currentPage:manufacturers?.currentPage,
-            totalPage:manufacturers?.totalPages,
-            totalCount:manufacturers?.totalCount,
-            pageSize : manufacturers?.size
+            currentPage:banks?.currentPage,
+            totalPage:banks?.totalPages,
+            totalCount:banks?.totalCount,
+            pageSize : banks?.size
           })
-        },[manufacturers])
+        },[banks])
       
         const handlePageChange = ({ currentPage, pageSize }) => {
           setPaginationData((prev) => ({
@@ -135,7 +137,7 @@ const ManufacturerList = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = manufacturers?.data || [];
+    let data = banks?.data || [];
   
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
@@ -147,19 +149,19 @@ const ManufacturerList = () => {
       );
     }
     return data;
-  }, [searchText, manufacturers, columns, sortOrder]);
+  }, [searchText, banks, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelectedIndustry(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
     if (selectedIndustry) {
       dispatch(deleteBank(selectedIndustry.id));
-      // navigate(`/manufacturers`);
+      // navigate(`/banks`);
       setShowDeleteModal(false);
     }
   };
@@ -167,8 +169,8 @@ const ManufacturerList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Manufacturers</title>
-        <meta name="Manufacturers" content="This is Manufacturers page of DCC CRMS." />
+        <title>DCC HRMS - Banks</title>
+        <meta name="banks" content="This is banks page of DCC CRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -192,9 +194,9 @@ const ManufacturerList = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Manufacturer
+                    Bank
                     <span className="count-title">
-                      {manufacturers?.totalCount || 0}
+                      {banks?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -211,12 +213,12 @@ const ManufacturerList = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Manufacturer"
+                    label="Search banks"
                   />
                 {isCreate &&  <div className="col-sm-8">
                     <AddButton
-                      label="Add Manufacturer"
-                      id="add_edit_manufacturer_modal"
+                      label="Add Bank"
+                      id="add_edit_bank_modal"
                       setMode={() => setMode("add")}
                     />
                   </div>}
@@ -260,4 +262,4 @@ const ManufacturerList = () => {
   );
 };
 
-export default ManufacturerList;
+export default BanksList;

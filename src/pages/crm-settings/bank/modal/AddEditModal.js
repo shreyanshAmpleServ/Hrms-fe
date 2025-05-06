@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { addBank, updateBank } from "../../../../redux/bank";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.manufacturers);
+  const { loading } = useSelector((state) => state.banks);
 
   const {
     register,
@@ -33,13 +33,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_manufacturer_modal",
+      "add_edit_bank_modal",
     );
     if (mode === "add") {
       // Dispatch Add action
       dispatch(
         addBank({
-          name: data.name,
+          bank_name: data.name,
           is_active: data.is_active,
         }),
       );
@@ -48,7 +48,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(
         updateBank({
           id: initialData.id,
-          industryData: { name: data.name, is_active: data.is_active },
+          industryData: { bank_name: data.name, is_active: data.is_active },
         }),
       );
     }
@@ -57,18 +57,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   };
 
   return (
-    <div className="modal fade" id="add_edit_manufacturer_modal" role="dialog">
+    <div className="modal fade" id="add_edit_bank_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Manufacturer" : "Edit Manufacturer"}
+              {mode === "add" ? "Add New banks" : "Edit Manufacturer"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="close_btn_add_edit_manufacturer_modal"
+              id="add_edit_bank_modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -78,7 +78,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Manufacturer Name <span className="text-danger">*</span>
+                  Bank Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"

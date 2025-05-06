@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
 import { fetchCurrencies } from "../../../redux/currency";
-import { fetchManufacturer } from "../../../redux/manufacturer";
+// import { fetchManufacturer } from "../../../redux/manufacturer";
 import { addProduct, updateProduct } from "../../../redux/products";
 import { fetchVendors } from "../../../redux/vendor";
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
@@ -84,7 +84,7 @@ React.useEffect(() => {
 
   useEffect(() => {
      dispatch(fetchVendors());
-     dispatch(fetchManufacturer());
+    //  dispatch(fetchManufacturer());
      dispatch(fetchCurrencies())
      dispatch(fetchTaxSetup())
   }, [dispatch]);
