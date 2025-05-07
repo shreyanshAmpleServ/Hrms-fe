@@ -25,12 +25,15 @@ import ContactStage from "../pages/crm-settings/contact-stages";
 import Industries from "../pages/crm-settings/industries";
 import LostReason from "../pages/crm-settings/lost-reasons";
 import SourceList from "../pages/crm-settings/sources";
-import BanksList from "../pages/crm-settings/bank";
+import BanksList from "../pages/crm-settings/core-hr/bank";
 import Calls from "../pages/call";
 import CallResult from "../pages/crm-settings/callResult";
 import CallStatus from "../pages/crm-settings/calls";
 import CallPurpose from "../pages/crm-settings/callsPurpose";
 import CallType from "../pages/crm-settings/callType";
+
+import Company from "../pages/crm-settings/core-hr/company";
+import BranchList from "../pages/crm-settings/core-hr/branch";
 
 import ProjectDetail from "../pages/projects/ProjectsDetail";
 
@@ -279,6 +282,18 @@ export const privateRoutes = [
     element: <MeetingTypes />,
     route: Route,
     title: "Meeting Type",
+  },
+  {
+    path: route.company,
+    element: <Company />,
+    route: Route,
+    title: "Company",
+  },
+  {
+    path: route.branch,
+    element: <BranchList />,
+    route: Route,
+    title: "Branch",
   },
   {
     path: route.productCategory,

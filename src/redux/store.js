@@ -43,6 +43,8 @@ import casesReducer from "./cases"
 import solutionsReducer from "./solutions"
 import campaignsReducer from "./campaign"
 import bankReducer from "./bank"
+import companynewReducer from "./company"
+import branchReducer from "./branch"
 
 const store = configureStore({
   reducer: {
@@ -89,6 +91,8 @@ const store = configureStore({
     solutions : solutionsReducer,
     campaigns : campaignsReducer,
     banks : bankReducer,
+    company : companynewReducer,
+    branch : branchReducer,
   },
 });
 

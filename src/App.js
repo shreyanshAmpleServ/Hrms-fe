@@ -62,7 +62,6 @@ const App = () => {
               <Route index element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              {/* Additional public routes */}
             </Route>
           )}
 

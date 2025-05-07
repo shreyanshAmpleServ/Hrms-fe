@@ -61,6 +61,12 @@ export const all_routes = {
   country: "/country",
   currency: "/currency",
 
+  // company //
+  company: "/company",
+  // companyDetails: "/companies/:id",
+
+  branch: "/branch",
+
 
   // Settings //
   connectedApps: "/general-settings/connected-apps",

@@ -3,21 +3,21 @@ import "bootstrap-daterangepicker/daterangepicker.css";
 import React, { useCallback, useMemo} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CollapseHeader from "../../../components/common/collapse-header";
-import Table from "../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../components/common/modals/FlashMessage";
+import CollapseHeader from "../../../../components/common/collapse-header";
+import Table from "../../../../components/common/dataTableNew/index";
+import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
 import moment from "moment";
 
 import { Helmet } from "react-helmet-async";
-import AddButton from "../../../components/datatable/AddButton";
-import SearchBar from "../../../components/datatable/SearchBar";
-import SortDropdown from "../../../components/datatable/SortDropDown";
-import { clearMessages, deleteBank, fetchBank } from "../../../redux/bank";
+import AddButton from "../../../../components/datatable/AddButton";
+import SearchBar from "../../../../components/datatable/SearchBar";
+import SortDropdown from "../../../../components/datatable/SortDropDown";
+import { clearMessages, deletebranch, fetchbranch } from "../../../../redux/branch";
 
-const BanksList = () => {
+const BranchList = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [paginationData , setPaginationData] = React.useState()
   const [searchText, setSearchText] = React.useState("");
@@ -34,40 +34,56 @@ const BanksList = () => {
   
   const columns = [
     {
-      title: "Bank Name",
-      dataIndex: "name",
+      title: " Branch Name",
+      dataIndex: "branch_name",
       render: (text, record) => (
-        <Link to={`#`}>{record.name}</Link>
+        <Link to={`#`}>{record.branch_name}</Link>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
+    {
+        title: "Company Id",
+        dataIndex: "company_id",
+        render: (text, record) => (
+          <Link to={`#`}>{record.company_id}</Link>
+        ),
+        sorter: (a, b) => a.name.localeCompare(b.name),
+      },
+      {
+        title: "location",
+        dataIndex: "location",
+        render: (text, record) => (
+          <Link to={`#`}>{record.location}</Link>
+        ),
+        sorter: (a, b) => a.name.localeCompare(b.name),
+      },
 
-    {
-      title: "Created Date",
-      dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
-    },
-    {
-      title: "Status",
-      dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    },
+    // {
+    //   title: "Created Date",
+    //   dataIndex: "createdate",
+    //   render: (text) => (
+    //     <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
+    //   ),
+    //   sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+    // },
+    // {
+    //   title: "Status",
+    //   dataIndex: "is_active",
+    //   render: (text) => (
+    //     <div>
+    //       {text === "Y" ? (
+    //         <span className="badge badge-pill badge-status bg-success">
+    //           Active
+    //         </span>
+    //       ) : (
+    //         <span className="badge badge-pill badge-status bg-danger">
+    //           Inactive
+    //         </span>
+    //       )}
+    //     </div>
+    //   ),
+    //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    // },
    ...((isUpdate || isDelete) ?[ {
       title: "Actions",
       dataIndex: "actions",
@@ -86,7 +102,7 @@ const BanksList = () => {
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="modal"
-              data-bs-target="#add_edit_manufacturer_modal"
+              data-bs-target="#add_edit_branch_modal"
               onClick={() => {
                 setSelectedIndustry(record);
                 setMode("edit");
@@ -107,21 +123,21 @@ const BanksList = () => {
     }]:[])
   ];
 
-  const { banks, loading, error, success } = useSelector(
+  const { branch, loading, error, success } = useSelector(
     (state) => state.banks
   );
 
   React.useEffect(() => {
-    dispatch(fetchBank({search:searchText}));
+    dispatch(fetchbranch({search:searchText}));
   }, [dispatch , searchText]);
       React.useEffect(()=>{
           setPaginationData({
-            currentPage:banks?.currentPage,
-            totalPage:banks?.totalPages,
-            totalCount:banks?.totalCount,
-            pageSize : banks?.size
+            currentPage:branch?.currentPage,
+            totalPage:branch?.totalPages,
+            totalCount:branch?.totalCount,
+            pageSize : branch?.size
           })
-        },[banks])
+        },[branch])
       
         const handlePageChange = ({ currentPage, pageSize }) => {
           setPaginationData((prev) => ({
@@ -129,7 +145,7 @@ const BanksList = () => {
             currentPage,
             pageSize
           }));
-          dispatch(fetchBank({search:searchText , page: currentPage, size: pageSize })); 
+          dispatch(fetchbranch({search:searchText , page: currentPage, size: pageSize })); 
         };
 
   const handleSearch = useCallback((e) => {
@@ -137,7 +153,7 @@ const BanksList = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = banks?.data || [];
+    let data = branch?.data || [];
   
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
@@ -149,7 +165,7 @@ const BanksList = () => {
       );
     }
     return data;
-  }, [searchText, banks, columns, sortOrder]);
+  }, [searchText, branch, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelectedIndustry(industry);
@@ -160,7 +176,7 @@ const BanksList = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
     if (selectedIndustry) {
-      dispatch(deleteBank(selectedIndustry.id));
+      dispatch(deletebranch(selectedIndustry.id));
       // navigate(`/banks`);
       setShowDeleteModal(false);
     }
@@ -169,8 +185,8 @@ const BanksList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Banks</title>
-        <meta name="banks" content="This is banks page of DCC CRMS." />
+        <title>DCC HRMS - Branch</title>
+        <meta name="branch" content="This is banks page of DCC CRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -194,9 +210,9 @@ const BanksList = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Bank
+                    Branch
                     <span className="count-title">
-                      {banks?.totalCount || 0}
+                      {branch?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -213,12 +229,12 @@ const BanksList = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search banks"
+                    label="Search Branch"
                   />
                 {isCreate &&  <div className="col-sm-8">
                     <AddButton
-                      label="Add Bank"
-                      id="add_edit_bank_modal"
+                      label="Add Branch"
+                      id="add_edit_branch_modal"
                       setMode={() => setMode("add")}
                     />
                   </div>}
@@ -262,4 +278,4 @@ const BanksList = () => {
   );
 };
 
-export default BanksList;
+export default BranchList;

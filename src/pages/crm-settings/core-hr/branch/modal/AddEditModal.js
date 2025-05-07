@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addBank, updateBank } from "../../../../redux/bank";
+import { addbranch,updatebranch } from "../../../../../redux/branch";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.banks);
+  const { loading } = useSelector((state) => state.branch);
 
   const {
     register,
@@ -20,7 +20,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        name: initialData.name || "",
+        name: initialData.company_id || "",
         is_active: initialData.is_active,
       });
     } else {
@@ -33,22 +33,22 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "add_edit_bank_modal",
+      "add_edit_branch_modal",
     );
     if (mode === "add") {
       // Dispatch Add action
       dispatch(
-        addBank({
-          bank_name: data.name,
+        addbranch({
+          company_id: data.name,
           is_active: data.is_active,
         }),
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
       dispatch(
-        updateBank({
+        updatebranch({
           id: initialData.id,
-          industryData: { bank_name: data.name, is_active: data.is_active },
+          branchData: { company_id: data.name, is_active: data.is_active },
         }),
       );
     }
@@ -62,13 +62,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New banks" : "Edit Manufacturer"}
+              {mode === "add" ? "Add New branch" : "Edit branch"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="add_edit_bank_modal"
+              id="add_edit_branch_modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -78,7 +78,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Bank Name <span className="text-danger">*</span>
+                  Branch Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"

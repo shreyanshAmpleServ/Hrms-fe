@@ -256,13 +256,13 @@ export const SidebarData = [
         submenuItems: [
           {
             label: "Company",
-            link: route.callStatus,
+            link: route.company,
             icon: "ti ti-phone-check",
-            showSubRoute: true,
+            showSubRoute: false,
           },
           {
             label: "Branch",
-            link: route.callPurpose,
+            link: route.branch,
             showSubRoute: false,
           },
           {
