@@ -40,6 +40,18 @@ export const all_routes = {
   activities: "/crm/activities",
   //CRM SETTINGS
 
+
+
+  // core-hr //
+  company: "/company",
+
+  branch: "/branch",
+  department: "/department",
+  designation: "/designation",
+  employeeCategory: "/employeeCategory",
+  employmentType: "/employmentType",
+  // core-hr //
+
   /* Source Route*/
   sources: "/sources",
   /* lost reason*/
@@ -110,24 +122,24 @@ export const all_routes = {
   VendorDetail: "vendor/:id",
 
   // Meeting
-  meetingType:"/meeting-type",
-   
-  modules:"/modules",
-  
-  documents:"/documents",
-  activityKanban:"/crm/activity-kanban",
+  meetingType: "/meeting-type",
+
+  modules: "/modules",
+
+  documents: "/documents",
+  activityKanban: "/crm/activity-kanban",
 
   productCategory: "/product-category",
- banks:"/banks",
-  products:"/products",
-  taxSetUp:"/tax-setup",
-  order:"/order",
-  quotation:"/quotation",
-  purchaseOrder:"/purchase-order",
-  salesInvoice:"/sales-invoice",
-  purchaseInvoice:"/purchase-invoice",
-  priceBook:"/price-book",
-  cases:"/cases",
-  solutions:"/solutions",
-  campaigns:"/campaigns",
+  banks: "/banks",
+  products: "/products",
+  taxSetUp: "/tax-setup",
+  order: "/order",
+  quotation: "/quotation",
+  purchaseOrder: "/purchase-order",
+  salesInvoice: "/sales-invoice",
+  purchaseInvoice: "/purchase-invoice",
+  priceBook: "/price-book",
+  cases: "/cases",
+  solutions: "/solutions",
+  campaigns: "/campaigns",
 };

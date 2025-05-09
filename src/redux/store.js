@@ -43,6 +43,11 @@ import casesReducer from "./cases"
 import solutionsReducer from "./solutions"
 import campaignsReducer from "./campaign"
 import bankReducer from "./bank"
+import companynewReducer from "./company"
+import branchReducer from "./branch"
+import departmentReducer from "./department"
+import designationReducer from "./designation"
+import employeeTypeReducer from "./employee-type"
 
 const store = configureStore({
   reducer: {
@@ -71,24 +76,29 @@ const store = configureStore({
     countries: countriesReducer,
     currency: currencyReducer,
     activities: activitiesReducer,
-    vendor:vendorReducer,
-    meetingTypes:MeetingTypeReducer,
-    modules : modulesReducer,
+    vendor: vendorReducer,
+    meetingTypes: MeetingTypeReducer,
+    modules: modulesReducer,
     permissions: permissionsReducer,
-    attachments : attachmentsReducer,
-    productCategories : productCategoryReducer,
-    products : productsReducer,
-    taxs : taxSetupReducer,
-    orders : orderReducer,
-    quotations : quotationReducer,
-    purchaseOrders : purchaseOrderReducer,
-    salesInvoices : salesInvoiceReducer,
-    purchaseInvoices : purchaseInvoiceReducer,
-    priceBooks : priceBookReducer,
+    attachments: attachmentsReducer,
+    productCategories: productCategoryReducer,
+    products: productsReducer,
+    taxs: taxSetupReducer,
+    orders: orderReducer,
+    quotations: quotationReducer,
+    purchaseOrders: purchaseOrderReducer,
+    salesInvoices: salesInvoiceReducer,
+    purchaseInvoices: purchaseInvoiceReducer,
+    priceBooks: priceBookReducer,
     cases: casesReducer,
-    solutions : solutionsReducer,
-    campaigns : campaignsReducer,
-    banks : bankReducer,
+    solutions: solutionsReducer,
+    campaigns: campaignsReducer,
+    banks: bankReducer,
+    company: companynewReducer,
+    branch: branchReducer,
+    department: departmentReducer,
+    designation: designationReducer,
+    employee_type: employeeTypeReducer,
   },
 });
 

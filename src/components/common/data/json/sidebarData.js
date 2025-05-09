@@ -54,7 +54,7 @@ export const SidebarData = [
       {
         label: "Activities",
         link: route.activities,
-        subLink1:`${route.activities}/Task`,
+        subLink1: `${route.activities}/Task`,
         subLink2: route.activityTask,
         subLink3: route.activityMail,
         subLink4: route.activityCalls,
@@ -80,7 +80,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-    
+
       {
         label: "Pipeline",
         link: route.pipelines,
@@ -250,48 +250,48 @@ export const SidebarData = [
       {
         label: "Core HR",
         link: route.callStatus,
-        icon: "ti ti-user-cog", 
+        icon: "ti ti-user-cog",
         showSubRoute: false,
         submenu: true,
         submenuItems: [
           {
             label: "Company",
-            link: route.callStatus,
+            link: route.company,
             icon: "ti ti-phone-check",
-            showSubRoute: true,
+            showSubRoute: false,
           },
           {
             label: "Branch",
-            link: route.callPurpose,
+            link: route.branch,
             showSubRoute: false,
           },
           {
             label: "Department",
-            link: route.callResult,
+            link: route.department,
             showSubRoute: false,
           },
           {
             label: "Designation",
-            link: route.callType,
+            link: route.designation,
             showSubRoute: false,
           },
           {
             label: "Employee Category",
-            link: route.callType,
+            link: route.employeeCategory,
             showSubRoute: false,
           },
           {
             label: "Employment Type",
-            link: route.callType,
+            link: route.employmentType,
             showSubRoute: false,
-            
+
           },
         ]
       },
       {
         label: "Payroll & Statutory",
         link: route.callStatus,
-          icon: "ti ti-receipt-tax",
+        icon: "ti ti-receipt-tax",
         showSubRoute: false,
         submenu: true,
         submenuItems: [
@@ -346,7 +346,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: true,
         submenuItems: [
-          
+
 
         ]
       },
@@ -357,7 +357,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: true,
         submenuItems: [
-          
+
 
         ]
       },
@@ -406,7 +406,7 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-     
+
       {
         label: "Tax Setup",
         link: route.taxSetUp,

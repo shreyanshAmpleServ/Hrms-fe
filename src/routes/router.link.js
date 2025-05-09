@@ -12,6 +12,13 @@ import LeadsKanban from "../pages/leads/LeadsKanban";
 import Companies from "../pages/companies/";
 import CompanyDetail from "../pages/companies/CompanyDetail";
 
+import Company from "../pages/crm-settings/core-hr/company";
+import BranchList from "../pages/crm-settings/core-hr/branch";
+import DepanrtmentList from "../pages/crm-settings/core-hr/department";
+import DesignationList from "../pages/crm-settings/core-hr/designation";
+import EmployeeCategory from "../pages/crm-settings/core-hr/employeeCategory";
+import Employee_TypeList from "../pages/crm-settings/core-hr/employmentType";
+
 import Pipelines from "../pages/pipelines/";
 import PipelineDetail from "../pages/pipelines/PipelineDetail";
 
@@ -141,7 +148,7 @@ export const privateRoutes = [
     element: <DealList />,
     route: Route,
     title: "Deals",
-  },  
+  },
   {
     path: route.activities,
     element: <Activities />,
@@ -149,7 +156,7 @@ export const privateRoutes = [
     title: 'Activities'
   },
   {
-    path:`${route.activities}/:name`,
+    path: `${route.activities}/:name`,
     element: <Activities />,
     route: Route,
     title: 'Activities'
@@ -183,6 +190,43 @@ export const privateRoutes = [
     element: <Quotation />,
     route: Route,
     title: "Quotation",
+  },
+
+  {
+    path: route.company,
+    element: <Company />,
+    route: Route,
+    title: "Company",
+  },
+  {
+    path: route.branch,
+    element: <BranchList />,
+    route: Route,
+    title: "Branch",
+  },
+  {
+    path: route.department,
+    element: <DepanrtmentList />,
+    route: Route,
+    title: "department",
+  },
+  {
+    path: route.designation,
+    element: <DesignationList />,
+    route: Route,
+    title: "designation",
+  },
+  {
+    path: route.employeeCategory,
+    element: <EmployeeCategory />,
+    route: Route,
+    title: "employeeCategory",
+  },
+  {
+    path: route.employmentType,
+    element: <Employee_TypeList />,
+    route: Route,
+    title: "employmentType",
   },
   {
     path: route.order,
@@ -292,7 +336,7 @@ export const privateRoutes = [
     route: Route,
     title: "banks",
   },
-  
+
   {
     path: route.taxSetUp,
     element: <TaxSetUpList />,
@@ -405,7 +449,7 @@ export const privateRoutes = [
 
   {
     path: route.activityKanban,
-    element: <ActivitiesKanban  />,
+    element: <ActivitiesKanban />,
     route: Route,
     title: "Activities",
   },
