@@ -69,6 +69,10 @@ import documentTypeMasterReduer from "./documentType"
 import surveyMasterReduer from "./surveyMaster"
 import assetTypeMasterReduer from "./assetType"
 
+import shiftReducer from "./Shift"
+import leaveTypeReducer from "./LeaveType"
+import holidayCalenderReducer from "./HolidayCalender"
+import WorkScheduleTempReducer from "./WorkScheduleTemp"
 
 const store = configureStore({
   reducer: {
@@ -142,6 +146,10 @@ const store = configureStore({
     assetTypeMaster: assetTypeMasterReduer,
 
 
+    shift: shiftReducer,
+    leaveType: leaveTypeReducer,
+    holidayCalender: holidayCalenderReducer,
+    WorkScheduleTemp: WorkScheduleTempReducer,
   },
 });
 
