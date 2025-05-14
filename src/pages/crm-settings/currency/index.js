@@ -133,7 +133,7 @@ const CurrenciesList = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = currencies;
+        let data = currencies?.data || [];
         if (searchText) {
             data = data.filter((item) =>
                 columns.some((col) =>
@@ -199,7 +199,7 @@ const CurrenciesList = () => {
                                 <div className="col-8">
                                     <h4 className="page-title">
                                         Currency
-                                        <span className="count-title">{currencies?.length || 0}</span>
+                                        <span className="count-title">{currencies?.data?.length || 0}</span>
                                     </h4>
                                 </div>
                                 <div className="col-4 text-end">

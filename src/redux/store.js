@@ -99,7 +99,7 @@ const store = configureStore({
     states: statesReducer,
     mappedStates: mappedStatesReducer,
     countries: countriesReducer,
-    currency: currencyReducer,
+    currencies: currencyReducer,
     activities: activitiesReducer,
     vendor: vendorReducer,
     meetingTypes: MeetingTypeReducer,

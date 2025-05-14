@@ -464,22 +464,22 @@ export const SidebarData = [
         submenuItems: [
           {
             label: "Shift",
-            link: route.callType,
+            link: route.shift,
             showSubRoute: false,
           },
           {
             label: "Leave Type",
-            link: route.callType,
+            link: route.leaveType,
             showSubRoute: false,
           },
           {
             label: "Holiday Calendar",
-            link: route.callType,
+            link: route.holidayCalender,
             showSubRoute: false,
           },
           {
             label: "Work Schedule",
-            link: route.callType,
+            link: route.workSchedule,
             showSubRoute: false,
           },
 
@@ -522,13 +522,7 @@ export const SidebarData = [
         submenu: false,
       },
 
-      {
-        label: "Currency",
-        link: route.currency,
-        icon: "ti ti-wallet", // Updated icon for Currency
-        showSubRoute: false,
-        submenu: false,
-      },
+
       {
         label: "Modules",
         link: route.modules,
