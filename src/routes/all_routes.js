@@ -50,6 +50,27 @@ export const all_routes = {
   designation: "/designation",
   employeeCategory: "/employeeCategory",
   employmentType: "/employmentType",
+  payComponent: "/payComponent",
+  salaryStructure: "/salaryStructure",
+  statutoryRates: "/statutoryRates",
+  taxRelief: "/taxRelief",
+  providentFund: "/providentFund",
+  taxRegime: "/taxRegime",
+  kpiMaster: "/kpiMaster",
+  goalCategoryMaster: "/goalCategoryMaster",
+  reviewTemplateMaster: "/reviewTemplateMaster",
+  ratingScaleMaster: "/ratingScaleMaster",
+  jobCategoryMaster: "/jobCategoryMaster",
+  grievanceTypeMaster: "/grievanceTypeMaster",
+  disciplinaryPenaltyMaster: "/disciplinaryPenaltyMaster",
+  workLifeEventTypeMaster: "/workLifeEventTypeMaster",
+  awardTypeMaster: "/awardTypeMaster",
+  letterTypeMaster: "letterTypeMaster",
+  documentTypeMaster: "/documentTypeMaster",
+  surveyMaster: "/surveyMaster",
+  assetTypeMaster: "/assetTypeMaster",
+
+  // currency: "/currency",
   // core-hr //
 
   /* Source Route*/
@@ -98,7 +119,7 @@ export const all_routes = {
   smsGateways: "/system-settings/sms-gateways",
 
   bankAccounts: "/financial-settings/bank-accounts",
-  currencies: "/financial-settings/currencies",
+  // currencies: "/financial-settings/currencies",
   paymentGateways: "/financial-settings/payment-gateways",
   taxRates: "/financial-settings/tax-rates",
 

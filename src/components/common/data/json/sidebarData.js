@@ -3,7 +3,7 @@ const route = all_routes;
 export const SidebarData = [
 
   {
-    label: "CRM",
+    label: "HRMS",
     submenuOpen: true,
     showSubRoute: false,
     submenuHdr: "Inventory",
@@ -15,81 +15,81 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-      {
-        label: "Leads",
-        link: route.leads,
-        subLink1: route.leadsDetail,
-        subLink2: route.leadskanban,
-        icon: "ti ti-chart-arcs",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Contacts",
-        link: route.contacts,
-        subLink1: route.contactDetail,
-        subLink2: route.contactGrid,
-        icon: "ti ti-user-up",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Companies",
-        link: route.companies,
-        subLink1: route.companyDetails,
-        subLink2: route.companiesGrid,
-        icon: "ti ti-building-community",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Deals",
-        link: route.deals,
-        subLink1: route.dealtDetail,
-        subLink2: route.dealsKanban,
-        icon: "ti ti-medal",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Activities",
-        link: route.activities,
-        subLink1: `${route.activities}/Task`,
-        subLink2: route.activityTask,
-        subLink3: route.activityMail,
-        subLink4: route.activityCalls,
-        icon: "ti ti-bounce-right",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Calls",
-        link: route.calls,
-        // subLink1: route.dealtDetail,
-        // subLink2: route.dealsKanban,
-        icon: "ti ti-phone",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Campaigns",
-        link: route.campaigns,
-        // subLink1: route.dealtDetail,
-        // subLink2: route.dealsKanban,
-        icon: "ti ti-sitemap",
-        showSubRoute: false,
-        submenu: false,
-      },
+      // {
+      //   label: "Leads",
+      //   link: route.leads,
+      //   subLink1: route.leadsDetail,
+      //   subLink2: route.leadskanban,
+      //   icon: "ti ti-chart-arcs",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Contacts",
+      //   link: route.contacts,
+      //   subLink1: route.contactDetail,
+      //   subLink2: route.contactGrid,
+      //   icon: "ti ti-user-up",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Companies",
+      //   link: route.companies,
+      //   subLink1: route.companyDetails,
+      //   subLink2: route.companiesGrid,
+      //   icon: "ti ti-building-community",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Deals",
+      //   link: route.deals,
+      //   subLink1: route.dealtDetail,
+      //   subLink2: route.dealsKanban,
+      //   icon: "ti ti-medal",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Activities",
+      //   link: route.activities,
+      //   subLink1: `${route.activities}/Task`,
+      //   subLink2: route.activityTask,
+      //   subLink3: route.activityMail,
+      //   subLink4: route.activityCalls,
+      //   icon: "ti ti-bounce-right",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Calls",
+      //   link: route.calls,
+      //   // subLink1: route.dealtDetail,
+      //   // subLink2: route.dealsKanban,
+      //   icon: "ti ti-phone",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Campaigns",
+      //   link: route.campaigns,
+      //   // subLink1: route.dealtDetail,
+      //   // subLink2: route.dealsKanban,
+      //   icon: "ti ti-sitemap",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
 
-      {
-        label: "Pipeline",
-        link: route.pipelines,
-        subLink1: route.pipelineDetail,
-        subLink2: route.pipelineGrid,
-        icon: "ti ti-timeline-event-exclamation",
-        showSubRoute: false,
-        submenu: false,
-      },
+      // {
+      //   label: "Pipeline",
+      //   link: route.pipelines,
+      //   subLink1: route.pipelineDetail,
+      //   subLink2: route.pipelineGrid,
+      //   icon: "ti ti-timeline-event-exclamation",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
       {
         label: "Documents",
         link: route.documents,
@@ -97,44 +97,44 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-      {
-        label: "Projects",
-        link: route.projects,
-        subLink1: route.projectDetails,
-        icon: "ti ti-atom-2",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Quotation",
-        link: route.quotation,
-        icon: "ti ti-clipboard-text",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Orders",
-        link: route.order,
-        // subLink1: route.projectDetails,
-        icon: "ti ti-truck-delivery",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Sales Invoice",
-        link: route.salesInvoice,
-        // subLink1: route.projectDetails,
-        icon: "ti ti-file-invoice",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Purchase Order",
-        link: route.purchaseOrder,
-        icon: "ti ti-truck-delivery",
-        showSubRoute: false,
-        submenu: false,
-      },
+      // {
+      //   label: "Projects",
+      //   link: route.projects,
+      //   subLink1: route.projectDetails,
+      //   icon: "ti ti-atom-2",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Quotation",
+      //   link: route.quotation,
+      //   icon: "ti ti-clipboard-text",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Orders",
+      //   link: route.order,
+      //   // subLink1: route.projectDetails,
+      //   icon: "ti ti-truck-delivery",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Sales Invoice",
+      //   link: route.salesInvoice,
+      //   // subLink1: route.projectDetails,
+      //   icon: "ti ti-file-invoice",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Purchase Order",
+      //   link: route.purchaseOrder,
+      //   icon: "ti ti-truck-delivery",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
       // {
       //   label: "Purchase Invoice",
       //   link: route.purchaseInvoice,
@@ -146,7 +146,7 @@ export const SidebarData = [
     ],
   },
   {
-    label: "CRM SETTINGS",
+    label: "HRMS SETTINGS",
     submenuOpen: true,
     submenuHdr: "Sales",
     submenu: false,
@@ -288,6 +288,7 @@ export const SidebarData = [
           },
         ]
       },
+
       {
         label: "Payroll & Statutory",
         link: route.callStatus,
@@ -296,7 +297,7 @@ export const SidebarData = [
         submenu: true,
         submenuItems: [
           {
-            label: "banks",
+            label: "Banks",
             link: route.banks,
             icon: "ti ti-building-factory", // Icon for Country
             showSubRoute: false,
@@ -304,60 +305,152 @@ export const SidebarData = [
           },
           {
             label: "Pay Component",
-            link: route.callPurpose,
+            link: route.payComponent,
             showSubRoute: false,
           },
           {
             label: "Salary Structure",
-            link: route.callResult,
+            link: route.salaryStructure,
             showSubRoute: false,
           },
           {
             label: "Currency",
-            link: route.callType,
+            link: route.currency,
             showSubRoute: false,
           },
           {
             label: "Statutory Rates",
-            link: route.callType,
+            link: route.statutoryRates,
             showSubRoute: false,
           },
           {
             label: "Tax Regime",
-            link: route.callType,
+            link: route.taxRegime,
             showSubRoute: false,
           },
           {
             label: "Provident Fund",
-            link: route.callType,
+            link: route.providentFund,
             showSubRoute: false,
           },
           {
             label: "Tax Relief",
-            link: route.callType,
+            link: route.taxRelief,
             showSubRoute: false,
           },
         ]
       },
+
       {
-        label: "performane",
+        label: "Performane",
         link: route.callStatus,
-        icon: "ti ti-phone-check",
+        icon: "ti ti-chart-bar",
         showSubRoute: false,
         submenu: true,
         submenuItems: [
+          {
+            label: "KPI Master",
+            link: route.kpiMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Goal Category Master",
+            link: route.goalCategoryMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Review Template Master",
+            link: route.reviewTemplateMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Rating Scale Master",
+            link: route.ratingScaleMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
 
 
         ]
       },
+
       {
         label: "Recruitment & Talent",
         link: route.callStatus,
-        icon: "ti ti-phone-check",
+        icon: "ti ti-briefcase",
         showSubRoute: false,
         submenu: true,
         submenuItems: [
-
+          {
+            label: "Job Category Master",
+            link: route.jobCategoryMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Grievance Type Master",
+            link: route.grievanceTypeMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Disciplinary Penalty Master",
+            link: route.disciplinaryPenaltyMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Work Life Event Type Master",
+            link: route.workLifeEventTypeMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Award Type Master",
+            link: route.awardTypeMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "letter Type Master",
+            link: route.letterTypeMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Document Type Master",
+            link: route.documentTypeMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Survey Master",
+            link: route.surveyMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Asset Type Master",
+            link: route.assetTypeMaster,
+            icon: "ti ti-building-factory", // Icon for Country
+            showSubRoute: false,
+            submenu: false,
+          },
 
         ]
       },
@@ -392,28 +485,28 @@ export const SidebarData = [
 
         ]
       },
-      {
-        label: "Meeting Types",
-        link: route.meetingType,
-        icon: "ti ti-calendar-time", // Icon for Country
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Product Category",
-        link: route.productCategory,
-        icon: "ti ti-category", // Icon for Country
-        showSubRoute: false,
-        submenu: false,
-      },
+      // {
+      //   label: "Meeting Types",
+      //   link: route.meetingType,
+      //   icon: "ti ti-calendar-time", // Icon for Country
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
+      // {
+      //   label: "Product Category",
+      //   link: route.productCategory,
+      //   icon: "ti ti-category", // Icon for Country
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
 
-      {
-        label: "Tax Setup",
-        link: route.taxSetUp,
-        icon: "ti ti-receipt-tax", // Icon for Country
-        showSubRoute: false,
-        submenu: false,
-      },
+      // {
+      //   label: "Tax Setup",
+      //   link: route.taxSetUp,
+      //   icon: "ti ti-receipt-tax", // Icon for Country
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
       {
         label: "Country",
         link: route.country,

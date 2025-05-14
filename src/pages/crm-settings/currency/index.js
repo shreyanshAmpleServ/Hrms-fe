@@ -7,7 +7,7 @@ import Table from "../../../components/common/dataTable/index";
 import FlashMessage from "../../../components/common/modals/FlashMessage";
 import {
     clearMessages,
-    deleteCurrency,
+    deleteCurrencies,
     fetchCurrencies,
 } from "../../../redux/currency"; // Redux actions and reducers for currency
 import DeleteAlert from "./alert/DeleteAlert";
@@ -20,11 +20,11 @@ import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 import { Helmet } from "react-helmet-async";
 
-const CurrencyList = () => {
+const CurrenciesList = () => {
     const [mode, setMode] = useState("add"); // 'add' or 'edit'
-    
-    const permissions =JSON?.parse(localStorage.getItem("permissions"))
-    const allPermissions = permissions?.filter((i)=>i?.module_name === "Currency")?.[0]?.permissions
+
+    const permissions = JSON?.parse(localStorage.getItem("permissions"))
+    const allPermissions = permissions?.filter((i) => i?.module_name === "Currency")?.[0]?.permissions
     const isView = allPermissions?.view
     const isCreate = allPermissions?.create
     const isUpdate = allPermissions?.update
@@ -34,15 +34,15 @@ const CurrencyList = () => {
     const columns = [
         {
             title: "Currency Name",
-            dataIndex: "name",
+            dataIndex: "currency_name",
             render: (text, record) => (
-                <Link to={`/currencies/${record.id}`}>{record.name}</Link>
+                <Link to={`/currencies/${record.id}`}>{record.currency_name}</Link>
             ),
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
-            title: "Code",
-            dataIndex: "code",
+            title: "Currency Code",
+            dataIndex: "currency_code",
             render: (text) => <span>{text}</span>,
             sorter: (a, b) => a.code.localeCompare(b.code),
         },
@@ -78,7 +78,7 @@ const CurrencyList = () => {
             ),
             sorter: (a, b) => a.is_active.localeCompare(b.is_active),
         },
-        ...((isUpdate || isDelete ) ? [{
+        ...((isUpdate || isDelete) ? [{
             title: "Actions",
             dataIndex: "actions",
             render: (text, record) => (
@@ -92,7 +92,7 @@ const CurrencyList = () => {
                         <i className="fa fa-ellipsis-v"></i>
                     </Link>
                     <div className="dropdown-menu dropdown-menu-right">
-                      {isUpdate &&  <Link
+                        {isUpdate && <Link
                             className="dropdown-item edit-popup"
                             to="#"
                             data-bs-toggle="modal"
@@ -104,7 +104,7 @@ const CurrencyList = () => {
                         >
                             <i className="ti ti-edit text-blue"></i> Edit
                         </Link>}
-                      {isDelete &&  <Link
+                        {isDelete && <Link
                             className="dropdown-item"
                             to="#"
                             onClick={() => handleDeleteCurrency(record)}
@@ -114,11 +114,11 @@ const CurrencyList = () => {
                     </div>
                 </div>
             ),
-        }]:[])
+        }] : [])
     ];
-    
+
     const { currencies, loading, error, success } = useSelector(
-        (state) => state.currency
+        (state) => state.currencies
     );
 
     React.useEffect(() => {
@@ -144,15 +144,15 @@ const CurrencyList = () => {
                 )
             );
         }
-        if (sortOrder === "ascending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-            );
-        } else if (sortOrder === "descending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-            );
-        }
+        // if (sortOrder === "ascending") {
+        //     data = [...data].sort((a, b) =>
+        //         moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        //     );
+        // } else if (sortOrder === "descending") {
+        //     data = [...data].sort((a, b) =>
+        //         moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        //     );
+        // }
         return data;
     }, [searchText, currencies, columns, sortOrder]);
 
@@ -165,7 +165,7 @@ const CurrencyList = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const deleteData = () => {
         if (selectedCurrency) {
-            dispatch(deleteCurrency(selectedCurrency.id));
+            dispatch(deleteCurrencies(selectedCurrency.id));
             setShowDeleteModal(false);
         }
     };
@@ -173,8 +173,8 @@ const CurrencyList = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-              <title>DCC CRMS - Currencies</title>
-              <meta name="Currencies" content="This is Currencies page of DCC CRMS." />
+                <title>DCC CRMS - Currencies</title>
+                <meta name="Currencies" content="This is Currencies page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -217,7 +217,7 @@ const CurrencyList = () => {
                                         handleSearch={handleSearch}
                                         label="Search Currencies"
                                     />
-                                  {isCreate &&  <div className="col-sm-8">
+                                    {isCreate && <div className="col-sm-8">
                                         <AddButton
                                             label="Add Currency"
                                             id="add_edit_currency_modal"
@@ -241,7 +241,7 @@ const CurrencyList = () => {
                                         dataSource={filteredData}
                                         columns={columns}
                                         loading={loading}
-                                        isView = {isView}
+                                        isView={isView}
                                     />
                                 </div>
                             </div>
@@ -262,4 +262,4 @@ const CurrencyList = () => {
     );
 };
 
-export default CurrencyList;
+export default CurrenciesList;

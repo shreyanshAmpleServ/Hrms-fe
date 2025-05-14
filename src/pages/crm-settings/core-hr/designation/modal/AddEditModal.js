@@ -33,7 +33,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "add_edit_designation_modal",
+      "add_Close_designation_modal",
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -68,7 +68,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="add_edit_designation_modal"
+              id="add_Close_designation_modal"
             >
               <i className="ti ti-x" />
             </button>

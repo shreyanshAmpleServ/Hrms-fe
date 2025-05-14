@@ -48,6 +48,27 @@ import branchReducer from "./branch"
 import departmentReducer from "./department"
 import designationReducer from "./designation"
 import employeeTypeReducer from "./employee-type"
+import employee_categoryReducer from "./employee-category"
+import payComponentReducer from "./pay-component"
+import salaryStructureReducer from "./salary-structure"
+import statutoryRatesReducer from "./statutoryRate"
+import taxReliefReducer from "./taxRelief"
+import providentFundReducer from "./providentFund"
+import taxRegimeReducer from "./taxRegime"
+import KpiMasterReducer from "./kpiMaster"
+import goalCategoryMasterReducer from "./goalCategoryMaster"
+import reviewTemplateMasterReducer from "./reviewTemplateMaster"
+import ratingScaleMasterReduer from "./ratingScaleMaster"
+import jobCategoryMasterReduer from "./jobCategoryMaster"
+import grievanceTypeReduer from "./grievanceTypeMaster"
+import disciplinaryPenaltyReduer from "./disciplinaryPenalty"
+import workLifeEventReduer from "./workLifeEventTypeMaster"
+import awardTypeMasterReduer from "./awardType"
+import letterTypeMasterReduer from "./letterType"
+import documentTypeMasterReduer from "./documentType"
+import surveyMasterReduer from "./surveyMaster"
+import assetTypeMasterReduer from "./assetType"
+
 
 const store = configureStore({
   reducer: {
@@ -93,12 +114,34 @@ const store = configureStore({
     cases: casesReducer,
     solutions: solutionsReducer,
     campaigns: campaignsReducer,
-    banks: bankReducer,
+    bank: bankReducer,
     company: companynewReducer,
     branch: branchReducer,
     department: departmentReducer,
     designation: designationReducer,
     employee_type: employeeTypeReducer,
+    employee_category: employee_categoryReducer,
+    payComponent: payComponentReducer,
+    salaryStructure: salaryStructureReducer,
+    statutoryRates: statutoryRatesReducer,
+    taxRelief: taxReliefReducer,
+    providentFund: providentFundReducer,
+    taxRegime: taxRegimeReducer,
+    KpiMaster: KpiMasterReducer,
+    goalCategoryMaster: goalCategoryMasterReducer,
+    reviewTemplateMaster: reviewTemplateMasterReducer,
+    ratingScaleMaster: ratingScaleMasterReduer,
+    jobCategoryMaster: jobCategoryMasterReduer,
+    grievanceType: grievanceTypeReduer,
+    disciplinary_penalty: disciplinaryPenaltyReduer,
+    workLifeEvent: workLifeEventReduer,
+    awardTypeMaster: awardTypeMasterReduer,
+    letterTypeMaster: letterTypeMasterReduer,
+    documentTypeMaster: documentTypeMasterReduer,
+    surveyMaster: surveyMasterReduer,
+    assetTypeMaster: assetTypeMasterReduer,
+
+
   },
 });
 

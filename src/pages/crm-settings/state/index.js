@@ -24,21 +24,21 @@ import { deleteMappedState, fetchMappedStates } from "../../../redux/mappedState
 import { Helmet } from "react-helmet-async";
 
 const StatesList = () => {
-    const [mode, setMode] = useState("add"); 
-    const [countryId,setCountryId] = useState()
-    const [paginationData , setPaginationData] = useState()
+    const [mode, setMode] = useState("add");
+    const [countryId, setCountryId] = useState()
+    const [paginationData, setPaginationData] = useState()
     const [searchText, setSearchText] = useState("");
     const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
 
-    const permissions =JSON?.parse(localStorage.getItem("permissions"))
-    const allPermissions = permissions?.filter((i)=>i?.module_name === "State")?.[0]?.permissions
+    const permissions = JSON?.parse(localStorage.getItem("permissions"))
+    const allPermissions = permissions?.filter((i) => i?.module_name === "State")?.[0]?.permissions
     const isView = allPermissions?.view
     const isCreate = allPermissions?.create
     const isUpdate = allPermissions?.update
     const isDelete = allPermissions?.delete
 
     const dispatch = useDispatch();
-    
+
     const columns = [
         {
             title: "State Name",
@@ -52,9 +52,9 @@ const StatesList = () => {
         },
         {
             title: "Country",
-            dataIndex: "country_details",
+            dataIndex: "country_code",
             render: (text, record) => (
-                <div>{text?.code+ text?.name}</div>
+                <div>{text?.code + text?.name}</div>
                 // <Link to={`/mappedStates/${record.id}`}>{record.name}</Link>
             ),
             sorter: (a, b) => a.name.localeCompare(b.name),
@@ -86,7 +86,7 @@ const StatesList = () => {
             ),
             sorter: (a, b) => a.is_active.localeCompare(b.is_active),
         },
-       ...((isUpdate || isDelete) ? [{
+        ...((isUpdate || isDelete) ? [{
             title: "Actions",
             dataIndex: "actions",
             render: (text, record) => (
@@ -99,7 +99,7 @@ const StatesList = () => {
                         <i className="fa fa-ellipsis-v"></i>
                     </button>
                     <div className="dropdown-menu dropdown-menu-end">
-                      {isUpdate &&  <button
+                        {isUpdate && <button
                             className="dropdown-item edit-popup"
                             data-bs-toggle="modal"
                             data-bs-target="#add_edit_state_modal"
@@ -111,7 +111,7 @@ const StatesList = () => {
                         >
                             <i className="ti ti-edit text-blue"></i> Edit
                         </button>}
-                       {isDelete && <button
+                        {isDelete && <button
                             className="dropdown-item"
                             onClick={() => handleDeleteState(record)}
                         >
@@ -120,7 +120,7 @@ const StatesList = () => {
                     </div>
                 </div>
             ),
-        }]:[])
+        }] : [])
     ];
 
     const { mappedStates, loading, error, success } = useSelector(
@@ -129,33 +129,33 @@ const StatesList = () => {
 
     React.useEffect(() => {
         dispatch(fetchCountries()); // Changed to fetchCountries
-    }, [dispatch] );
+    }, [dispatch]);
 
     React.useEffect(() => {
-        dispatch(fetchMappedStates({search:searchText,country_code: countryId}));
-    }, [dispatch,countryId , searchText] );
-      React.useEffect(()=>{
-          setPaginationData({
-            currentPage:mappedStates?.currentPage,
-            totalPage:mappedStates?.totalPages,
-            totalCount:mappedStates?.totalCount,
-            pageSize : mappedStates?.size
-          })
-        },[mappedStates])
-      
-        const handlePageChange = ({ currentPage, pageSize }) => {
-          setPaginationData((prev) => ({
+        dispatch(fetchMappedStates({ search: searchText, country_code: countryId }));
+    }, [dispatch, countryId, searchText]);
+    React.useEffect(() => {
+        setPaginationData({
+            currentPage: mappedStates?.currentPage,
+            totalPage: mappedStates?.totalPages,
+            totalCount: mappedStates?.totalCount,
+            pageSize: mappedStates?.size
+        })
+    }, [mappedStates])
+
+    const handlePageChange = ({ currentPage, pageSize }) => {
+        setPaginationData((prev) => ({
             ...prev,
             currentPage,
             pageSize
-          }));
-          dispatch(fetchMappedStates({search:searchText , country_code: countryId, page: currentPage, size: pageSize })); 
-        };
+        }));
+        dispatch(fetchMappedStates({ search: searchText, country_code: countryId, page: currentPage, size: pageSize }));
+    };
 
-        const { countries} = useSelector(
-            (state) => state.countries // Changed to 'countries'
-        );
-        const countryList = [{name:"All",value:""},...countries]
+    const { countries } = useSelector(
+        (state) => state.countries // Changed to 'countries'
+    );
+    const countryList = [{ name: "All", value: "" }, ...countries]
 
     const handleSearch = useCallback((e) => {
         setSearchText(e.target.value);
@@ -203,8 +203,8 @@ const StatesList = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-              <title>DCC CRMS - States</title>
-              <meta name="States" content="This is States page of DCC CRMS." />
+                <title>DCC CRMS - States</title>
+                <meta name="States" content="This is States page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -247,7 +247,7 @@ const StatesList = () => {
                                         handleSearch={handleSearch}
                                         label="Search States"
                                     />
-                                   {isCreate && <div className="col-sm-8">
+                                    {isCreate && <div className="col-sm-8">
                                         <AddButton
                                             label="Add State"
                                             id="add_edit_state_modal"
@@ -263,36 +263,36 @@ const StatesList = () => {
                                             sortOrder={sortOrder}
                                             setSortOrder={setSortOrder}
                                         />
-                                        </div>
-                                    <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2">      
-                          <Select
-                             showSearch 
-                             optionFilterProp="label" 
-                             allowClear
-                            className="select shadow-md "
-                            style={{minWidth:"8rem",height:"2.5rem"}}
-                            placeholder="Select Country"
-                            options={countryList?.map((i) => ({
-                              label: i?.name,
-                              value: i?.id,
-                            }))}
-                            classNamePrefix="react-select"
-                            // value={
-                            //   selectedDeal
-                            //     ? {
-                            //         label: selectedDeal.label,
-                            //         value: selectedDeal.value,
-                            //       }
-                            //     : null
-                            // } 
-                            
-                            onChange={(value)=>{console.log("onChange of country : ", value);setCountryId(value)} } // Store only value
-                          />
-                        {/* );
+                                    </div>
+                                    <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2">
+                                        <Select
+                                            showSearch
+                                            optionFilterProp="label"
+                                            allowClear
+                                            className="select shadow-md "
+                                            style={{ minWidth: "8rem", height: "2.5rem" }}
+                                            placeholder="Select Country"
+                                            options={countryList?.map((i) => ({
+                                                label: i?.name,
+                                                value: i?.id,
+                                            }))}
+                                            classNamePrefix="react-select"
+                                            // value={
+                                            //   selectedDeal
+                                            //     ? {
+                                            //         label: selectedDeal.label,
+                                            //         value: selectedDeal.value,
+                                            //       }
+                                            //     : null
+                                            // } 
+
+                                            onChange={(value) => { console.log("onChange of country : ", value); setCountryId(value) }} // Store only value
+                                        />
+                                        {/* );
                       }}
                     /> */}
                                     </div>
-                                    
+
                                 </div>
 
                                 <div className="table-responsive custom-table">
@@ -302,7 +302,7 @@ const StatesList = () => {
                                         loading={loading}
                                         isView={isView}
                                         paginationData={paginationData}
-                                        onPageChange={handlePageChange} 
+                                        onPageChange={handlePageChange}
                                     />
                                 </div>
                             </div>

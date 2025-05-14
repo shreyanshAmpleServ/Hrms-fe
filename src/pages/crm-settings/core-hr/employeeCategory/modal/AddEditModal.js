@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addBank, updateBank } from "../../../../../redux/bank";
+import { addemployee_category, updateemployee_category } from "../../../../../redux/employee-category";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.banks);
+  const { loading } = useSelector((state) => state.employee_category);
 
   const {
     register,
@@ -20,12 +20,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        name: initialData.bank_name || "",
+        name: initialData.category_name || "",
         is_active: initialData.is_active,
       });
     } else {
       reset({
-        name: "",
+        category_name: "",
         is_active: "Y",
       });
     }
@@ -33,22 +33,22 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "add_edit_bank_modal",
+      "Close_edit_employee_category_modal",
     );
     if (mode === "add") {
       // Dispatch Add action
       dispatch(
-        addBank({
-          bank_name: data.name,
+        addemployee_category({
+          category_name: data.name,
           is_active: data.is_active,
         }),
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
       dispatch(
-        updateBank({
+        updateemployee_category({
           id: initialData.id,
-          bankData: { bank_name: data.name, is_active: data.is_active },
+          employee_categoeyData: { category_name: data.name, is_active: data.is_active },
         }),
       );
     }
@@ -57,18 +57,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   };
 
   return (
-    <div className="modal fade" id="add_edit_bank_modal" role="dialog">
+    <div className="modal fade" id="add_edit_employee_category_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Employee Category " : "Edit Employee Category "}
+              {mode === "add" ? "Add New Employee" : "Edit employee_category"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="add_edit_bank_modal"
+              id="Close_edit_employee_category_modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -78,7 +78,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Employee Category  Name <span className="text-danger">*</span>
+                  Employee Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"

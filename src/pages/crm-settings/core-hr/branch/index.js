@@ -66,24 +66,24 @@ const BranchList = () => {
     //   ),
     //   sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
     // },
-    // {
-    //   title: "Status",
-    //   dataIndex: "is_active",
-    //   render: (text) => (
-    //     <div>
-    //       {text === "Y" ? (
-    //         <span className="badge badge-pill badge-status bg-success">
-    //           Active
-    //         </span>
-    //       ) : (
-    //         <span className="badge badge-pill badge-status bg-danger">
-    //           Inactive
-    //         </span>
-    //       )}
-    //     </div>
-    //   ),
-    //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <div>
+          {text === "Y" ? (
+            <span className="badge badge-pill badge-status bg-success">
+              Active
+            </span>
+          ) : (
+            <span className="badge badge-pill badge-status bg-danger">
+              Inactive
+            </span>
+          )}
+        </div>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    },
     ...((isUpdate || isDelete) ? [{
       title: "Actions",
       dataIndex: "actions",

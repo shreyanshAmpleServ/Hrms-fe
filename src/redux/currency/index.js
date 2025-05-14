@@ -16,28 +16,28 @@ export const fetchCurrencies = createAsyncThunk(
     }
 );
 
-// Add a Currency
-export const addCurrency = createAsyncThunk(
-    "currencies/addCurrency",
-    async (currencyData, thunkAPI) => {
+// Add a Currencies
+export const addCurrencies = createAsyncThunk(
+    "currencies/addCurrencies",
+    async (CurrenciesData, thunkAPI) => {
         try {
-            const response = await apiClient.post("/v1/currencies", currencyData);
-            return response.data; // Returns the newly added currency
+            const response = await apiClient.post("/v1/currencies", CurrenciesData);
+            return response.data; // Returns the newly added Currencies
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to add currency"
+                error.response?.data || "Failed to add Currencies"
             );
         }
     }
 );
 
-// Update a Currency
-export const updateCurrency = createAsyncThunk(
-    "currencies/updateCurrency",
-    async ({ id, currencyData }, thunkAPI) => {
+// Update a Currencies
+export const updateCurrencies = createAsyncThunk(
+    "currencies/updateCurrencies",
+    async ({ id, CurrenciesData }, thunkAPI) => {
         try {
-            const response = await apiClient.put(`/v1/currencies/${id}`, currencyData);
-            return response.data; // Returns the updated currency
+            const response = await apiClient.put(`/v1/currencies/${id}`, CurrenciesData);
+            return response.data; // Returns the updated Currencies
         } catch (error) {
             if (error.response?.status === 404) {
                 return thunkAPI.rejectWithValue({
@@ -46,40 +46,40 @@ export const updateCurrency = createAsyncThunk(
                 });
             }
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to update currency"
+                error.response?.data || "Failed to update Currencies"
             );
         }
     }
 );
 
-// Delete a Currency
-export const deleteCurrency = createAsyncThunk(
-    "currencies/deleteCurrency",
+// Delete a Currencies
+export const deleteCurrencies = createAsyncThunk(
+    "currencies/deleteCurrencies",
     async (id, thunkAPI) => {
         try {
             const response = await apiClient.delete(`/v1/currencies/${id}`);
             return {
                 data: { id },
-                message: response.data.message || "Currency deleted successfully",
+                message: response.data.message || "Currencies deleted successfully",
             };
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to delete currency"
+                error.response?.data || "Failed to delete Currencies"
             );
         }
     }
 );
 
-// Fetch a Single Currency by ID
-export const fetchCurrencyById = createAsyncThunk(
-    "currencies/fetchCurrencyById",
+// Fetch a Single Currencies by ID
+export const fetchCurrenciesById = createAsyncThunk(
+    "currencies/fetchCurrenciesById",
     async (id, thunkAPI) => {
         try {
             const response = await apiClient.get(`/v1/currencies/${id}`);
-            return response.data; // Returns the currency details
+            return response.data; // Returns the Currencies details
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to fetch currency"
+                error.response?.data || "Failed to fetch Currencies"
             );
         }
     }
@@ -89,7 +89,7 @@ const currenciesSlice = createSlice({
     name: "currencies",
     initialState: {
         currencies: [],
-        currencyDetail: null,
+        CurrenciesDetail: null,
         loading: false,
         error: null,
         success: null,
@@ -114,27 +114,27 @@ const currenciesSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(addCurrency.pending, (state) => {
+            .addCase(addCurrencies.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(addCurrency.fulfilled, (state, action) => {
+            .addCase(addCurrencies.fulfilled, (state, action) => {
                 state.loading = false;
                 state.currencies = [action.payload.data, ...state.currencies];
                 state.success = action.payload.message;
             })
-            .addCase(addCurrency.rejected, (state, action) => {
+            .addCase(addCurrencies.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(updateCurrency.pending, (state) => {
+            .addCase(updateCurrencies.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(updateCurrency.fulfilled, (state, action) => {
+            .addCase(updateCurrencies.fulfilled, (state, action) => {
                 state.loading = false;
                 const index = state.currencies?.findIndex(
-                    (currency) => currency.id === action.payload.data.id
+                    (Currencies) => Currencies.id === action.payload.data.id
                 );
 
                 if (index !== -1) {
@@ -145,34 +145,34 @@ const currenciesSlice = createSlice({
 
                 state.success = action.payload.message;
             })
-            .addCase(updateCurrency.rejected, (state, action) => {
+            .addCase(updateCurrencies.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(deleteCurrency.pending, (state) => {
+            .addCase(deleteCurrencies.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(deleteCurrency.fulfilled, (state, action) => {
+            .addCase(deleteCurrencies.fulfilled, (state, action) => {
                 state.loading = false;
                 state.currencies = state.currencies.filter(
-                    (currency) => currency.id !== action.payload.data.id
+                    (Currencies) => Currencies.id !== action.payload.data.id
                 );
                 state.success = action.payload.message;
             })
-            .addCase(deleteCurrency.rejected, (state, action) => {
+            .addCase(deleteCurrencies.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(fetchCurrencyById.pending, (state) => {
+            .addCase(fetchCurrenciesById.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchCurrencyById.fulfilled, (state, action) => {
+            .addCase(fetchCurrenciesById.fulfilled, (state, action) => {
                 state.loading = false;
-                state.currencyDetail = action.payload.data;
+                state.CurrenciesDetail = action.payload.data;
             })
-            .addCase(fetchCurrencyById.rejected, (state, action) => {
+            .addCase(fetchCurrenciesById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             });

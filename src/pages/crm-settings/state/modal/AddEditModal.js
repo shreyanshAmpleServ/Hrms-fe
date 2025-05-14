@@ -20,17 +20,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-      React.useEffect(() => {
-          dispatch(fetchCountries()); // Changed to fetchCountries
-      }, [dispatch]);
+  React.useEffect(() => {
+    dispatch(fetchCountries()); // Changed to fetchCountries
+  }, [dispatch]);
 
-      const { countries} = useSelector(
-             (state) => state.countries // Changed to 'countries'
-         );
-      const CountriesList = countries.map((emnt) => ({
-        value: emnt.id,
-        label: "("+emnt.code + ") "+ emnt.name,
-      })); 
+  const { countries } = useSelector(
+    (state) => state.countries // Changed to 'countries'
+  );
+  const CountriesList = countries.map((emnt) => ({
+    value: emnt.id,
+    label: "(" + emnt.code + ") " + emnt.name,
+  }));
   // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -42,7 +42,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     } else {
       reset({
         name: "",
-        country_code:null,
+        country_code: null,
         is_active: "Y",
       });
     }
@@ -57,7 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(
         addMappedState({
           name: data.name,
-          country_code : data.country_code,
+          country_code: data.country_code,
           is_active: data.is_active,
         }),
       );
@@ -66,7 +66,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(
         updateMappedState({
           id: initialData.id,
-          stateData: { name: data.name, country_code : data.country_code, is_active: data.is_active },
+          stateData: { name: data.name, country_code: data.country_code, is_active: data.is_active },
         }),
       );
     }
@@ -94,10 +94,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
 
-            {/* Country  */}
+              {/* Country  */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Country <span className="text-danger">*</span>
+                  Country code <span className="text-danger">*</span>
                 </label>
                 <Controller
                   name="country_code"
@@ -131,7 +131,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Lost Reason Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  State <span className="text-danger">*</span>
+                  State Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"

@@ -12,10 +12,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm(
-
-
-    );
+  } = useForm();
 
   const dispatch = useDispatch();
 
@@ -23,16 +20,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        branch_name: initialData.branch_name || "",
-        company_id: initialData.company_id || "",
-        location: initialData.location || "",
+        name: initialData.category_name || "",
         is_active: initialData.is_active,
       });
     } else {
       reset({
-        branch_name: "",
-        company_id: 0,
-        location: "",
+        category_name: "",
         is_active: "Y",
       });
     }
@@ -40,30 +33,22 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "add_edit_branch_modal",
+      "close_branch _modal",
     );
     if (mode === "add") {
       // Dispatch Add action
       dispatch(
         addbranch({
-          branch_name: data.branch_name,
-          company_id: data.company_id,
-          location: data.location,
+          category_name: data.name,
           is_active: data.is_active,
         }),
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
-      //console.log(initialData.id);
       dispatch(
         updatebranch({
           id: initialData.id,
-          branchData: {
-            branch_name: data.branch_name,
-            company_id: data.company_id,
-            location: data.location,
-            is_active: data.is_active,
-          },
+          branchData: { category_name: data.name, is_active: data.is_active },
         }),
       );
     }
@@ -77,13 +62,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New branch" : "Edit branch"}
+              {mode === "add" ? "Add New Employee" : "Edit branch "}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="#add_edit_branch_modal"
+              id="close_branch _modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -93,12 +78,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               {/* <div className="mb-3">
                 <label className="col-form-label">
-                  Branch Name <span className="text-danger">*</span>
+                  Company Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  {...register("branch_name", {
+                  {...register("name", {
                     required: "Industry name is required.",
                     minLength: {
                       value: 3,
@@ -168,7 +153,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   )}
                 </div>
               </div>
-
 
               {/* Status */}
               <div className="mb-0">

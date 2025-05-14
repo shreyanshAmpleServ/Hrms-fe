@@ -13,7 +13,7 @@ export const fetchemployee_type = createAsyncThunk(
             if (datas?.page) params.page = datas?.page
             if (datas?.size) params.size = datas?.size
 
-            const response = await apiClient.get("/v1/employee-type", { params });
+            const response = await apiClient.get("/v1/employment-type", { params });
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
@@ -28,7 +28,7 @@ export const addemployee_type = createAsyncThunk(
     "employee_type/addemployee_type",
     async (employee_typeData, thunkAPI) => {
         try {
-            const response = await apiClient.post("/v1/employee-type", employee_typeData);
+            const response = await apiClient.post("/v1/employment-type", employee_typeData);
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
@@ -43,7 +43,7 @@ export const updateemployee_type = createAsyncThunk(
     "employee_type/updateemployee_type",
     async ({ id, employee_typeData }, thunkAPI) => {
         try {
-            const response = await apiClient.put(`/v1/employee-type/${id}`, employee_typeData);
+            const response = await apiClient.put(`/v1/employment-type/${id}`, employee_typeData);
             return response.data;
         } catch (error) {
             if (error.response?.status === 404) {
@@ -64,7 +64,7 @@ export const deleteemployee_type = createAsyncThunk(
     "employee_type/deleteemployee_type",
     async (id, thunkAPI) => {
         try {
-            const response = await apiClient.delete(`/v1/employee-type/${id}`);
+            const response = await apiClient.delete(`/v1/employment-type/${id}`);
             return {
                 data: { id },
                 message: response.data.message || "employee_type deleted successfully",

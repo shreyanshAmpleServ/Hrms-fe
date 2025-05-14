@@ -34,7 +34,7 @@ const DepanrtmentList = () => {
 
   const columns = [
     {
-      title: "department Name",
+      title: "Department Name",
       dataIndex: "department_name",
       render: (_text, record) => (
         <Link to={`#`}>{record.department_name}</Link>
@@ -45,7 +45,7 @@ const DepanrtmentList = () => {
     {
       title: "Created Date",
       dataIndex: "create_date",
-      render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
+      render: (text) => moment(text).format('DD-MM-YYYY'),
       sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
     },
     {

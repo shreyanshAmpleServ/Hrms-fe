@@ -1,6 +1,6 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
@@ -15,9 +15,10 @@ import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deleteBank, fetchBank } from "../../../../redux/bank";
+import { clearMessages, deleteemployee_category, fetchemployee_category } from "../../../../redux/employee-category";
 
-const EmployeeCategory = () => {
+const Employee_CategoryList = () => {
+
     const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
     const [paginationData, setPaginationData] = React.useState()
     const [searchText, setSearchText] = React.useState("");
@@ -34,10 +35,10 @@ const EmployeeCategory = () => {
 
     const columns = [
         {
-            title: "Bank Name",
-            dataIndex: "bank_name",
+            title: "employee Category Name",
+            dataIndex: "category_name",
             render: (text, record) => (
-                <Link to={`#`}>{record.bank_name}</Link>
+                <Link to={`#`}>{record.category_name}</Link>
             ),
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
@@ -71,7 +72,7 @@ const EmployeeCategory = () => {
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
             dataIndex: "actions",
-            render: (text, record) => (
+            render: (_text, record) => (
                 <div className="dropdown table-action">
                     <Link
                         to="#"
@@ -86,7 +87,7 @@ const EmployeeCategory = () => {
                             className="dropdown-item edit-popup"
                             to="#"
                             data-bs-toggle="modal"
-                            data-bs-target="#add_edit_bank_modal"
+                            data-bs-target="#add_edit_employee_category_modal"
                             onClick={() => {
                                 setSelectedIndustry(record);
                                 setMode("edit");
@@ -107,21 +108,23 @@ const EmployeeCategory = () => {
         }] : [])
     ];
 
-    const { banks, loading, error, success } = useSelector(
-        (state) => state.banks
+    const { employee_category, loading, error, success } = useSelector(
+        (state) => state.employee_category
     );
 
+
+
     React.useEffect(() => {
-        dispatch(fetchBank({ search: searchText }));
+        dispatch(fetchemployee_category({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: banks?.currentPage,
-            totalPage: banks?.totalPages,
-            totalCount: banks?.totalCount,
-            pageSize: banks?.size
+            currentPage: employee_category?.currentPage,
+            totalPage: employee_category?.totalPages,
+            totalCount: employee_category?.totalCount,
+            pageSize: employee_category?.size
         })
-    }, [banks])
+    }, [employee_category])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -129,7 +132,7 @@ const EmployeeCategory = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchBank({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchemployee_category({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -137,7 +140,7 @@ const EmployeeCategory = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = banks?.data || [];
+        let data = employee_category?.data || [];
 
         if (sortOrder === "ascending") {
             data = [...data].sort((a, b) =>
@@ -149,7 +152,7 @@ const EmployeeCategory = () => {
             );
         }
         return data;
-    }, [searchText, banks, columns, sortOrder]);
+    }, [searchText, employee_category, columns, sortOrder]);
 
     const handleDeleteIndustry = (industry) => {
         setSelectedIndustry(industry);
@@ -160,8 +163,8 @@ const EmployeeCategory = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deleteBank(selectedIndustry.id));
-            // navigate(`/banks`);
+            dispatch(deleteemployee_category(selectedIndustry.id));
+            // navigate(`/employee_category`);
             setShowDeleteModal(false);
         }
     };
@@ -169,8 +172,8 @@ const EmployeeCategory = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Employee Category</title>
-                <meta name="banks" content="This is banks page of DCC CRMS." />
+                <title>DCC HRMS - employee Category</title>
+                <meta name="employee-category" content="This is employee_category page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -194,8 +197,9 @@ const EmployeeCategory = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        Employee Category                                        <span className="count-title">
-                                            {banks?.totalCount || 0}
+                                        Employee Category
+                                        <span className="count-title">
+                                            {employee_category?.totalCount || 0}
                                         </span>
                                     </h4>
                                 </div>
@@ -212,12 +216,12 @@ const EmployeeCategory = () => {
                                     <SearchBar
                                         searchText={searchText}
                                         handleSearch={handleSearch}
-                                        label="Search Employee Category"
+                                        label="Search employee Name"
                                     />
                                     {isCreate && <div className="col-sm-8">
                                         <AddButton
-                                            label="Add Employee Category"
-                                            id="add_edit_bank_modal"
+                                            label="Add Employee Name"
+                                            id="add_edit_employee_category_modal"
                                             setMode={() => setMode("add")}
                                         />
                                     </div>}
@@ -261,4 +265,4 @@ const EmployeeCategory = () => {
     );
 };
 
-export default EmployeeCategory;
+export default Employee_CategoryList;

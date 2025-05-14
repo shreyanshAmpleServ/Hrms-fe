@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addBank, updateBank } from "../../../../redux/bank";
+import { addbank, updatebank } from "../../../../redux/bank";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.banks);
+  const { loading } = useSelector((state) => state.bank);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -14,46 +15,36 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  const dispatch = useDispatch();
 
   // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        name: initialData.name || "",
-        is_active: initialData.is_active,
+        bank_name: initialData.bank_name || "",
+        // is_active: initialData.is_active,
       });
     } else {
       reset({
-        name: "",
-        is_active: "Y",
+        bank_name: "",
+        // is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "add_edit_bank_modal",
-    );
+    const closeButton = document.getElementById("close_bank_modal");
     if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addBank({
-          bank_name: data.name,
-          is_active: data.is_active,
-        }),
-      );
+      dispatch(addbank(data));
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
-        updateBank({
+        updatebank({
           id: initialData.id,
-          industryData: { bank_name: data.name, is_active: data.is_active },
-        }),
+          ankData: data,
+        })
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
+    reset();
+    closeButton?.click();
   };
 
   return (
@@ -62,13 +53,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New banks" : "Edit Manufacturer"}
+              {mode === "add" ? "Add New Bank" : "Edit bank"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="add_edit_bank_modal"
+              id="close_bank_modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -78,12 +69,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Bank Name <span className="text-danger">*</span>
+                  Category Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  {...register("name", {
+                  {...register("bank_name", {
                     required: "Industry name is required.",
                     minLength: {
                       value: 3,
@@ -97,7 +88,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
 
               {/* Status */}
-              <div className="mb-0">
+              {/* <div className="mb-0">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
                   <div className="me-2">
@@ -126,7 +117,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 {errors.is_active && (
                   <small className="text-danger">{errors.is_active.message}</small>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* Footer */}

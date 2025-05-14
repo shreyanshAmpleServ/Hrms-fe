@@ -1,6 +1,6 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
 
-import React, { useCallback, useMemo} from "react";
+import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
@@ -15,29 +15,29 @@ import { Helmet } from "react-helmet-async";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { clearMessages, deleteBank, fetchBank } from "../../../redux/bank";
+import { clearMessages, deletebank, fetchbank } from "../../../redux/bank";
 
 const BanksList = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
-  const [paginationData , setPaginationData] = React.useState()
+  const [paginationData, setPaginationData] = React.useState()
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Manufacturer")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
+  const permissions = JSON?.parse(localStorage.getItem("permissions"))
+  const allPermissions = permissions?.filter((i) => i?.module_name === "Manufacturer")?.[0]?.permissions
+  const isAdmin = localStorage.getItem("role")?.includes("admin")
   const isView = isAdmin || allPermissions?.view
   const isCreate = isAdmin || allPermissions?.create
   const isUpdate = isAdmin || allPermissions?.update
   const isDelete = isAdmin || allPermissions?.delete
 
   const dispatch = useDispatch();
-  
+
   const columns = [
     {
       title: "Bank Name",
-      dataIndex: "name",
+      dataIndex: "bank_name",
       render: (text, record) => (
-        <Link to={`#`}>{record.name}</Link>
+        <Link to={`#`}>{record.bank_name}</Link>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -68,7 +68,7 @@ const BanksList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-   ...((isUpdate || isDelete) ?[ {
+    ...((isUpdate || isDelete) ? [{
       title: "Actions",
       dataIndex: "actions",
       render: (text, record) => (
@@ -82,7 +82,7 @@ const BanksList = () => {
             <i className="fa fa-ellipsis-v"></i>
           </Link>
           <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
+            {isUpdate && <Link
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="modal"
@@ -94,7 +94,7 @@ const BanksList = () => {
             >
               <i className="ti ti-edit text-blue"></i> Edit
             </Link>}
-           {isDelete && <Link
+            {isDelete && <Link
               className="dropdown-item"
               to="#"
               onClick={() => handleDeleteIndustry(record)}
@@ -104,41 +104,41 @@ const BanksList = () => {
           </div>
         </div>
       ),
-    }]:[])
+    }] : [])
   ];
 
-  const { banks, loading, error, success } = useSelector(
-    (state) => state.banks
+  const { bank, loading, error, success } = useSelector(
+    (state) => state.bank
   );
 
   React.useEffect(() => {
-    dispatch(fetchBank({search:searchText}));
-  }, [dispatch , searchText]);
-      React.useEffect(()=>{
-          setPaginationData({
-            currentPage:banks?.currentPage,
-            totalPage:banks?.totalPages,
-            totalCount:banks?.totalCount,
-            pageSize : banks?.size
-          })
-        },[banks])
-      
-        const handlePageChange = ({ currentPage, pageSize }) => {
-          setPaginationData((prev) => ({
-            ...prev,
-            currentPage,
-            pageSize
-          }));
-          dispatch(fetchBank({search:searchText , page: currentPage, size: pageSize })); 
-        };
+    dispatch(fetchbank({ search: searchText }));
+  }, [dispatch, searchText]);
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: bank?.currentPage,
+      totalPage: bank?.totalPages,
+      totalCount: bank?.totalCount,
+      pageSize: bank?.size
+    })
+  }, [bank])
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize
+    }));
+    dispatch(fetchbank({ search: searchText, page: currentPage, size: pageSize }));
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = banks?.data || [];
-  
+    let data = bank?.data || [];
+
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
         moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
@@ -149,7 +149,7 @@ const BanksList = () => {
       );
     }
     return data;
-  }, [searchText, banks, columns, sortOrder]);
+  }, [searchText, bank, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelectedIndustry(industry);
@@ -160,7 +160,7 @@ const BanksList = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
     if (selectedIndustry) {
-      dispatch(deleteBank(selectedIndustry.id));
+      dispatch(deletebank(selectedIndustry.id));
       // navigate(`/banks`);
       setShowDeleteModal(false);
     }
@@ -196,7 +196,7 @@ const BanksList = () => {
                   <h4 className="page-title">
                     Bank
                     <span className="count-title">
-                      {banks?.totalCount || 0}
+                      {bank?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -215,7 +215,7 @@ const BanksList = () => {
                     handleSearch={handleSearch}
                     label="Search banks"
                   />
-                {isCreate &&  <div className="col-sm-8">
+                  {isCreate && <div className="col-sm-8">
                     <AddButton
                       label="Add Bank"
                       id="add_edit_bank_modal"
@@ -241,7 +241,7 @@ const BanksList = () => {
                     loading={loading}
                     isView={isView}
                     paginationData={paginationData}
-                    onPageChange={handlePageChange} 
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

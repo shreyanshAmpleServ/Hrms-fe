@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { addCurrency, updateCurrency } from "../../../../redux/currency"; // Adjust as per your redux actions
+import { addCurrencies, updateCurrencies } from "../../../../redux/currency"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.currency || {});
+  const { loading } = useSelector((state) => state.currencies || {});
   const {
     register,
     handleSubmit,
@@ -35,11 +35,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById("close_btn_currency_modal");
+    const closeButton = document.getElementById("close_btn_currencies_modal");
 
     if (mode === "add") {
       dispatch(
-        addCurrency({
+        addCurrencies({
           name: data.name,
           code: data.code,
           is_active: data.is_active,
@@ -48,9 +48,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateCurrency({
+        updateCurrencies({
           id: initialData.id,
-          currencyData: {
+          currenciesData: {
             name: data.name,
             code: data.code,
             is_active: data.is_active,
@@ -64,37 +64,37 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   };
 
   return (
-    <div className="modal fade" id="add_edit_currency_modal" role="dialog">
+    <div className="modal fade" id="add_edit_currencies_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Currency" : "Edit Currency"}
+              {mode === "add" ? "Add New currencies" : "Edit currencies"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="close_btn_currency_modal"
+              id="close_btn_currencies_modal"
             >
               <i className="ti ti-x" />
             </button>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Currency Name */}
+              {/* currencies Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Currency Name <span className="text-danger">*</span>
+                  currencies Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Currency name is required.",
+                    required: "currencies name is required.",
                     minLength: {
                       value: 3,
-                      message: "Currency name must be at least 3 characters.",
+                      message: "currencies name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -103,23 +103,23 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 )}
               </div>
 
-              {/* Currency Code */}
+              {/* currencies Code */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Currency Code <span className="text-danger">*</span>
+                  currencies Code <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.code ? "is-invalid" : ""}`}
                   {...register("code", {
-                    required: "Currency code is required.",
+                    required: "currencies code is required.",
                     minLength: {
                       value: 2,
-                      message: "Currency code must be at least 2 characters.",
+                      message: "currencies code must be at least 2 characters.",
                     },
                     maxLength: {
                       value: 5,
-                      message: "Currency code cannot exceed 5 characters.",
+                      message: "currencies code cannot exceed 5 characters.",
                     },
                   })}
                 />

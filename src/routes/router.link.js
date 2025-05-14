@@ -16,7 +16,7 @@ import Company from "../pages/crm-settings/core-hr/company";
 import BranchList from "../pages/crm-settings/core-hr/branch";
 import DepanrtmentList from "../pages/crm-settings/core-hr/department";
 import DesignationList from "../pages/crm-settings/core-hr/designation";
-import EmployeeCategory from "../pages/crm-settings/core-hr/employeeCategory";
+import Employee_CategoryList from "../pages/crm-settings/core-hr/employeeCategory";
 import Employee_TypeList from "../pages/crm-settings/core-hr/employmentType";
 
 import Pipelines from "../pages/pipelines/";
@@ -77,14 +77,32 @@ import GdprCookies from "../pages/settings/system-settings/GdprCookies";
 import SmsGateways from "../pages/settings/system-settings/SmsGateways";
 
 import BankAccounts from "../pages/settings/financial-settings/BankAccounts";
-import Currencies from "../pages/settings/financial-settings/Currencies";
+// import Currencies from "../pages/settings/financial-settings/Currencies";
 import PaymentGateways from "../pages/settings/financial-settings/PaymentGateways";
-import TaxRates from "../pages/settings/financial-settings/TaxRates";
-
 import BanIpAddress from "../pages/settings/other-settings/BanIpAddress";
 import Storage from "../pages/settings/other-settings/Storage";
 
-
+import Paycomponent from "../pages/crm-settings/payroll-statutory/paycomponent";
+import SalaryStructure from "../pages/crm-settings/payroll-statutory/salarystructure";
+import TaxRelirf from "../pages/crm-settings/payroll-statutory/taxRegime";
+import ProvidentFund from "../pages/crm-settings/payroll-statutory/providentFund";
+import TaxRegime from "../pages/crm-settings/payroll-statutory/texRegim";
+import KpiMaster from "../pages/crm-settings/performance/kpi-Master";
+import GoalCategoryMaster from "../pages/crm-settings/performance/goalCategoryMaster";
+import ReviewTemplateMaster from "../pages/crm-settings/performance/ReviewTemplateMaster";
+import RatingScaleMaster from "../pages/crm-settings/performance/ratingScaleMaster";
+import JobCategoryMaster from "../pages/crm-settings/recruitment&Talent/jobCategoryMaster";
+import GrievanceTypeMaster from "../pages/crm-settings/recruitment&Talent/grievanceTypeMaster";
+import DisciplinaryPenaltyMaster from "../pages/crm-settings/recruitment&Talent/disciplinaryPenaltyMaster";
+import WorkLifeEventTypeMaster from "../pages/crm-settings/recruitment&Talent/workLifeEventTypeMaster";
+import AwardTypeMaster from "../pages/crm-settings/recruitment&Talent/awardTypeMaster";
+import LetterTypeMaster from "../pages/crm-settings/recruitment&Talent/letterTypeMaster";
+import DocumentTypeMaster from "../pages/crm-settings/recruitment&Talent/documentTypeMaster";
+import SurveyMaster from "../pages/crm-settings/recruitment&Talent/surveyMaster";
+import AssetTypeMaster from "../pages/crm-settings/recruitment&Talent/assetTypeMaster";
+// import CurrenciesList from "../pages/crm-settings/payroll-statutory/currency";
+import TaxRates from "../pages/settings/financial-settings/TaxRates";
+import StatutoryRates from "../pages/crm-settings/payroll-statutory/statutoryRates";
 import Activities from "../pages/Activities";
 import MeetingTypes from "../pages/crm-settings/meetingType";
 import Modules from "../pages/crm-settings/Modules";
@@ -111,6 +129,7 @@ import Solutions from "../pages/Solutions";
 import CampaignsList from "../pages/Campaign";
 import Register from "../pages/auth/Register";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
+
 
 // // Export components individually
 
@@ -218,7 +237,7 @@ export const privateRoutes = [
   },
   {
     path: route.employeeCategory,
-    element: <EmployeeCategory />,
+    element: <Employee_CategoryList />,
     route: Route,
     title: "employeeCategory",
   },
@@ -226,8 +245,39 @@ export const privateRoutes = [
     path: route.employmentType,
     element: <Employee_TypeList />,
     route: Route,
-    title: "employmentType",
+    title: "employeetype",
   },
+  {
+    path: route.payComponent,
+    element: <Paycomponent />,
+    route: Route,
+    title: "paycomponent",
+  },
+  {
+    path: route.reviewTemplateMaster,
+    element: <ReviewTemplateMaster />,
+    route: Route,
+    title: "reviewTemplateMaster",
+  },
+  {
+    path: route.ratingScaleMaster,
+    element: <RatingScaleMaster />,
+    route: Route,
+    title: "ratingScaleMaster",
+  },
+  {
+    path: route.salaryStructure,
+    element: <SalaryStructure />,
+    route: Route,
+    title: "salarystructure",
+  },
+  {
+    path: route.currency,
+    element: <CurrencyList />,
+    route: Route,
+    title: "salarystructure",
+  },
+
   {
     path: route.order,
     element: <Orders />,
@@ -344,6 +394,12 @@ export const privateRoutes = [
     title: "Tax Setup",
   },
   {
+    path: route.providentFund,
+    element: <ProvidentFund />,
+    route: Route,
+    title: "Provident Fund",
+  },
+  {
     path: route.country,
     element: <CountriesList />,
     route: Route,
@@ -356,11 +412,29 @@ export const privateRoutes = [
     title: "State",
   },
   {
-    path: route.currency,
-    element: <CurrencyList />,
+    path: route.statutoryRates,
+    element: <StatutoryRates />,
     route: Route,
-    title: "Currency",
+    title: "StatutoryRates",
   },
+  {
+    path: route.taxRelief,
+    element: <TaxRelirf />,
+    route: Route,
+    title: "TaxRelief",
+  },
+  {
+    path: route.taxRegime,
+    element: <TaxRegime />,
+    route: Route,
+    title: "Tax Regime",
+  },
+  // {
+  //   path: route.currency,
+  //   element: <CurrenciesList />,
+  //   route: Route,
+  //   title: "Currency",
+  // },
   {
     path: route.modules,
     element: <Modules />,
@@ -573,17 +647,83 @@ export const privateRoutes = [
     route: Route,
     title: 'Bank Accounts'
   },
-  {
-    path: route.currencies,
-    element: <Currencies />,
-    route: Route,
-    title: 'Currencies'
-  },
+  // {
+  //   path: route.currencies,
+  //   element: <Currencies />,
+  //   route: Route,
+  //   title: 'Currencies'
+  // },
   {
     path: route.paymentGateways,
     element: <PaymentGateways />,
     route: Route,
     title: 'PaymentGateways'
+  },
+  {
+    path: route.kpiMaster,
+    element: <KpiMaster />,
+    route: Route,
+    title: 'KpiMaster'
+  },
+  {
+    path: route.goalCategoryMaster,
+    element: <GoalCategoryMaster />,
+    route: Route,
+    title: 'goalCategoryMaster'
+  },
+  {
+    path: route.disciplinaryPenaltyMaster,
+    element: <DisciplinaryPenaltyMaster />,
+    route: Route,
+    title: 'disciplinaryPenaltyMaster'
+  },
+  {
+    path: route.awardTypeMaster,
+    element: <AwardTypeMaster />,
+    route: Route,
+    title: 'awardTypeMaster'
+  },
+  {
+    path: route.jobCategoryMaster,
+    element: <JobCategoryMaster />,
+    route: Route,
+    title: 'jobCategoryMaster'
+  },
+  {
+    path: route.grievanceTypeMaster,
+    element: <GrievanceTypeMaster />,
+    route: Route,
+    title: 'GrievanceTypeMaster'
+  },
+  {
+    path: route.workLifeEventTypeMaster,
+    element: <WorkLifeEventTypeMaster />,
+    route: Route,
+    title: 'workLifeEventTypeMaster'
+  },
+  {
+    path: route.assetTypeMaster,
+    element: <AssetTypeMaster />,
+    route: Route,
+    title: 'workLifeEventTypeMaster'
+  },
+  {
+    path: route.letterTypeMaster,
+    element: <LetterTypeMaster />,
+    route: Route,
+    title: 'letterTypeMaster'
+  },
+  {
+    path: route.surveyMaster,
+    element: <SurveyMaster />,
+    route: Route,
+    title: 'surveyMaster'
+  },
+  {
+    path: route.documentTypeMaster,
+    element: <DocumentTypeMaster />,
+    route: Route,
+    title: 'documentTypeMaster'
   },
   {
     path: route.taxRates,

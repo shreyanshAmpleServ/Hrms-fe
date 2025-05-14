@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addemployee_type, updateemployee_type } from "../../../../../redux/employee-type";
+// import { Modal, Button } from 'react-bootstrap';
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.employee_type);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -14,13 +16,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  const dispatch = useDispatch();
 
   // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        name: initialData.type_name || "",
+        type_name: initialData.type_name || "",
         is_active: initialData.is_active,
       });
     } else {
@@ -32,28 +33,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "add_edit_employee_type_modal",
-    );
+    const closeButton = document.getElementById("close_employee_type_modal");
     if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addemployee_type({
-          type_name: data.name,
-          is_active: data.is_active,
-        }),
-      );
+      dispatch(addemployee_type(data));
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateemployee_type({
           id: initialData.id,
-          typeData: { type_name: data.name, is_active: data.is_active },
-        }),
+          employee_typeData: data,
+        })
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
+    reset();
+    closeButton?.click();
   };
 
   return (
@@ -62,13 +54,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Employee" : "Edit employee_type"}
+              {mode === "add" ? "Add New Goal Category " : "Edit Goal Category"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="add_edit_employee_type_modal"
+              id="close_employee_type_modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -78,12 +70,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Employee Name <span className="text-danger">*</span>
+                  employee  Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  {...register("name", {
+                  {...register("type_name", {
                     required: "Industry name is required.",
                     minLength: {
                       value: 3,
