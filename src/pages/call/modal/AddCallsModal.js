@@ -230,7 +230,6 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
 
   const { loading } = useSelector((state) => state.calls);
 
-console.log(new Date("2025-04-22T10:35:04.000Z"))
 
   React.useEffect(()=>{
    ( callFor === "Accounts" || watch("related_to")) && dispatch(fetchContacts());

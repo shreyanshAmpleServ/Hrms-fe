@@ -48,6 +48,10 @@ import branchReducer from "./branch"
 import departmentReducer from "./department"
 import designationReducer from "./designation"
 import employeeTypeReducer from "./employee-type"
+import shiftReducer from "./Shift"
+import leaveTypeReducer from "./LeaveType"
+import holidayCalenderReducer from "./HolidayCalender"
+import WorkScheduleTempReducer from "./WorkScheduleTemp"
 
 const store = configureStore({
   reducer: {
@@ -99,6 +103,10 @@ const store = configureStore({
     department: departmentReducer,
     designation: designationReducer,
     employee_type: employeeTypeReducer,
+    shift: shiftReducer,
+    leaveType: leaveTypeReducer,
+    holidayCalender: holidayCalenderReducer,
+    WorkScheduleTemp: WorkScheduleTempReducer,
   },
 });
 

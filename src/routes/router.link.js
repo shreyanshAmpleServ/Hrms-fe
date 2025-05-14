@@ -12,8 +12,8 @@ import LeadsKanban from "../pages/leads/LeadsKanban";
 import Companies from "../pages/companies/";
 import CompanyDetail from "../pages/companies/CompanyDetail";
 
-import Company from "../pages/crm-settings/core-hr/company";
 import BranchList from "../pages/crm-settings/core-hr/branch";
+import Company from "../pages/crm-settings/core-hr/company";
 import DepanrtmentList from "../pages/crm-settings/core-hr/department";
 import DesignationList from "../pages/crm-settings/core-hr/designation";
 import EmployeeCategory from "../pages/crm-settings/core-hr/employeeCategory";
@@ -28,16 +28,16 @@ import DealDetail from "../pages/deals/DealDetail";
 import DealsKanban from "../pages/deals/DealsKanban";
 
 //CRM Settings
-import ContactStage from "../pages/crm-settings/contact-stages";
-import Industries from "../pages/crm-settings/industries";
-import LostReason from "../pages/crm-settings/lost-reasons";
-import SourceList from "../pages/crm-settings/sources";
-import BanksList from "../pages/crm-settings/bank";
 import Calls from "../pages/call";
+import BanksList from "../pages/crm-settings/bank";
 import CallResult from "../pages/crm-settings/callResult";
 import CallStatus from "../pages/crm-settings/calls";
 import CallPurpose from "../pages/crm-settings/callsPurpose";
 import CallType from "../pages/crm-settings/callType";
+import ContactStage from "../pages/crm-settings/contact-stages";
+import Industries from "../pages/crm-settings/industries";
+import LostReason from "../pages/crm-settings/lost-reasons";
+import SourceList from "../pages/crm-settings/sources";
 
 import ProjectDetail from "../pages/projects/ProjectsDetail";
 
@@ -96,21 +96,25 @@ import VendorDetail from "../pages/Vendor/VendorDetail";
 
 import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
 // import ManufacturerList from "../pages/crm-settings/Manufacturer";
-import ProductCategory from "../pages/crm-settings/ProductCategory";
-import Documents from "../pages/Documents";
-import Product from "../pages/Product";
-import TaxSetUpList from "../pages/crm-settings/TaxSetUp";
-import Orders from "../pages/Order";
-import Quotation from "../pages/Quotation";
-import PurchaseOrders from "../pages/purchaseOrder";
-import SalesInvoice from "../pages/salesInvoice";
-import PurchaseInvoice from "../pages/purchaseInvoice";
-import PriceBook from "../pages/priceBooks";
-import Cases from "../pages/Case";
-import Solutions from "../pages/Solutions";
-import CampaignsList from "../pages/Campaign";
 import Register from "../pages/auth/Register";
+import CampaignsList from "../pages/Campaign";
+import Cases from "../pages/Case";
+import LeaveTypeList from "../pages/crm-settings/leaveAndAttendance/LeaveType";
+import ShiftList from "../pages/crm-settings/leaveAndAttendance/Shifts";
+import ProductCategory from "../pages/crm-settings/ProductCategory";
+import TaxSetUpList from "../pages/crm-settings/TaxSetUp";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
+import Documents from "../pages/Documents";
+import Orders from "../pages/Order";
+import PriceBook from "../pages/priceBooks";
+import Product from "../pages/Product";
+import PurchaseInvoice from "../pages/purchaseInvoice";
+import PurchaseOrders from "../pages/purchaseOrder";
+import Quotation from "../pages/Quotation";
+import SalesInvoice from "../pages/salesInvoice";
+import Solutions from "../pages/Solutions";
+import HolidayCalenderList from "../pages/crm-settings/leaveAndAttendance/HolidayCalender";
+import WorkTemplateList from "../pages/crm-settings/leaveAndAttendance/WorkSchedule";
 
 // // Export components individually
 
@@ -415,6 +419,30 @@ export const privateRoutes = [
     element: <CallType />,
     route: Route,
     title: "Call Type",
+  },
+  {
+    path: route.shift,
+    element: <ShiftList />,
+    route: Route,
+    title: "Shift",
+  },
+  {
+    path: route.leaveType,
+    element: <LeaveTypeList />,
+    route: Route,
+    title: "Leave Type",
+  },
+  {
+    path: route.holidayCalender,
+    element: <HolidayCalenderList />,
+    route: Route,
+    title: "Holiday Calender",
+  },
+  {
+    path: route.workSchedule,
+    element: <WorkTemplateList />,
+    route: Route,
+    title: "Work Schedule Template",
   },
   {
     path: route.leadsDetail,

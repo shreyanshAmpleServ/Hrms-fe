@@ -142,4 +142,9 @@ export const all_routes = {
   cases: "/cases",
   solutions: "/solutions",
   campaigns: "/campaigns",
+
+  shift:"/shift",
+  leaveType:"/leave-type",
+  holidayCalender:"/holiday-calender",
+  workSchedule:"/work-schedule",
 };

@@ -371,22 +371,22 @@ export const SidebarData = [
         submenuItems: [
           {
             label: "Shift",
-            link: route.callType,
+            link: route.shift,
             showSubRoute: false,
           },
           {
             label: "Leave Type",
-            link: route.callType,
+            link: route.leaveType,
             showSubRoute: false,
           },
           {
             label: "Holiday Calendar",
-            link: route.callType,
+            link: route.holidayCalender,
             showSubRoute: false,
           },
           {
             label: "Work Schedule",
-            link: route.callType,
+            link: route.workSchedule,
             showSubRoute: false,
           },
 
