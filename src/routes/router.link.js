@@ -44,8 +44,9 @@ import ProjectDetail from "../pages/projects/ProjectsDetail";
 import Projects from "../pages/projects";
 
 import CountriesList from "../pages/crm-settings/country";
-import CurrencyList from "../pages/crm-settings/currency";
+import CurrencyList from "../pages/crm-settings/payroll-statutory/currency";
 import StateList from "../pages/crm-settings/state";
+import EmployeeList from "../pages/Employee";
 
 // USER MANAGEMENT 
 import Manageusers from "../pages/user-management/manage-users";
@@ -111,6 +112,9 @@ import LeadsDashboard from "../pages/main-menu/leads-dashboard";
 import ProjectDashboard from "../pages/main-menu/project-dashboard";
 import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
+
+
+import AddEmployee from "../pages/Employee/AddEmployee";
 
 import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
 // import ManufacturerList from "../pages/crm-settings/Manufacturer";
@@ -280,6 +284,12 @@ export const privateRoutes = [
     element: <CurrencyList />,
     route: Route,
     title: "salarystructure",
+  },
+  {
+    path: route.employee,
+    element: <EmployeeList />,
+    route: Route,
+    title: "employee",
   },
 
   {
@@ -467,6 +477,12 @@ export const privateRoutes = [
   {
     path: route.companyDetails,
     element: <CompanyDetail />,
+    route: Route,
+    title: "Companies Detail",
+  },
+  {
+    path: route.addEmployee,
+    element: <AddEmployee />,
     route: Route,
     title: "Companies Detail",
   },

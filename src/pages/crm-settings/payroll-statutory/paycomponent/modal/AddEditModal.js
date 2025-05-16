@@ -57,7 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New pay_component" : "Edit pay_component"}
+              {mode === "add" ? "Add New Pay Component" : "Edit Pay Component"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -73,7 +73,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Depanrtment Name <span className="text-danger">*</span>
+                  Component Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"

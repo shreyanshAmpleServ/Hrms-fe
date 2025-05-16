@@ -34,12 +34,12 @@ const Paycomponent = () => {
 
     const columns = [
         {
-            title: "pay component Name",
+            title: "Pay Component Name",
             dataIndex: "component_name",
-            render: (_text, record) => (
+            render: (text, record) => (
                 <Link to={`#`}>{record.component_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => a - b,
         },
         {
             title: "Company Code",

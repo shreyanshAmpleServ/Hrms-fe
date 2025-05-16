@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import { fetchCountries } from "../../../../redux/country";
-import { addMappedState, updateMappedState } from "../../../../redux/mappedState";
+import { addState, updateState } from "../../../../redux/state";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.states);
@@ -55,7 +55,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (mode === "add") {
       // Dispatch Add action
       dispatch(
-        addMappedState({
+        addState({
           name: data.name,
           country_code: data.country_code,
           is_active: data.is_active,
@@ -64,7 +64,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
       dispatch(
-        updateMappedState({
+        updateState({
           id: initialData.id,
           stateData: { name: data.name, country_code: data.country_code, is_active: data.is_active },
         }),
@@ -97,7 +97,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Country  */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Country code <span className="text-danger">*</span>
+                  Country  <span className="text-danger">*</span>
                 </label>
                 <Controller
                   name="country_code"
@@ -150,7 +150,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
 
               {/* Status */}
-              <div className="mb-0">
+              {/* <div className="mb-0">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
                   <div className="me-2">
@@ -179,7 +179,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 {errors.is_active && (
                   <small className="text-danger">{errors.is_active.message}</small>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* Footer */}

@@ -82,7 +82,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Rating Value <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control ${errors.template_name ? "is-invalid" : ""}`}
                     {...register("rating_value", {
                       required: "Country code is required.",

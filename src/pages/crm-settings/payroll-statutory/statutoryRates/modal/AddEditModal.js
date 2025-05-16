@@ -101,7 +101,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Lower Limit <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control ${errors.lower_limit ? "is-invalid" : ""}`}
                     {...register("lower_limit", {
                       required: "Lower limit is required.",
@@ -135,7 +135,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Upper Limit <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control ${errors.upper_limit ? "is-invalid" : ""}`}
                     {...register("upper_limit", {
                       required: "Upper limit is required.",
@@ -152,7 +152,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Rate Percent <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control ${errors.rate_percent ? "is-invalid" : ""}`}
                     {...register("rate_percent", {
                       required: "Rate percent is required.",

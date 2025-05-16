@@ -67,7 +67,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               <div className="row">
 
 
-                <div className="col-md-6 mb-3">
+                <div className=" mb-3">
                   <label className="col-form-label">
                     Relief Name <span className="text-danger">*</span>
                   </label>
@@ -86,25 +86,27 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     <small className="text-danger">{errors.name.message}</small>
                   )}
                 </div>
-                <div className="col-md-6 mb-3">
+                <div className="mb-3">
                   <label className="col-form-label">
                     Amount <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
-                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                    type="number"
+                    className={`form-control ${errors.amount ? "is-invalid" : ""}`}
                     {...register("amount", {
-                      required: "Industry name is required.",
-                      minLength: {
-                        value: 3,
-                        message: "Industry name must be at least 3 characters.",
+                      required: "Amount is required.",
+                      valueAsNumber: true,
+                      min: {
+                        value: 1,
+                        message: "Amount must be at least 1.",
                       },
                     })}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.amount && (
+                    <small className="text-danger">{errors.amount.message}</small>
                   )}
                 </div>
+
               </div>
               {/* Status */}
               {/* <div className="mb-0">

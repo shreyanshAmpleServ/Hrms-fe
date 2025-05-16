@@ -97,7 +97,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Valid From <span className="text-danger">*</span>
                   </label>
                   <Controller
-                    name="valid_from"
+                    name="Valid from"
                     control={control}
                     rules={{ required: "Valid from date is required." }}
                     render={({ field }) => (

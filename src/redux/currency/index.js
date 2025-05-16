@@ -120,8 +120,10 @@ const currenciesSlice = createSlice({
             })
             .addCase(addCurrencies.fulfilled, (state, action) => {
                 state.loading = false;
-                state.currencies = { ...state.currencies, data: [...state.currencies, action.payload.data] };
-                state.success = action.payload.message;
+                state.currencies = {
+                    ...state.currencies,
+                    data: [...(state.currencies?.data || []), action.payload.data]
+                }; state.success = action.payload.message;
             })
             .addCase(addCurrencies.rejected, (state, action) => {
                 state.loading = false;

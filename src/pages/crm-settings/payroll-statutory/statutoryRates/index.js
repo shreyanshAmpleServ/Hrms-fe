@@ -234,7 +234,7 @@ const StatutoryRates = () => {
                                     />
                                     {isCreate && <div className="col-sm-8">
                                         <AddButton
-                                            label="Add Pay Component"
+                                            label="Add Statutory    "
                                             id="add_edit_statutory_rates_modal"
                                             setMode={() => setMode("add")}
                                         />

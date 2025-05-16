@@ -9,7 +9,7 @@ import Table from "../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../components/common/modals/FlashMessage";
 import {
     clearMessages
-} from "../../../redux/state"; // Redux actions and reducers for mappedStates
+} from "../../../redux/state"; // Redux actions and reducers for states
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
@@ -20,7 +20,7 @@ import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 import { fetchCountries } from "../../../redux/country";
-import { deleteMappedState, fetchMappedStates } from "../../../redux/mappedState";
+import { deleteState, fetchStates } from "../../../redux/state";
 import { Helmet } from "react-helmet-async";
 
 const StatesList = () => {
@@ -46,7 +46,7 @@ const StatesList = () => {
             render: (text, record) => (
                 <div>{text}</div>
 
-                // <Link to={`/mappedStates/${record.id}`}>{record.name}</Link>
+                // <Link to={`/states/${record.id}`}>{record.name}</Link>
             ),
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
@@ -55,7 +55,7 @@ const StatesList = () => {
             dataIndex: "country_code",
             render: (text, record) => (
                 <div>{text?.code + text?.name}</div>
-                // <Link to={`/mappedStates/${record.id}`}>{record.name}</Link>
+                // <Link to={`/states/${record.id}`}>{record.name}</Link>
             ),
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
@@ -68,24 +68,24 @@ const StatesList = () => {
             ),
             sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
         },
-        {
-            title: "Status",
-            dataIndex: "is_active",
-            render: (text) => (
-                <div>
-                    {text === "Y" ? (
-                        <span className="badge badge-pill badge-status bg-success">
-                            Active
-                        </span>
-                    ) : (
-                        <span className="badge badge-pill badge-status bg-danger">
-                            Inactive
-                        </span>
-                    )}
-                </div>
-            ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-        },
+        // {
+        //     title: "Status",
+        //     dataIndex: "is_active",
+        //     render: (text) => (
+        //         <div>
+        //             {text === "Y" ? (
+        //                 <span className="badge badge-pill badge-status bg-success">
+        //                     Active
+        //                 </span>
+        //             ) : (
+        //                 <span className="badge badge-pill badge-status bg-danger">
+        //                     Inactive
+        //                 </span>
+        //             )}
+        //         </div>
+        //     ),
+        //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+        // },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
             dataIndex: "actions",
@@ -123,8 +123,8 @@ const StatesList = () => {
         }] : [])
     ];
 
-    const { mappedStates, loading, error, success } = useSelector(
-        (state) => state.mappedStates
+    const { states, loading, error, success } = useSelector(
+        (state) => state.states
     );
 
     React.useEffect(() => {
@@ -132,16 +132,16 @@ const StatesList = () => {
     }, [dispatch]);
 
     React.useEffect(() => {
-        dispatch(fetchMappedStates({ search: searchText, country_code: countryId }));
+        dispatch(fetchStates({ search: searchText, country_code: countryId }));
     }, [dispatch, countryId, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: mappedStates?.currentPage,
-            totalPage: mappedStates?.totalPages,
-            totalCount: mappedStates?.totalCount,
-            pageSize: mappedStates?.size
+            currentPage: states?.currentPage,
+            totalPage: states?.totalPages,
+            totalCount: states?.totalCount,
+            pageSize: states?.size
         })
-    }, [mappedStates])
+    }, [states])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -149,7 +149,7 @@ const StatesList = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchMappedStates({ search: searchText, country_code: countryId, page: currentPage, size: pageSize }));
+        dispatch(fetchStates({ search: searchText, country_code: countryId, page: currentPage, size: pageSize }));
     };
 
     const { countries } = useSelector(
@@ -162,7 +162,7 @@ const StatesList = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = mappedStates?.data || [];
+        let data = states?.data || [];
         // if (searchText) {
         //     data = data.filter((item) =>
         //         columns.some((col) =>
@@ -183,7 +183,7 @@ const StatesList = () => {
             );
         }
         return data;
-    }, [searchText, mappedStates, columns, sortOrder]);
+    }, [searchText, states, columns, sortOrder]);
 
     const handleDeleteState = (state) => {
         setSelectedState(state);
@@ -195,7 +195,7 @@ const StatesList = () => {
 
     const deleteData = () => {
         if (selectedState) {
-            dispatch(deleteMappedState(selectedState.id));
+            dispatch(deleteState(selectedState.id));
             setShowDeleteModal(false);
         }
     };
@@ -229,7 +229,7 @@ const StatesList = () => {
                                 <div className="col-8">
                                     <h4 className="page-title">
                                         States
-                                        <span className="count-title">{mappedStates?.totalCount || 0}</span>
+                                        <span className="count-title">{states?.totalCount || 0}</span>
                                     </h4>
                                 </div>
                                 <div className="col-4 text-end">

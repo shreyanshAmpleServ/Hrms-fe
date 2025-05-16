@@ -97,6 +97,14 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Employee",
+        link: route.employee,
+        icon: "ti ti-id-badge",
+        showSubRoute: false,
+        submenu: false,
+      },
+
       // {
       //   label: "Projects",
       //   link: route.projects,

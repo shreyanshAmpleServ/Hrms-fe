@@ -70,6 +70,11 @@ export const all_routes = {
   surveyMaster: "/surveyMaster",
   assetTypeMaster: "/assetTypeMaster",
 
+
+
+  employee: "/employee",
+  addEmployee: "/add-employee",
+
   // currency: "/currency",
   // core-hr //
 
@@ -164,8 +169,8 @@ export const all_routes = {
   solutions: "/solutions",
   campaigns: "/campaigns",
 
-  shift:"/shift",
-  leaveType:"/leave-type",
-  holidayCalender:"/holiday-calender",
-  workSchedule:"/work-schedule",
+  shift: "/shift",
+  leaveType: "/leave-type",
+  holidayCalender: "/holiday-calender",
+  workSchedule: "/work-schedule",
 };

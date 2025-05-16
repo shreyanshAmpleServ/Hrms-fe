@@ -25,11 +25,12 @@ const CurrenciesList = () => {
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"))
     const allPermissions = permissions?.filter((i) => i?.module_name === "Currency")?.[0]?.permissions
-    const isView = allPermissions?.view
-    const isCreate = allPermissions?.create
-    const isUpdate = allPermissions?.update
-    const isDelete = allPermissions?.delete
-
+    const isAdmin = localStorage.getItem("role")?.includes("admin")
+    const isView = isAdmin || allPermissions?.view
+    const isCreate = isAdmin || allPermissions?.create
+    const isUpdate = isAdmin || allPermissions?.update
+    const isDelete = isAdmin || allPermissions?.delete
+    console.log('HIiiiiiiii')
     const dispatch = useDispatch();
     const columns = [
         {
@@ -46,12 +47,12 @@ const CurrenciesList = () => {
             render: (text) => <span>{text}</span>,
             sorter: (a, b) => a.code.localeCompare(b.code),
         },
-        {
-            title: "Default",
-            dataIndex: "is_default",
-            render: (text) => <span>{text}</span>,
-            sorter: (a, b) => a.is_default.localeCompare(b.is_default),
-        },
+        // {
+        //     title: "Default",
+        //     dataIndex: "is_default",
+        //     render: (text) => <span>{text}</span>,
+        //     sorter: (a, b) => a.is_default.localeCompare(b.is_default),
+        // },
         {
             title: "Created Date",
             dataIndex: "createdate",

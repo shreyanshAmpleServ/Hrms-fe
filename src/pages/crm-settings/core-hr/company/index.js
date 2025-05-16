@@ -60,7 +60,7 @@ const Company = () => {
       render: (text, record) => (
         <Link to={`/company/${record.id}`}>{record.company_name}</Link>
       ),
-      sorter: (a, b) => a.companyname.localeCompay(b.companyname),
+      sorter: (a, b) => a.name.localeCompare(b.name)
     },
 
     {

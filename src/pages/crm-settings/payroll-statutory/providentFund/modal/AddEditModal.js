@@ -98,7 +98,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Employer Contribution <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control ${errors.name ? "is-invalid" : ""}`}
                     {...register("employer_contribution", {
                       required: "Industry name is required.",
@@ -117,7 +117,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Employee Contribution <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control ${errors.name ? "is-invalid" : ""}`}
                     {...register("employee_contribution", {
                       required: "Industry name is required.",

@@ -118,7 +118,7 @@ const CurrenciesList = () => {
         (state) => state.currencies
     );
 
-
+    console.log("Add function : ")
     React.useEffect(() => {
         dispatch(fetchCurrencies({ search: searchText }));
     }, [dispatch, searchText]);
@@ -177,7 +177,7 @@ const CurrenciesList = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Depanrtment</title>
+                <title>DCC HRMS - Currency</title>
                 <meta name="DepanrtmentList" content="This is currencies page of DCC CRMS." />
             </Helmet>
             <div className="content">
@@ -202,7 +202,7 @@ const CurrenciesList = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        Pay Component
+                                        Currency
                                         <span className="count-title">
                                             {currencies?.totalCount || 0}
                                         </span>
@@ -221,11 +221,11 @@ const CurrenciesList = () => {
                                     <SearchBar
                                         searchText={searchText}
                                         handleSearch={handleSearch}
-                                        label="Search Pay Component"
+                                        label="Search Currency"
                                     />
                                     {isCreate && <div className="col-sm-8">
                                         <AddButton
-                                            label="Add Pay Component"
+                                            label="Add Currency"
                                             id="add_edit_currencies_modal"
                                             setMode={() => setMode("add")}
                                         />

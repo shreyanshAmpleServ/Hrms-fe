@@ -121,7 +121,8 @@ const statesSlice = createSlice({
             })
             .addCase(addState.fulfilled, (state, action) => {
                 state.loading = false;
-                state.states = [action.payload.data, ...state.states];
+                state.states = { ...state.states, data: [action.payload.data, ...state.states.data] };
+
                 state.success = action.payload.message;
             })
             .addCase(addState.rejected, (state, action) => {
@@ -134,16 +135,14 @@ const statesSlice = createSlice({
             })
             .addCase(updateState.fulfilled, (state, action) => {
                 state.loading = false;
-                const index = state.states?.findIndex(
-                    (stateItem) => stateItem.id === action.payload.data.id
+                const index = state.states.data?.findIndex(
+                    (user) => user.id === action.payload.data.id,
                 );
-
                 if (index !== -1) {
-                    state.states[index] = action.payload.data;
+                    state.states.data[index] = action.payload.data;
                 } else {
-                    state.states = [action.payload.data, ...state.states];
+                    state.states = { ...state.states, data: [action.payload.data, ...state.states.data] };
                 }
-
                 state.success = action.payload.message;
             })
             .addCase(updateState.rejected, (state, action) => {
@@ -156,9 +155,10 @@ const statesSlice = createSlice({
             })
             .addCase(deleteState.fulfilled, (state, action) => {
                 state.loading = false;
-                state.states = state.states.filter(
-                    (stateItem) => stateItem.id !== action.payload.data.id
+                let filteredData = state.states.data.filter(
+                    (data) => data.id !== action.payload.data.id,
                 );
+                state.states = { ...state.states, data: filteredData }
                 state.success = action.payload.message;
             })
             .addCase(deleteState.rejected, (state, action) => {

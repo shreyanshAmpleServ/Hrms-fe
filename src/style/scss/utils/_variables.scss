@@ -16,7 +16,7 @@ $font-weight-bolder: bolder;
 // Font Family
 $font-family-primary: "Noto Sans", sans-serif;
 $font-awesome: "Fontawesome";
-	
+
 // Theme Colors Variables
 // $primary: #E41F07;  1st Change
 $primary: #4453ff;
@@ -29,8 +29,8 @@ $info: #1ECBE2;
 $info-hover: darken($info, 10%);
 $warning: #FDA700;
 $warning-hover: darken($warning, 10%);
-$danger: #4453ff;
-// $danger: #FC0027;  2nd Change
+// $danger: #4453ff;
+$danger: #FC0027;
 $danger-hover: darken($danger, 10%);
 $dark: #171724;
 $dark-border: #393947;
@@ -248,33 +248,33 @@ $purple-900: #5C1AE8;
 
 
 $colors: (
-  "blue":       $blue,
-  "indigo":     $indigo,
-  "purple":     $purple,
-  "pink":       $pink,
-  "orange":     $orange,
-  "yellow":     $yellow,
-  "green":      $green,
-  "teal":       $teal,
-  "cyan":       $cyan,
-  "white":      $white,
-  "gray":       $gray-600,
-  "gray-dark":  $gray-800
+  "blue": $blue,
+  "indigo": $indigo,
+  "purple": $purple,
+  "pink": $pink,
+  "orange": $orange,
+  "yellow": $yellow,
+  "green": $green,
+  "teal": $teal,
+  "cyan": $cyan,
+  "white": $white,
+  "gray": $gray-600,
+  "gray-dark": $gray-800
 );
 
 $theme-colors: (
-    "primary": $primary,
-    "secondary": $secondary,
-    "success": $success,
-    "info": $info,
-    "warning": $warning,
-    "danger": $danger,
-    "dark": $dark,
-    "light": $light,
-    "black": $black,
-    "purple": $purple,
-    "yellow": $yellow,
-    "teal": $teal
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "dark": $dark,
+  "light": $light,
+  "black": $black,
+  "purple": $purple,
+  "yellow": $yellow,
+  "teal": $teal
 );
 
 $text-color: #6F6F6F;
@@ -321,13 +321,13 @@ $appstore: #000;
 // Gradient Variables
 $primary-gradient: linear-gradient(to right, $primary 0%, #8e77fa 100%);
 $secondary-gradient: linear-gradient(to right, $secondary 0%, #28b7f9 100%);
-$success-gradient: linear-gradient(to right,$success 0%, #5cf9e2 100%);
+$success-gradient: linear-gradient(to right, $success 0%, #5cf9e2 100%);
 $warning-gradient: linear-gradient(to right, $warning 0%, #fbc434 100%);
-$danger-gradient: linear-gradient(to right,$danger 0%, #fd4a68  100%);
-$info-gradient: linear-gradient(to right, $info 0%, #00f2fe  100%);
+$danger-gradient: linear-gradient(to right, $danger 0%, #fd4a68 100%);
+$info-gradient: linear-gradient(to right, $info 0%, #00f2fe 100%);
 $pink-gradient: linear-gradient(to right, $pink 0%, #FFA795 100%);
 $teal-gradient: linear-gradient(to right, $teal 0%, #0695DD 100%);
-$orange-gradient: linear-gradient(to right,$orange 0%,#FBB034 100%);
+$orange-gradient: linear-gradient(to right, $orange 0%, #FBB034 100%);
 $purple-gradient: linear-gradient(to right, $purple 0%, #9b25b7 100%);
 $light-gradient: linear-gradient(to right, $light 0%, #D1D6DE 100%);
 $dark-gradient: linear-gradient(to right, $dark 0%, #54505D 100%);
@@ -393,4 +393,3 @@ $h3-font-size: 20px;
 $h4-font-size: 18px;
 $h5-font-size: 16px;
 $h6-font-size: 14px;
-

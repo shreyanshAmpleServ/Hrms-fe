@@ -70,7 +70,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Category Name <span className="text-danger">*</span>
+                  Structure Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
