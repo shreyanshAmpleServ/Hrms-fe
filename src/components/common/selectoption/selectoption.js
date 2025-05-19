@@ -453,6 +453,12 @@ export const priceModelOptions = [
   { value: "Flat",label: "Flat" },
   { value: "Differencial",label: "Differencial" },
 ];
+export const genderOptions = [
+  { value: "", label: "Select" },
+  { value: "Male",label: "Male" },
+  { value: "Female",label: "Female" },
+  { value: "Other",label: "Other" },
+];
 const route = all_routes
 export const ModuleOptions = [
   {path: route.dasshboard, label: "Dashboard", value: "Dashboard",},

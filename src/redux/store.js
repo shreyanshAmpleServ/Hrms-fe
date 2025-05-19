@@ -68,7 +68,7 @@ import letterTypeMasterReduer from "./letterType"
 import documentTypeMasterReduer from "./documentType"
 import surveyMasterReduer from "./surveyMaster"
 import assetTypeMasterReduer from "./assetType"
-
+import employeeReducer from "./Employee"
 import shiftReducer from "./Shift"
 import leaveTypeReducer from "./LeaveType"
 import holidayCalenderReducer from "./HolidayCalender"
@@ -123,7 +123,7 @@ const store = configureStore({
     branch: branchReducer,
     department: departmentReducer,
     designation: designationReducer,
-    employee_type: employeeTypeReducer,
+    employmentType: employeeTypeReducer,
     employee_category: employee_categoryReducer,
     payComponent: payComponentReducer,
     salaryStructure: salaryStructureReducer,
@@ -145,7 +145,7 @@ const store = configureStore({
     surveyMaster: surveyMasterReduer,
     assetTypeMaster: assetTypeMasterReduer,
 
-
+    employee: employeeReducer,
     shift: shiftReducer,
     leaveType: leaveTypeReducer,
     holidayCalender: holidayCalenderReducer,

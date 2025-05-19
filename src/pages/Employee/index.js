@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import {
-//   setCampaignTogglePopup,
-//   setCampaignTogglePopupTwo,
+//   setEmployeeDataTogglePopup,
+//   setEmployeeDataTogglePopupTwo,
 // } from "../../core/data/redux/commonSlice";
 import { Table } from "antd";
 import moment from "moment";
@@ -24,6 +24,7 @@ import DeleteAlert from "./alert/DeleteAlert.js";
 import AddEmployee from "./AddEmployee.js";
 import { Navigate } from "react-router";
 import ManageEmpModal from "./modal/manageEmpModal.js";
+import { deleteEmployee, fetchEmployee } from "../../redux/Employee/index.js";
 
 const EmployeeList = () => {
     // const data = activities_data;
@@ -33,7 +34,7 @@ const EmployeeList = () => {
     const [newFilter, setNewFilter] = useState(name)
     const [isLoading, setIsLoading] = useState(false)
     const [searchValue, setSearchValue] = useState("");
-    const [campaign, setCampaign] = useState();
+    const [employeeData, setEmployeeData] = useState();
     const [selectedCampaign, setSelectedCampaign] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState()
@@ -43,26 +44,24 @@ const EmployeeList = () => {
     });
     const dispatch = useDispatch();
 
-    const { campaigns, loading, error, success } = useSelector(
-        (state) => state.campaigns || {}
+    const { employee, loading, error, success } = useSelector(
+        (state) => state.employee || {}
     );
-    React.useEffect(() => {
-        dispatch(fetchActivityTypes());
-    }, [dispatch])
+
 
     React.useEffect(() => {
-        dispatch(fetchCampaign({ search: searchValue, ...selectedDateRange, filter: filter, filter2: newFilter }));
+        dispatch(fetchEmployee({ search: searchValue, ...selectedDateRange, filter: filter, filter2: newFilter }));
     }, [dispatch, searchValue, selectedDateRange, filter, newFilter]);
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: campaigns?.currentPage,
-            totalPage: campaigns?.totalPages,
-            totalCount: campaigns?.totalCount,
-            pageSize: campaigns?.size
+            currentPage: employee?.currentPage,
+            totalPage: employee?.totalPages,
+            totalCount: employee?.totalCount,
+            pageSize: employee?.size
 
         })
-    }, [campaigns])
+    }, [employee])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -71,16 +70,11 @@ const EmployeeList = () => {
             pageSize
 
         }));
-        dispatch(fetchCampaign({ search: searchValue, ...selectedDateRange, filter: filter, filter2: newFilter, page: currentPage, size: pageSize }));
+        dispatch(fetchEmployee({ search: searchValue, ...selectedDateRange, filter: filter, filter2: newFilter, page: currentPage, size: pageSize }));
     };
 
 
-    const data = campaigns?.data?.map((i) => ({
-        ...i,
-        start_date: i?.start_date.slice(0, 10),
-        end_date: i?.end_date.slice(0, 10),
-        created_date: i?.createddate || new Date(),
-    }));
+    const data = employee?.data
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"))
     const allPermissions = permissions?.filter((i) => i?.module_name === "Activities")?.[0]?.permissions
@@ -92,39 +86,56 @@ const EmployeeList = () => {
 
     const columns = [
         {
+            title: "Code",
+            dataIndex: "employee_code",
+            sorter: (a, b) => a.employee_code.length - b.employee_code.length,
+        },
+        {
             title: "Name",
-            dataIndex: "name",
-            sorter: (a, b) => a.title.length - b.title.length,
+            dataIndex: "full_name",
+            sorter: (a, b) => a.full_name.length - b.full_name.length,
         },
         {
-            title: "Start Date",
-            dataIndex: "start_date",
-            sorter: (a, b) => a.start_date.length - b.start_date.length,
+            title: "Email",
+            dataIndex: "email",
+            sorter: (a, b) => a.email.length - b.email.length,
         },
         {
-            title: "End Date",
-            dataIndex: "end_date",
-            sorter: (a, b) => a.end_date.length - b.end_date.length,
+            title: "Phone",
+            dataIndex: "phone_number",
+            sorter: (a, b) => a.phone_number.length - b.phone_number.length,
+        },
+        // {
+        //     title: "Start Date",
+        //     dataIndex: "start_date",
+        //     sorter: (a, b) => a.start_date.length - b.start_date.length,
+        // },
+        // {
+        //     title: "End Date",
+        //     dataIndex: "end_date",
+        //     sorter: (a, b) => a.end_date.length - b.end_date.length,
+        // },
+        {
+            title: "Department",
+            dataIndex: "hrms_employee_department",
+            render: (text) => <div>{text?.department_name}</div>,
+            sorter: (a, b) => a.hrms_employee_department?.department_name - b?.hrms_employee_department?.department_name,
         },
         {
-            title: "Exp Revenue",
-            dataIndex: "exp_revenue",
-            sorter: (a, b) => a.exp_revenue - b.exp_revenue,
+            title: "Designation",
+            dataIndex: "hrms_employee_designation",
+            render: (text) => <div>{text?.designation_name}</div>,
+            sorter: (a, b) => a.hrms_employee_designation?.designation_name - b?.hrms_employee_designation?.designation_name,
         },
         {
-            title: "Cost",
-            dataIndex: "camp_cost",
-            sorter: (a, b) => a.camp_cost - b.camp_cost,
+            title: "Emp Category",
+            dataIndex: "employee_category",
+            // render: (text) => <div>{text.full_name}</div>,
+            sorter: (a, b) => a.employee_category.length - b.employee_category.length,
         },
         {
-            title: "Owner",
-            dataIndex: "campaign_user",
-            render: (text) => <div>{text.full_name}</div>,
-            sorter: (a, b) => a.owner.length - b.owner.length,
-        },
-        {
-            title: "Type",
-            dataIndex: "type",
+            title: "Employment Type",
+            dataIndex: "employment_type",
             // render: (text, record, a) => (
             //   <>
             //     {text?.id ? (
@@ -140,7 +151,7 @@ const EmployeeList = () => {
             //     )}
             //   </>
             // ),
-            sorter: (a, b) => a.activity_type.length - b.activity_type.length,
+            sorter: (a, b) => a.employment_type.length - b.employment_type.length,
         },
         {
             title: "Status",
@@ -151,19 +162,19 @@ const EmployeeList = () => {
                         width: "10px",
                         height: "10px",
                         borderRadius: "50%",
-                        backgroundColor: text === "In Progress" ? "blue" : text === "Completed" ? "green" : text === "Canceled" ? "red" : text === "Waiting for someone else" ? "orange" : "black", // Use color property from options
+                        backgroundColor: text === "Probation" || "Retired" ? "blue" : text === "Active" ? "green" : text === "Terminated" || "Resigned" ? "red" : text === "On Hold" || "Notice Period" ? "orange" : "black", // Use color property from options
                         display: "inline-block",
                     }}
                 />
                 {text}
             </div>,
-            sorter: (a, b) => a.owner.length - b.owner.length,
+            sorter: (a, b) => a.status.length - b.status.length,
         },
         {
             title: "Created At",
-            dataIndex: "created_date",
+            dataIndex: "createdate",
             render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-            sorter: (a, b) => a.created_date.length - b.created_date.length,
+            sorter: (a, b) => a.createdate.length - b.createdate.length,
         },
         ...((isDelete || isUpdate) ? [{
             title: "Action",
@@ -183,7 +194,7 @@ const EmployeeList = () => {
                             to="#"
                             data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvas_add_edit_employee"
-                            onClick={() => setCampaign(a)}
+                            onClick={() => setEmployeeData(a)}
                         >
                             <i className="ti ti-edit text-blue" /> Edit
                         </Link>}
@@ -204,7 +215,12 @@ const EmployeeList = () => {
         setSelectedCampaign(id);
         setShowDeleteModal(true);
     };
-
+  const deleteData = () => {
+    if (selectedCampaign) {
+      dispatch(deleteEmployee(selectedCampaign)); // Dispatch the delete action
+      setShowDeleteModal(false); // Close the modal
+    }
+  };
     return (
         <div>
             <Helmet>
@@ -222,7 +238,7 @@ const EmployeeList = () => {
                                     <div className="col-4">
                                         <h4 className="page-title">
                                             Employee
-                                            <span className="count-title">{campaigns?.totalCount}</span>
+                                            <span className="count-title">{employee?.totalCount}</span>
                                         </h4>
                                     </div>
                                     <div className="col-8 text-end">
@@ -245,7 +261,7 @@ const EmployeeList = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Activities"
+                                                    placeholder="Search Employee"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -276,7 +292,7 @@ const EmployeeList = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Campaigns</h4>
+                                                    <h4 className="mb-0 me-3">All Employee</h4>
                                                     <div className="active-list">
                                                         {/* <ul className="mb-0">
                             {activityTypes?.map((item)=><>
@@ -429,12 +445,14 @@ const EmployeeList = () => {
                         </div>
                     </div>
                 </div>
-                <ManageEmpModal setCampaign={setCampaign} campaign={campaign} />
+                <ManageEmpModal setEmployeeData={setEmployeeData} employeeData={employeeData} />
             </div>
             <DeleteAlert
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
                 selectedCampaign={selectedCampaign}
+                onDelete={deleteData}
+                label={"Employee"}
             />
             {/* /Page Wrapper */}
         </div>

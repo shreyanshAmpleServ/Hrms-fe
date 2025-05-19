@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 
-// employee_type Slice
+// employmentType Slice
 
-// Fetch All employee_types
-export const fetchemployee_type = createAsyncThunk(
-    "employee_type/fetchemployee_type",
+// Fetch All employmentTypes
+export const fetchemploymentType = createAsyncThunk(
+    "employmentType/fetchemploymentType",
     async (datas, thunkAPI) => {
         try {
             const params = {}
@@ -17,33 +17,33 @@ export const fetchemployee_type = createAsyncThunk(
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to fetch employee_types"
+                error.response?.data || "Failed to fetch employmentTypes"
             );
         }
     }
 );
 
-// Add an employee_type
-export const addemployee_type = createAsyncThunk(
-    "employee_type/addemployee_type",
-    async (employee_typeData, thunkAPI) => {
+// Add an employmentType
+export const addemploymentType = createAsyncThunk(
+    "employmentType/addemploymentType",
+    async (employmentTypeData, thunkAPI) => {
         try {
-            const response = await apiClient.post("/v1/employment-type", employee_typeData);
+            const response = await apiClient.post("/v1/employment-type", employmentTypeData);
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to add employee_type"
+                error.response?.data || "Failed to add employmentType"
             );
         }
     }
 );
 
-// Update an employee_type
-export const updateemployee_type = createAsyncThunk(
-    "employee_type/updateemployee_type",
-    async ({ id, employee_typeData }, thunkAPI) => {
+// Update an employmentType
+export const updateemploymentType = createAsyncThunk(
+    "employmentType/updateemploymentType",
+    async ({ id, employmentTypeData }, thunkAPI) => {
         try {
-            const response = await apiClient.put(`/v1/employment-type/${id}`, employee_typeData);
+            const response = await apiClient.put(`/v1/employment-type/${id}`, employmentTypeData);
             return response.data;
         } catch (error) {
             if (error.response?.status === 404) {
@@ -53,34 +53,34 @@ export const updateemployee_type = createAsyncThunk(
                 });
             }
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to update employee_type"
+                error.response?.data || "Failed to update employmentType"
             );
         }
     }
 );
 
-// Delete an employee_type
-export const deleteemployee_type = createAsyncThunk(
-    "employee_type/deleteemployee_type",
+// Delete an employmentType
+export const deleteemploymentType = createAsyncThunk(
+    "employmentType/deleteemploymentType",
     async (id, thunkAPI) => {
         try {
             const response = await apiClient.delete(`/v1/employment-type/${id}`);
             return {
                 data: { id },
-                message: response.data.message || "employee_type deleted successfully",
+                message: response.data.message || "employmentType deleted successfully",
             };
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to delete employee_type"
+                error.response?.data || "Failed to delete employmentType"
             );
         }
     }
 );
 
-const employee_typesSlice = createSlice({
-    name: "employee_type",
+const employmentTypesSlice = createSlice({
+    name: "employmentType",
     initialState: {
-        employee_type: [],
+        employmentType: [],
         loading: false,
         error: null,
         success: null,
@@ -93,71 +93,71 @@ const employee_typesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchemployee_type.pending, (state) => {
+            .addCase(fetchemploymentType.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchemployee_type.fulfilled, (state, action) => {
+            .addCase(fetchemploymentType.fulfilled, (state, action) => {
                 state.loading = false;
-                state.employee_type = action.payload.data;
+                state.employmentType = action.payload.data;
             })
-            .addCase(fetchemployee_type.rejected, (state, action) => {
+            .addCase(fetchemploymentType.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(addemployee_type.pending, (state) => {
+            .addCase(addemploymentType.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(addemployee_type.fulfilled, (state, action) => {
+            .addCase(addemploymentType.fulfilled, (state, action) => {
                 state.loading = false;
-                state.employee_type = { ...state.employee_type, data: [action.payload.data, ...state.employee_type.data] };
+                state.employmentType = { ...state.employmentType, data: [action.payload.data, ...state.employmentType.data] };
                 state.success = action.payload.message;
             })
-            .addCase(addemployee_type.rejected, (state, action) => {
+            .addCase(addemploymentType.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(updateemployee_type.pending, (state) => {
+            .addCase(updateemploymentType.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(updateemployee_type.fulfilled, (state, action) => {
+            .addCase(updateemploymentType.fulfilled, (state, action) => {
                 state.loading = false;
-                const index = state.employee_type?.data?.findIndex(
+                const index = state.employmentType?.data?.findIndex(
                     (data) => data.id === action.payload.data.id
                 );
                 if (index !== -1) {
-                    state.employee_type.data[index] = action.payload.data;
+                    state.employmentType.data[index] = action.payload.data;
                 } else {
-                    state.employee_type = { ...state.employee_type, data: [...state.employee_type, action.payload.data] };
+                    state.employmentType = { ...state.employmentType, data: [...state.employmentType, action.payload.data] };
                 }
                 state.success = action.payload.message;
             })
-            .addCase(updateemployee_type.rejected, (state, action) => {
+            .addCase(updateemploymentType.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(deleteemployee_type.pending, (state) => {
+            .addCase(deleteemploymentType.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(deleteemployee_type.fulfilled, (state, action) => {
+            .addCase(deleteemploymentType.fulfilled, (state, action) => {
                 state.loading = false;
-                const filterData = state.employee_type.data.filter(
+                const filterData = state.employmentType.data.filter(
                     (data) => data.id !== action.payload.data.id
                 );
-                state.employee_type = { ...state.employee_type, data: filterData }
+                state.employmentType = { ...state.employmentType, data: filterData }
                 state.success = action.payload.message;
             })
-            .addCase(deleteemployee_type.rejected, (state, action) => {
+            .addCase(deleteemploymentType.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             });
     },
 });
 
-export const { clearMessages } = employee_typesSlice.actions;
-export default employee_typesSlice.reducer;
+export const { clearMessages } = employmentTypesSlice.actions;
+export default employmentTypesSlice.reducer;
 
 

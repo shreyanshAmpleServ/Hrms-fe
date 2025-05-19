@@ -15,7 +15,7 @@ import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deleteemployee_type, fetchemployee_type } from "../../../../redux/employee-type";
+import { clearMessages, deleteemploymentType, fetchemploymentType } from "../../../../redux/employee-type";
 
 const Employee_TypeList = () => {
 
@@ -115,7 +115,7 @@ const Employee_TypeList = () => {
 
 
     React.useEffect(() => {
-        dispatch(fetchemployee_type({ search: searchText }));
+        dispatch(fetchemploymentType({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
@@ -132,7 +132,7 @@ const Employee_TypeList = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchemployee_type({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchemploymentType({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -163,7 +163,7 @@ const Employee_TypeList = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deleteemployee_type(selectedIndustry.id));
+            dispatch(deleteemploymentType(selectedIndustry.id));
             // navigate(`/employee_type`);
             setShowDeleteModal(false);
         }

@@ -104,7 +104,7 @@ const EditDealModal = ({ deal }) => {
 
   // Dynamically reset form values when deal changes
   React.useEffect(() => {
-    if (deal) {
+    if (deal){
       const preSelectedContacts = deal?.DealContacts?.map((cnt) =>
         contactlist?.find((contact) => contact.value === cnt.contactId),
       );

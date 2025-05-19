@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addemployee_type, updateemployee_type } from "../../../../../redux/employee-type";
+import { addemploymentType, updateemploymentType } from "../../../../../redux/employee-type";
 // import { Modal, Button } from 'react-bootstrap';
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
@@ -35,10 +35,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const onSubmit = (data) => {
     const closeButton = document.getElementById("close_employee_type_modal");
     if (mode === "add") {
-      dispatch(addemployee_type(data));
+      dispatch(addemploymentType(data));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateemployee_type({
+        updateemploymentType({
           id: initialData.id,
           employee_typeData: data,
         })

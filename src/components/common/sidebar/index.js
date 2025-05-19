@@ -98,7 +98,7 @@ const Sidebar = () => {
 
                     <div className="user-names">
                       <h5>{`${user?.full_name}`}</h5>
-                      <h6>{`${user?.hrms_d_user_role[0]?.hrms_m_role["role_name"]}`}</h6>
+                      <h6>{`${user?.hrms_d_user_role[0]?.hrms_m_role?.["role_name"]}`}</h6>
                     </div>
                   </Link>
                 </li>

@@ -1181,7 +1181,7 @@ const AddContactModal = ({contact,setSelectedContact}) => {
                 </div>
               </div>
             </div>
-            {/* /Social Profile */}` {/* Access */}
+            {/* /Social Profile */} {/* Access */}
             <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
                 <Link
@@ -1273,7 +1273,7 @@ const AddContactModal = ({contact,setSelectedContact}) => {
                 </div>
               </div>
             </div>
-            {/* /Access */}`
+            {/* /Access */}
           </div>
           <div className="d-flex align-items-center justify-content-end">
             <button
