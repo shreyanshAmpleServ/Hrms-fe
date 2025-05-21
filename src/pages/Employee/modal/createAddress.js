@@ -8,13 +8,21 @@ const ManageAddress = ({ manageAddress, addNewColumn, setManageAddress }) => {
 
 
 
+  // const updateItem = (index, field, value) => {
+  //   setManageAddress((prev) => {
+  //     const updatedItems = [...prev];
+  //     updatedItems[index][field] = value;
+  //     return updatedItems;
+  //   });
+  // };
   const updateItem = (index, field, value) => {
-    setManageAddress((prev) => {
-      const updatedItems = [...prev];
-      updatedItems[index][field] = value;
-      return updatedItems;
-    });
-  };
+  setManageAddress((prev) => {
+    const updatedItems = prev.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
+    );
+    return updatedItems;
+  });
+};
 
   const deleteRow = (index) => {
     setManageAddress((prev) => prev.filter((_, i) => i !== index));
@@ -32,9 +40,9 @@ const ManageAddress = ({ manageAddress, addNewColumn, setManageAddress }) => {
         </div>
       </div>
 
-      {manageAddress.map((item, index) => (
+      {manageAddress?.map((item, index) => (
         <div key={index} className="border rounded position-relative bg-body-secondary p-3 mb-3">
-          {manageAddress.length > 1 && (
+          {manageAddress?.length > 1 && (
             // <button
             //   onClick={() => deleteRow(index)}
             //   type="button"
