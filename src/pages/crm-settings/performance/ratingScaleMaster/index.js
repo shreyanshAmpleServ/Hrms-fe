@@ -39,12 +39,12 @@ const RatingScaleMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.rating_value}</Link>
             ),
-            sorter: (a, b) => a.rating_value.localeCompare(b.rating_value),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Rating Description",
             dataIndex: "rating_description",
-            sorter: (a, b) => a.rating_description.localeCompare(b.rating_description),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
 
         },
 
@@ -70,7 +70,7 @@ const RatingScaleMaster = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

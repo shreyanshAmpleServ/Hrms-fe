@@ -3,21 +3,21 @@ import "bootstrap-daterangepicker/daterangepicker.css";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CollapseHeader from "../../../../components/common/collapse-header";
-import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
+import CollapseHeader from "../../components/common/collapse-header";
+import Table from "../../components/common/dataTableNew/index";
+import FlashMessage from "../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
 import moment from 'moment';
 
 import { Helmet } from "react-helmet-async";
-import AddButton from "../../../../components/datatable/AddButton";
-import SearchBar from "../../../../components/datatable/SearchBar";
-import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deletesalary_structure, fetchsalary_structure } from "../../../../redux/salary-structure";
+import AddButton from "../../components/datatable/AddButton";
+import SearchBar from "../../components/datatable/SearchBar";
+import SortDropdown from "../../components/datatable/SortDropDown";
+import { clearMessages, deletejob_posting, fetchjob_posting } from "../../redux/JobPosting";
 
-const SalaryStructure = () => {
+const JobPosting = () => {
     const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
     const [paginationData, setPaginationData] = React.useState()
     const [searchText, setSearchText] = React.useState("");
@@ -33,39 +33,77 @@ const SalaryStructure = () => {
     const dispatch = useDispatch();
 
     const columns = [
+
         {
-            title: "Structure Name",
-            dataIndex: "structure_name",
-            render: (_text, record) => (
-                <Link to={`#`}>{record.structure_name}</Link>
-            ),
-            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+            title: "Job Title",
+            dataIndex: "job_title",
+            sorter: (a, b) => a.job_title - b.job_title,
+        },
+        {
+            title: "Department",
+            dataIndex: "hrms_job_department",
+            render: (value) => <div>{value?.department_name}</div>,
+            sorter: (a, b) =>
+                (a.hrms_job_department?.department_name || "").localeCompare(
+                    b.hrms_job_department?.department_name || ""
+                ),
+        },
+        {
+            title: "Designation",
+            dataIndex: "hrms_job_designation",
+            render: (value) => <div>{value?.designation_name}</div>,
+            sorter: (a, b) =>
+                (a.hrms_job_designation?.designation_name || "").localeCompare(
+                    b.hrms_job_designation?.designation_name || ""
+                ),
+        },
+
+
+        {
+            title: "Required Experience",
+            dataIndex: "required_experience",
+            // render: (value) => value ? `${value} years` : "—",
+            sorter: (a, b) => a.required_experience - b.required_experience,
+
         },
 
         {
-            title: "Created Date",
-            dataIndex: "create_date",
-            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
-            sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
+            title: "Posting Date",
+            dataIndex: "posting_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+
+            sorter: (a, b) => new Date(a.posting_date) - new Date(b.posting_date),
         },
-        // {
-        //     title: "Status",
-        //     dataIndex: "is_active",
-        //     render: (text) => (
-        //         <div>
-        //             {text === "Y" ? (
-        //                 <span className="badge badge-pill badge-status bg-success">
-        //                     Active
-        //                 </span>
-        //             ) : (
-        //                 <span className="badge badge-pill badge-status bg-danger">
-        //                     Inactive
-        //                 </span>
-        //             )}
-        //         </div>
-        //     ),
-        //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-        // },
+        {
+            title: "Closing Date",
+            dataIndex: "closing_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+
+            sorter: (a, b) => new Date(a.closing_date) - new Date(b.closing_date),
+        },
+
+        {
+            title: "Description",
+            dataIndex: "description",
+            sorter: (a, b) => a.description - b.description,
+        },
+        {
+            title: "Is Internal",
+            dataIndex: "is_internal",
+            render: (value) => (<div>{value ? "Yes" : "NO"}</div>),
+            sorter: (a, b) => {
+                const valA = a.is_internal === "Yes" || a.is_internal === true;
+                const valB = b.is_internal === "Yes" || b.is_internal === true;
+                return valA - valB;
+            },
+
+        },
+        {
+            title: "Created At",
+            dataIndex: "created_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+            sorter: (a, b) => a.created_date.length - b.created_date.length,
+        },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
             dataIndex: "actions",
@@ -84,7 +122,7 @@ const SalaryStructure = () => {
                             className="dropdown-item edit-popup"
                             to="#"
                             data-bs-toggle="modal"
-                            data-bs-target="#add_edit_salary_structure_modal"
+                            data-bs-target="#add_edit_job_posting_modal"
                             onClick={() => {
                                 setSelectedIndustry(record);
                                 setMode("edit");
@@ -105,21 +143,21 @@ const SalaryStructure = () => {
         }] : [])
     ];
 
-    const { salary_structure, loading, error, success } = useSelector(
-        (state) => state.salaryStructure
+    const { job_posting, loading, error, success } = useSelector(
+        (state) => state.job_posting
     );
 
     React.useEffect(() => {
-        dispatch(fetchsalary_structure({ search: searchText }));
+        dispatch(fetchjob_posting({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: salary_structure?.currentPage,
-            totalPage: salary_structure?.totalPages,
-            totalCount: salary_structure?.totalCount,
-            pageSize: salary_structure?.size
+            currentPage: job_posting?.currentPage,
+            totalPage: job_posting?.totalPages,
+            totalCount: job_posting?.totalCount,
+            pageSize: job_posting?.size
         })
-    }, [salary_structure])
+    }, [job_posting])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -127,7 +165,7 @@ const SalaryStructure = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchsalary_structure({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchjob_posting({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -135,7 +173,7 @@ const SalaryStructure = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = salary_structure?.data || [];
+        let data = job_posting?.data || [];
 
         if (sortOrder === "ascending") {
             data = [...data].sort((a, b) =>
@@ -147,7 +185,7 @@ const SalaryStructure = () => {
             );
         }
         return data;
-    }, [searchText, salary_structure, columns, sortOrder]);
+    }, [searchText, job_posting, columns, sortOrder]);
 
     const handleDeleteIndustry = (industry) => {
         setSelectedIndustry(industry);
@@ -158,8 +196,8 @@ const SalaryStructure = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deletesalary_structure(selectedIndustry.id));
-            // navigate(`/salary_structure`);
+            dispatch(deletejob_posting(selectedIndustry.id));
+            // navigate(`/job_posting`);
             setShowDeleteModal(false);
         }
     };
@@ -167,8 +205,8 @@ const SalaryStructure = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Depanrtment</title>
-                <meta name="DepanrtmentList" content="This is salary_structure page of DCC CRMS." />
+                <title>DCC HRMS - Job Posting</title>
+                <meta name="DepanrtmentList" content="This is job_posting page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -192,9 +230,9 @@ const SalaryStructure = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        salary Structure
+                                        Job Posting
                                         <span className="count-title">
-                                            {salary_structure?.totalCount || 0}
+                                            {job_posting?.totalCount || 0}
                                         </span>
                                     </h4>
                                 </div>
@@ -211,12 +249,12 @@ const SalaryStructure = () => {
                                     <SearchBar
                                         searchText={searchText}
                                         handleSearch={handleSearch}
-                                        label="Search Salary Structure"
+                                        label="Search  Job Posting"
                                     />
                                     {isCreate && <div className="col-sm-8">
                                         <AddButton
-                                            label="Add Salary Structure"
-                                            id="add_edit_salary_structure_modal"
+                                            label="Add Job Posting"
+                                            id="add_edit_job_posting_modal"
                                             setMode={() => setMode("add")}
                                         />
                                     </div>}
@@ -260,4 +298,4 @@ const SalaryStructure = () => {
     );
 };
 
-export default SalaryStructure;
+export default JobPosting;

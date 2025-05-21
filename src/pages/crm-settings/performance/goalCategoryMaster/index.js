@@ -39,7 +39,7 @@ const GoalCategoryMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.category_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
@@ -64,7 +64,7 @@ const GoalCategoryMaster = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

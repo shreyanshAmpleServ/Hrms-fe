@@ -48,7 +48,7 @@ const StatesList = () => {
 
                 // <Link to={`/states/${record.id}`}>{record.name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Country",
@@ -57,7 +57,7 @@ const StatesList = () => {
                 <div>{text?.code + text?.name}</div>
                 // <Link to={`/states/${record.id}`}>{record.name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {

@@ -39,13 +39,13 @@ const LetterTypeMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.letter_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Template Path",
             dataIndex: "template_path",
 
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
@@ -70,7 +70,7 @@ const LetterTypeMaster = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

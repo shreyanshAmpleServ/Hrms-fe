@@ -39,7 +39,7 @@ const DocumentTypeMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.doc_type}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
@@ -48,24 +48,7 @@ const DocumentTypeMaster = () => {
             render: (text) => moment(text).format('DD-MM-YYYY'),
             sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
         },
-        {
-            title: "Status",
-            dataIndex: "is_active",
-            render: (text) => (
-                <div>
-                    {text === "Y" ? (
-                        <span className="badge badge-pill badge-status bg-success">
-                            Active
-                        </span>
-                    ) : (
-                        <span className="badge badge-pill badge-status bg-danger">
-                            Inactive
-                        </span>
-                    )}
-                </div>
-            ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-        },
+
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
             dataIndex: "actions",

@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Select from "react-select";
+
 import { addtax_Regime, updatetax_Regime } from "../../../../../redux/taxRegime";
+import { Controller, } from "react-hook-form";
+import { fetchCountries } from '../../../../../redux/country'
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.taxRegime);
@@ -11,10 +15,23 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const {
     register,
     handleSubmit,
+    watch,
+    control,
     formState: { errors },
     reset,
   } = useForm();
 
+  React.useEffect(() => {
+    dispatch(fetchCountries()); // Changed to fetchCountries
+  }, [dispatch]);
+  const { countries } = useSelector(
+    (state) => state.countries // Changed to 'countries'
+  );
+
+  const CountriesList = countries.map((emnt) => ({
+    value: emnt.id,
+    label: "(" + emnt.code + ") " + emnt.name,
+  }));
 
   // Prefill form in edit mode
   useEffect(() => {
@@ -35,13 +52,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById("close_tax_Regime_modal");
+    const finalData = {
+      ...data,
+      country_code: String(data?.country_code)
+    }
     if (mode === "add") {
-      dispatch(addtax_Regime(data));
+      dispatch(addtax_Regime(finalData));
     } else if (mode === "edit" && initialData) {
       dispatch(
         updatetax_Regime({
           id: initialData.id,
-          tax_RegimeData: data,
+          tax_RegimeData: finalData,
         })
       );
     }
@@ -91,23 +112,36 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     <small className="text-danger">{errors.name.message}</small>
                   )}
                 </div>
-                <div className=" mb-3">
+                <div className="mb-3">
                   <label className="col-form-label">
-                    Country Code<span className="text-danger">*</span>
+                    Country  <span className="text-danger">*</span>
                   </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                    {...register("country_code", {
-                      required: "Industry name is required.",
-                      minLength: {
-                        value: 3,
-                        message: "Industry name must be at least 3 characters.",
-                      },
-                    })}
+                  <Controller
+                    name="country_code"
+                    control={control}
+                    rules={{ required: "Country is required" }} // Validation rule
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={CountriesList}
+                        placeholder="Choose"
+                        isDisabled={!CountriesList.length} // Disable if no stages are available
+                        classNamePrefix="react-select"
+                        className="select2"
+                        onChange={(selectedOption) =>
+                          field.onChange(selectedOption?.value || null)
+                        } // Send only value
+                        value={CountriesList?.find(
+                          (option) =>
+                            option.value === watch("country_code"),
+                        ) || ""}
+                      />
+                    )}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.country_code && (
+                    <small className="text-danger">
+                      {errors.country_code.message}
+                    </small>
                   )}
                 </div>
               </div>

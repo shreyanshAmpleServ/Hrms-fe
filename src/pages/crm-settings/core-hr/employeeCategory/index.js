@@ -35,12 +35,12 @@ const Employee_CategoryList = () => {
 
     const columns = [
         {
-            title: "employee Category Name",
+            title: "employee Category",
             dataIndex: "category_name",
             render: (text, record) => (
                 <Link to={`#`}>{record.category_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
@@ -67,7 +67,7 @@ const Employee_CategoryList = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

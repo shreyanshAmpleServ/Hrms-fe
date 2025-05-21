@@ -39,25 +39,27 @@ const SurveyMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.survey_title}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: " Launch Date",
             dataIndex: "launch_date",
+            render: (text) => moment(text).format('DD-MM-YYYY'),
 
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: " Close Date",
             dataIndex: "close_date",
+            render: (text) => moment(text).format('DD-MM-YYYY'),
 
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: " Description ",
             dataIndex: "description",
 
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
@@ -82,7 +84,7 @@ const SurveyMaster = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

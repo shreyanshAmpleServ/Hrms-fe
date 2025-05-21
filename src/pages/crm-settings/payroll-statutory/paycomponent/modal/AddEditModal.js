@@ -10,11 +10,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const {
     register,
     handleSubmit,
+
     formState: { errors },
     reset,
-  } = useForm();
+    setValue,
+    watch, } = useForm();
 
   const dispatch = useDispatch();
+
+  const isTaxable = watch("is_taxable") === "Y";
+  const isStatutory = watch("is_statutory") === "Y";
 
   // Prefill form in edit mode
   useEffect(() => {
@@ -23,6 +28,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         component_name: initialData.component_name || "",
         component_code: initialData.component_code || "",
         component_type: initialData.component_type || "",
+        is_taxable: initialData.is_taxable || "",
+        is_statutory: initialData.is_statutory || "",
         is_active: initialData.is_active,
       });
     } else {
@@ -30,6 +37,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         component_name: "",
         component_code: "",
         component_type: "",
+        is_taxable: "",
+        is_statutory: "",
         is_active: "Y",
       });
     }
@@ -37,13 +46,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById("Close_pay_component_modal");
+    const finalData = {
+      ...data,
+    }
     if (mode === "add") {
-      dispatch(addpay_component(data));
+      dispatch(addpay_component(finalData));
     } else if (mode === "edit" && initialData) {
       dispatch(
         updatepay_component({
           id: initialData.id,
-          pay_componentData: data,
+          pay_componentData: finalData,
         })
       );
     }
@@ -90,43 +102,120 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Component Code <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  {...register("component_code", {
-                    required: "Industry name is required.",
-                    minLength: {
-                      value: 3,
-                      message: "Industry name must be at least 3 characters.",
-                    },
-                  })}
-                />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
+              <div className="row">
+
+                <div className="col-md-6">
+
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Component Code <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                      {...register("component_code", {
+                        required: "Industry name is required.",
+                        minLength: {
+                          value: 3,
+                          message: "Industry name must be at least 3 characters.",
+                        },
+                      })}
+                    />
+                    {errors.name && (
+                      <small className="text-danger">{errors.name.message}</small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Component Type <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                      {...register("component_type", {
+                        required: "Industry name is required.",
+                        minLength: {
+                          value: 3,
+                          message: "Industry name must be at least 3 characters.",
+                        },
+                      })}
+                    />
+                    {errors.name && (
+                      <small className="text-danger">{errors.name.message}</small>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Component Type <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  {...register("component_type", {
-                    required: "Industry name is required.",
-                    minLength: {
-                      value: 3,
-                      message: "Industry name must be at least 3 characters.",
-                    },
-                  })}
-                />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
+              {/* <div className="row">
+
+                <div className="col-md-6">
+
+                  <div className="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="is_taxable"
+                      {...register("is_taxable")}
+                    />
+                    <label className="form-check-label" htmlFor="is_taxable">
+                      Is Taxable
+                    </label>
+                  </div>
+                </div>
+                <div className="col-md-6">
+
+                  <div className="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="is_statutory"
+                      {...register("is_statutory")}
+                    />
+                    <label className="form-check-label" htmlFor="is_statutory">
+                      Is Statutory
+                    </label>
+                  </div>
+                </div>
+              </div> */}
+
+              <div className="row">
+                {/* Is Taxable */}
+                <div className="col-md-6">
+                  <div className="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="is_taxable"
+                      checked={isTaxable}
+                      onChange={(e) => {
+                        setValue("is_taxable", e.target.checked ? "Y" : "N");
+                      }}
+                    />
+                    <label className="form-check-label" htmlFor="is_taxable">
+                      Is Taxable
+                    </label>
+                  </div>
+                </div>
+
+                {/* Is Statutory */}
+                <div className="col-md-6">
+                  <div className="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="is_statutory"
+                      checked={isStatutory}
+                      onChange={(e) => {
+                        setValue("is_statutory", e.target.checked ? "Y" : "N");
+                      }}
+                    />
+                    <label className="form-check-label" htmlFor="is_statutory">
+                      Is Statutory
+                    </label>
+                  </div>
+                </div>
               </div>
 
               {/* Status */}

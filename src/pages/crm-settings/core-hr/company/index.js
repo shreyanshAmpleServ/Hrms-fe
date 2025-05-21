@@ -60,24 +60,24 @@ const Company = () => {
       render: (text, record) => (
         <Link to={`/company/${record.id}`}>{record.company_name}</Link>
       ),
-      sorter: (a, b) => a.name.localeCompare(b.name)
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
 
     {
       title: "Company Code",
       dataIndex: "company_code",
-      sorter: (a, b) => a.companycode.localeCompare(b.companycode),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
     {
       title: "Currency Code",
       dataIndex: "currency_code",
-      sorter: (a, b) => a.currency_code.localeCompare(b.currency_code),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
     {
       title: "Financial Year Start",
       dataIndex: "financial_year_start",
       render: (text) => (
-        <div>{moment(text).format("ll")}</div>
+        <div>{moment(text).format("DD-MM-YYYY")}</div>
       ),
       sorter: (a, b) => new Date(a.financial_year_start) - new Date(b.financial_year_start),
     },
@@ -99,38 +99,41 @@ const Company = () => {
     {
       title: "Address",
       dataIndex: "address",
-      sorter: (a, b) => a.address.localeCompare(b.address),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
     {
       title: "Contact Person",
       dataIndex: "contact_person",
-      sorter: (a, b) => (a.contactperson || 0) - (b.contactperson || 0),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
     {
       title: "Country Id",
       dataIndex: "country_id",
-      sorter: (a, b) => (a.countryid || 0) - (b.countryid || 0),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
     {
       title: "Contact Phone",
       dataIndex: "contact_phone",
-      sorter: (a, b) => a.contactphone.localeCompare(b.contactphone),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
     {
       title: "Contact Email",
       dataIndex: "contact_email",
-      sorter: (a, b) => a.contactemail.localeCompare(b.contactemail),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
     },
     {
       title: "Createdate",
       dataIndex: "createdate",
-      sorter: (a, b) => a.createdate.localeCompare(b.createdate),
+      render: (text) => (
+        <div>{moment(text).format("DD-MM-YYYY")}</div>
+      ),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
 
     },
     {
       title: "Timezone",
       dataIndex: "timezone",
-      sorter: (a, b) => a.timezone.localeCompare(b.timezone),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
 
     },
     ...((isUpdate || isDelete) ? [{

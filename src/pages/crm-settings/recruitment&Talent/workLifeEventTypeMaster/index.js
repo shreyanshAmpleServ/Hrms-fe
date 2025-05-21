@@ -39,7 +39,7 @@ const WorkLifeEventTypeMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.event_type_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {

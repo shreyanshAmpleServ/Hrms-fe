@@ -3,66 +3,84 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addbranch, updatebranch } from "../../../../../redux/branch";
+import { fetchCompany } from "../../../../../redux/company";
+import { Controller, } from "react-hook-form";
+import Select from "react-select";
+import { useMemo } from "react";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.branch);
+  const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
+    watch,
+    control,
     formState: { errors },
     reset,
   } = useForm();
 
-  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchCompany()); // Changed to fetchCountries
+  }, []);
+  const company = useSelector((state) => state.company.company);
+  const CompanyList = useMemo(() => {
+    return (
+      company?.data?.map((item) => ({
+        value: item.id,
+        label: item.company_name,
+      })) || []
+    );
+  }, [company]);
+
+
+
+
+
 
   // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        name: initialData.category_name || "",
-        is_active: initialData.is_active,
+        // company_id: initialData.company_id || "",
+        branch_name: initialData.branch_name || "",
+        location: initialData.location || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
-        category_name: "",
+        // company_id: "",
+        branch_name: "",
+        location: "",
         is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_branch _modal",
-    );
+    const closeButton = document.getElementById("close_branch _modal");
     if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addbranch({
-          category_name: data.name,
-          is_active: data.is_active,
-        }),
-      );
+      dispatch(addbranch(data));
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updatebranch({
           id: initialData.id,
-          branchData: { category_name: data.name, is_active: data.is_active },
-        }),
+          branchData: data,
+        })
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
+    reset();
+    closeButton?.click();
   };
-
   return (
     <div className="modal fade" id="add_edit_branch_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Employee" : "Edit branch "}
+              {mode === "add" ? "Add New Branch" : "Edit Branch "}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -76,14 +94,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
               {/* Industry Name */}
-              {/* <div className="mb-3">
+              <div className="mb-3">
                 <label className="col-form-label">
-                  Company Name <span className="text-danger">*</span>
+                  Branch Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  {...register("name", {
+                  {...register("branch_name", {
                     required: "Industry name is required.",
                     minLength: {
                       value: 3,
@@ -94,36 +112,53 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 {errors.name && (
                   <small className="text-danger">{errors.name.message}</small>
                 )}
-              </div> */}
+              </div>
               <div className="row">
                 {/* Company Dropdown */}
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">
-                    Company <span className="text-danger">*</span>
-                  </label>
-                  <select
-                    className={`form-control ${errors.company_id ? "is-invalid" : ""}`}
-                    {...register("company_id", { required: "Company is required." })}
-                  >
-                    <option value="">Select Company</option>
-                    <option value="1">AmpleServ Technology Pvt Ltd</option>
-                    <option value="2">TechCorp Solutions</option>
-                    {/* Add more options as needed */}
-                  </select>
-                  {errors.company_id && (
-                    <small className="text-danger">{errors.company_id.message}</small>
-                  )}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Company ID    <span className="text-danger">*</span>
+                    </label>
+                    <Controller
+                      name="company_id"
+                      control={control}
+                      rules={{ required: "company_id" }} // Validation rule
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={CompanyList}
+                          placeholder="Choose"
+                          isDisabled={!CompanyList.length} // Disable if no stages are available
+                          classNamePrefix="react-select"
+                          className="select2"
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption?.value || null)
+                          } // Send only value
+                          value={CompanyList?.find(
+                            (option) =>
+                              option.value === watch("company_id"),
+                          ) || ""}
+                        />
+                      )}
+                    />
+                    {errors.company_id && (
+                      <small className="text-danger">
+                        {errors.company_id.message}
+                      </small>
+                    )}
+                  </div>
                 </div>
 
                 {/* Branch Name Input */}
-                <div className="col-md-6 mb-3">
+                {/* <div className="col-md-6 mb-3">
                   <label className="col-form-label">
-                    Branch Name <span className="text-danger">*</span>
+                    Company ID <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
                     className={`form-control ${errors.branch_name ? "is-invalid" : ""}`}
-                    {...register("branch_name", {
+                    {...register("company_id", {
                       required: "Branch name is required.",
                       minLength: {
                         value: 3,
@@ -134,7 +169,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   {errors.branch_name && (
                     <small className="text-danger">{errors.branch_name.message}</small>
                   )}
-                </div>
+                </div> */}
 
                 {/* Branch Location Input */}
                 <div className="col-md-6 mb-3">
@@ -155,36 +190,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
 
               {/* Status */}
-              <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div>
+
             </div>
 
             {/* Footer */}

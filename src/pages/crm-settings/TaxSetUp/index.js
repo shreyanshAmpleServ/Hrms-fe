@@ -18,10 +18,10 @@ import { Helmet } from "react-helmet-async";
 
 const TaxSetUpList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Tax Setup")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
+
+  const permissions = JSON?.parse(localStorage.getItem("permissions"))
+  const allPermissions = permissions?.filter((i) => i?.module_name === "Tax Setup")?.[0]?.permissions
+  const isAdmin = localStorage.getItem("role")?.includes("admin")
   const isView = isAdmin || allPermissions?.view
   const isCreate = isAdmin || allPermissions?.create
   const isUpdate = isAdmin || allPermissions?.update
@@ -43,12 +43,12 @@ const TaxSetUpList = () => {
       // render: (text, record) => (
       //   <Link to={`#`}>{record.name}</Link>
       // ),
-      sorter: (a, b) => a.category.localeCompare(b.category),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
     {
       title: "Rate",
       dataIndex: "rate",
-      sorter: (a, b) =>  a.rate - b.rate,
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
     // {
     //   title: "Account",
@@ -61,7 +61,7 @@ const TaxSetUpList = () => {
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      sorter: (a, b) =>  new Date(a.validFrom) - new Date(b.validFrom),
+      sorter: (a, b) => new Date(a.validFrom) - new Date(b.validFrom),
     },
     {
       title: "Valid To",
@@ -69,7 +69,7 @@ const TaxSetUpList = () => {
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      sorter: (a, b) =>  new Date(a.validTo) - new Date(b.validTo),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
     {
@@ -78,7 +78,7 @@ const TaxSetUpList = () => {
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
     {
       title: "Status",
@@ -96,9 +96,9 @@ const TaxSetUpList = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
-   ...((isUpdate || isDelete) ?[ {
+    ...((isUpdate || isDelete) ? [{
       title: "Actions",
       dataIndex: "actions",
       render: (text, record) => (
@@ -112,11 +112,11 @@ const TaxSetUpList = () => {
             <i className="fa fa-ellipsis-v"></i>
           </Link>
           <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-             className="dropdown-item edit-popup"
-             to="#"
-             data-bs-toggle="offcanvas"
-             data-bs-target="#offcanvas_add_edit_tax_setup"
+            {isUpdate && <Link
+              className="dropdown-item edit-popup"
+              to="#"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvas_add_edit_tax_setup"
               onClick={() => {
                 setSelectedTax(record);
                 setMode("edit");
@@ -124,7 +124,7 @@ const TaxSetUpList = () => {
             >
               <i className="ti ti-edit text-blue"></i> Edit
             </Link>}
-           {isDelete && <Link
+            {isDelete && <Link
               className="dropdown-item"
               to="#"
               onClick={() => handleDeleteTax(record)}
@@ -134,7 +134,7 @@ const TaxSetUpList = () => {
           </div>
         </div>
       ),
-    }]:[])
+    }] : [])
   ];
 
   const { taxs, loading, error, success } = useSelector(
@@ -240,20 +240,20 @@ const TaxSetUpList = () => {
                     handleSearch={handleSearch}
                     label="Search Tax"
                   />
-                   {isCreate &&
+                  {isCreate &&
                     <div className="col-8">
-                       <div className="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end"><Link
-                          to="#"
-                          className="btn btn-primary"
-                          data-bs-toggle="offcanvas"
-                          data-bs-target={`#offcanvas_add_edit_tax_setup`}
-                        >
-                          <i className="ti ti-square-rounded-plus me-2" />
-                          Add Tax
-                        </Link> </div>
-                        </div>}
-                
-                 
+                      <div className="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end"><Link
+                        to="#"
+                        className="btn btn-primary"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target={`#offcanvas_add_edit_tax_setup`}
+                      >
+                        <i className="ti ti-square-rounded-plus me-2" />
+                        Add Tax
+                      </Link> </div>
+                    </div>}
+
+
                 </div>
               </div>
               <div className="card-body">
@@ -281,7 +281,7 @@ const TaxSetUpList = () => {
       </div>
 
       {/* <AddEditModal mode={mode} initialData={selectedTax} /> */}
-      <ManageTaxModal tax={selectedTax}  setTax={setSelectedTax} />
+      <ManageTaxModal tax={selectedTax} setTax={setSelectedTax} />
       <DeleteAlert
         label="Tax"
         showModal={showDeleteModal}

@@ -34,7 +34,7 @@ const Paycomponent = () => {
 
     const columns = [
         {
-            title: "Pay Component Name",
+            title: " Component Name",
             dataIndex: "component_name",
             render: (text, record) => (
                 <Link to={`#`}>{record.component_name}</Link>
@@ -42,14 +42,35 @@ const Paycomponent = () => {
             sorter: (a, b) => a - b,
         },
         {
-            title: "Company Code",
+            title: "Component Code",
             dataIndex: "component_code",
-            sorter: (a, b) => a.companycode.localeCompare(b.companycode),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
-            title: "Company Type",
+            title: "Component Type",
             dataIndex: "component_type",
-            sorter: (a, b) => a.companycode.localeCompare(b.companycode),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        },
+
+        {
+            title: "Is Taxable",
+            dataIndex: "is_taxable",
+            // render: (text) => (
+            //     <span className={` ${text === "Y"}`}>
+            //         {text === "Y" ? "Yes" : "No"}
+            //     </span>
+            // ),
+            sorter: (a, b) => (a.is_taxable || "").localeCompare(b.is_taxable || ""),
+        },
+        {
+            title: "Is Statutory",
+            dataIndex: "is_statutory",
+            // render: (text) => (
+            //     <span className={` ${text === "Y"}`}>
+            //         {text === "Y" ? "Yes" : "No"}
+            //     </span>
+            // ),
+            sorter: (a, b) => (a.is_statutory || "").localeCompare(b.is_statutory || ""),
         },
         {
             title: "Created Date",
@@ -57,6 +78,7 @@ const Paycomponent = () => {
             render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
             sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
         },
+
         {
             title: "Status",
             dataIndex: "is_active",
@@ -73,7 +95,7 @@ const Paycomponent = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

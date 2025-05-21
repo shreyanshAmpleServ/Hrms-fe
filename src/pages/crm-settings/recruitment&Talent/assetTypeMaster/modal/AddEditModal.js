@@ -2,10 +2,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  addassets_type,
-  updateassets_type,
-} from "../../../../../redux/assetType";
+import { addassets_type, updateassets_type } from "../../../../../redux/assetType";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.assetTypeMaster);
@@ -24,19 +21,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       reset({
         asset_type_name: initialData.asset_type_name || "",
         depreciation_rate: initialData.depreciation_rate || "",
-
       });
     } else {
       reset({
         asset_type_name: "",
         depreciation_rate: "",
-
       });
     }
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById("close_assets_type_modal");
+    const closeButton = document.getElementById("close_asset_type_modal");
     if (mode === "add") {
       dispatch(addassets_type(data));
     } else if (mode === "edit" && initialData) {
@@ -57,67 +52,67 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Statutory Rates" : "Edit Statutory Rates"}
+              {mode === "add" ? "Add New Asset" : "Edit Asset"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="close_assets_type_modal"
+              id="close_asset_type_modal"
             >
               <i className="ti ti-x" />
             </button>
           </div>
-
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              <div className="row">
-                {/* Country Code */}
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Award Name <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.asset_type_name ? "is-invalid" : ""}`}
-                    {...register("asset_type_name", {
-                      required: "Country code is required.",
-                    })}
-                  />
-                  {errors.country_code && (
-                    <small className="text-danger">{errors.country_code.message}</small>
-                  )}
-                </div>
-
-                {/* Lower Limit */}
-                <div className=" mb-3">
-                  <label className="col-form-label">
-                    Description Rate <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.depreciation_rate ? "is-invalid" : ""}`}
-                    {...register("depreciation_rate", {
-                      required: "Lower limit is required.",
-                    })}
-                  />
-                  {errors.depreciation_rate && (
-                    <small className="text-danger">{errors.description.message}</small>
-                  )}
-                </div>
-
-                {/* Statutory Type */}
-
-
-                {/* Upper Limit */}
-
-
-                {/* Rate Percent */}
-
+              {/* Asset Name */}
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Asset Name <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control ${errors.asset_type_name ? "is-invalid" : ""}`}
+                  {...register("asset_type_name", {
+                    required: "Asset name is required.",
+                    minLength: {
+                      value: 3,
+                      message: "Asset name must be at least 3 characters.",
+                    },
+                  })}
+                />
+                {errors.asset_type_name && (
+                  <small className="text-danger">{errors.asset_type_name.message}</small>
+                )}
               </div>
 
-              {/* Status */}
-
+              {/* Depreciation Rate */}
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Depreciation Rate (%) <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  step="0.01"
+                  className={`form-control ${errors.depreciation_rate ? "is-invalid" : ""}`}
+                  {...register("depreciation_rate", {
+                    required: "Depreciation rate is required.",
+                    max: {
+                      value: 100,
+                      message: "Depreciation rate cannot exceed 100.",
+                    },
+                    min: {
+                      value: 0,
+                      message: "Depreciation rate cannot be negative.",
+                    },
+                  })}
+                />
+                {errors.depreciation_rate && (
+                  <small className="text-danger">{errors.depreciation_rate.message}</small>
+                )}
+              </div>
             </div>
 
             {/* Footer */}

@@ -39,12 +39,12 @@ const DisciplinaryPenaltyMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.penalty_type}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Description",
             dataIndex: "description",
-            sorter: (a, b) => a.description.localeCompare(b.description),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
@@ -63,7 +63,7 @@ const DisciplinaryPenaltyMaster = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
