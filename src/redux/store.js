@@ -144,11 +144,8 @@ const store = configureStore({
     documentTypeMaster: documentTypeMasterReduer,
     surveyMaster: surveyMasterReduer,
     assetTypeMaster: assetTypeMasterReduer,
-<<<<<<< HEAD
-=======
 
     employee: employeeReducer,
->>>>>>> f7ebbbcf9b4aefc190f499a880a9fc140ee15a13
     shift: shiftReducer,
     leaveType: leaveTypeReducer,
     holidayCalender: holidayCalenderReducer,
