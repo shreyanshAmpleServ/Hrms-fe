@@ -134,7 +134,7 @@ const store = configureStore({
     branch: branchReducer,
     department: departmentReducer,
     designation: designationReducer,
-    employementType: employeeTypeReducer,
+    employmentType: employeeTypeReducer,
     employee_category: employee_categoryReducer,
     payComponent: payComponentReducer,
     salaryStructure: salaryStructureReducer,

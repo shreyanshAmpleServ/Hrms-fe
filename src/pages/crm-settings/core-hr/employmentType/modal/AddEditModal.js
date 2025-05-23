@@ -2,11 +2,14 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addemploymentType, updateemploymentType } from "../../../../../redux/employee-type";
+import {
+  addemploymentType,
+  updateemploymentType,
+} from "../../../../../redux/employee-type";
 // import { Modal, Button } from 'react-bootstrap';
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.employee_type);
+  const { loading } = useSelector((state) => state.employmentType);
   const dispatch = useDispatch();
 
   const {
@@ -15,7 +18,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     formState: { errors },
     reset,
   } = useForm();
-
 
   // Prefill form in edit mode
   useEffect(() => {
@@ -70,7 +72,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  employee  Name <span className="text-danger">*</span>
+                  employee Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
@@ -116,7 +118,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>

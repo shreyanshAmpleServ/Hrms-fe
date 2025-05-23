@@ -14,6 +14,100 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Employee",
+        link: route.employee,
+        icon: "ti ti-id-badge",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Onboarding & Hiring",
+        icon: "ti ti-id-badge",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Job Posting",
+            link: route.jobPosting,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Offer Letters",
+            link: route.offerLetters,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Appointment Letters",
+            link: route.appointmentLetter,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Employment Contracts",
+            link: route.employmentContracts,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Resume Upload",
+            link: route.resumeUpload,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
+      },
+      {
+        label: "Leave & Attendance",
+        link: route.leaveAttendance,
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Leave Applications",
+            link: route.leaveApplications,
+
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Leave Encashment",
+            link: route.leaveEncashment,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Time Sheet Entry",
+            link: route.timeSheet,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
+      },
+      {
+        label: "Payroll & Finance",
+        link: route.payrollFinance,
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Payslip Viewer",
+            link: route.payslipViewer,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Loan Requests",
+            link: route.loanRequests,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
+      },
       // {
       //   label: "Leads",
       //   link: route.leads,
@@ -96,83 +190,6 @@ export const SidebarData = [
       //   showSubRoute: false,
       //   submenu: false,
       // },
-      {
-        label: "Employee",
-        link: route.employee,
-        icon: "ti ti-id-badge",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Job Posting",
-        link: route.jobPosting,
-        icon: "ti ti-briefcase",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Appointment Letters",
-        link: route.appointmentLetter,
-        icon: "ti ti-calendar-bolt",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Employment Contracts",
-        link: route.employmentContracts,
-        icon: "ti ti-clipboard-text",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Leave Encashment",
-        link: route.leaveEncashment,
-        icon: "ti ti-replace",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Time Sheet Entry",
-        link: route.timeSheet,
-        icon: "ti ti-clock",
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Offer Letters",
-        link: route.offerLetters,
-        icon: "ti ti-file-text", // updated icon
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Resume Upload",
-        link: route.resumeUpload,
-        icon: "ti ti-file-text", // updated icon
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Leave Applications",
-        link: route.leaveApplications,
-        icon: "ti ti-file-text", // updated icon
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Payslip Viewer",
-        link: route.payslipViewer,
-        icon: "ti ti-file-text", // updated icon
-        showSubRoute: false,
-        submenu: false,
-      },
-      {
-        label: "Loan Requests",
-        link: route.loanRequests,
-        icon: "ti ti-file-text", // updated icon
-        showSubRoute: false,
-        submenu: false,
-      },
 
       // {
       //   label: "Projects",
