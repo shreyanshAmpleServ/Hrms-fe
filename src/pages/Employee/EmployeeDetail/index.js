@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { Avatar, Skeleton } from "antd";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
-import { ActivityDetailOfUser } from "../../../components/common/detailPages/UserDetails/activityDetails";
-import { CallsDetailsOfUser } from "../../../components/common/detailPages/UserDetails/callsDetails";
-import FilesDetails from "../../../components/common/detailPages/UserDetails/FilesDetails";
-import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
-import ImageWithBasePath from "../../../components/common/imageWithBasePath";
 import { fetchEmployeeById } from "../../../redux/Employee";
 import { fetchLostReasons } from "../../../redux/lostReasons";
 import { all_routes } from "../../../routes/all_routes";
-import { Avatar } from "antd";
+import moment from "moment";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
@@ -22,37 +18,80 @@ const EmployeeDetail = () => {
   }, [id, dispatch]);
 
   const { employeeDetail, loading } = useSelector((state) => state.employee);
-  const { lostReasons: contactStatus } = useSelector(
-    (state) => state.lostReasons
-  );
 
   const route = all_routes;
 
-  const badgeClasses = [
-    "badge-soft-success",
-    "badge-soft-warning",
-    "badge-soft-info",
-    "badge-soft-danger",
-    "badge-soft-primary",
-    "badge-soft-secondary",
-  ];
-  const getRandomClass = () => {
-    return badgeClasses[Math.floor(Math.random() * badgeClasses.length)];
-  };
-  const tagsArray = employeeDetail?.tags
-    ? employeeDetail.tags.split(",").map((tag) => tag.trim())
-    : [];
-
-  const socialIcons = {
-    facebook: "fa-brands fa-facebook-f",
-    instagram: "fa-brands fa-instagram",
-    linkedin: "fa-brands fa-linkedin",
-    skype: "fa-brands fa-skype",
-    twitter: "fa-brands fa-twitter",
-    whatsapp: "fa-brands fa-whatsapp",
-  };
-
   const address = employeeDetail?.hrms_employee_address?.[1];
+
+  if (loading) {
+    return (
+      <div className="page-wrapper position-relative">
+        <div className="content">
+          <div className="row mb-3">
+            <div className="col-md-12">
+              <Skeleton active paragraph={{ rows: 1 }} />
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-body pb-2">
+              <Skeleton.Avatar active size={120} shape="circle" />
+              <div className="mt-4">
+                <Skeleton active paragraph={{ rows: 4 }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="card mt-4">
+            <div className="card-body">
+              <Skeleton active paragraph={{ rows: 3 }} />
+            </div>
+          </div>
+
+          <div className="row mt-4">
+            <div className="col-md-6">
+              <div className="card">
+                <div className="card-body">
+                  <Skeleton active paragraph={{ rows: 4 }} />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="card">
+                <div className="card-body">
+                  <Skeleton active paragraph={{ rows: 4 }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row mt-4">
+            <div className="col-md-4">
+              <div className="card">
+                <div className="card-body">
+                  <Skeleton active paragraph={{ rows: 3 }} />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card">
+                <div className="card-body">
+                  <Skeleton active paragraph={{ rows: 3 }} />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="card">
+                <div className="card-body">
+                  <Skeleton active paragraph={{ rows: 3 }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -146,7 +185,11 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           Date of Join :{" "}
                           <span className="text-black fw-semibold">
-                            {employeeDetail?.join_date || " - - "}
+                            {employeeDetail?.join_date
+                              ? moment(employeeDetail?.join_date).format(
+                                  "DD-MM-YYYY"
+                                )
+                              : " - - "}
                           </span>
                         </p>
                       </div>
@@ -172,7 +215,11 @@ const EmployeeDetail = () => {
                           <strong>Birthday:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.date_of_birth || " - - "}
+                          {employeeDetail?.date_of_birth
+                            ? moment(employeeDetail?.date_of_birth).format(
+                                "DD-MM-YYYY"
+                              )
+                            : " - - "}
                         </p>
                       </div>
                       <div className="d-flex flex-column gap-1">
@@ -212,7 +259,7 @@ const EmployeeDetail = () => {
                   <div className="d-flex justify-content-between px-3 flex-wrap">
                     <div className="d-flex flex-column w-50 gap-2">
                       <h5 className="text-muted">Primary Contact</h5>
-                      <div className="d-flex text-muted flex-column gap-3">
+                      <div className="d-flex flex-column gap-3">
                         <div className="d-flex flex-column gap-1">
                           <p className="m-0">
                             <strong>Name:</strong>
@@ -263,15 +310,189 @@ const EmployeeDetail = () => {
               <div className="row">
                 <div className="col-md-6">
                   <div className="card">
-                    <div className="card-body pb-2">
+                    <div className="card-body pb-3">
                       <h4>Education Qualification</h4>
+                      <div className="d-flex align-items-start mt-3 gap-2">
+                        <i className="ti ti-point-filled text-primary fs-4"></i>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0 fw-bold text-black">
+                            International College of Arts and Science (UG)
+                          </p>
+                          <p className="m-0">MSc In Computer Science</p>
+                          <p className="m-0">2020 - 2022</p>
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-start mt-3 gap-2">
+                        <i className="ti ti-point-filled text-primary fs-4"></i>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0 fw-bold text-black">
+                            International College of Arts and Science (UG)
+                          </p>
+                          <p className="m-0">BSc In Computer Science</p>
+                          <p className="m-0">2020 - 2022</p>
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-start mt-3 gap-2">
+                        <i className="ti ti-point-filled text-primary fs-4"></i>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0 fw-bold text-black">
+                            International College of Arts and Science (UG)
+                          </p>
+                          <p className="m-0">MSc In Computer Science</p>
+                          <p className="m-0">2020 - 2022</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="card">
-                    <div className="card-body pb-2">
+                    <div className="card-body pb-3">
                       <h4>Experience Details</h4>
+                      <div className="d-flex align-items-start mt-3 gap-2">
+                        <i className="ti ti-point-filled text-primary fs-4"></i>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0 fw-bold text-black">
+                            Envato Inc, Melbourne
+                          </p>
+                          <p className="m-0">Head Of Review Team</p>
+                          <p className="m-0">2020 - Present</p>
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-start mt-3 gap-2">
+                        <i className="ti ti-point-filled text-primary fs-4"></i>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0 fw-bold text-black">
+                            CodeCanyon Sydney
+                          </p>
+                          <p className="m-0">Software Developer</p>
+                          <p className="m-0">2020 - 2022</p>
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-start mt-3 gap-2">
+                        <i className="ti ti-point-filled text-primary fs-4"></i>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0 fw-bold text-black">
+                            Facebook Inc, California
+                          </p>
+                          <p className="m-0">Junior Software Developer</p>
+                          <p className="m-0">2020 - 2022</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-4">
+                  <div className="card">
+                    <div className="card-body pb-2 flex-column gap-3 d-flex">
+                      <h4>Bank Account</h4>
+                      <div className="d-flex mt-2 justify-content-between">
+                        <p className="m-0">
+                          <strong>Account Holder Name:</strong>
+                        </p>
+                        <p className="m-0">Ethan Mitchell</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Account Number:</strong>
+                        </p>
+                        <p className="m-0">1234567890</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Bank Name:</strong>
+                        </p>
+                        <p className="m-0">Bank of America</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Branch Name:</strong>
+                        </p>
+                        <p className="m-0">XYZ Branch</p>
+                      </div>
+                      <div className="d-flex mb-2 justify-content-between">
+                        <p className="m-0">
+                          <strong>IFSC Code:</strong>
+                        </p>
+                        <p className="m-0">IFSC1234567890</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="card">
+                    <div className="card-body pb-2 flex-column gap-3 d-flex">
+                      <h4>Passport Information</h4>
+                      <div className="d-flex mt-2 justify-content-between">
+                        <p className="m-0">
+                          <strong>Passport Number:</strong>
+                        </p>
+                        <p className="m-0">A1234567</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Nationality:</strong>
+                        </p>
+                        <p className="m-0">American</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Issue Date:</strong>
+                        </p>
+                        <p className="m-0">Jan 2010</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Expiry Date:</strong>
+                        </p>
+                        <p className="m-0">01 Jan 2025</p>
+                      </div>
+                      <div className="d-flex mb-2 justify-content-between">
+                        <p className="m-0">
+                          <strong>Scan Copy:</strong>
+                        </p>
+                        <p className="m-0">passport.pdf</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <div className="card">
+                    <div className="card-body pb-2 flex-column gap-3 d-flex">
+                      <h4>Social Profile</h4>
+                      <div className="d-flex mt-2 justify-content-between">
+                        <p className="m-0">
+                          <strong>LinkedIn:</strong>
+                        </p>
+                        <p className="m-0">Ethan Mitchell</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Twitter:</strong>
+                        </p>
+                        <p className="m-0">Ethan Mitchell</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Facebook:</strong>
+                        </p>
+                        <p className="m-0">Ethan</p>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <p className="m-0">
+                          <strong>Instagram:</strong>
+                        </p>
+                        <p className="m-0">Ethan Mitchell</p>
+                      </div>
+                      <div className="d-flex mb-2 justify-content-between">
+                        <p className="m-0">
+                          <strong>WhatsApp:</strong>
+                        </p>
+                        <p className="m-0">123456789</p>
+                      </div>
                     </div>
                   </div>
                 </div>

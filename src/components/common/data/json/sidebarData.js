@@ -89,13 +89,13 @@ export const SidebarData = [
       //   showSubRoute: false,
       //   submenu: false,
       // },
-      {
-        label: "Documents",
-        link: route.documents,
-        icon: "ti ti-file-type-doc",
-        showSubRoute: false,
-        submenu: false,
-      },
+      // {
+      //   label: "Documents",
+      //   link: route.documents,
+      //   icon: "ti ti-file-type-doc",
+      //   showSubRoute: false,
+      //   submenu: false,
+      // },
       {
         label: "Employee",
         link: route.employee,

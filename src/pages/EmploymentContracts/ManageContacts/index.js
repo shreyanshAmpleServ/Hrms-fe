@@ -118,7 +118,7 @@ const ManageContracts = ({ setContract, contract }) => {
         );
       };
     }
-  }, []);
+  }, [setContract]);
   return (
     <>
       {/* Add New appointment */}

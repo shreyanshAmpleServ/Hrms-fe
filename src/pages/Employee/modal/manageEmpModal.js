@@ -15,6 +15,7 @@ import { createEmployee, updateEmployee } from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
 import { fetchStates } from "../../../redux/state";
 import ManageAddress from "./createAddress";
+import moment from "moment";
 
 const initialAddress = [
   {
@@ -30,29 +31,29 @@ const initialAddress = [
   },
 ];
 const initialEmpData = {
-        employee_code: "",
-        first_name: "",
-        last_name: "",
-        full_name: "",
-        profile_pic: "",
-        gender: null,
-        date_of_birth: new Date(),
-        national_id_number: "",
-        passport_number: "",
-        employment_type: "",
-        employee_category: null,
-        designation_id: null,
-        department_id: null,
-        join_date: new Date(),
-        confirm_date: new Date(),
-        resign_date: null,
-        bank_id: "",
-        account_number: null,
-        work_location: "",
-        email: "",
-        phone_number: "",
-        status: "",
-      }
+  employee_code: "",
+  first_name: "",
+  last_name: "",
+  full_name: "",
+  profile_pic: "",
+  gender: null,
+  date_of_birth: new Date().toISOString(),
+  national_id_number: "",
+  passport_number: "",
+  employment_type: "",
+  employee_category: null,
+  designation_id: null,
+  department_id: null,
+  join_date: new Date().toISOString(),
+  confirm_date: new Date().toISOString(),
+  resign_date: null,
+  bank_id: "",
+  account_number: null,
+  work_location: "",
+  email: "",
+  phone_number: "",
+  status: "",
+};
 const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const [selectedLogo, setSelectedLogo] = useState();
   const [manageAddress, setManageAddress] = useState(initialAddress);
@@ -78,15 +79,15 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
         full_name: employeeData?.full_name || null,
         profile_pic: employeeData?.profile_pic || "",
         gender: employeeData?.gender || "",
-        date_of_birth: employeeData?.date_of_birth || new Date(),
+        date_of_birth: employeeData?.date_of_birth || new Date().toISOString(),
         national_id_number: employeeData?.national_id_number || "",
         passport_number: employeeData?.passport_number || null,
         employment_type: employeeData?.employment_type || null,
         employee_category: employeeData?.employee_category || null,
         designation_id: employeeData?.designation_id || null,
         department_id: employeeData?.department_id || null,
-        join_date: employeeData?.join_date || new Date(),
-        confirm_date: employeeData?.confirm_date || "",
+        join_date: employeeData?.join_date || new Date().toISOString(),
+        confirm_date: employeeData?.confirm_date || new Date().toISOString(),
         resign_date: employeeData?.resign_date || null,
         bank_id: employeeData?.bank_id || "",
         account_number: employeeData?.account_number || null,
@@ -95,7 +96,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
         phone_number: employeeData?.phone_number || "",
         status: employeeData?.status || "",
       });
-     setManageAddress(  employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || [])
+      setManageAddress(
+        employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || []
+      );
     } else {
       reset(initialEmpData);
     }
@@ -174,19 +177,31 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     const formData = new FormData();
     console.log("data", data);
     // Append all form fields
+
     Object?.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
         // Convert complex data to strings if needed
-        formData.append(
-          key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
-        );
+        if (
+          key === "date_of_birth" ||
+          key === "join_date" ||
+          key === "confirm_date"
+        ) {
+          formData.append(key, new Date(data[key]).toISOString());
+        } else {
+          formData.append(
+            key,
+            typeof data[key] === "object"
+              ? JSON.stringify(data[key])
+              : data[key]
+          );
+        }
       }
     });
 
-    if (selectedLogo) {
-      formData.append("profile_pic", selectedLogo);
-    }
+    if (data)
+      if (selectedLogo) {
+        formData.append("profile_pic", selectedLogo);
+      }
     formData.append("empAddressData", JSON.stringify(manageAddress));
     if (employeeData) {
       formData.append("id", employeeData.id);
@@ -198,13 +213,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       employeeData
         ? await dispatch(updateEmployee(formData)).unwrap()
         : await dispatch(createEmployee(formData)).unwrap();
-
     } catch (error) {
       closeButton.click();
     } finally {
-            closeButton.click();
+      closeButton.click();
       setSelectedLogo(null);
-      reset(initialEmpData)
+      reset(initialEmpData);
       setManageAddress(initialAddress);
     }
   };
@@ -214,9 +228,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
-      setSelectedLogo(null);
-      reset(initialEmpData)
-      setManageAddress(initialAddress);
+        setSelectedLogo(null);
+        reset(initialEmpData);
+        setManageAddress(initialAddress);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -251,7 +265,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       behavior: "smooth",
     });
   };
-  
+
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-larger"
@@ -441,8 +455,13 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                                 {...field}
                                 className="form-control"
                                 selected={field.value}
+                                value={
+                                  field.value
+                                    ? moment(field.value).format("DD-MM-YYYY")
+                                    : null
+                                }
                                 onChange={field.onChange}
-                                dateFormat="dd-MM-yyyy"
+                                dateFormat="DD-MM-YYYY"
                               />
                             )}
                           />
@@ -703,8 +722,13 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                                 {...field}
                                 className="form-control"
                                 selected={field.value}
+                                value={
+                                  field.value
+                                    ? moment(field.value).format("DD-MM-YYYY")
+                                    : null
+                                }
                                 onChange={field.onChange}
-                                dateFormat="dd-MM-yyyy"
+                                dateFormat="DD-MM-YYYY"
                               />
                             )}
                           />
@@ -731,8 +755,13 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               {...field}
                               className="form-control"
                               selected={field.value}
+                              value={
+                                field.value
+                                  ? moment(field.value).format("DD-MM-YYYY")
+                                  : null
+                              }
                               onChange={field.onChange}
-                              dateFormat="dd-MM-yyyy"
+                              dateFormat="DD-MM-YYYY"
                             />
                           )}
                         />

@@ -109,7 +109,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
         );
       };
     }
-  }, []);
+  }, [setAppointment]);
   return (
     <>
       {/* Add New appointment */}

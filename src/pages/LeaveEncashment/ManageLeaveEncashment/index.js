@@ -123,7 +123,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
         );
       };
     }
-  }, []);
+  }, [setLeaveEncashment]);
   return (
     <>
       {/* Add New appointment */}
