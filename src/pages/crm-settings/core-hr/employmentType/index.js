@@ -35,7 +35,7 @@ const Employee_TypeList = () => {
 
     const columns = [
         {
-            title: "Employee  Type",
+            title: "Employee Type",
             dataIndex: "type_name",
             render: (text, record) => (
                 <Link to={`#`}>{record.type_name}</Link>

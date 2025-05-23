@@ -78,6 +78,13 @@ import AppointmentLetters from "./AppointmentLetters";
 import EmploymentContracts from "./EmployementContracts";
 import LeaveEncashmentReducer from "./LeaveEncashment";
 import TimeSheetReducer from "./TimeSheet";
+import offerLettersReducer from "./offerLetters";
+import resumeUploadReducer from "./resumeUpload";
+import LeaveApplicationsReducer from "./leaveApplication";
+import PayslipReducer from "./payslipViewer";
+import loanRequestsReducer from "./loanRequests";
+import LoneTypeReducer from "./loneType";
+
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -127,7 +134,7 @@ const store = configureStore({
     branch: branchReducer,
     department: departmentReducer,
     designation: designationReducer,
-    employmentType: employeeTypeReducer,
+    employementType: employeeTypeReducer,
     employee_category: employee_categoryReducer,
     payComponent: payComponentReducer,
     salaryStructure: salaryStructureReducer,
@@ -158,6 +165,12 @@ const store = configureStore({
     contracts: EmploymentContracts,
     leaveEncashment: LeaveEncashmentReducer,
     timeSheet: TimeSheetReducer,
+    offer_letter: offerLettersReducer,
+    resume_upload: resumeUploadReducer,
+    leave_Applications: LeaveApplicationsReducer,
+    payslip: PayslipReducer,
+    loan_requests: loanRequestsReducer,
+    lone_type: LoneTypeReducer,
   },
 });
 

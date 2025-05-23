@@ -5,13 +5,21 @@ import Select from "react-select";
 
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { genderOptions } from "../../../components/common/selectoption/selectoption";
+import {
+  empStatusOptions,
+  genderOptions,
+  maritalStatusOptions,
+} from "../../../components/common/selectoption/selectoption";
 import { fetchbank } from "../../../redux/bank";
 import { fetchCountries } from "../../../redux/country";
 import { fetchCurrencies } from "../../../redux/currency";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
-import { createEmployee, updateEmployee } from "../../../redux/Employee";
+import {
+  createEmployee,
+  fetchEmployee,
+  updateEmployee,
+} from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
 import { fetchStates } from "../../../redux/state";
 import ManageAddress from "./createAddress";
@@ -57,6 +65,8 @@ const initialEmpData = {
 const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const [selectedLogo, setSelectedLogo] = useState();
   const [manageAddress, setManageAddress] = useState(initialAddress);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [searchEmployee, setSearchEmployee] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -95,9 +105,26 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
         email: employeeData?.email || "",
         phone_number: employeeData?.phone_number || "",
         status: employeeData?.status || "",
+        spouse_name: employeeData?.spouse_name || "",
+        no_of_child: employeeData?.no_of_child || null,
+        marital_status: employeeData?.marital_status || "",
+        manager_id: employeeData?.manager_id || null,
+        father_name: employeeData?.father_name || "",
+        mother_name: employeeData?.mother_name || "",
+        emergency_contact: employeeData?.emergency_contact || "",
+        emergency_contact_person: employeeData?.emergency_contact_person || "",
+        contact_relation: employeeData?.contact_relation || "",
       });
       setManageAddress(
         employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || []
+      );
+      setStateOptions(
+        employeeData?.hrms_employee_address?.map((addr) => [
+          {
+            value: addr?.state,
+            label: addr?.employee_state.name,
+          },
+        ]) || []
       );
     } else {
       reset(initialEmpData);
@@ -111,7 +138,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       setSelectedLogo(file);
     }
   };
-
   const { loading } = useSelector((state) => state.contacts);
 
   React.useEffect(() => {
@@ -123,20 +149,18 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     dispatch(fetchCurrencies());
   }, [dispatch]);
 
-  const country_id = watch("country");
   React.useEffect(() => {
-    country_id && dispatch(fetchStates(country_id));
-  }, [dispatch, country_id]);
+    dispatch(fetchEmployee({ search: searchEmployee }));
+  }, [searchEmployee]);
 
-  const { countries, loading: loadingCountry } = useSelector(
-    (state) => state.countries
+  const { employee, loading: loadingEmployee } = useSelector(
+    (state) => state.employee
   );
-  const { states } = useSelector((state) => state.states);
-  const { currencies } = useSelector((state) => state.currencies);
+
   const { bank, loading: loadingBank } = useSelector((state) => state.bank);
 
   const { employmentType, loading: loadingEmp } = useSelector(
-    (state) => state.employmentType
+    (state) => state.employementType
   );
   const { designation, loading: loadingDesignaion } = useSelector(
     (state) => state.designation
@@ -163,13 +187,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     value: emnt.id,
     label: emnt.bank_name,
   }));
-  const countryList = countries.map((emnt) => ({
+  const employeeOptions = employee?.data?.map((emnt) => ({
     value: emnt.id,
-    label: emnt.code + emnt.name,
-  }));
-  const stateList = states?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.name,
+    label: emnt.full_name,
   }));
 
   // Submit Handler
@@ -220,6 +240,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       setSelectedLogo(null);
       reset(initialEmpData);
       setManageAddress(initialAddress);
+      setStateOptions([]);
     }
   };
   React.useEffect(() => {
@@ -230,6 +251,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       const handleModalClose = () => {
         setSelectedLogo(null);
         reset(initialEmpData);
+        setStateOptions([]);
         setManageAddress(initialAddress);
       };
       offcanvasElement.addEventListener(
@@ -319,7 +341,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                                 src={URL.createObjectURL(selectedLogo)}
                                 alt="Company Logo"
                                 className="preview w-100 h-100 object-fit-cover"
-                                // style={{image}}
                               />
                             ) : employeeData ? (
                               <img
@@ -339,14 +360,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             >
                               <i className="ti ti-x" />
                             </button>
-                            {/* <img
-                              src="assets/img/profiles/avatar-20.jpg"
-                              alt="img"
-                              className="preview1"
-                            />
-                            <button type="button" className="profile-remove">
-                              <i className="ti ti-x" />
-                            </button> */}
                           </div>
                           <div className="profile-upload-content">
                             <label className="profile-upload-btn">
@@ -389,15 +402,8 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
-                          {...register("last_name", {
-                            // required: "Last name is required",
-                          })}
+                          {...register("last_name")}
                         />
-                        {/* {errors.last_name && (
-                          <small className="text-danger">
-                            {errors.last_name.message}
-                          </small>
-                        )} */}
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -478,9 +484,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="number"
                           className="form-control"
-                          {...register("phone_number", {
-                            // required: "phone_number  is required",
-                          })}
+                          {...register("phone_number")}
                         />
                         {errors.phone_number && (
                           <small className="text-danger">
@@ -513,17 +517,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               onChange={(selectedOption) => {
                                 field.onChange(selectedOption?.value || null);
                               }}
-                              // onChange={(selected) => onPipelineChange(selected)}
                             />
                           )}
                         />
-                        {/* <input
-                          type="text"
-                          className="form-control"
-                          {...register("gender", {
-                            // required: "Job title is required",
-                          })}
-                        /> */}
                         {errors.gender && (
                           <small className="text-danger">
                             {errors.gender.message}
@@ -536,20 +532,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       <div className="mb-3">
                         <label className="col-form-label">
                           National Number
-                          {/* <span className="text-danger">*</span> */}
                         </label>
                         <input
                           type="number"
                           className="form-control"
-                          {...register("national_id_number", {
-                            // required: "Job title is required",
-                          })}
+                          {...register("national_id_number")}
                         />
-                        {/* {errors.national_id_number && (
-                          <small className="text-danger">
-                            {errors.national_id_number.message}
-                          </small>
-                        )} */}
                       </div>
                     </div>
 
@@ -557,20 +545,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       <div className="mb-3">
                         <label className="col-form-label">
                           Passport Number
-                          {/* <span className="text-danger">*</span> */}
                         </label>
                         <input
                           type="number"
                           className="form-control"
-                          {...register("passport_number", {
-                            // required: "Job title is required",
-                          })}
+                          {...register("passport_number")}
                         />
-                        {/* {errors.passport_number && (
-                          <small className="text-danger">
-                            {errors.passport_number.message}
-                          </small>
-                        )} */}
                       </div>
                     </div>
 
@@ -598,7 +578,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               onChange={(selectedOption) => {
                                 field.onChange(selectedOption?.value || null);
                               }}
-                              // onChange={(selected) => onPipelineChange(selected)}
                             />
                           )}
                         />
@@ -614,20 +593,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       <div className="mb-3">
                         <label className="col-form-label">
                           Employee Category
-                          {/* <span className="text-danger">*</span> */}
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("employee_category", {
-                            // required: "Job title is required",
-                          })}
+                          {...register("employee_category")}
                         />
-                        {/* {errors.jobTitle && (
-                          <small className="text-danger">
-                            {errors.jobTitle.message}
-                          </small>
-                        )} */}
                       </div>
                     </div>
 
@@ -655,7 +626,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               onChange={(selectedOption) => {
                                 field.onChange(selectedOption?.value || null);
                               }}
-                              // onChange={(selected) => onPipelineChange(selected)}
                             />
                           )}
                         />
@@ -692,7 +662,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               onChange={(selectedOption) => {
                                 field.onChange(selectedOption?.value || null);
                               }}
-                              // onChange={(selected) => onPipelineChange(selected)}
                             />
                           )}
                         />
@@ -706,10 +675,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Join Date
-                          {/* <span className="text-danger">*</span> */}
-                        </label>
+                        <label className="col-form-label">Join Date</label>
                         <div className="icon-form-end">
                           <span className="form-icon">
                             <i className="ti ti-calendar-event" />
@@ -733,20 +699,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             )}
                           />
                         </div>
-                        {/* {errors.jobTitle && (
-                          <small className="text-danger">
-                            {errors.jobTitle.message}
-                          </small>
-                        )} */}
                       </div>
                     </div>
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Confirm Date
-                          {/* <span className="text-danger">*</span> */}
-                        </label>
+                        <label className="col-form-label">Confirm Date</label>
                         <Controller
                           name="confirm_date"
                           control={control}
@@ -768,37 +726,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       </div>
                     </div>
 
-                    {/* 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Resign Date
-                          <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          {...register("resign_date", {
-                            required: "Job title is required",
-                          })}
-                        />
-                        {errors.jobTitle && (
-                          <small className="text-danger">
-                            {errors.jobTitle.message}
-                          </small>
-                        )}
-                      </div>
-                    </div> */}
-
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Bank
-                          {/* <span className="text-danger">*</span> */}
-                        </label>
+                        <label className="col-form-label">Bank</label>
                         <Controller
                           name="bank_id"
-                          // rules={{ required: "DepartmBnaent is required" }}
                           control={control}
                           render={({ field }) => (
                             <Select
@@ -814,57 +746,87 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               onChange={(selectedOption) => {
                                 field.onChange(selectedOption?.value || null);
                               }}
-                              // onChange={(selected) => onPipelineChange(selected)}
                             />
                           )}
                         />
-                        {/* {errors.jobTitle && (
-                          <small className="text-danger">
-                            {errors.jobTitle.message}
-                          </small>
-                        )} */}
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Status</label>
+                        <Controller
+                          name="status"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={empStatusOptions}
+                              placeholder="Choose"
+                              classNamePrefix="react-select"
+                              value={
+                                empStatusOptions?.find(
+                                  (option) => option.value === watch("status")
+                                ) || ""
+                              }
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                              }}
+                            />
+                          )}
+                        />
                       </div>
                     </div>
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Account Number
-                          {/* <span className="text-danger">*</span> */}
-                        </label>
+                        <label className="col-form-label">Account Number</label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("account_number", {
-                            // required: "Job title is required",
-                          })}
+                          {...register("account_number")}
                         />
-                        {/* {errors.jobTitle && (
-                          <small className="text-danger">
-                            {errors.jobTitle.message}
-                          </small>
-                        )} */}
                       </div>
                     </div>
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          WorkLocation
-                          {/* <span className="text-danger">*</span> */}
-                        </label>
+                        <label className="col-form-label">WorkLocation</label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("work_location", {
-                            // required: "Job title is required",
-                          })}
+                          {...register("work_location")}
                         />
-                        {/* {errors.jobTitle && (
-                          <small className="text-danger">
-                            {errors.jobTitle.message}
-                          </small>
-                        )} */}
+                      </div>
+                    </div>
+
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Assign Manager</label>
+                        <Controller
+                          name="manager_id"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={employeeOptions}
+                              placeholder="Choose"
+                              classNamePrefix="react-select"
+                              isLoading={loadingEmployee}
+                              onInputChange={(value) => {
+                                setSearchEmployee(value);
+                              }}
+                              value={
+                                employeeOptions?.find(
+                                  (option) =>
+                                    option.value === watch("manager_id")
+                                ) || ""
+                              }
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                              }}
+                            />
+                          )}
+                        />
                       </div>
                     </div>
                   </div>
@@ -897,6 +859,8 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     manageAddress={manageAddress}
                     setManageAddress={setManageAddress}
                     initialAddress={initialAddress}
+                    stateOptions={stateOptions}
+                    setStateOptions={setStateOptions}
                   />
                   {/* /Address Info */}
                 </div>
@@ -1001,7 +965,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                   <span className="avatar avatar-md rounded text-dark border me-2">
                     <i className="ti ti-accessible fs-20" />
                   </span>
-                  Access
+                  Family Details
                 </Link>
               </div>
               <div
@@ -1011,72 +975,118 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
               >
                 <div className="accordion-body border-top">
                   <div className="row">
-                    <div className="col-md-12">
-                      {/* <div className="mb-3">
-                        <label className="col-form-label">Visibility</label>
-                        <div className="d-flex flex-wrap">
-                          <div className="me-2">
-                            <input
-                              type="radio"
-                              className="status-radio"
-                              id="public"
-                              value="public"
-                              {...register("visibility")}
+                    {/* <div className="col-md-12"> */}
+
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Marital Status</label>
+                        <Controller
+                          name="marital_status"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={maritalStatusOptions}
+                              placeholder="Choose"
+                              classNamePrefix="react-select"
+                              value={
+                                maritalStatusOptions?.find(
+                                  (option) =>
+                                    option.value === watch("marital_status")
+                                ) || ""
+                              }
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                              }}
                             />
-                            <label htmlFor="public">Public</label>
-                          </div>
-                          <div className="me-2">
-                            <input
-                              type="radio"
-                              className="status-radio"
-                              id="private"
-                              value="private"
-                              {...register("visibility")}
-                            />
-                            <label htmlFor="private">Private</label>
-                          </div>
-                          <div
-                            data-bs-toggle="modal"
-                            data-bs-target="#access_view"
-                          >
-                            <input
-                              type="radio"
-                              className="status-radio"
-                              id="people"
-                              value="people"
-                              {...register("visibility")}
-                            />
-                            <label htmlFor="people">Select People</label>
-                          </div>
-                        </div>
-                      </div> */}
-                      <div className="mb-0">
-                        <label className="col-form-label">Status</label>
-                        <div className="d-flex flex-wrap">
-                          <div className="me-2">
-                            <input
-                              type="radio"
-                              className="status-radio"
-                              id="active"
-                              value="Y"
-                              defaultChecked
-                              // {...register("is_active")}
-                            />
-                            <label htmlFor="active">Active</label>
-                          </div>
-                          <div>
-                            <input
-                              type="radio"
-                              className="status-radio"
-                              id="inactive"
-                              value="N"
-                              // {...register("is_active")}
-                            />
-                            <label htmlFor="inactive">Inactive</label>
-                          </div>
-                        </div>
+                          )}
+                        />
                       </div>
                     </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Spouse Name</label>
+
+                        <input
+                          type="text"
+                          disabled={watch("marital_status") === "Un-married"}
+                          className="form-control"
+                          {...register("spouse_name")}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">No Of Child</label>
+
+                        <input
+                          type="text"
+                          disabled={watch("marital_status") === "Un-married"}
+                          className="form-control"
+                          {...register("no_of_child")}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Father Name</label>
+
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("father_name")}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Mother Name</label>
+
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("mother_name")}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Emergency Contact
+                        </label>
+
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("emergency_contact")}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Contact Person</label>
+
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("emergency_contact_person")}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Contact Relation
+                        </label>
+
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("contact_relation")}
+                        />
+                      </div>
+                    </div>
+                    {/* </div> */}
                   </div>
                 </div>
               </div>

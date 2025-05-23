@@ -15,9 +15,9 @@ import { Helmet } from "react-helmet-async";
 import AddButton from "../../components/datatable/AddButton";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
-import { clearMessages, deletejob_posting, fetchjob_posting } from "../../redux/JobPosting";
+import { clearMessages, deletepayslip, fetchpayslip } from "../../redux/payslipViewer";
 
-const JobPosting = () => {
+const PayslipViewer = () => {
     const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
     const [paginationData, setPaginationData] = React.useState()
     const [searchText, setSearchText] = React.useState("");
@@ -35,75 +35,69 @@ const JobPosting = () => {
     const columns = [
 
         {
-            title: "Job Title",
-            dataIndex: "job_title",
-            sorter: (a, b) => a.job_title - b.job_title,
-        },
-        {
-            title: "Department",
-            dataIndex: "hrms_job_department",
-            render: (value) => <div>{value?.department_name}</div>,
+            title: "Employee",
+            dataIndex: "payslip_employee",
+            render: (value) => <div>{value?.full_name}</div>,
             sorter: (a, b) =>
-                (a.hrms_job_department?.department_name || "").localeCompare(
-                    b.hrms_job_department?.department_name || ""
-                ),
+                (a.payslip_employee?.full_name || "").localeCompare(b.payslip_employee?.full_name || ""),
         },
         {
-            title: "Designation",
-            dataIndex: "hrms_job_designation",
-            render: (value) => <div>{value?.designation_name}</div>,
-            sorter: (a, b) =>
-                (a.hrms_job_designation?.designation_name || "").localeCompare(
-                    b.hrms_job_designation?.designation_name || ""
-                ),
+            title: "Month",
+            dataIndex: "month",
+            render: (text) => <div>{text}</div>, // You can use moment if it's a date
+            sorter: (a, b) => (a.month || "").localeCompare(b.month || ""),
         },
-
-
         {
-            title: "Required Experience",
-            dataIndex: "required_experience",
-            // render: (value) => value ? `${value} years` : "—",
-            sorter: (a, b) => a.required_experience - b.required_experience,
-
+            title: "Year",
+            dataIndex: "year",
+            render: (text) => <div>{text?.split("-")[0]}</div>,
+            sorter: (a, b) => (a.Year || "").localeCompare(b.Year || ""),
         },
 
         {
-            title: "Posting Date",
-            dataIndex: "posting_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-            sorter: (a, b) => new Date(a.posting_date) - new Date(b.posting_date),
+            title: "Net Salary",
+            dataIndex: "net_salary",
+            render: (text) => `₹ ${parseFloat(text).toFixed(2)}`,
+            sorter: (a, b) => parseFloat(a.net_salary) - parseFloat(b.net_salary),
         },
+        // {
+        //     title: "Resume",
+        //     dataIndex: "resume_path",
+        //     render: (_text, record) => (
+        //         <a
+        //             href={record.resume_path}
+        //             target="_blank"
+        //             rel="noopener noreferrer"
+        //             download
+        //             className="d-inline-flex align-items-center gap-2 text-decoration-none"
+        //             title="View or Download PDF"
+        //         >
+        //             <i className="ti ti-file-type-pdf fs-5"></i>
+        //             <span>View PDF</span>
+        //         </a>
+        //     ),
+        // },
         {
-            title: "Closing Date",
-            dataIndex: "closing_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-            sorter: (a, b) => new Date(a.closing_date) - new Date(b.closing_date),
+            title: "Payslip PDF",
+            dataIndex: "pdf_path",
+            render: (_text, record) => (
+                <a
+                    href={record.pdf_path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="d-inline-flex align-items-center gap-2 text-decoration-none"
+                    title="Download Payslip"
+                >
+                    <i className="ti ti-file-invoice fs-5"></i>
+                    <span>Download</span>
+                </a>
+            ),
         },
 
-        {
-            title: "Description",
-            dataIndex: "description",
-            sorter: (a, b) => a.description - b.description,
-        },
-        {
-            title: "Is Internal",
-            dataIndex: "is_internal",
-            render: (value) => (<div>{value ? "Yes" : "NO"}</div>),
-            sorter: (a, b) => {
-                const valA = a.is_internal === "Yes" || a.is_internal === true;
-                const valB = b.is_internal === "Yes" || b.is_internal === true;
-                return valA - valB;
-            },
 
-        },
-        {
-            title: "Created At",
-            dataIndex: "created_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-            sorter: (a, b) => a.created_date.length - b.created_date.length,
-        },
+
+
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
             dataIndex: "actions",
@@ -117,12 +111,25 @@ const JobPosting = () => {
                     >
                         <i className="fa fa-ellipsis-v"></i>
                     </Link>
+
                     <div className="dropdown-menu dropdown-menu-right">
+                        {record.resume_path && (
+                            <a
+                                className="dropdown-item"
+                                href={record.resume_path}
+                                download
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <i className="ti ti-download text-success"></i> Download
+                            </a>
+                        )}
+
                         {isUpdate && <Link
                             className="dropdown-item edit-popup"
                             to="#"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#add_edit_job_posting_modal"
+                            data-bs-toggle="modal"
+                            data-bs-target="#add_edit_payslip_modal"
                             onClick={() => {
                                 setSelectedIndustry(record);
                                 setMode("edit");
@@ -143,21 +150,21 @@ const JobPosting = () => {
         }] : [])
     ];
 
-    const { job_posting, loading, error, success } = useSelector(
-        (state) => state.job_posting
+    const { payslip, loading, error, success } = useSelector(
+        (state) => state.payslip
     );
 
     React.useEffect(() => {
-        dispatch(fetchjob_posting({ search: searchText }));
+        dispatch(fetchpayslip({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: job_posting?.currentPage,
-            totalPage: job_posting?.totalPages,
-            totalCount: job_posting?.totalCount,
-            pageSize: job_posting?.size
+            currentPage: payslip?.currentPage,
+            totalPage: payslip?.totalPages,
+            totalCount: payslip?.totalCount,
+            pageSize: payslip?.size
         })
-    }, [job_posting])
+    }, [payslip])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -165,7 +172,7 @@ const JobPosting = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchjob_posting({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchpayslip({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -173,7 +180,7 @@ const JobPosting = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = job_posting?.data || [];
+        let data = payslip?.data || [];
 
         if (sortOrder === "ascending") {
             data = [...data].sort((a, b) =>
@@ -185,7 +192,7 @@ const JobPosting = () => {
             );
         }
         return data;
-    }, [searchText, job_posting, columns, sortOrder]);
+    }, [searchText, payslip, columns, sortOrder]);
 
     const handleDeleteIndustry = (industry) => {
         setSelectedIndustry(industry);
@@ -196,8 +203,8 @@ const JobPosting = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deletejob_posting(selectedIndustry.id));
-            // navigate(`/job_posting`);
+            dispatch(deletepayslip(selectedIndustry.id));
+            // navigate(`/payslip`);
             setShowDeleteModal(false);
         }
     };
@@ -205,8 +212,8 @@ const JobPosting = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Job Posting</title>
-                <meta name="DepanrtmentList" content="This is job_posting page of DCC CRMS." />
+                <title>DCC HRMS - Payslip Viewer</title>
+                <meta name="DepanrtmentList" content="This is payslip page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -230,9 +237,9 @@ const JobPosting = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        Job Posting
+                                        Payslip Viewer
                                         <span className="count-title">
-                                            {job_posting?.totalCount || 0}
+                                            {payslip?.totalCount || 0}
                                         </span>
                                     </h4>
                                 </div>
@@ -246,32 +253,20 @@ const JobPosting = () => {
                         <div className="card ">
                             <div className="card-header">
                                 <div className="row align-items-center">
-                                    <div className="col-sm-8">
-                                        <div className="icon-form mb-3 mb-sm-6">
-                                            <SearchBar
-                                                searchText={searchText}
-                                                handleSearch={handleSearch}
-                                                label="Search Offer Letters"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Add Offer Letter button aligned to the right at the end */}
-                                    <div className="col-sm-2 ms-auto">
-                                        <Link
-                                            to=""
-                                            className="btn btn-primary"
-                                            data-bs-toggle="offcanvas"
-                                            data-bs-target="#add_edit_job_posting_modal"
-                                            onClick={() => setMode("add")}
-                                        >
-                                            <i className="ti ti-square-rounded-plus me-2" />
-                                            Add Job Position
-                                        </Link>
-                                    </div>
+                                    <SearchBar
+                                        searchText={searchText}
+                                        handleSearch={handleSearch}
+                                        label="Search Payslip Viewer"
+                                    />
+                                    {isCreate && <div className="col-sm-8">
+                                        <AddButton
+                                            label="Add PayslipViewer"
+                                            id="add_edit_payslip_modal"
+                                            setMode={() => setMode("add")}
+                                        />
+                                    </div>}
                                 </div>
                             </div>
-
                             <div className="card-body">
                                 <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
                                     <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -310,4 +305,5 @@ const JobPosting = () => {
     );
 };
 
-export default JobPosting;
+export default PayslipViewer
+    ;

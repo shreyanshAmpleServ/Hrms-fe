@@ -28,6 +28,7 @@ import AddEmployee from "./AddEmployee.js";
 import { Navigate } from "react-router";
 import ManageEmpModal from "./modal/manageEmpModal.js";
 import { deleteEmployee, fetchEmployee } from "../../redux/Employee/index.js";
+import EmployeeGrid from "./gridEmployee.js";
 
 const EmployeeList = () => {
   // const data = activities_data;
@@ -93,7 +94,7 @@ const EmployeeList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Activities"
+    (i) => i?.module_name === "Employee"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -111,11 +112,6 @@ const EmployeeList = () => {
       title: "Name",
       dataIndex: "full_name",
       sorter: (a, b) => a.full_name.length - b.full_name.length,
-      render: (text, record, index) => (
-        <Link to={`/employee/${record?.id}`} className="" key={index}>
-          {text}
-        </Link>
-      ),
     },
     {
       title: "Email",
@@ -131,11 +127,6 @@ const EmployeeList = () => {
     //     title: "Start Date",
     //     dataIndex: "start_date",
     //     sorter: (a, b) => a.start_date.length - b.start_date.length,
-    // },
-    // {
-    //     title: "End Date",
-    //     dataIndex: "end_date",
-    //     sorter: (a, b) => a.end_date.length - b.end_date.length,
     // },
     {
       title: "Department",
@@ -478,18 +469,17 @@ const EmployeeList = () => {
 
                   {isView ? (
                     <div className="table-responsive custom-table">
-                      {/* {view === "list" ? ( */}
-                      <Table
-                        columns={columns}
-                        dataSource={data}
-                        loading={loading}
-                        paginationData={paginationData}
-                        onPageChange={handlePageChange}
-                      />
-                      {/* // ) : (
-                                        //     <ActivitiesGrid data={campaigns?.data} />
-
-                                        // )} */}
+                      {view === "list" ? (
+                        <Table
+                          columns={columns}
+                          dataSource={data}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        <EmployeeGrid data={data} />
+                      )}
                     </div>
                   ) : (
                     <UnauthorizedImage />

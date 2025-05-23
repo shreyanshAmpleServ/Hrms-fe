@@ -3,21 +3,21 @@ import "bootstrap-daterangepicker/daterangepicker.css";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CollapseHeader from "../../components/common/collapse-header";
-import Table from "../../components/common/dataTableNew/index";
-import FlashMessage from "../../components/common/modals/FlashMessage";
+import CollapseHeader from "../../../../components/common/collapse-header";
+import Table from "../../../../components/common/dataTableNew/index";
+import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
 import moment from 'moment';
 
 import { Helmet } from "react-helmet-async";
-import AddButton from "../../components/datatable/AddButton";
-import SearchBar from "../../components/datatable/SearchBar";
-import SortDropdown from "../../components/datatable/SortDropDown";
-import { clearMessages, deletejob_posting, fetchjob_posting } from "../../redux/JobPosting";
+import AddButton from "../../../../components/datatable/AddButton";
+import SearchBar from "../../../../components/datatable/SearchBar";
+import SortDropdown from "../../../../components/datatable/SortDropDown";
+import { clearMessages, deletelone_type, fetchlone_type } from "../../../../redux/loneType";
 
-const JobPosting = () => {
+const LoneType = () => {
     const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
     const [paginationData, setPaginationData] = React.useState()
     const [searchText, setSearchText] = React.useState("");
@@ -33,76 +33,43 @@ const JobPosting = () => {
     const dispatch = useDispatch();
 
     const columns = [
-
         {
-            title: "Job Title",
-            dataIndex: "job_title",
-            sorter: (a, b) => a.job_title - b.job_title,
+            title: "Loan Name",
+            dataIndex: "loan_name",
+            render: (text, record) => (
+                <Link to={`#`}>{record.loan_name}</Link>
+            ),
+            sorter: (a, b) => (a.loan_name || "").localeCompare(b.loan_name || ""),
         },
         {
-            title: "Department",
-            dataIndex: "hrms_job_department",
-            render: (value) => <div>{value?.department_name}</div>,
-            sorter: (a, b) =>
-                (a.hrms_job_department?.department_name || "").localeCompare(
-                    b.hrms_job_department?.department_name || ""
-                ),
+            title: "Interest Rate",
+            dataIndex: "interest_rate",
+            sorter: (a, b) => (a.interest_rate || 0) - (b.interest_rate || 0),
         },
         {
-            title: "Designation",
-            dataIndex: "hrms_job_designation",
-            render: (value) => <div>{value?.designation_name}</div>,
-            sorter: (a, b) =>
-                (a.hrms_job_designation?.designation_name || "").localeCompare(
-                    b.hrms_job_designation?.designation_name || ""
-                ),
-        },
-
-
-        {
-            title: "Required Experience",
-            dataIndex: "required_experience",
-            // render: (value) => value ? `${value} years` : "—",
-            sorter: (a, b) => a.required_experience - b.required_experience,
-
+            title: "Created Date",
+            dataIndex: "create_date",
+            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
+            sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
         },
 
         {
-            title: "Posting Date",
-            dataIndex: "posting_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-            sorter: (a, b) => new Date(a.posting_date) - new Date(b.posting_date),
-        },
-        {
-            title: "Closing Date",
-            dataIndex: "closing_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-            sorter: (a, b) => new Date(a.closing_date) - new Date(b.closing_date),
-        },
-
-        {
-            title: "Description",
-            dataIndex: "description",
-            sorter: (a, b) => a.description - b.description,
-        },
-        {
-            title: "Is Internal",
-            dataIndex: "is_internal",
-            render: (value) => (<div>{value ? "Yes" : "NO"}</div>),
-            sorter: (a, b) => {
-                const valA = a.is_internal === "Yes" || a.is_internal === true;
-                const valB = b.is_internal === "Yes" || b.is_internal === true;
-                return valA - valB;
-            },
-
-        },
-        {
-            title: "Created At",
-            dataIndex: "created_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-            sorter: (a, b) => a.created_date.length - b.created_date.length,
+            title: "Status",
+            dataIndex: "is_active",
+            render: (text) => (
+                <div>
+                    {text === "Y" ? (
+                        <span className="badge badge-pill badge-status bg-success">
+                            Active
+                        </span>
+                    ) : (
+                        <span className="badge badge-pill badge-status bg-danger">
+                            Inactive
+                        </span>
+                    )}
+                </div>
+            ),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
@@ -121,8 +88,8 @@ const JobPosting = () => {
                         {isUpdate && <Link
                             className="dropdown-item edit-popup"
                             to="#"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#add_edit_job_posting_modal"
+                            data-bs-toggle="modal"
+                            data-bs-target="#add_edit_lone_type_modal"
                             onClick={() => {
                                 setSelectedIndustry(record);
                                 setMode("edit");
@@ -143,21 +110,21 @@ const JobPosting = () => {
         }] : [])
     ];
 
-    const { job_posting, loading, error, success } = useSelector(
-        (state) => state.job_posting
+    const { lone_type, loading, error, success } = useSelector(
+        (state) => state.lone_type
     );
 
     React.useEffect(() => {
-        dispatch(fetchjob_posting({ search: searchText }));
+        dispatch(fetchlone_type({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: job_posting?.currentPage,
-            totalPage: job_posting?.totalPages,
-            totalCount: job_posting?.totalCount,
-            pageSize: job_posting?.size
+            currentPage: lone_type?.currentPage,
+            totalPage: lone_type?.totalPages,
+            totalCount: lone_type?.totalCount,
+            pageSize: lone_type?.size
         })
-    }, [job_posting])
+    }, [lone_type])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -165,7 +132,7 @@ const JobPosting = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchjob_posting({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchlone_type({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -173,7 +140,7 @@ const JobPosting = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = job_posting?.data || [];
+        let data = lone_type?.data || [];
 
         if (sortOrder === "ascending") {
             data = [...data].sort((a, b) =>
@@ -185,7 +152,7 @@ const JobPosting = () => {
             );
         }
         return data;
-    }, [searchText, job_posting, columns, sortOrder]);
+    }, [searchText, lone_type, columns, sortOrder]);
 
     const handleDeleteIndustry = (industry) => {
         setSelectedIndustry(industry);
@@ -196,8 +163,8 @@ const JobPosting = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deletejob_posting(selectedIndustry.id));
-            // navigate(`/job_posting`);
+            dispatch(deletelone_type(selectedIndustry.id));
+            // navigate(`/lone_type`);
             setShowDeleteModal(false);
         }
     };
@@ -205,8 +172,8 @@ const JobPosting = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Job Posting</title>
-                <meta name="DepanrtmentList" content="This is job_posting page of DCC CRMS." />
+                <title>DCC HRMS - Lone Type</title>
+                <meta name="DepanrtmentList" content="This is lone_type page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -230,9 +197,9 @@ const JobPosting = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        Job Posting
+                                        Lone Type
                                         <span className="count-title">
-                                            {job_posting?.totalCount || 0}
+                                            {lone_type?.totalCount || 0}
                                         </span>
                                     </h4>
                                 </div>
@@ -246,32 +213,20 @@ const JobPosting = () => {
                         <div className="card ">
                             <div className="card-header">
                                 <div className="row align-items-center">
-                                    <div className="col-sm-8">
-                                        <div className="icon-form mb-3 mb-sm-6">
-                                            <SearchBar
-                                                searchText={searchText}
-                                                handleSearch={handleSearch}
-                                                label="Search Offer Letters"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Add Offer Letter button aligned to the right at the end */}
-                                    <div className="col-sm-2 ms-auto">
-                                        <Link
-                                            to=""
-                                            className="btn btn-primary"
-                                            data-bs-toggle="offcanvas"
-                                            data-bs-target="#add_edit_job_posting_modal"
-                                            onClick={() => setMode("add")}
-                                        >
-                                            <i className="ti ti-square-rounded-plus me-2" />
-                                            Add Job Position
-                                        </Link>
-                                    </div>
+                                    <SearchBar
+                                        searchText={searchText}
+                                        handleSearch={handleSearch}
+                                        label="Search Lone Type"
+                                    />
+                                    {isCreate && <div className="col-sm-8">
+                                        <AddButton
+                                            label="Add Lone Type"
+                                            id="add_edit_lone_type_modal"
+                                            setMode={() => setMode("add")}
+                                        />
+                                    </div>}
                                 </div>
                             </div>
-
                             <div className="card-body">
                                 <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
                                     <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -310,4 +265,4 @@ const JobPosting = () => {
     );
 };
 
-export default JobPosting;
+export default LoneType;
