@@ -74,7 +74,12 @@ export const all_routes = {
   jobPosting: "/jobPosting",
   employee: "/employee",
   addEmployee: "/add-employee",
-
+  offerLetters: "/offerLetters",
+  resumeUpload: "/resumeUpload",
+  leaveApplications: "/leaveApplications",
+  payslipViewer: "/payslipViewer",
+  loanRequests: "/loanRequests",
+  loneType: "loneType",
 
 
 

@@ -22,6 +22,7 @@ import Employee_TypeList from "../pages/crm-settings/core-hr/employmentType";
 
 import JobPosting from "../pages/jobPosting";
 
+import OfferLetters from "../pages/OfferLetters";
 import Pipelines from "../pages/pipelines/";
 import PipelineDetail from "../pages/pipelines/PipelineDetail";
 
@@ -115,11 +116,13 @@ import LeadsDashboard from "../pages/main-menu/leads-dashboard";
 import ProjectDashboard from "../pages/main-menu/project-dashboard";
 import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
-
-
+import LoneType from "../pages/crm-settings/payroll-statutory/loneTpye";
+import LoanRequests from "../pages/loanRequests";
+import LeaveApplications from "../pages/leaveApplications";
 import AddEmployee from "../pages/Employee/AddEmployee";
-
+import ResumeUpload from "../pages/resumeUpload";
 import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
+import PayslipViewer from "../pages/payslipViewer";
 // import ManufacturerList from "../pages/crm-settings/Manufacturer";
 import Register from "../pages/auth/Register";
 import CampaignsList from "../pages/Campaign";
@@ -263,6 +266,12 @@ export const privateRoutes = [
     element: <Paycomponent />,
     route: Route,
     title: "paycomponent",
+  },
+  {
+    path: route.loneType,
+    element: <LoneType />,
+    route: Route,
+    title: "lonetype",
   },
   {
     path: route.reviewTemplateMaster,
@@ -500,6 +509,12 @@ export const privateRoutes = [
     element: <JobPosting />,
     route: Route,
     title: "jobPosting",
+  },
+  {
+    path: route.offerLetters,
+    element: <OfferLetters />,
+    route: Route,
+    title: "OfferLetters",
   },
   {
     path: route.callResult,
@@ -761,11 +776,36 @@ export const privateRoutes = [
     title: 'workLifeEventTypeMaster'
   },
   {
+    path: route.leaveApplications,
+    element: <LeaveApplications />,
+    route: Route,
+    title: 'LeaveApplications'
+  },
+  {
     path: route.letterTypeMaster,
     element: <LetterTypeMaster />,
     route: Route,
     title: 'letterTypeMaster'
   },
+  {
+    path: route.resumeUpload,
+    element: <ResumeUpload />,
+    route: Route,
+    title: 'resumeUpload'
+  },
+  {
+    path: route.payslipViewer,
+    element: <PayslipViewer />,
+    route: Route,
+    title: 'PayslipViewer'
+  },
+  {
+    path: route.loanRequests,
+    element: <LoanRequests />,
+    route: Route,
+    title: 'loanRequests'
+  },
+
   {
     path: route.surveyMaster,
     element: <SurveyMaster />,

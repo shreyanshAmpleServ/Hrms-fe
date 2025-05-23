@@ -1,5 +1,4 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -8,16 +7,14 @@ import Table from "../../components/common/dataTableNew/index";
 import FlashMessage from "../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
-
 import moment from 'moment';
-
 import { Helmet } from "react-helmet-async";
 import AddButton from "../../components/datatable/AddButton";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
-import { clearMessages, deletejob_posting, fetchjob_posting } from "../../redux/JobPosting";
+import { clearMessages, deleteloan_requests, fetchloan_requests } from "../../redux/loanRequests";
 
-const JobPosting = () => {
+const LoanRequests = () => {
     const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
     const [paginationData, setPaginationData] = React.useState()
     const [searchText, setSearchText] = React.useState("");
@@ -33,76 +30,42 @@ const JobPosting = () => {
     const dispatch = useDispatch();
 
     const columns = [
-
         {
-            title: "Job Title",
-            dataIndex: "job_title",
-            sorter: (a, b) => a.job_title - b.job_title,
-        },
-        {
-            title: "Department",
-            dataIndex: "hrms_job_department",
-            render: (value) => <div>{value?.department_name}</div>,
+            title: "Employee",
+            dataIndex: "loan_req_employee",
+            render: (value) => <div>{value?.full_name}</div>,
             sorter: (a, b) =>
-                (a.hrms_job_department?.department_name || "").localeCompare(
-                    b.hrms_job_department?.department_name || ""
-                ),
+                (a.loan_req_employee?.full_name || "").localeCompare(b.loan_req_employee?.full_name || ""),
         },
         {
-            title: "Designation",
-            dataIndex: "hrms_job_designation",
-            render: (value) => <div>{value?.designation_name}</div>,
+            title: "Loan Type",
+            dataIndex: "loan_types",
+            render: (value) => <div>{value?.loan_name || "—"}</div>, // assuming loan_types is an object with loan_name
             sorter: (a, b) =>
-                (a.hrms_job_designation?.designation_name || "").localeCompare(
-                    b.hrms_job_designation?.designation_name || ""
-                ),
+                (a.loan_types?.loan_name || "").localeCompare(b.loan_type?.loan_name || ""),
         },
-
-
         {
-            title: "Required Experience",
-            dataIndex: "required_experience",
-            // render: (value) => value ? `${value} years` : "—",
-            sorter: (a, b) => a.required_experience - b.required_experience,
-
+            title: "Amount",
+            dataIndex: "amount",
+            render: (value) => <div>₹ {Number(value).toLocaleString()}</div>,
+            sorter: (a, b) => a.amount - b.amount,
         },
-
         {
-            title: "Posting Date",
-            dataIndex: "posting_date",
+            title: "EMI Months",
+            dataIndex: "emi_months",
+            sorter: (a, b) => a.emi_months - b.emi_months,
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            render: (value) => <div>{value || "Pending"}</div>,
+            sorter: (a, b) => a.status.localeCompare(b.status),
+        },
+        {
+            title: "Requested On",
+            dataIndex: "request_date",
             render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-            sorter: (a, b) => new Date(a.posting_date) - new Date(b.posting_date),
-        },
-        {
-            title: "Closing Date",
-            dataIndex: "closing_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-            sorter: (a, b) => new Date(a.closing_date) - new Date(b.closing_date),
-        },
-
-        {
-            title: "Description",
-            dataIndex: "description",
-            sorter: (a, b) => a.description - b.description,
-        },
-        {
-            title: "Is Internal",
-            dataIndex: "is_internal",
-            render: (value) => (<div>{value ? "Yes" : "NO"}</div>),
-            sorter: (a, b) => {
-                const valA = a.is_internal === "Yes" || a.is_internal === true;
-                const valB = b.is_internal === "Yes" || b.is_internal === true;
-                return valA - valB;
-            },
-
-        },
-        {
-            title: "Created At",
-            dataIndex: "created_date",
-            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-            sorter: (a, b) => a.created_date.length - b.created_date.length,
+            sorter: (a, b) => new Date(a.request_date) - new Date(b.request_date),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
@@ -122,7 +85,7 @@ const JobPosting = () => {
                             className="dropdown-item edit-popup"
                             to="#"
                             data-bs-toggle="offcanvas"
-                            data-bs-target="#add_edit_job_posting_modal"
+                            data-bs-target="#add_edit_loan_requests_modal"
                             onClick={() => {
                                 setSelectedIndustry(record);
                                 setMode("edit");
@@ -143,21 +106,21 @@ const JobPosting = () => {
         }] : [])
     ];
 
-    const { job_posting, loading, error, success } = useSelector(
-        (state) => state.job_posting
+    const { loan_requests, loading, error, success } = useSelector(
+        (state) => state.loan_requests
     );
 
     React.useEffect(() => {
-        dispatch(fetchjob_posting({ search: searchText }));
+        dispatch(fetchloan_requests({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: job_posting?.currentPage,
-            totalPage: job_posting?.totalPages,
-            totalCount: job_posting?.totalCount,
-            pageSize: job_posting?.size
+            currentPage: loan_requests?.currentPage,
+            totalPage: loan_requests?.totalPages,
+            totalCount: loan_requests?.totalCount,
+            pageSize: loan_requests?.size
         })
-    }, [job_posting])
+    }, [loan_requests])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -165,7 +128,7 @@ const JobPosting = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchjob_posting({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchloan_requests({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -173,7 +136,7 @@ const JobPosting = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = job_posting?.data || [];
+        let data = loan_requests?.data || [];
 
         if (sortOrder === "ascending") {
             data = [...data].sort((a, b) =>
@@ -185,7 +148,7 @@ const JobPosting = () => {
             );
         }
         return data;
-    }, [searchText, job_posting, columns, sortOrder]);
+    }, [searchText, loan_requests, columns, sortOrder]);
 
     const handleDeleteIndustry = (industry) => {
         setSelectedIndustry(industry);
@@ -196,8 +159,8 @@ const JobPosting = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deletejob_posting(selectedIndustry.id));
-            // navigate(`/job_posting`);
+            dispatch(deleteloan_requests(selectedIndustry.id));
+            // navigate(`/loan_requests`);
             setShowDeleteModal(false);
         }
     };
@@ -205,8 +168,8 @@ const JobPosting = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Job Posting</title>
-                <meta name="DepanrtmentList" content="This is job_posting page of DCC CRMS." />
+                <title>DCC HRMS - Loan Requests</title>
+                <meta name="DepanrtmentList" content="This is loan_requests page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -230,9 +193,9 @@ const JobPosting = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        Job Posting
+                                        Loan Requests
                                         <span className="count-title">
-                                            {job_posting?.totalCount || 0}
+                                            {loan_requests?.totalCount || 0}
                                         </span>
                                     </h4>
                                 </div>
@@ -262,11 +225,11 @@ const JobPosting = () => {
                                             to=""
                                             className="btn btn-primary"
                                             data-bs-toggle="offcanvas"
-                                            data-bs-target="#add_edit_job_posting_modal"
+                                            data-bs-target="#add_edit_loan_requests_modal"
                                             onClick={() => setMode("add")}
                                         >
                                             <i className="ti ti-square-rounded-plus me-2" />
-                                            Add Job Position
+                                            Add Offer Letter
                                         </Link>
                                     </div>
                                 </div>
@@ -310,4 +273,4 @@ const JobPosting = () => {
     );
 };
 
-export default JobPosting;
+export default LoanRequests;

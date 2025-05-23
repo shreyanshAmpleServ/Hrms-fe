@@ -111,6 +111,42 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Offer Letters",
+        link: route.offerLetters,
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Resume Upload",
+        link: route.resumeUpload,
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Leave Applications",
+        link: route.leaveApplications,
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Payslip Viewer",
+        link: route.payslipViewer,
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Loan Requests",
+        link: route.loanRequests,
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: false,
+      },
+
 
       // {
       //   label: "Projects",
@@ -341,6 +377,11 @@ export const SidebarData = [
           {
             label: "Tax Regime",
             link: route.taxRegime,
+            showSubRoute: false,
+          },
+          {
+            label: "Lone Type",
+            link: route.loneType,
             showSubRoute: false,
           },
           {
