@@ -112,6 +112,9 @@ const EmployeeList = () => {
       title: "Name",
       dataIndex: "full_name",
       sorter: (a, b) => a.full_name.length - b.full_name.length,
+      render: (text, record) => (
+        <Link to={`/employee/${record?.id}`}>{text}</Link>
+      ),
     },
     {
       title: "Email",
