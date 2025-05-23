@@ -459,6 +459,25 @@ export const genderOptions = [
   { value: "Female",label: "Female" },
   { value: "Other",label: "Other" },
 ];
+export const maritalStatusOptions = [
+  { value: "", label: "Select" },
+  { value: "Married",label: "Married" },
+  { value: "Un-married",label: "Un-married" },
+  // { value: "Other",label: "Other" },
+];
+export const empStatusOptions = [
+  { value: "", label: "Select" },
+  { value: "Active",label: "Active" },
+  { value: "Probation",label: "Probation" },
+  { value: "On Hold",label: "On Hold" },
+  { value: "Resigned",label: "Resigned" },
+  { value: "Notice Period",label: "Notice Period" },
+  { value: "Terminated",label: "Terminated" },
+  { value: "Retired",label: "Retired" },
+  { value: "Absconded",label: "Absconded" },
+  { value: "Inactive",label: "Inactive" },
+  { value: "Exited",label: "Exited" },
+];
 const route = all_routes
 export const ModuleOptions = [
   {path: route.dasshboard, label: "Dashboard", value: "Dashboard",},

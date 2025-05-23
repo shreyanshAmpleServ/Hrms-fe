@@ -75,6 +75,12 @@ export const all_routes = {
 
   // Appointment Letters
   appointmentLetter: "/appointment-letters",
+  offerLetters: "/offerLetters",
+  resumeUpload: "/resumeUpload",
+  leaveApplications: "/leaveApplications",
+  payslipViewer: "/payslipViewer",
+  loanRequests: "/loanRequests",
+  loneType: "loneType",
 
   // Employment Contracts
   employmentContracts: "/employment-contracts",
