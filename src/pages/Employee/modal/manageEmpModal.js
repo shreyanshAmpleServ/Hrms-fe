@@ -160,7 +160,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const { bank, loading: loadingBank } = useSelector((state) => state.bank);
 
   const { employmentType, loading: loadingEmp } = useSelector(
-    (state) => state.employementType
+    (state) => state.employmentType
   );
   const { designation, loading: loadingDesignaion } = useSelector(
     (state) => state.designation
