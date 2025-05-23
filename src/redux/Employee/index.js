@@ -146,7 +146,7 @@ const employeesSlice = createSlice({
       })
       .addCase(createEmployee.fulfilled, (state, action) => {
         state.loading = false;
-        state.employee ={...state.employee,data: [...state.employee,action.payload.data]};
+        state.employee ={...state.employee,data: [...state.employee.data,action.payload.data]};
         state.success = action.payload.message;
       })
       .addCase(createEmployee.rejected, (state, action) => {
@@ -165,7 +165,7 @@ const employeesSlice = createSlice({
         if (index !== -1) {
           state.employee.data[index] = action.payload.data;
         } else {
-          state.employee ={...state.employee , data: [...state.employee,action.payload.data]};
+          state.employee ={...state.employee , data: [...state.employee.data,action.payload.data]};
         }
         state.success = action.payload.message;
       })
