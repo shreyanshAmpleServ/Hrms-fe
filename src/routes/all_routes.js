@@ -82,6 +82,9 @@ export const all_routes = {
   // Leave Encashment
   leaveEncashment: "/leave-encashment",
 
+  // Time Sheet Entry
+  timeSheet: "/time-sheet",
+
   // currency: "/currency",
   // core-hr //
 

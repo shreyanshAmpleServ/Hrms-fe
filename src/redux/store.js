@@ -77,6 +77,7 @@ import JobPostingReducer from "./JobPosting";
 import AppointmentLetters from "./AppointmentLetters";
 import EmploymentContracts from "./EmployementContracts";
 import LeaveEncashmentReducer from "./LeaveEncashment";
+import TimeSheetReducer from "./TimeSheet";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -156,6 +157,7 @@ const store = configureStore({
     appointment: AppointmentLetters,
     contracts: EmploymentContracts,
     leaveEncashment: LeaveEncashmentReducer,
+    timeSheet: TimeSheetReducer,
   },
 });
 

@@ -140,6 +140,7 @@ import AppointmentLetters from "../pages/AppointmentLetters";
 import EmploymentContracts from "../pages/EmploymentContracts";
 import EmployeeDetail from "../pages/Employee/EmployeeDetail";
 import LeaveEncashment from "../pages/LeaveEncashment";
+import TimeSheet from "../pages/TimeSheet";
 
 // // Export components individually
 
@@ -845,6 +846,12 @@ export const privateRoutes = [
     element: <LeaveEncashment />,
     route: Route,
     title: "Leave Encashment",
+  },
+  {
+    path: route.timeSheet,
+    element: <TimeSheet />,
+    route: Route,
+    title: "Time Sheet",
   },
 ];
 

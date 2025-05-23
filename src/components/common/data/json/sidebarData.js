@@ -131,6 +131,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Time Sheet Entry",
+        link: route.timeSheet,
+        icon: "ti ti-clock",
+        showSubRoute: false,
+        submenu: false,
+      },
       // {
       //   label: "Projects",
       //   link: route.projects,
