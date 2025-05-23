@@ -30,50 +30,53 @@ import mappedStatesReducer from "./mappedState";
 import modulesReducer from "./Modules";
 import permissionsReducer from "./permissions";
 import attachmentsReducer from "./attachment";
-import productCategoryReducer from "./productCategory"
-import productsReducer from "./products"
-import taxSetupReducer from "./taxSetUp"
-import orderReducer from "./order"
-import quotationReducer from "./quotation"
-import purchaseOrderReducer from "./purchaseOrder"
-import salesInvoiceReducer from "./salesInvoice"
-import purchaseInvoiceReducer from "./purchaseInvoice"
-import priceBookReducer from "./priceBook"
-import casesReducer from "./cases"
-import solutionsReducer from "./solutions"
-import campaignsReducer from "./campaign"
-import bankReducer from "./bank"
-import companynewReducer from "./company"
-import branchReducer from "./branch"
-import departmentReducer from "./department"
-import designationReducer from "./designation"
-import employeeTypeReducer from "./employee-type"
-import employee_categoryReducer from "./employee-category"
-import payComponentReducer from "./pay-component"
-import salaryStructureReducer from "./salary-structure"
-import statutoryRatesReducer from "./statutoryRate"
-import taxReliefReducer from "./taxRelief"
-import providentFundReducer from "./providentFund"
-import taxRegimeReducer from "./taxRegime"
-import KpiMasterReducer from "./kpiMaster"
-import goalCategoryMasterReducer from "./goalCategoryMaster"
-import reviewTemplateMasterReducer from "./reviewTemplateMaster"
-import ratingScaleMasterReduer from "./ratingScaleMaster"
-import jobCategoryMasterReduer from "./jobCategoryMaster"
-import grievanceTypeReduer from "./grievanceTypeMaster"
-import disciplinaryPenaltyReduer from "./disciplinaryPenalty"
-import workLifeEventReduer from "./workLifeEventTypeMaster"
-import awardTypeMasterReduer from "./awardType"
-import letterTypeMasterReduer from "./letterType"
-import documentTypeMasterReduer from "./documentType"
-import surveyMasterReduer from "./surveyMaster"
-import assetTypeMasterReduer from "./assetType"
-import employeeReducer from "./Employee"
-import shiftReducer from "./Shift"
-import leaveTypeReducer from "./LeaveType"
-import holidayCalenderReducer from "./HolidayCalender"
-import WorkScheduleTempReducer from "./WorkScheduleTemp"
-import JobPostingReducer from "./JobPosting"
+import productCategoryReducer from "./productCategory";
+import productsReducer from "./products";
+import taxSetupReducer from "./taxSetUp";
+import orderReducer from "./order";
+import quotationReducer from "./quotation";
+import purchaseOrderReducer from "./purchaseOrder";
+import salesInvoiceReducer from "./salesInvoice";
+import purchaseInvoiceReducer from "./purchaseInvoice";
+import priceBookReducer from "./priceBook";
+import casesReducer from "./cases";
+import solutionsReducer from "./solutions";
+import campaignsReducer from "./campaign";
+import bankReducer from "./bank";
+import companynewReducer from "./company";
+import branchReducer from "./branch";
+import departmentReducer from "./department";
+import designationReducer from "./designation";
+import employeeTypeReducer from "./employee-type";
+import employee_categoryReducer from "./employee-category";
+import payComponentReducer from "./pay-component";
+import salaryStructureReducer from "./salary-structure";
+import statutoryRatesReducer from "./statutoryRate";
+import taxReliefReducer from "./taxRelief";
+import providentFundReducer from "./providentFund";
+import taxRegimeReducer from "./taxRegime";
+import KpiMasterReducer from "./kpiMaster";
+import goalCategoryMasterReducer from "./goalCategoryMaster";
+import reviewTemplateMasterReducer from "./reviewTemplateMaster";
+import ratingScaleMasterReduer from "./ratingScaleMaster";
+import jobCategoryMasterReduer from "./jobCategoryMaster";
+import grievanceTypeReduer from "./grievanceTypeMaster";
+import disciplinaryPenaltyReduer from "./disciplinaryPenalty";
+import workLifeEventReduer from "./workLifeEventTypeMaster";
+import awardTypeMasterReduer from "./awardType";
+import letterTypeMasterReduer from "./letterType";
+import documentTypeMasterReduer from "./documentType";
+import surveyMasterReduer from "./surveyMaster";
+import assetTypeMasterReduer from "./assetType";
+import employeeReducer from "./Employee";
+import shiftReducer from "./Shift";
+import leaveTypeReducer from "./LeaveType";
+import holidayCalenderReducer from "./HolidayCalender";
+import WorkScheduleTempReducer from "./WorkScheduleTemp";
+import JobPostingReducer from "./JobPosting";
+import AppointmentLetters from "./AppointmentLetters";
+import EmploymentContracts from "./EmployementContracts";
+import LeaveEncashmentReducer from "./LeaveEncashment";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -144,13 +147,15 @@ const store = configureStore({
     documentTypeMaster: documentTypeMasterReduer,
     surveyMaster: surveyMasterReduer,
     assetTypeMaster: assetTypeMasterReduer,
-
     employee: employeeReducer,
     shift: shiftReducer,
     leaveType: leaveTypeReducer,
     holidayCalender: holidayCalenderReducer,
     WorkScheduleTemp: WorkScheduleTempReducer,
     job_posting: JobPostingReducer,
+    appointment: AppointmentLetters,
+    contracts: EmploymentContracts,
+    leaveEncashment: LeaveEncashmentReducer,
   },
 });
 

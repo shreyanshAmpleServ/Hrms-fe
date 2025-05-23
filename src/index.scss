@@ -5,7 +5,7 @@
 @import "primereact/resources/themes/lara-light-indigo/theme.css";
 @import "react-time-picker/dist/TimePicker.css";
 @import "react-clock/dist/Clock.css";
-@import 'react-datepicker/dist/react-datepicker.css';
+@import "react-datepicker/dist/react-datepicker.css";
 a {
   text-decoration: none;
   color: #262a2a;
@@ -13,7 +13,7 @@ a {
 .ant-table-thead .ant-table-cell {
   background-color: rgba(0, 0, 255, 0.053) !important;
   // color: white !important;
-  }
+}
 .ant-tooltip {
   display: none;
 }
@@ -25,13 +25,13 @@ a {
 /* Ensure content is still scrollable */
 .scroll-container {
   overflow: auto;
-  -ms-overflow-style: none;  /* Hide scrollbar in IE and Edge */
-  scrollbar-width: none;  /* Hide scrollbar in Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
 }
 .account-content {
-      // background: linear-gradient(115.43deg, #f6fafd .45%, #c1daf7); 
-      // background: linear-gradient(115.43deg, #f6fafd .45%, #dbeafb); 
-      background:white; 
+  // background: linear-gradient(115.43deg, #f6fafd .45%, #c1daf7);
+  // background: linear-gradient(115.43deg, #f6fafd .45%, #dbeafb);
+  background: white;
 }
 .login-left {
   background: linear-gradient(180deg, #3da8ff, #0e4486);
@@ -452,8 +452,11 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
     > td {
     border-color: #393947;
   }
-  :where(.css-11xg00t).ant-table-wrapper .ant-table-tbody .ant-table-row >.ant-table-cell-row-hover{
-    background: #171724;;
+  :where(.css-11xg00t).ant-table-wrapper
+    .ant-table-tbody
+    .ant-table-row
+    > .ant-table-cell-row-hover {
+    background: #171724;
   }
   :where(.css-dev-only-do-not-override-11xg00t).ant-table-wrapper
     .ant-table-thead
@@ -545,11 +548,11 @@ div.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-draggin
   background: grey;
 }
 div.css-b62m3t-container .react-select__option--is-focused {
-  background-color: #e41f07;
+  background-color: #4453ff;
   color: #fff;
 }
 div.css-b62m3t-container .react-select__option--is-selected {
-  background-color: #e41f07;
+  background-color: #4453ff;
   color: #fff;
 }
 
@@ -594,10 +597,10 @@ i.ti-bell:before {
 }
 .submenu > a {
   padding: 5px !important;
-}  
+}
 .submenu > a span {
   font-size: 12px !important;
-}  
+}
 .submenu-two > a {
   padding-left: 30px !important;
   font-size: 11.5px !important;

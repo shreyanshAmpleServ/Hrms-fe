@@ -1,7 +1,6 @@
 import { all_routes } from "../../../../routes/all_routes";
 const route = all_routes;
 export const SidebarData = [
-
   {
     label: "HRMS",
     submenuOpen: true,
@@ -111,7 +110,27 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-
+      {
+        label: "Appointment Letters",
+        link: route.appointmentLetter,
+        icon: "ti ti-calendar-bolt",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Employment Contracts",
+        link: route.employmentContracts,
+        icon: "ti ti-clipboard-text",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Leave Encashment",
+        link: route.leaveEncashment,
+        icon: "ti ti-replace",
+        showSubRoute: false,
+        submenu: false,
+      },
       // {
       //   label: "Projects",
       //   link: route.projects,
@@ -217,7 +236,6 @@ export const SidebarData = [
       //   submenu: false,
       // },
 
-
       // {
       //   label: "Contact Stage",
       //   link: route.contactStage,
@@ -299,9 +317,8 @@ export const SidebarData = [
             label: "Employment Type",
             link: route.employmentType,
             showSubRoute: false,
-
           },
-        ]
+        ],
       },
 
       {
@@ -353,7 +370,7 @@ export const SidebarData = [
             link: route.taxRelief,
             showSubRoute: false,
           },
-        ]
+        ],
       },
 
       {
@@ -391,9 +408,7 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
-
-
-        ]
+        ],
       },
 
       {
@@ -466,8 +481,7 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
-
-        ]
+        ],
       },
 
       {
@@ -497,8 +511,7 @@ export const SidebarData = [
             link: route.workSchedule,
             showSubRoute: false,
           },
-
-        ]
+        ],
       },
       // {
       //   label: "Meeting Types",
@@ -537,7 +550,6 @@ export const SidebarData = [
         submenu: false,
       },
 
-
       {
         label: "Modules",
         link: route.modules,
@@ -545,7 +557,6 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
-
     ],
   },
   {

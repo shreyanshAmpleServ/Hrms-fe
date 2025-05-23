@@ -19,7 +19,6 @@ import DesignationList from "../pages/crm-settings/core-hr/designation";
 import Employee_CategoryList from "../pages/crm-settings/core-hr/employeeCategory";
 import Employee_TypeList from "../pages/crm-settings/core-hr/employmentType";
 
-
 import JobPosting from "../pages/jobPosting";
 
 import Pipelines from "../pages/pipelines/";
@@ -51,12 +50,11 @@ import CurrencyList from "../pages/crm-settings/payroll-statutory/currency";
 import StateList from "../pages/crm-settings/state";
 import EmployeeList from "../pages/Employee";
 
-// USER MANAGEMENT 
+// USER MANAGEMENT
 import Manageusers from "../pages/user-management/manage-users";
 import UserDetail from "../pages/user-management/manage-users/UserDetail";
 
 import RolesPermissions from "../pages/user-management/roles";
-
 
 // SETTINGS //
 import ConnectedApps from "../pages/settings/general-settings/ConnectedApp";
@@ -70,7 +68,6 @@ import Language from "../pages/settings/website-settings/LanguageWeb";
 import Localization from "../pages/settings/website-settings/Localization";
 import Preference from "../pages/settings/website-settings/Preference";
 import Prefixes from "../pages/settings/website-settings/Prefixes";
-
 
 import CustomFields from "../pages/settings/app-settings/CustomFields";
 import InvoiceSettings from "../pages/settings/app-settings/InvoiceSettings";
@@ -116,7 +113,6 @@ import ProjectDashboard from "../pages/main-menu/project-dashboard";
 import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
 
-
 import AddEmployee from "../pages/Employee/AddEmployee";
 
 import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
@@ -140,10 +136,12 @@ import SalesInvoice from "../pages/salesInvoice";
 import Solutions from "../pages/Solutions";
 import HolidayCalenderList from "../pages/crm-settings/leaveAndAttendance/HolidayCalender";
 import WorkTemplateList from "../pages/crm-settings/leaveAndAttendance/WorkSchedule";
-
+import AppointmentLetters from "../pages/AppointmentLetters";
+import EmploymentContracts from "../pages/EmploymentContracts";
+import EmployeeDetail from "../pages/Employee/EmployeeDetail";
+import LeaveEncashment from "../pages/LeaveEncashment";
 
 // // Export components individually
-
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -159,7 +157,7 @@ export const privateRoutes = [
     path: route.leads,
     element: <LeadsList />,
     route: Route,
-    title: 'Leads'
+    title: "Leads",
   },
   {
     path: route.contacts,
@@ -183,13 +181,13 @@ export const privateRoutes = [
     path: route.activities,
     element: <Activities />,
     route: Route,
-    title: 'Activities'
+    title: "Activities",
   },
   {
     path: `${route.activities}/:name`,
     element: <Activities />,
     route: Route,
-    title: 'Activities'
+    title: "Activities",
   },
   {
     path: route.calls,
@@ -456,19 +454,19 @@ export const privateRoutes = [
     path: route.modules,
     element: <Modules />,
     route: Route,
-    title: 'Modules'
+    title: "Modules",
   },
   {
     path: route.manageusers,
     element: <Manageusers />,
     route: Route,
-    title: 'Manage Users'
+    title: "Manage Users",
   },
   {
     path: route.rolesPermissions,
     element: <RolesPermissions />,
     route: Route,
-    title: 'Roles & Permission'
+    title: "Roles & Permission",
   },
   {
     path: route.VendorDetail,
@@ -547,7 +545,7 @@ export const privateRoutes = [
     path: route.leadsDetail,
     element: <LeadsDetail />,
     route: Route,
-    title: 'Leads Detail'
+    title: "Leads Detail",
   },
   {
     path: route.leadskanban,
@@ -571,7 +569,7 @@ export const privateRoutes = [
     path: route.manageusersDetails,
     element: <UserDetail />,
     route: Route,
-    title: 'Manage Users Details'
+    title: "Manage Users Details",
   },
 
   {
@@ -598,44 +596,44 @@ export const privateRoutes = [
     path: route.connectedApps,
     element: <ConnectedApps />,
     route: Route,
-    title: 'ConnectedApps'
+    title: "ConnectedApps",
   },
   {
     path: route.notification,
     element: <Notifications />,
     route: Route,
-    title: 'Notifications'
+    title: "Notifications",
   },
   {
     path: route.profile,
     element: <Profile />,
     route: Route,
-    title: 'Profile'
+    title: "Profile",
   },
   {
     path: route.security,
     element: <Security />,
     route: Route,
-    title: 'Security'
+    title: "Security",
   },
 
   {
     path: route.appearance,
     element: <Appearance />,
     route: Route,
-    title: 'Appearance'
+    title: "Appearance",
   },
   {
     path: route.companySettings,
     element: <CompanySettings />,
     route: Route,
-    title: 'Companies Settings'
+    title: "Companies Settings",
   },
   {
     path: route.language,
     element: <Language />,
     route: Route,
-    title: 'Language'
+    title: "Language",
   },
   {
     path: route.localization,
@@ -646,59 +644,58 @@ export const privateRoutes = [
     path: route.preference,
     element: <Preference />,
     route: Route,
-    title: 'Preference'
+    title: "Preference",
   },
   {
     path: route.prefixes,
     element: <Prefixes />,
     route: Route,
-    title: 'Prefixes'
+    title: "Prefixes",
   },
-
 
   {
     path: route.customFields,
     element: <CustomFields />,
     route: Route,
-    title: 'Custom Fields'
+    title: "Custom Fields",
   },
   {
     path: route.invoiceSettings,
     element: <InvoiceSettings />,
     route: Route,
-    title: 'Invoice Settings'
+    title: "Invoice Settings",
   },
   {
     path: route.printers,
     element: <Printers />,
     route: Route,
-    title: 'Printers'
+    title: "Printers",
   },
 
   {
     path: route.emailSettings,
     element: <EmailSettings />,
     route: Route,
-    title: 'Email Settings'
+    title: "Email Settings",
   },
   {
     path: route.gdprCookies,
     element: <GdprCookies />,
     route: Route,
-    title: 'Gdpr Cookies'
+    title: "Gdpr Cookies",
   },
   {
     path: route.smsGateways,
     element: <SmsGateways />,
     route: Route,
-    title: 'Sms Gateways'
+    title: "Sms Gateways",
   },
 
   {
     path: route.bankAccounts,
     element: <BankAccounts />,
     route: Route,
-    title: 'Bank Accounts'
+    title: "Bank Accounts",
   },
   // {
   //   path: route.currencies,
@@ -710,93 +707,92 @@ export const privateRoutes = [
     path: route.paymentGateways,
     element: <PaymentGateways />,
     route: Route,
-    title: 'PaymentGateways'
+    title: "PaymentGateways",
   },
   {
     path: route.kpiMaster,
     element: <KpiMaster />,
     route: Route,
-    title: 'KpiMaster'
+    title: "KpiMaster",
   },
   {
     path: route.goalCategoryMaster,
     element: <GoalCategoryMaster />,
     route: Route,
-    title: 'goalCategoryMaster'
+    title: "goalCategoryMaster",
   },
   {
     path: route.disciplinaryPenaltyMaster,
     element: <DisciplinaryPenaltyMaster />,
     route: Route,
-    title: 'disciplinaryPenaltyMaster'
+    title: "disciplinaryPenaltyMaster",
   },
   {
     path: route.awardTypeMaster,
     element: <AwardTypeMaster />,
     route: Route,
-    title: 'awardTypeMaster'
+    title: "awardTypeMaster",
   },
   {
     path: route.jobCategoryMaster,
     element: <JobCategoryMaster />,
     route: Route,
-    title: 'jobCategoryMaster'
+    title: "jobCategoryMaster",
   },
   {
     path: route.grievanceTypeMaster,
     element: <GrievanceTypeMaster />,
     route: Route,
-    title: 'GrievanceTypeMaster'
+    title: "GrievanceTypeMaster",
   },
   {
     path: route.workLifeEventTypeMaster,
     element: <WorkLifeEventTypeMaster />,
     route: Route,
-    title: 'workLifeEventTypeMaster'
+    title: "workLifeEventTypeMaster",
   },
   {
     path: route.assetTypeMaster,
     element: <AssetTypeMaster />,
     route: Route,
-    title: 'workLifeEventTypeMaster'
+    title: "workLifeEventTypeMaster",
   },
   {
     path: route.letterTypeMaster,
     element: <LetterTypeMaster />,
     route: Route,
-    title: 'letterTypeMaster'
+    title: "letterTypeMaster",
   },
   {
     path: route.surveyMaster,
     element: <SurveyMaster />,
     route: Route,
-    title: 'surveyMaster'
+    title: "surveyMaster",
   },
   {
     path: route.documentTypeMaster,
     element: <DocumentTypeMaster />,
     route: Route,
-    title: 'documentTypeMaster'
+    title: "documentTypeMaster",
   },
   {
     path: route.taxRates,
     element: <TaxRates />,
     route: Route,
-    title: 'TaxRates'
+    title: "TaxRates",
   },
-
 
   {
     path: route.banIpAddrress,
     element: <BanIpAddress />,
     route: Route,
-    title: 'BanIpAddress'
+    title: "BanIpAddress",
   },
   {
     path: route.storage,
     element: <Storage />,
     route: Route,
-    title: 'Storage'
+    title: "Storage",
   },
   /////////// Settings /////////////////////
 
@@ -812,19 +808,43 @@ export const privateRoutes = [
     path: route.dealsDashboard,
     element: <DealsDashboard />,
     route: Route,
-    title: 'Deals Dashboard'
+    title: "Deals Dashboard",
   },
   {
     path: route.leadsDashboard,
     element: <LeadsDashboard />,
     route: Route,
-    title: 'Leads Dashboard'
+    title: "Leads Dashboard",
   },
   {
     path: route.projectDashboard,
     element: <ProjectDashboard />,
     route: Route,
-    title: 'Projects Dashboard'
+    title: "Projects Dashboard",
+  },
+  {
+    path: route.appointmentLetter,
+    element: <AppointmentLetters />,
+    route: Route,
+    title: "Appointment Letters",
+  },
+  {
+    path: route.employmentContracts,
+    element: <EmploymentContracts />,
+    route: Route,
+    title: "Employment Contracts",
+  },
+  {
+    path: route.employeeDetails,
+    element: <EmployeeDetail />,
+    route: Route,
+    title: "Employee Details",
+  },
+  {
+    path: route.leaveEncashment,
+    element: <LeaveEncashment />,
+    route: Route,
+    title: "Leave Encashment",
   },
 ];
 

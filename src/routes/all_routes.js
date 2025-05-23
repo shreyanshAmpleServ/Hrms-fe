@@ -40,8 +40,6 @@ export const all_routes = {
   activities: "/crm/activities",
   //CRM SETTINGS
 
-
-
   // core-hr //
   company: "/company",
 
@@ -70,13 +68,19 @@ export const all_routes = {
   surveyMaster: "/surveyMaster",
   assetTypeMaster: "/assetTypeMaster",
 
-
   jobPosting: "/jobPosting",
   employee: "/employee",
   addEmployee: "/add-employee",
+  employeeDetails: "/employee/:id",
 
+  // Appointment Letters
+  appointmentLetter: "/appointment-letters",
 
+  // Employment Contracts
+  employmentContracts: "/employment-contracts",
 
+  // Leave Encashment
+  leaveEncashment: "/leave-encashment",
 
   // currency: "/currency",
   // core-hr //
@@ -102,7 +106,6 @@ export const all_routes = {
   country: "/country",
   currency: "/currency",
 
-
   // Settings //
   connectedApps: "/general-settings/connected-apps",
   notification: "/general-settings/notification",
@@ -121,7 +124,6 @@ export const all_routes = {
   invoiceSettings: "/app-settings/invoice-settings",
   printers: "/app-settings/printers",
 
-
   emailSettings: "/system-settings/storage",
   gdprCookies: "/system-settings/gdpr-cookies",
   smsGateways: "/system-settings/sms-gateways",
@@ -133,7 +135,6 @@ export const all_routes = {
 
   banIpAddrress: "/other-settings/ban-ip-address",
   storage: "/other-settings/storage",
-
 
   /* USER MANAGEMENT */
   manageusers: "/manage-users",
