@@ -15,7 +15,11 @@ import { fetchCountries } from "../../../redux/country";
 import { fetchCurrencies } from "../../../redux/currency";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
-import { createEmployee, fetchEmployee, updateEmployee } from "../../../redux/Employee";
+import {
+  createEmployee,
+  fetchEmployee,
+  updateEmployee,
+} from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
 import { fetchStates } from "../../../redux/state";
 import ManageAddress from "./createAddress";
@@ -64,7 +68,7 @@ const initialEmpData = {
   mother_name: "",
   emergency_contact: "",
   emergency_contact_person: "",
-  contact_relation: ""
+  contact_relation: "",
 };
 const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const [selectedLogo, setSelectedLogo] = useState();
@@ -81,44 +85,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      jobTitle: "",
-      company_id: null,
-      email: "",
-      phone1: "",
-      phone2: "",
-      fax: "",
-      deal_id: null,
-      dateOfBirth: new Date(),
-      reviews: null,
-      owner: null,
-      source: null,
-      industry: null,
-      currency: "",
-      language: null,
-      description: "",
-      emailOptOut: false,
-      streetAddress: "",
-      city: "",
-      state: "",
-      country: "",
-      zipcode: "",
-      socialProfiles: {
-        facebook: "",
-        linkedin: "",
-        twitter: "",
-      },
-      visibility: "",
-      is_active: "",
-    },
+    defaultValues: initialEmpData,
   });
 
-
-
   React.useEffect(() => {
-    if (contact) {
+    if (employeeData) {
       reset({
         employee_code: employeeData?.employee_code || "",
         first_name: employeeData?.first_name || "",
@@ -156,46 +127,17 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
         employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || []
       );
       setStateOptions(
-        employeeData?.hrms_employee_address?.map((addr) => ([{
-          value: addr?.state,
-          label: addr?.employee_state.name,
-        }])) || [])
-
+        employeeData?.hrms_employee_address?.map((addr) => [
+          {
+            value: addr?.state,
+            label: addr?.employee_state.name,
+          },
+        ]) || []
+      );
     } else {
-      reset({
-        firstName: "",
-        lastName: "",
-        jobTitle: "",
-        company_id: null,
-        email: "",
-        phone1: "",
-        phone2: "",
-        fax: "",
-        deal_id: null,
-        dateOfBirth: new Date(),
-        reviews: null,
-        owner: null,
-        source: null,
-        industry: null,
-        currency: "",
-        language: null,
-        description: "",
-        emailOptOut: false,
-        streetAddress: "",
-        city: "",
-        state: "",
-        country: "",
-        zipcode: "",
-        socialProfiles: {
-          facebook: "",
-          linkedin: "",
-          twitter: "",
-        },
-        visibility: "",
-        is_active: "",
-      });
+      reset(initialEmpData);
     }
-  }, [contact]);
+  }, [employeeData]);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -207,28 +149,35 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const { loading } = useSelector((state) => state.contacts);
 
   React.useEffect(() => {
-    dispatch(fetchIndustries());
-    dispatch(fetchCompanies());
-    dispatch(fetchDeals());
-    dispatch(fetchUsers());
-    dispatch(fetchSources());
+    dispatch(fetchemploymentType());
+    dispatch(fetchdesignation());
+    dispatch(fetchdepartment());
+    dispatch(fetchbank());
     dispatch(fetchCountries());
-    dispatch(fetchCurrencies())
+    dispatch(fetchCurrencies());
   }, [dispatch]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchEmployee }))
+    dispatch(fetchEmployee({ search: searchEmployee }));
   }, [searchEmployee]);
 
   const { employee, loading: loadingEmployee } = useSelector(
     (state) => state.employee
   );
 
-
   const { bank, loading: loadingBank } = useSelector((state) => state.bank);
 
-  const currencyLists = currencies?.data?.map(i => i?.is_active === "Y" ? ({ label: `${i?.code} - ${i?.name}`, value: i?.code }) : null).filter(Boolean) || [];
+  const { employmentType, loading: loadingEmp } = useSelector(
+    (state) => state.employementType
+  );
+  const { designation, loading: loadingDesignaion } = useSelector(
+    (state) => state.designation
+  );
+  const { department, loading: loadingDept } = useSelector(
+    (state) => state.department
+  );
 
+  // const currencyLists = currencies?.data?.map(i => i?.is_active === "Y" ? ({ label: `${i?.code} - ${i?.name}`, value: i?.code }) : null).filter(Boolean) || [];
 
   const employmentOptions = employmentType?.data?.map((emnt) => ({
     value: emnt.id,
@@ -251,11 +200,10 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     label: emnt.full_name,
   }));
 
-
   // Submit Handler
   const onSubmit = async (data) => {
     const formData = new FormData();
-
+    console.log("data", data);
     // Append all form fields
     Object?.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
@@ -268,10 +216,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     });
 
     if (selectedLogo) {
-      formData.append("image", selectedLogo);
+      formData.append("profile_pic", selectedLogo);
     }
-    if (contact) {
-      formData.append("id", contact.id)
+    formData.append("empAddressData", JSON.stringify(manageAddress));
+    if (employeeData) {
+      formData.append("id", employeeData.id);
     }
     // formData.append("reviews",data.reviews ? Number(data.reviews) : null)
 
@@ -291,7 +240,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     }
   };
   React.useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_add_edit_employee");
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_edit_employee"
+    );
     if (offcanvasElement) {
       const handleModalClose = () => {
         setSelectedLogo(null);
@@ -332,6 +283,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       behavior: "smooth",
     });
   };
+
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-larger"
@@ -339,7 +291,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       id="offcanvas_add_edit_employee"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{contact ? "Update" : "Add New"} Employee</h5>
+        <h5 className="fw-semibold">
+          {employeeData ? "Update" : "Add New"} Employee
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -384,17 +338,17 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                                 alt="Company Logo"
                                 className="preview w-100 h-100 object-fit-cover"
                               />
-                            ) : contact ?
+                            ) : employeeData ? (
                               <img
-                                src={contact.image}
-                                alt="Company Logo"
+                                src={employeeData.profile_pic}
+                                alt="Profile Logo"
                                 className="preview w-100 h-100 object-fit-cover"
                               />
-                              : (
-                                <span>
-                                  <i className="ti ti-photo" />
-                                </span>
-                              )}
+                            ) : (
+                              <span>
+                                <i className="ti ti-photo" />
+                              </span>
+                            )}
                             <button
                               type="button"
                               className="profile-remove"
@@ -427,13 +381,13 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
-                          {...register("firstName", {
+                          {...register("first_name", {
                             required: "First name is required",
                           })}
                         />
-                        {errors.firstName && (
+                        {errors.first_name && (
                           <small className="text-danger">
-                            {errors.firstName.message}
+                            {errors.first_name.message}
                           </small>
                         )}
                       </div>
@@ -451,18 +405,19 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Last Name <span className="text-danger">*</span>
+                          Code
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("lastName", {
-                            required: "Last name is required",
+                          {...register("employee_code", {
+                            required: "Employee code is required",
                           })}
                         />
-                        {errors.lastName && (
+                        {errors.employee_code && (
                           <small className="text-danger">
-                            {errors.lastName.message}
+                            {errors.employee_code.message}
                           </small>
                         )}
                       </div>
@@ -470,18 +425,19 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Email <span className="text-danger">*</span>
+                          Email
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
                           className="form-control"
                           {...register("email", {
-                            required: "Job title is required",
+                            required: "Email is required",
                           })}
                         />
-                        {errors.jobTitle && (
+                        {errors.email && (
                           <small className="text-danger">
-                            {errors.jobTitle.message}
+                            {errors.email.message}
                           </small>
                         )}
                       </div>
@@ -494,7 +450,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <i className="ti ti-calendar-event" />
                           </span>
                           <Controller
-                            name="dateOfBirth"
+                            name="date_of_birth"
                             control={control}
                             render={({ field }) => (
                               <DatePicker
@@ -513,16 +469,17 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Mobile<span className="text-danger">*</span>
+                          Mobile
+                          <span className="text-danger">*</span>
                         </label>
                         <input
                           type="number"
                           className="form-control"
                           {...register("phone_number")}
                         />
-                        {errors.jobTitle && (
+                        {errors.phone_number && (
                           <small className="text-danger">
-                            {errors.jobTitle.message}
+                            {errors.phone_number.message}
                           </small>
                         )}
                       </div>
@@ -556,13 +513,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         />
                         {errors.gender && (
                           <small className="text-danger">
-                            {errors.jobTitle.message}
+                            {errors.gender.message}
                           </small>
                         )}
                       </div>
                     </div>
-
-
 
                     <div className="col-md-4">
                       <div className="mb-3">
@@ -577,7 +532,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       </div>
                     </div>
 
-
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
@@ -586,11 +540,10 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="number"
                           className="form-control"
-                          {...register("passport_number",)}
+                          {...register("passport_number")}
                         />
                       </div>
                     </div>
-
 
                     <div className="col-md-4">
                       <div className="mb-3">
@@ -619,14 +572,13 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             />
                           )}
                         />
-                        {errors.jobTitle && (
+                        {errors.employment_type && (
                           <small className="text-danger">
-                            {errors.jobTitle.message}
+                            {errors.employment_type.message}
                           </small>
                         )}
                       </div>
                     </div>
-
 
                     <div className="col-md-4">
                       <div className="mb-3">
@@ -644,7 +596,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Designation Id<span className="text-danger">*</span>
+                          Designation<span className="text-danger">*</span>
                         </label>
                         <Controller
                           name="designation_id"
@@ -668,14 +620,13 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             />
                           )}
                         />
-                        {errors.jobTitle && (
+                        {errors.designation_id && (
                           <small className="text-danger">
-                            {errors.jobTitle.message}
+                            {errors.designation_id.message}
                           </small>
                         )}
                       </div>
                     </div>
-
 
                     <div className="col-md-4">
                       <div className="mb-3">
@@ -705,20 +656,17 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             />
                           )}
                         />
-                        {errors.jobTitle && (
+                        {errors.department_id && (
                           <small className="text-danger">
-                            {errors.jobTitle.message}
+                            {errors.department_id.message}
                           </small>
                         )}
                       </div>
                     </div>
 
-
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Join Date
-                        </label>
+                        <label className="col-form-label">Join Date</label>
                         <div className="icon-form-end">
                           <span className="form-icon">
                             <i className="ti ti-calendar-event" />
@@ -740,32 +688,28 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       </div>
                     </div>
 
-
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Confirm Date
-                        </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          {...register("confirm_date", {
-                            required: "Job title is required",
-                          })}
+                        <label className="col-form-label">Confirm Date</label>
+                        <Controller
+                          name="confirm_date"
+                          control={control}
+                          render={({ field }) => (
+                            <DatePicker
+                              {...field}
+                              className="form-control"
+                              selected={field.value}
+                              onChange={field.onChange}
+                              dateFormat="dd-MM-yyyy"
+                            />
+                          )}
                         />
-                        {errors.jobTitle && (
-                          <small className="text-danger">
-                            {errors.jobTitle.message}
-                          </small>
-                        )}
                       </div>
                     </div>
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Bank
-                        </label>
+                        <label className="col-form-label">Bank</label>
                         <Controller
                           name="bank_id"
                           control={control}
@@ -790,9 +734,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     </div>
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Status
-                        </label>
+                        <label className="col-form-label">Status</label>
                         <Controller
                           name="status"
                           control={control}
@@ -818,26 +760,20 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Account Number
-                        </label>
+                        <label className="col-form-label">Account Number</label>
                         <input
-                          type="number"
+                          type="text"
                           className="form-control"
                           {...register("account_number")}
                         />
                       </div>
                     </div>
 
-
-
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          WorkLocation
-                        </label>
+                        <label className="col-form-label">WorkLocation</label>
                         <input
-                          type="number"
+                          type="text"
                           className="form-control"
                           {...register("work_location")}
                         />
@@ -846,9 +782,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Assign Manager
-                        </label>
+                        <label className="col-form-label">Assign Manager</label>
                         <Controller
                           name="manager_id"
                           control={control}
@@ -859,7 +793,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               placeholder="Choose"
                               classNamePrefix="react-select"
                               isLoading={loadingEmployee}
-                              onInputChange={(value) => { setSearchEmployee(value) }}
+                              onInputChange={(value) => {
+                                setSearchEmployee(value);
+                              }}
                               value={
                                 employeeOptions?.find(
                                   (option) =>
@@ -874,7 +810,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         />
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -914,7 +849,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
             </div>
             {/* /Address Info */}
             {/* Social Profile */}
-            <div className="accordion-item border-top rounded mb-3">
+            {/* <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
                 <Link
                   to="#"
@@ -998,8 +933,8 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                   </div>
                 </div>
               </div>
-            </div>
-            {/* /Social Profile */}` {/* Access */}
+            </div> */}
+            {/* /Social Profile */} {/* Access */}
             <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
                 <Link
@@ -1023,12 +958,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                   <div className="row">
                     {/* <div className="col-md-12"> */}
 
-
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Marital Status
-                        </label>
+                        <label className="col-form-label">Marital Status</label>
                         <Controller
                           name="marital_status"
                           control={control}
@@ -1040,7 +972,8 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               classNamePrefix="react-select"
                               value={
                                 maritalStatusOptions?.find(
-                                  (option) => option.value === watch("marital_status")
+                                  (option) =>
+                                    option.value === watch("marital_status")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -1049,7 +982,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             />
                           )}
                         />
-
                       </div>
                     </div>
                     <div className="col-md-4">
@@ -1100,7 +1032,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     </div>
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">Emergency Contact</label>
+                        <label className="col-form-label">
+                          Emergency Contact
+                        </label>
 
                         <input
                           type="text"
@@ -1122,7 +1056,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     </div>
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">Contact Relation</label>
+                        <label className="col-form-label">
+                          Contact Relation
+                        </label>
 
                         <input
                           type="text"
@@ -1136,7 +1072,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                 </div>
               </div>
             </div>
-            {/* /Access */}`
+            {/* /Access */}
           </div>
           <div className="d-flex align-items-center justify-content-end">
             <button
@@ -1151,7 +1087,13 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
               className="btn btn-primary"
               disabled={loading}
             >
-              {contact ? loading ? "Updating..." : "Update" : loading ? "Creating..." : "Create"}
+              {employeeData
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
               {loading && (
                 <div
                   style={{
