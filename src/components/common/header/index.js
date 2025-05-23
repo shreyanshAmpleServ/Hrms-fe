@@ -12,11 +12,11 @@ import { logoutUser } from "../../../redux/auth/authSlice";
 import Logo from "../logo";
 import ChangePassword from "./ChangePassword";
 import { ModuleOptions } from "../selectoption/selectoption";
-import Select from "react-select"
+import Select from "react-select";
 import { Controller, useForm } from "react-hook-form";
+import hrmsLogo from "../../../assets/hrmsLogo.png";
 
 const Header = () => {
-
   const route = all_routes;
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,9 +25,7 @@ const Header = () => {
   const miniSidebar = useSelector((state) => state.common?.miniSidebar);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
-  const {
-    control
-  } = useForm()
+  const { control } = useForm();
 
   const toggleMobileSidebar = () => {
     dispatch(setMobileSidebar(!mobileSidebar));
@@ -63,7 +61,6 @@ const Header = () => {
       // Dispatch logoutUser thunk
       await dispatch(logoutUser()).unwrap(); // Ensures proper error handling
       navigate(route?.login); // Redirect to login page
-
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -89,7 +86,7 @@ const Header = () => {
             <Logo />
           </Link>
           <Link to={route.dasshboard} className="logo-small">
-            <ImageWithBasePath src="assets/img/logo-small.svg" alt="Logo" />
+            <ImageWithBasePath src={hrmsLogo} alt="Logo" />
           </Link>
           <Link id="toggle_btn" to="#" onClick={toggleMiniSidebar}>
             <i className="ti ti-arrow-bar-to-left" />
@@ -122,40 +119,41 @@ const Header = () => {
                     {/* <select onChange={handleChange} placeholder="Search" className={layoutBs === "dark" ? "text-light" : "text-dark"}  >
                     {ModuleOptions?.map((item)=><option value={item?.value}  >{item.name}</option>)}
                     </select> */}
-        
-    <div                   id="searchs">   
-                    <Controller
-                    name="Select"
-                  control={control}
-                  style={{backgroundColor:"red"}}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={ModuleOptions}
-                      classNamePrefix="react-select"
-                      placeholder="Select Modules"
-                      onChange={handleSelect}
-                      styles={{
-                        control: (base, state) => ({
-                          ...base,
-                          height:"23px",
-                          marginTop:"-10px",
-                          backgroundColor: 'transparent',  // ✅ this controls the background
-                          borderColor:  'transparent',
-                          boxShadow: 'none',
-                          alignItems: 'center',  
-                          '&:hover': {
-                            borderColor: 'transparent',
-                          },
-                          '&:focus': {
-                            borderColor: 'transparent',
-                            boxShadow: 'none',
-                          },
-                        }),}}
-                    />
-                  )}
-                />
-</div>
+
+                    <div id="searchs">
+                      <Controller
+                        name="Select"
+                        control={control}
+                        style={{ backgroundColor: "red" }}
+                        render={({ field }) => (
+                          <Select
+                            {...field}
+                            options={ModuleOptions}
+                            classNamePrefix="react-select"
+                            placeholder="Select Modules"
+                            onChange={handleSelect}
+                            styles={{
+                              control: (base, state) => ({
+                                ...base,
+                                height: "23px",
+                                marginTop: "-10px",
+                                backgroundColor: "transparent", // ✅ this controls the background
+                                borderColor: "transparent",
+                                boxShadow: "none",
+                                alignItems: "center",
+                                "&:hover": {
+                                  borderColor: "transparent",
+                                },
+                                "&:focus": {
+                                  borderColor: "transparent",
+                                  boxShadow: "none",
+                                },
+                              }),
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
                     <div className="search-addon">
                       <button type="submit">
                         <i className="ti ti-command" />
@@ -176,15 +174,17 @@ const Header = () => {
                     id="dark-mode-toggle"
                   >
                     <i
-                      className={`ti ti-sun light-mode ${layoutBs === "dark" ? "" : "active"
-                        }`}
+                      className={`ti ti-sun light-mode ${
+                        layoutBs === "dark" ? "" : "active"
+                      }`}
                       onClick={LayoutLight}
                     >
                       {" "}
                     </i>
                     <i
-                      className={`ti ti-moon dark-mode ${layoutBs === "dark" ? "active" : ""
-                        }`}
+                      className={`ti ti-moon dark-mode ${
+                        layoutBs === "dark" ? "active" : ""
+                      }`}
                       onClick={LayoutDark}
                     ></i>
                   </Link>
@@ -476,9 +476,11 @@ const Header = () => {
                 <span className="user-info">
                   <span className="user-letter">
                     <img
-                      src={user?.profile_img || "assets/img/profiles/avatar-14.jpg"}
+                      src={
+                        user?.profile_img || "assets/img/profiles/avatar-14.jpg"
+                      }
                       alt="Profile"
-                      style={{height:"100%"}}
+                      style={{ height: "100%" }}
                       className="p-1"
                     />
                   </span>
@@ -493,11 +495,12 @@ const Header = () => {
                   <Link className="dropdown-item" to={route.profile}>
                     <i className="ti ti-user-pin" /> My Profile
                   </Link>
-                  <Link 
-                   className="dropdown-item edit-popup" 
-                   to="#"
-                   data-bs-toggle="modal"
-                   data-bs-target="#change_password_modal">
+                  <Link
+                    className="dropdown-item edit-popup"
+                    to="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#change_password_modal"
+                  >
                     <i className="ti ti-password-fingerprint" /> Change Password
                   </Link>
                   {isAuthenticated && (
@@ -532,13 +535,14 @@ const Header = () => {
             <Link className="dropdown-item" to={route.profile}>
               <i className="ti ti-user-pin" /> My Profile
             </Link>
-            <Link 
-                   className="dropdown-item edit-popup" 
-                   to="#"
-                   data-bs-toggle="modal"
-                   data-bs-target="#change_password_modal">
-                    <i className="ti ti-password-fingerprint" /> Change Password
-                  </Link>
+            <Link
+              className="dropdown-item edit-popup"
+              to="#"
+              data-bs-toggle="modal"
+              data-bs-target="#change_password_modal"
+            >
+              <i className="ti ti-password-fingerprint" /> Change Password
+            </Link>
             <Link className="dropdown-item" to={route.login}>
               <i className="ti ti-lock" /> Logout
             </Link>
@@ -546,7 +550,7 @@ const Header = () => {
         </div>
         {/* /Mobile Menu */}
       </div>
-        <ChangePassword />
+      <ChangePassword />
     </>
   );
 };
