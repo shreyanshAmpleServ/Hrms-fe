@@ -39,17 +39,17 @@ const ProvidentFund = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.pf_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Employer Contribution",
             dataIndex: "employer_contribution",
-            sorter: (a, b) => a.employer_contribution.localeCompare(b.employer_contribution),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Employee Contribution",
             dataIndex: "employee_contribution",
-            sorter: (a, b) => a.employee_contribution.localeCompare(b.employee_contribution),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
 
         },
 
@@ -75,7 +75,7 @@ const ProvidentFund = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

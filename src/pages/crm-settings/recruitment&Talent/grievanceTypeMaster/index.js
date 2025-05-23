@@ -39,7 +39,7 @@ const GrievanceTypeMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.grievance_type_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         // {
         //     title: "Statutory Typee",

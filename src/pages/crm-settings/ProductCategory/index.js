@@ -14,15 +14,15 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { deleteProductCategory, fetchProductCategory ,clearMessages} from "../../../redux/productCategory";
+import { deleteProductCategory, fetchProductCategory, clearMessages } from "../../../redux/productCategory";
 import { Helmet } from "react-helmet-async";
 
 const ProductCategory = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Product Category")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
+
+  const permissions = JSON?.parse(localStorage.getItem("permissions"))
+  const allPermissions = permissions?.filter((i) => i?.module_name === "Product Category")?.[0]?.permissions
+  const isAdmin = localStorage.getItem("role")?.includes("admin")
   const isView = isAdmin || allPermissions?.view
   const isCreate = isAdmin || allPermissions?.create
   const isUpdate = isAdmin || allPermissions?.update
@@ -36,7 +36,7 @@ const ProductCategory = () => {
       render: (text, record) => (
         <Link to={`#`}>{record.name}</Link>
       ),
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
     {
@@ -63,9 +63,9 @@ const ProductCategory = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
-   ...((isUpdate || isDelete) ?[ {
+    ...((isUpdate || isDelete) ? [{
       title: "Actions",
       dataIndex: "actions",
       render: (text, record) => (
@@ -79,7 +79,7 @@ const ProductCategory = () => {
             <i className="fa fa-ellipsis-v"></i>
           </Link>
           <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
+            {isUpdate && <Link
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="modal"
@@ -91,7 +91,7 @@ const ProductCategory = () => {
             >
               <i className="ti ti-edit text-blue"></i> Edit
             </Link>}
-           {isDelete && <Link
+            {isDelete && <Link
               className="dropdown-item"
               to="#"
               onClick={() => handleDeleteIndustry(record)}
@@ -101,7 +101,7 @@ const ProductCategory = () => {
           </div>
         </div>
       ),
-    }]:[])
+    }] : [])
   ];
 
   const { productCategories, loading, error, success } = useSelector(
@@ -153,7 +153,7 @@ const ProductCategory = () => {
   const deleteData = () => {
     if (selectedIndustry) {
       dispatch(deleteProductCategory(selectedIndustry.id));
-     
+
       setShowDeleteModal(false);
     }
   };
@@ -207,7 +207,7 @@ const ProductCategory = () => {
                     handleSearch={handleSearch}
                     label="Search Category"
                   />
-                {isCreate &&  <div className="col-sm-8">
+                  {isCreate && <div className="col-sm-8">
                     <AddButton
                       label="Add Category"
                       id="add_edit_product_category_modal"

@@ -19,6 +19,9 @@ import DesignationList from "../pages/crm-settings/core-hr/designation";
 import Employee_CategoryList from "../pages/crm-settings/core-hr/employeeCategory";
 import Employee_TypeList from "../pages/crm-settings/core-hr/employmentType";
 
+
+import JobPosting from "../pages/jobPosting";
+
 import Pipelines from "../pages/pipelines/";
 import PipelineDetail from "../pages/pipelines/PipelineDetail";
 
@@ -491,6 +494,12 @@ export const privateRoutes = [
     element: <ProjectDetail />,
     route: Route,
     title: "Projects Detail",
+  },
+  {
+    path: route.jobPosting,
+    element: <JobPosting />,
+    route: Route,
+    title: "jobPosting",
   },
   {
     path: route.callResult,

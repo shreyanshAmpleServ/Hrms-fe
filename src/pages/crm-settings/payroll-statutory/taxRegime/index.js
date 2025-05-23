@@ -39,13 +39,13 @@ const TaxRelirf = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.relief_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
             title: "amount",
             dataIndex: "amount",
-            sorter: (a, b) => a.amount.localeCompare(b.amount),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Created Date",
@@ -69,7 +69,7 @@ const TaxRelirf = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

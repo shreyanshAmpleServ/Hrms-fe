@@ -39,13 +39,13 @@ const AssetTypeMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.asset_type_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Depreciation Rate",
             dataIndex: "depreciation_rate",
 
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {

@@ -1,24 +1,23 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
 
-import React, { useCallback, useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CollapseHeader from "../../../../components/common/collapse-header";
-import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
+import CollapseHeader from "../../components/common/collapse-header";
+import Table from "../../components/common/dataTableNew/index";
+import FlashMessage from "../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
-import moment from "moment";
+import moment from 'moment';
 
 import { Helmet } from "react-helmet-async";
-import AddButton from "../../../../components/datatable/AddButton";
-import SearchBar from "../../../../components/datatable/SearchBar";
-import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deleteemploymentType, fetchemploymentType } from "../../../../redux/employee-type";
+import AddButton from "../../components/datatable/AddButton";
+import SearchBar from "../../components/datatable/SearchBar";
+import SortDropdown from "../../components/datatable/SortDropDown";
+import { clearMessages, deletejob_posting, fetchjob_posting } from "../../redux/JobPosting";
 
-const Employee_TypeList = () => {
-
+const JobPosting = () => {
     const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
     const [paginationData, setPaginationData] = React.useState()
     const [searchText, setSearchText] = React.useState("");
@@ -34,40 +33,76 @@ const Employee_TypeList = () => {
     const dispatch = useDispatch();
 
     const columns = [
+
         {
-            title: "Employee  Type",
-            dataIndex: "type_name",
-            render: (text, record) => (
-                <Link to={`#`}>{record.type_name}</Link>
-            ),
-            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+            title: "Job Title",
+            dataIndex: "job_title",
+            sorter: (a, b) => a.job_title - b.job_title,
+        },
+        {
+            title: "Department",
+            dataIndex: "hrms_job_department",
+            render: (value) => <div>{value?.department_name}</div>,
+            sorter: (a, b) =>
+                (a.hrms_job_department?.department_name || "").localeCompare(
+                    b.hrms_job_department?.department_name || ""
+                ),
+        },
+        {
+            title: "Designation",
+            dataIndex: "hrms_job_designation",
+            render: (value) => <div>{value?.designation_name}</div>,
+            sorter: (a, b) =>
+                (a.hrms_job_designation?.designation_name || "").localeCompare(
+                    b.hrms_job_designation?.designation_name || ""
+                ),
+        },
+
+
+        {
+            title: "Required Experience",
+            dataIndex: "required_experience",
+            // render: (value) => value ? `${value} years` : "—",
+            sorter: (a, b) => a.required_experience - b.required_experience,
+
         },
 
         {
-            title: "Created Date",
-            dataIndex: "createdate",
-            render: (text) => (
-                <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-            ),
-            sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+            title: "Posting Date",
+            dataIndex: "posting_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+
+            sorter: (a, b) => new Date(a.posting_date) - new Date(b.posting_date),
         },
         {
-            title: "Status",
-            dataIndex: "is_active",
-            render: (text) => (
-                <div>
-                    {text === "Y" ? (
-                        <span className="badge badge-pill badge-status bg-success">
-                            Active
-                        </span>
-                    ) : (
-                        <span className="badge badge-pill badge-status bg-danger">
-                            Inactive
-                        </span>
-                    )}
-                </div>
-            ),
-            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+            title: "Closing Date",
+            dataIndex: "closing_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+
+            sorter: (a, b) => new Date(a.closing_date) - new Date(b.closing_date),
+        },
+
+        {
+            title: "Description",
+            dataIndex: "description",
+            sorter: (a, b) => a.description - b.description,
+        },
+        {
+            title: "Is Internal",
+            dataIndex: "is_internal",
+            render: (value) => (<div>{value ? "Yes" : "NO"}</div>),
+            sorter: (a, b) => {
+                const valA = a.is_internal === "Yes" || a.is_internal === true;
+                const valB = b.is_internal === "Yes" || b.is_internal === true;
+                return valA - valB;
+            },
+
+        },
+        {
+            title: "Created At",
+            dataIndex: "created_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+            sorter: (a, b) => a.created_date.length - b.created_date.length,
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",
@@ -87,7 +122,7 @@ const Employee_TypeList = () => {
                             className="dropdown-item edit-popup"
                             to="#"
                             data-bs-toggle="modal"
-                            data-bs-target="#add_edit_employee_type_modal"
+                            data-bs-target="#add_edit_job_posting_modal"
                             onClick={() => {
                                 setSelectedIndustry(record);
                                 setMode("edit");
@@ -108,23 +143,21 @@ const Employee_TypeList = () => {
         }] : [])
     ];
 
-    const { employee_type, loading, error, success } = useSelector(
-        (state) => state.employee_type
+    const { job_posting, loading, error, success } = useSelector(
+        (state) => state.job_posting
     );
 
-
-
     React.useEffect(() => {
-        dispatch(fetchemploymentType({ search: searchText }));
+        dispatch(fetchjob_posting({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: employee_type?.currentPage,
-            totalPage: employee_type?.totalPages,
-            totalCount: employee_type?.totalCount,
-            pageSize: employee_type?.size
+            currentPage: job_posting?.currentPage,
+            totalPage: job_posting?.totalPages,
+            totalCount: job_posting?.totalCount,
+            pageSize: job_posting?.size
         })
-    }, [employee_type])
+    }, [job_posting])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -132,7 +165,7 @@ const Employee_TypeList = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchemploymentType({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchjob_posting({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -140,7 +173,7 @@ const Employee_TypeList = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = employee_type?.data || [];
+        let data = job_posting?.data || [];
 
         if (sortOrder === "ascending") {
             data = [...data].sort((a, b) =>
@@ -152,7 +185,7 @@ const Employee_TypeList = () => {
             );
         }
         return data;
-    }, [searchText, employee_type, columns, sortOrder]);
+    }, [searchText, job_posting, columns, sortOrder]);
 
     const handleDeleteIndustry = (industry) => {
         setSelectedIndustry(industry);
@@ -163,8 +196,8 @@ const Employee_TypeList = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deleteemploymentType(selectedIndustry.id));
-            // navigate(`/employee_type`);
+            dispatch(deletejob_posting(selectedIndustry.id));
+            // navigate(`/job_posting`);
             setShowDeleteModal(false);
         }
     };
@@ -172,8 +205,8 @@ const Employee_TypeList = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Employee Type</title>
-                <meta name="employee-type" content="This is employee_type page of DCC CRMS." />
+                <title>DCC HRMS - Job Posting</title>
+                <meta name="DepanrtmentList" content="This is job_posting page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -197,9 +230,9 @@ const Employee_TypeList = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        Employee Name
+                                        Job Posting
                                         <span className="count-title">
-                                            {employee_type?.totalCount || 0}
+                                            {job_posting?.totalCount || 0}
                                         </span>
                                     </h4>
                                 </div>
@@ -216,12 +249,12 @@ const Employee_TypeList = () => {
                                     <SearchBar
                                         searchText={searchText}
                                         handleSearch={handleSearch}
-                                        label="Search employee Name"
+                                        label="Search  Job Posting"
                                     />
                                     {isCreate && <div className="col-sm-8">
                                         <AddButton
-                                            label="Add Employee Name"
-                                            id="add_edit_employee_type_modal"
+                                            label="Add Job Posting"
+                                            id="add_edit_job_posting_modal"
                                             setMode={() => setMode("add")}
                                         />
                                     </div>}
@@ -265,4 +298,4 @@ const Employee_TypeList = () => {
     );
 };
 
-export default Employee_TypeList;
+export default JobPosting;

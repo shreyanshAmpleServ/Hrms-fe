@@ -34,32 +34,39 @@ const StatutoryRates = () => {
 
     const columns = [
         {
-            title: "Country Code Name",
+            title: "Statutory Typee",
+            dataIndex: "statutory_type",
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        },
+        {
+            title: "Country",
             dataIndex: "country_code",
             render: (_text, record) => (
                 <Link to={`#`}>{record.country_code}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
-        {
-            title: "Statutory Typee",
-            dataIndex: "statutory_type",
-            sorter: (a, b) => a.statutory_type.localeCompare(b.statutory_type),
-        },
+
         {
             title: "Lower limit",
             dataIndex: "lower_limit",
-            sorter: (a, b) => a.lower_limit.localeCompare(b.lower_limit),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Upper limit",
             dataIndex: "upper_limit",
-            sorter: (a, b) => a.upper_limit.localeCompare(b.upper_limit),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
+        {
+            title: "Effective From",
+            dataIndex: "effective_from",
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        },
+
         {
             title: "Rate Percent",
             dataIndex: "rate_percent",
-            sorter: (a, b) => a.rate_percent.localeCompare(b.rate_percent),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Created Date",
@@ -83,7 +90,7 @@ const StatutoryRates = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

@@ -39,13 +39,17 @@ const TaxRegime = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.regime_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {
-            title: "Country Code",
+            title: "Country",
             dataIndex: "country_code",
-            sorter: (a, b) => a.country_code.localeCompare(b.country_code),
+            render: (text, record) => (
+                <div>{text?.code + text?.name}</div>
+                // <Link to={`/states/${record.id}`}>{record.name}</Link>
+            ),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Created Date",

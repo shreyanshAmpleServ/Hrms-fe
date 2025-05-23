@@ -73,7 +73,7 @@ import shiftReducer from "./Shift"
 import leaveTypeReducer from "./LeaveType"
 import holidayCalenderReducer from "./HolidayCalender"
 import WorkScheduleTempReducer from "./WorkScheduleTemp"
-
+import JobPostingReducer from "./JobPosting"
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -150,6 +150,7 @@ const store = configureStore({
     leaveType: leaveTypeReducer,
     holidayCalender: holidayCalenderReducer,
     WorkScheduleTemp: WorkScheduleTempReducer,
+    job_posting: JobPostingReducer,
   },
 });
 

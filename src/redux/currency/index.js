@@ -88,7 +88,7 @@ export const fetchCurrenciesById = createAsyncThunk(
 const currenciesSlice = createSlice({
     name: "currencies",
     initialState: {
-        currencies: {},
+        currencies: [],
         CurrenciesDetail: null,
         loading: false,
         error: null,
@@ -120,10 +120,8 @@ const currenciesSlice = createSlice({
             })
             .addCase(addCurrencies.fulfilled, (state, action) => {
                 state.loading = false;
-                state.currencies = {
-                    ...state.currencies,
-                    data: [...(state.currencies?.data || []), action.payload.data]
-                }; state.success = action.payload.message;
+                state.currencies = [action.payload.data, ...state.currencies];
+                state.success = action.payload.message;
             })
             .addCase(addCurrencies.rejected, (state, action) => {
                 state.loading = false;
@@ -135,14 +133,14 @@ const currenciesSlice = createSlice({
             })
             .addCase(updateCurrencies.fulfilled, (state, action) => {
                 state.loading = false;
-                const index = state.currencies?.data?.findIndex(
+                const index = state.currencies?.findIndex(
                     (Currencies) => Currencies.id === action.payload.data.id
                 );
 
                 if (index !== -1) {
-                    state.currencies.data[index] = action.payload.data;
+                    state.currencies[index] = action.payload.data;
                 } else {
-                    state.currencies = { ...state.currencies, data: [...state.currencies, action.payload.data] };
+                    state.currencies = [action.payload.data, ...state.currencies];
                 }
 
                 state.success = action.payload.message;
@@ -157,11 +155,9 @@ const currenciesSlice = createSlice({
             })
             .addCase(deleteCurrencies.fulfilled, (state, action) => {
                 state.loading = false;
-                const filterData = state.currencies?.data?.filter(
+                state.currencies = state.currencies.filter(
                     (Currencies) => Currencies.id !== action.payload.data.id
                 );
-                state.currencies = { ...state.currencies, data: filterData }
-
                 state.success = action.payload.message;
             })
             .addCase(deleteCurrencies.rejected, (state, action) => {

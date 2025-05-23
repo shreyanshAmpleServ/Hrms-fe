@@ -39,13 +39,13 @@ const ReviewTemplateMaster = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.template_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
-            title: "valid_from",
+            title: "Valid From",
             dataIndex: "valid_from",
             render: (text) => <div>{moment(text).format('DD-MM-YYYY')}</div>,
-            sorter: (a, b) => a.valid_from.localeCompare(b.valid_from),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
 
         {

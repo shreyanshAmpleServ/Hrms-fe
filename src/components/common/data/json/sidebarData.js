@@ -104,6 +104,13 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: false,
       },
+      {
+        label: "Job Posting",
+        link: route.jobPosting,
+        icon: "ti ti-briefcase",
+        showSubRoute: false,
+        submenu: false,
+      },
 
       // {
       //   label: "Projects",

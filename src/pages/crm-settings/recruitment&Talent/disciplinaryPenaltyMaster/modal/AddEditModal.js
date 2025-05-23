@@ -90,7 +90,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
-              <div className="col-md-6 mb-6">
+              <div className="mb-3">
+
                 <label className="col-form-label">
                   description <span className="text-danger">*</span>
                 </label>

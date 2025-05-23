@@ -2,10 +2,17 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Select from 'react-select';
+
 import {
   addstatutory_rates,
   updatestatutory_rates,
 } from "../../../../../redux/statutoryRate";
+import { Controller } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { fetchCountries } from "../../../../../redux/country";
+
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.reviewTemplateMaster);
@@ -14,9 +21,24 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const {
     register,
     handleSubmit,
+    watch,
+
+    control,
     formState: { errors },
     reset,
   } = useForm();
+
+  React.useEffect(() => {
+    dispatch(fetchCountries()); // Changed to fetchCountries
+  }, [dispatch]);
+  const { countries } = useSelector(
+    (state) => state.countries // Changed to 'countries'
+  );
+
+  const CountriesList = countries.map((emnt) => ({
+    value: String(emnt.id),
+    label: "(" + emnt.code + ") " + emnt.name,
+  }));
 
   // Prefill form in edit mode
   useEffect(() => {
@@ -27,6 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         statutory_type: initialData.statutory_type || "",
         upper_limit: initialData.upper_limit || "",
         rate_percent: initialData.rate_percent || "",
+        effective_from: initialData.effective_from || "",
         is_active: initialData.is_active || "Y",
       });
     } else {
@@ -36,6 +59,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         statutory_type: "",
         upper_limit: "",
         rate_percent: "",
+        effective_from: "",
         is_active: "Y",
       });
     }
@@ -79,22 +103,44 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <div className="modal-body">
               <div className="row">
                 {/* Country Code */}
+
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">
-                    Country Code Name <span className="text-danger">*</span>
+                    Statutory Type <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    className={`form-control ${errors.country_code ? "is-invalid" : ""}`}
-                    {...register("country_code", {
-                      required: "Country code is required.",
+                    className={`form-control ${errors.statutory_type ? "is-invalid" : ""}`}
+                    {...register("statutory_type", {
+                      required: "Statutory type is required.",
                     })}
                   />
-                  {errors.country_code && (
-                    <small className="text-danger">{errors.country_code.message}</small>
+                  {errors.statutory_type && (
+                    <small className="text-danger">{errors.statutory_type.message}</small>
                   )}
                 </div>
-
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">
+                    Effective From <span className="text-danger">*</span>
+                  </label>
+                  <Controller
+                    name="effective_from"
+                    control={control}
+                    rules={{ required: "effective_from" }}
+                    render={({ field }) => (
+                      <DatePicker
+                        placeholderText="Select date"
+                        className={`form-control ${errors.valid_from ? "is-invalid" : ""}`}
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={(date) => field.onChange(date)}
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    )}
+                  />
+                  {errors.valid_from && (
+                    <small className="text-danger">{errors.valid_from.message}</small>
+                  )}
+                </div>
                 {/* Lower Limit */}
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">
@@ -113,21 +159,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </div>
 
                 {/* Statutory Type */}
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">
-                    Statutory Type <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.statutory_type ? "is-invalid" : ""}`}
-                    {...register("statutory_type", {
-                      required: "Statutory type is required.",
-                    })}
-                  />
-                  {errors.statutory_type && (
-                    <small className="text-danger">{errors.statutory_type.message}</small>
-                  )}
-                </div>
+
 
                 {/* Upper Limit */}
                 <div className="col-md-6 mb-3">
@@ -153,14 +185,55 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </label>
                   <input
                     type="number"
+                    min={0}
+                    max={100}
                     className={`form-control ${errors.rate_percent ? "is-invalid" : ""}`}
                     {...register("rate_percent", {
                       required: "Rate percent is required.",
+                      max: {
+                        value: 100,
+                        message: "Rate percent cannot be more than 100.",
+                      },
                     })}
                   />
                   {errors.rate_percent && (
                     <small className="text-danger">{errors.rate_percent.message}</small>
                   )}
+                </div>
+
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Country  <span className="text-danger">*</span>
+                    </label>
+                    <Controller
+                      name="country_code"
+                      control={control}
+                      rules={{ required: "Country is required" }} // Validation rule
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={CountriesList}
+                          placeholder="Choose"
+                          isDisabled={!CountriesList.length} // Disable if no stages are available
+                          classNamePrefix="react-select"
+                          className="select2"
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption?.value || null)
+                          } // Send only value
+                          value={CountriesList?.find(
+                            (option) =>
+                              option.value === watch("country_code"),
+                          ) || ""}
+                        />
+                      )}
+                    />
+                    {errors.country_code && (
+                      <small className="text-danger">
+                        {errors.country_code.message}
+                      </small>
+                    )}
+                  </div>
                 </div>
               </div>
 

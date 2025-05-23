@@ -23,12 +23,12 @@ import AddButton from "../../../components/datatable/AddButton";
 import { Helmet } from "react-helmet-async";
 
 const SourceList = () => {
-  const [mode, setMode] = useState("add"); 
+  const [mode, setMode] = useState("add");
   const dispatch = useDispatch();
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Sources")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
+  const permissions = JSON?.parse(localStorage.getItem("permissions"))
+  const allPermissions = permissions?.filter((i) => i?.module_name === "Sources")?.[0]?.permissions
+  const isAdmin = localStorage.getItem("role")?.includes("admin")
   const isView = isAdmin || allPermissions?.view
   const isCreate = isAdmin || allPermissions?.create
   const isUpdate = isAdmin || allPermissions?.update
@@ -41,7 +41,7 @@ const SourceList = () => {
       render: (text, record) => (
         <Link to={`/sources/${record.id}`}>{record.name}</Link>
       ),
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
     {
@@ -50,7 +50,7 @@ const SourceList = () => {
       render: (text) => (
         <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
       ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
     {
       title: "Status",
@@ -68,9 +68,9 @@ const SourceList = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => (a.is_active ?? "Y").localeCompare(b.is_active ?? "Y"),
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
-   ...((isUpdate || isDelete) ?[ {
+    ...((isUpdate || isDelete) ? [{
       title: "Actions",
       dataIndex: "actions",
       render: (text, record) => (
@@ -84,7 +84,7 @@ const SourceList = () => {
             <i className="fa fa-ellipsis-v"></i>
           </Link>
           <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
+            {isUpdate && <Link
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="modal"
@@ -96,7 +96,7 @@ const SourceList = () => {
             >
               <i className="ti ti-edit text-blue"></i> Edit
             </Link>}
-          {isDelete &&  <Link
+            {isDelete && <Link
               className="dropdown-item"
               to="#"
               onClick={() => handleDeleteSource(record)}
@@ -106,7 +106,7 @@ const SourceList = () => {
           </div>
         </div>
       ),
-    }]: [])
+    }] : [])
   ];
 
   const navigate = useNavigate();
@@ -166,10 +166,10 @@ const SourceList = () => {
 
   return (
     <div className="page-wrapper">
-       <Helmet>
-         <title>DCC CRMS - Sources</title>
-         <meta name="Sources" content="This is Sources page of DCC CRMS." />
-       </Helmet>
+      <Helmet>
+        <title>DCC CRMS - Sources</title>
+        <meta name="Sources" content="This is Sources page of DCC CRMS." />
+      </Helmet>
       <div className="content">
         {error && (
           <FlashMessage
@@ -211,7 +211,7 @@ const SourceList = () => {
                     handleSearch={handleSearch}
                     label="Search Sources"
                   />
-                 {isCreate && <div className="col-sm-8">
+                  {isCreate && <div className="col-sm-8">
                     <AddButton
                       label="Add Sources"
                       id="add_edit_source_modal"

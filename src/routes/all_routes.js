@@ -71,9 +71,12 @@ export const all_routes = {
   assetTypeMaster: "/assetTypeMaster",
 
 
-
+  jobPosting: "/jobPosting",
   employee: "/employee",
   addEmployee: "/add-employee",
+
+
+
 
   // currency: "/currency",
   // core-hr //

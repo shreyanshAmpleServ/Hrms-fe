@@ -39,12 +39,12 @@ const CurrenciesList = () => {
             render: (_text, record) => (
                 <Link to={`#`}>{record.currency_name}</Link>
             ),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         {
             title: "Currency Code",
             dataIndex: "currency_code",
-            sorter: (a, b) => a.companycode.localeCompare(b.companycode),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         // {
         //     title: "Company Type",
@@ -73,7 +73,7 @@ const CurrenciesList = () => {
                     )}
                 </div>
             ),
-            sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
         },
         ...((isUpdate || isDelete) ? [{
             title: "Actions",

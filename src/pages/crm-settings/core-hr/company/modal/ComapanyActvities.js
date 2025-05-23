@@ -8,7 +8,7 @@ import { Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { ActivityDetailOfUser } from "../../../components/common/detailPages/UserDetails/activityDetails";
 import { CallsDetailsOfUser } from "../../../components/common/detailPages/UserDetails/callsDetails";
 import FilesDetails from "../../../components/common/detailPages/UserDetails/FilesDetails";
-const ComapanyActvities = ({ company_id ,company_name }) => {
+const ComapanyActvities = ({ company_id, company_name }) => {
   return (
     <div className="col-xl-9">
       <div className="card mb-3">
@@ -78,7 +78,7 @@ const ComapanyActvities = ({ company_id ,company_name }) => {
         <ActivityDetailOfUser company_id={company_id} />
 
         {/* Notes */}
-        {/* <div className="tab-pane fade" id="notes">
+        <div className="tab-pane fade" id="notes">
           <div className="card">
             <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
               <h4 className="fw-semibold">Notes</h4>
@@ -412,13 +412,13 @@ const ComapanyActvities = ({ company_id ,company_name }) => {
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
 
         {/* Calls */}
         <CallsDetailsOfUser />
 
         {/* Files */}
-       <FilesDetails type={"Companies"} type_id={company_id} type_name={company_name} />
+        <FilesDetails type={"Companies"} type_id={company_id} type_name={company_name} />
 
         {/* Email */}
         {/* <div className="tab-pane fade" id="email">

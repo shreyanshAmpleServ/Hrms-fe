@@ -7,13 +7,13 @@ export const fetchCompany = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const params = {
-        search:datas?.search || "",
+        search: datas?.search || "",
         page: datas?.page || "",
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
-        endDate : datas?.endDate?.toISOString() || "",
+        endDate: datas?.endDate?.toISOString() || "",
       }
-      const response = await apiClient.get("/v1/company",{params});
+      const response = await apiClient.get("/v1/company", { params });
       return response.data; // Returns a list of company
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -43,8 +43,8 @@ export const updateCompany = createAsyncThunk(
   "company/updateCompany",
   async ({ id, companyData }, thunkAPI) => {
     try {
-        const {id , ...data} = companyData 
-      const response = await apiClient.put(`/v1/company/${id}`, {...data});
+      const { id, ...data } = companyData
+      const response = await apiClient.put(`/v1/company/${id}`, { ...data });
       return response.data; // Returns the updated company
     } catch (error) {
       if (error.response?.status === 404) {
@@ -128,7 +128,7 @@ const companySlice = createSlice({
       })
       .addCase(addCompany.fulfilled, (state, action) => {
         state.loading = false;
-        state.company ={...state.company, data: [action.payload.data, ...state.company.data]};
+        state.company = { ...state.company, data: [action.payload.data, ...state.company.data] };
         state.success = action.payload.message;
       })
       .addCase(addCompany.rejected, (state, action) => {
@@ -147,7 +147,7 @@ const companySlice = createSlice({
         if (index !== -1) {
           state.company.data[index] = action.payload.data;
         } else {
-          state.company ={...state.company , data: [action.payload.data, ...state.company.data]};
+          state.company = { ...state.company, data: [action.payload.data, ...state.company.data] };
         }
         state.success = action.payload.message;
       })
@@ -164,7 +164,7 @@ const companySlice = createSlice({
         const filteredData = state.company.data.filter(
           (company) => company.id !== action.payload.data.id,
         );
-        state.company = {...state.company,data:filteredData}
+        state.company = { ...state.company, data: filteredData }
         state.success = action.payload.message;
       })
       .addCase(deleteCompany.rejected, (state, action) => {
