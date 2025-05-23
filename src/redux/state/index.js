@@ -4,10 +4,14 @@ import apiClient from "../../utils/axiosConfig";
 // Fetch All States
 export const fetchStates = createAsyncThunk(
     "states/fetchStates",
-    async (_, thunkAPI) => {
+    async (data, thunkAPI) => {
         try {
-
-            const response = await apiClient.get("/v1/states");
+ const params = {}
+ if(data?.country_id) params.country_id = data?.country_id
+ if(data?.search) params.search = data?.search
+ if(data?.page) params.page = data?.page
+ if(data?.size) params.size = data?.size
+            const response = await apiClient.get("/v1/states",{params});
             return response.data; // Returns a list of states
         } catch (error) {
             return thunkAPI.rejectWithValue(
