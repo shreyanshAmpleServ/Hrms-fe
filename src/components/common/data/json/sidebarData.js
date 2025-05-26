@@ -61,7 +61,6 @@ export const SidebarData = [
       },
       {
         label: "Leave & Attendance",
-        link: route.leaveAttendance,
         icon: "ti ti-file-text", // updated icon
         showSubRoute: false,
         submenu: true,
@@ -69,7 +68,6 @@ export const SidebarData = [
           {
             label: "Leave Applications",
             link: route.leaveApplications,
-
             showSubRoute: false,
             submenu: false,
           },
@@ -89,7 +87,6 @@ export const SidebarData = [
       },
       {
         label: "Payroll & Finance",
-        link: route.payrollFinance,
         icon: "ti ti-file-text", // updated icon
         showSubRoute: false,
         submenu: true,
@@ -103,6 +100,26 @@ export const SidebarData = [
           {
             label: "Loan Requests",
             link: route.loanRequests,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "WPS File Generator",
+            link: route.wpsFileGenerator,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
+      },
+      {
+        label: "Performance Management",
+        icon: "ti ti-chart-line",
+        showSubRoute: true,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Performance Appraisal Entry",
+            link: route.appraisalEntries,
             showSubRoute: false,
             submenu: false,
           },

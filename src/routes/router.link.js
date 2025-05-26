@@ -146,7 +146,8 @@ import EmploymentContracts from "../pages/EmploymentContracts";
 import EmployeeDetail from "../pages/Employee/EmployeeDetail";
 import LeaveEncashment from "../pages/LeaveEncashment";
 import TimeSheet from "../pages/TimeSheet";
-
+import AppraisalEntries from "../pages/AppraisalEntries";
+import WPSFileGenerator from "../pages/WPSFileGenerator";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -894,6 +895,18 @@ export const privateRoutes = [
     element: <TimeSheet />,
     route: Route,
     title: "Time Sheet",
+  },
+  {
+    path: route.appraisalEntries,
+    element: <AppraisalEntries />,
+    route: Route,
+    title: "Appraisal Entries",
+  },
+  {
+    path: route.wpsFileGenerator,
+    element: <WPSFileGenerator />,
+    route: Route,
+    title: "WPS File Generator",
   },
 ];
 

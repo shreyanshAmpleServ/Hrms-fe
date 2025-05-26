@@ -8,20 +8,20 @@ export const fetchEmployee = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const params = {
-        search:datas?.search || "",
+        search: datas?.search || "",
         page: datas?.page || "",
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
-        endDate : datas?.endDate?.toISOString() || "",
-      }
-      const response = await apiClient.get("/v1/employee",{params});
+        endDate: datas?.endDate?.toISOString() || "",
+      };
+      const response = await apiClient.get("/v1/employee", { params });
       return response.data; // Returns a list of employee
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch employee",
+        error.response?.data || "Failed to fetch employee"
       );
     }
-  },
+  }
 );
 
 // Add a employee
@@ -41,24 +41,25 @@ export const createEmployee = createAsyncThunk(
       return response.data; // Returns the newly added employee
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add employee",
+        error.response?.data || "Failed to add employee"
       );
     }
-  },
+  }
 );
 
 // Update a employee
 export const updateEmployee = createAsyncThunk(
   "employee/updateEmployee",
   async (employeeData, thunkAPI) => {
-    const id = employeeData?.get("id")
+    const id = employeeData?.get("id");
     try {
       // const response = await apiClient.put(`/v1/employee/${id}`, employeeData);
       const response = await toast.promise(
         apiClient.put(`/v1/employee/${id}`, employeeData),
         {
           loading: "Employee updating...",
-          success: (res) => res.data.message || "Employee updated successfully!",
+          success: (res) =>
+            res?.data?.message || "Employee updated successfully!",
           error: "Failed to update employee",
         }
       );
@@ -71,10 +72,10 @@ export const updateEmployee = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update employee",
+        error.response?.data || "Failed to update employee"
       );
     }
-  },
+  }
 );
 
 // Delete a employee
@@ -89,10 +90,10 @@ export const deleteEmployee = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete employee",
+        error.response?.data || "Failed to delete employee"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single employee by ID
@@ -104,12 +105,11 @@ export const fetchEmployeeById = createAsyncThunk(
       return response.data; // Returns the employee details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch employee",
+        error.response?.data || "Failed to fetch employee"
       );
     }
-  },
+  }
 );
-
 
 const employeesSlice = createSlice({
   name: "employee",
@@ -146,7 +146,10 @@ const employeesSlice = createSlice({
       })
       .addCase(createEmployee.fulfilled, (state, action) => {
         state.loading = false;
-        state.employee ={...state.employee,data: [...state.employee.data,action.payload.data]};
+        state.employee = {
+          ...state.employee,
+          data: [...state.employee.data, action.payload.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(createEmployee.rejected, (state, action) => {
@@ -160,18 +163,21 @@ const employeesSlice = createSlice({
       .addCase(updateEmployee.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.employee.data?.findIndex(
-          (data) => data.id === action.payload.data.id,
+          (data) => data.id === action.payload.data.id
         );
         if (index !== -1) {
           state.employee.data[index] = action.payload.data;
         } else {
-          state.employee ={...state.employee , data: [...state.employee.data,action.payload.data]};
+          state.employee = {
+            ...state.employee,
+            data: [...state.employee.data, action.payload.data],
+          };
         }
         state.success = action.payload.message;
       })
       .addCase(updateEmployee.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action?.payload?.message;
       })
       .addCase(deleteEmployee.pending, (state) => {
         state.loading = true;
@@ -180,9 +186,9 @@ const employeesSlice = createSlice({
       .addCase(deleteEmployee.fulfilled, (state, action) => {
         state.loading = false;
         const filterData = state.employee.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.employee = {...state.employee,data:filterData}
+        state.employee = { ...state.employee, data: filterData };
         state.success = action.payload.message;
       })
       .addCase(deleteEmployee.rejected, (state, action) => {
@@ -204,5 +210,5 @@ const employeesSlice = createSlice({
   },
 });
 
-export const { clearMessages } =employeesSlice.actions;
+export const { clearMessages } = employeesSlice.actions;
 export default employeesSlice.reducer;

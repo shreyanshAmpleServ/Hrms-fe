@@ -1,4 +1,4 @@
-import { Table, Tag } from "antd";
+import { Rate, Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,14 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchLeaveEncashment } from "../../redux/LeaveEncashment/index.js";
+import { fetchAppraisalEntries } from "../../redux/AppraisalsEntries/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageTimeSheet from "./ManageTimeSheet/index.js";
-import { fetchTimeSheet } from "../../redux/TimeSheet/index.js";
+import ManageAppraisalEntries from "./ManageAppraisalEntries/index.js";
 
-const TimeSheet = () => {
+const AppraisalEntries = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedTimeSheet, setSelectedTimeSheet] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -23,11 +22,13 @@ const TimeSheet = () => {
   });
   const dispatch = useDispatch();
 
-  const { timeSheet, loading } = useSelector((state) => state.timeSheet || {});
+  const { appraisalEntries, loading } = useSelector(
+    (state) => state.appraisalEntries || {}
+  );
 
   React.useEffect(() => {
     dispatch(
-      fetchTimeSheet({
+      fetchAppraisalEntries({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -36,12 +37,12 @@ const TimeSheet = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: timeSheet?.currentPage,
-      totalPage: timeSheet?.totalPages,
-      totalCount: timeSheet?.totalCount,
-      pageSize: timeSheet?.size,
+      currentPage: appraisalEntries?.currentPage,
+      totalPage: appraisalEntries?.totalPages,
+      totalCount: appraisalEntries?.totalCount,
+      pageSize: appraisalEntries?.size,
     });
-  }, [timeSheet]);
+  }, [appraisalEntries]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -50,7 +51,7 @@ const TimeSheet = () => {
       pageSize,
     }));
     dispatch(
-      fetchTimeSheet({
+      fetchAppraisalEntries({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -59,11 +60,11 @@ const TimeSheet = () => {
     );
   };
 
-  const data = timeSheet?.data;
+  const data = appraisalEntries?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
+    (i) => i?.module_name === "Appraisal Entries"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -74,31 +75,23 @@ const TimeSheet = () => {
   const columns = [
     {
       title: "Employee Name",
-      render: (text) => text?.time_sheet_employee?.full_name || "-",
+      render: (text) => text?.appraisal_employee?.full_name || "-",
     },
     {
-      title: "Project Name",
-      dataIndex: "project_name",
+      title: "Review Period",
+      dataIndex: "review_period",
       render: (text) => text || "-",
     },
     {
-      title: "Date",
-      dataIndex: "work_date",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : ""),
-      sorter: (a, b) => a.work_date.length - b.work_date.length,
+      title: "Rating",
+      dataIndex: "rating",
+      render: (text) => <Rate allowHalf disabled defaultValue={text} /> || "-",
     },
     {
-      title: "Hours Worked",
-      dataIndex: "hours_worked",
+      title: "Reviewer Comments",
+      dataIndex: "reviewer_comments",
       render: (text) => text || "-",
     },
-
-    {
-      title: "Task Description",
-      dataIndex: "task_description",
-      render: (text) => text || "-",
-    },
-
     ...(isDelete || isUpdate
       ? [
           {
@@ -120,7 +113,7 @@ const TimeSheet = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedTimeSheet(a)}
+                      onClick={() => setSelected(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -130,7 +123,7 @@ const TimeSheet = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteTimeSheet(a)}
+                      onClick={() => handleDeleteAppraisalEntries(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -143,18 +136,18 @@ const TimeSheet = () => {
       : []),
   ];
 
-  const handleDeleteTimeSheet = (timeSheet) => {
-    setSelectedTimeSheet(timeSheet);
+  const handleDeleteAppraisalEntries = (appraisalEntry) => {
+    setSelected(appraisalEntry);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Time Sheet</title>
+        <title>DCC HRMS - Appraisal Entry</title>
         <meta
-          name="time-sheet"
-          content="This is time sheet page of DCC HRMS."
+          name="appraisal-entry"
+          content="This is appraisal entry page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -167,9 +160,9 @@ const TimeSheet = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Time Sheet Entry
+                      Appraisal Entry
                       <span className="count-title">
-                        {timeSheet?.totalCount}
+                        {appraisalEntries?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -193,7 +186,7 @@ const TimeSheet = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Time Sheet"
+                          placeholder="Search Appraisal Entry"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -208,7 +201,7 @@ const TimeSheet = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Time Sheet Entry
+                            Add New Appraisal
                           </Link>
                         </div>
                       </div>
@@ -222,7 +215,7 @@ const TimeSheet = () => {
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Time Sheet Entry</h4>
+                          <h4 className="mb-0 me-3">All Appraisal Entry</h4>
                         </div>
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -262,18 +255,15 @@ const TimeSheet = () => {
             </div>
           </div>
         </div>
-        <ManageTimeSheet
-          setTimeSheet={setSelectedTimeSheet}
-          timeSheet={selectedTimeSheet}
-        />
+        <ManageAppraisalEntries setSelected={setSelected} selected={selected} />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        timeSheetId={selectedTimeSheet?.id}
+        appraisalEntryId={selected?.id}
       />
     </>
   );
 };
 
-export default TimeSheet;
+export default AppraisalEntries;

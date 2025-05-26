@@ -1,12 +1,14 @@
-import { Avatar, Skeleton } from "antd";
+import { EditFilled } from "@ant-design/icons";
+import { Avatar, Button, Skeleton, Tooltip } from "antd";
+import moment from "moment";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import { fetchEmployeeById } from "../../../redux/Employee";
-import { fetchLostReasons } from "../../../redux/lostReasons";
 import { all_routes } from "../../../routes/all_routes";
-import moment from "moment";
+import UpdateBasicInfo from "./UpdateBasicInfo";
+import UpdateContactInfo from "./UpdateContactInfo";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
@@ -14,7 +16,6 @@ const EmployeeDetail = () => {
 
   useEffect(() => {
     dispatch(fetchEmployeeById(id));
-    dispatch(fetchLostReasons());
   }, [id, dispatch]);
 
   const { employeeDetail, loading } = useSelector((state) => state.employee);
@@ -102,7 +103,7 @@ const EmployeeDetail = () => {
               <div className="page-header">
                 <div className="row align-items-center">
                   <div className="col-sm-4">
-                    <h4 className="page-title">Employees</h4>
+                    <h4 className="page-title">Employee Details</h4>
                   </div>
                   <div className="col-sm-8 text-sm-end">
                     <div className="head-icons">
@@ -128,29 +129,21 @@ const EmployeeDetail = () => {
                       <li>{`${employeeDetail?.full_name}`}</li>
                     </ul>
                   </div>
-                  <div className="col-sm-6 text-sm-end">
-                    <div className="contact-pagination">
-                      <p>1 of 40</p>
-                      <ul>
-                        <li>
-                          <Link to={route.employeeDetails}>
-                            <i className="ti ti-chevron-left" />
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to={route.employeeDetails}>
-                            <i className="ti ti-chevron-right" />
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className="card">
                 <div className="card-body pb-2">
                   <div className="d-flex pb-3 align-items-center justify-content-between flex-wrap">
                     <h4>Personal Information</h4>
+                    <Tooltip title="Update Basic Info">
+                      <Button
+                        variant="filled"
+                        shape="circle"
+                        data-bs-toggle="modal"
+                        data-bs-target={`#update_basic_info_modal`}
+                        icon={<EditFilled />}
+                      />
+                    </Tooltip>
                   </div>
                   <div className="d-flex justify-content-between px-3 flex-wrap">
                     <div className="d-flex w-50 gap-5">
@@ -255,6 +248,15 @@ const EmployeeDetail = () => {
                 <div className="card-body pb-2">
                   <div className="d-flex pb-3 align-items-center justify-content-between flex-wrap">
                     <h4>Contact Information</h4>
+                    <Tooltip title="Update Contact Info">
+                      <Button
+                        variant="filled"
+                        shape="circle"
+                        data-bs-toggle="modal"
+                        data-bs-target={`#update_contact_info_modal`}
+                        icon={<EditFilled />}
+                      />
+                    </Tooltip>
                   </div>
                   <div className="d-flex justify-content-between px-3 flex-wrap">
                     <div className="d-flex flex-column w-50 gap-2">
@@ -500,6 +502,8 @@ const EmployeeDetail = () => {
             </div>
           </div>
         </div>
+        <UpdateBasicInfo employeeDetail={employeeDetail} />
+        <UpdateContactInfo employeeDetail={employeeDetail} />
       </div>
     </>
   );

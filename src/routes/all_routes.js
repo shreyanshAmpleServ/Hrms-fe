@@ -91,6 +91,12 @@ export const all_routes = {
   // Time Sheet Entry
   timeSheet: "/time-sheet",
 
+  // Appraisals Entry
+  appraisalEntries: "/appraisal-entries",
+
+  // WPS File Generator
+  wpsFileGenerator: "/wps-file-generator",
+
   // currency: "/currency",
   // core-hr //
 

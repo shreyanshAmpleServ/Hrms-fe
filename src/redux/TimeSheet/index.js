@@ -3,7 +3,7 @@ import apiClient from "../../utils/axiosConfig";
 import toast from "react-hot-toast";
 
 /**
- * Fetch all employment contracts with optional filters (search, date range, pagination).
+ * Fetch all time sheet with optional filters (search, date range, pagination).
  */
 export const fetchTimeSheet = createAsyncThunk(
   "timeSheet/fetchTimeSheet",
@@ -19,17 +19,17 @@ export const fetchTimeSheet = createAsyncThunk(
       const response = await apiClient.get("/v1/time-sheet", {
         params,
       });
-      return response.data; // Returns list of leave encashment
+      return response.data; // Returns list of time sheet entry
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch leave encashment"
+        error.response?.data || "Failed to fetch time sheet entry"
       );
     }
   }
 );
 
 /**
- * Create a new employment contract.
+ * Create a new time sheet.
  */
 export const createTimeSheet = createAsyncThunk(
   "timeSheet/createTimeSheet",
@@ -38,23 +38,23 @@ export const createTimeSheet = createAsyncThunk(
       const response = await toast.promise(
         apiClient.post("/v1/time-sheet", timeSheetData),
         {
-          loading: "Creating leave encashment...",
+          loading: "Creating time sheet entry...",
           success: (res) =>
-            res.data.message || "Leave encashment created successfully!",
-          error: "Failed to create leave encashment",
+            res.data.message || "Time sheet entry created successfully!",
+          error: "Failed to create time sheet entry",
         }
       );
-      return response.data; // Returns the newly created leave encashment
+      return response.data; // Returns the newly created time sheet entry
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to create leave encashment"
+        error.response?.data || "Failed to create time sheet entry"
       );
     }
   }
 );
 
 /**
- * Update an existing employment contract by ID.
+ * Update an existing time sheet by ID.
  */
 export const updateTimeSheet = createAsyncThunk(
   "timeSheet/updateTimeSheet",
@@ -63,29 +63,29 @@ export const updateTimeSheet = createAsyncThunk(
       const response = await toast.promise(
         apiClient.put(`/v1/time-sheet/${id}`, timeSheetData),
         {
-          loading: "Updating leave encashment...",
+          loading: "Updating time sheet entry...",
           success: (res) =>
-            res.data.message || "Leave encashment updated successfully!",
-          error: "Failed to update leave encashment",
+            res.data.message || "Time sheet entry updated successfully!",
+          error: "Failed to update time sheet entry",
         }
       );
-      return response.data; // Returns the updated leave encashment
+      return response.data; // Returns the updated time sheet entry
     } catch (error) {
       if (error.response?.status === 404) {
         return thunkAPI.rejectWithValue({
           status: 404,
-          message: "Leave encashment not found",
+          message: "Time sheet entry not found",
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update leave encashment"
+        error.response?.data || "Failed to update time sheet entry"
       );
     }
   }
 );
 
 /**
- * Delete an employment contract by ID.
+ * Delete an time sheet by ID.
  */
 export const deleteTimeSheet = createAsyncThunk(
   "timeSheet/deleteTimeSheet",
@@ -94,37 +94,37 @@ export const deleteTimeSheet = createAsyncThunk(
       const response = await toast.promise(
         apiClient.delete(`/v1/time-sheet/${id}`),
         {
-          loading: "Deleting leave encashment...",
+          loading: "Deleting time sheet entry...",
           success: (res) =>
-            res.data.message || "Leave encashment deleted successfully!",
-          error: "Failed to delete leave encashment",
+            res.data.message || "Time sheet entry deleted  successfully!",
+          error: "Failed to delete time sheet entry",
         }
       );
       return {
         data: { id },
         message:
-          response.data.message || "Leave encashment deleted successfully",
+          response.data.message || "Time sheet entry deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete leave encashment"
+        error.response?.data || "Failed to delete time sheet entry"
       );
     }
   }
 );
 
 /**
- * Fetch a single leave encashment by ID.
+ * Fetch a single time sheet by ID.
  */
 export const fetchTimeSheetById = createAsyncThunk(
   "timeSheet/fetchTimeSheetById",
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/time-sheet/${id}`);
-      return response.data; // Returns leave encashment details
+      return response.data; // Returns time sheet entry details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch leave encashment"
+        error.response?.data || "Failed to fetch time sheet entry"
       );
     }
   }
@@ -134,7 +134,7 @@ const timeSheetSlice = createSlice({
   name: "timeSheet",
   initialState: {
     timeSheet: {},
-    timeSheetDetail: null, // Can be renamed to 'contractDetail' for clarity
+    timeSheetDetail: null,
     loading: false,
     error: null,
     success: null,
@@ -148,7 +148,7 @@ const timeSheetSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch all employment contracts
+      // Fetch all time sheet
       .addCase(fetchTimeSheet.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -162,7 +162,7 @@ const timeSheetSlice = createSlice({
         state.error = action.payload.message;
       })
 
-      // Create employment contract
+      // Create time sheet
       .addCase(createTimeSheet.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -180,7 +180,7 @@ const timeSheetSlice = createSlice({
         state.error = action.payload.message;
       })
 
-      // Update employment contract
+      // Update time sheet
       .addCase(updateTimeSheet.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -205,7 +205,7 @@ const timeSheetSlice = createSlice({
         state.error = action.payload.message;
       })
 
-      // Delete employment contract
+      // Delete time sheet
       .addCase(deleteTimeSheet.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -223,14 +223,14 @@ const timeSheetSlice = createSlice({
         state.error = action.payload.message;
       })
 
-      // Fetch employment contract by ID
+      // Fetch time sheet by ID
       .addCase(fetchTimeSheetById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchTimeSheetById.fulfilled, (state, action) => {
         state.loading = false;
-        state.timeSheetDetail = action.payload.data; // Consider renaming to contractDetail
+        state.timeSheetDetail = action.payload.data; // Consider renaming to timeSheetDetail
       })
       .addCase(fetchTimeSheetById.rejected, (state, action) => {
         state.loading = false;

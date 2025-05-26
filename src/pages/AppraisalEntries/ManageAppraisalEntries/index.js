@@ -1,15 +1,15 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import DefaultEditor from "react-simple-wysiwyg";
+import {
+  createAppraisalEntries,
+  updateAppraisalEntries,
+} from "../../../redux/AppraisalsEntries";
 import { fetchEmployee } from "../../../redux/Employee";
-import { fetchLeaveType } from "../../../redux/LeaveType";
-import { createTimeSheet, updateTimeSheet } from "../../../redux/TimeSheet";
 
-const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
+const ManageAppraisalEntries = ({ setSelected, selected }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -20,34 +20,31 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   } = useForm({
     defaultValues: {
       employee_id: "",
-      project_name: "",
-      hours_worked: "",
-      work_date: new Date().toISOString(),
-      task_description: "",
+      review_period: "",
+      rating: "",
+      reviewer_comments: "",
     },
   });
 
-  const { loading } = useSelector((state) => state.leaveEncashment || {});
+  const { loading } = useSelector((state) => state.appraisalEntries || {});
 
   React.useEffect(() => {
-    if (timeSheet) {
+    if (selected) {
       reset({
-        employee_id: timeSheet.employee_id || "",
-        project_name: timeSheet.project_name || "",
-        hours_worked: timeSheet.hours_worked || "",
-        work_date: timeSheet.work_date || new Date().toISOString(),
-        task_description: timeSheet.task_description || "",
+        employee_id: selected.employee_id || "",
+        review_period: selected.review_period || "",
+        rating: selected.rating || "",
+        reviewer_comments: selected.reviewer_comments || "",
       });
     } else {
       reset({
         employee_id: "",
-        project_name: "",
-        hours_worked: "",
-        work_date: new Date().toISOString(),
-        task_description: "",
+        review_period: "",
+        rating: "",
+        reviewer_comments: "",
       });
     }
-  }, [timeSheet, reset]);
+  }, [selected, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -62,24 +59,25 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
     value: i?.id,
   }));
 
-  useEffect(() => {
-    dispatch(fetchLeaveType({ searchValue }));
-  }, [dispatch, searchValue]);
-
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      timeSheet
+      selected
         ? await dispatch(
-            updateTimeSheet({
-              id: timeSheet.id,
-              timeSheetData: { ...data },
+            updateAppraisalEntries({
+              id: selected.id,
+              appraisalEntriesData: { ...data, rating: Number(data.rating) },
             })
           ).unwrap()
-        : await dispatch(createTimeSheet({ ...data })).unwrap();
+        : await dispatch(
+            createAppraisalEntries({
+              ...data,
+              rating: Number(data.rating),
+            })
+          ).unwrap();
       closeButton.click();
       reset();
-      setTimeSheet(null);
+      setSelected(null);
     } catch (error) {
       closeButton.click();
     }
@@ -89,7 +87,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setTimeSheet(null);
+        setSelected(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -102,7 +100,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
         );
       };
     }
-  }, [setTimeSheet]);
+  }, [setSelected]);
   return (
     <>
       {/* Add New appointment */}
@@ -112,14 +110,14 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{timeSheet ? "Update " : "Add New "} Time Sheet Entry</h4>
+          <h4>{selected ? "Update " : "Add New "} Appraisal Entries</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setTimeSheet(null);
+              setSelected(null);
               reset();
             }}
           >
@@ -134,7 +132,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Employee
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
                       name="employee_id"
@@ -179,28 +177,28 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Project Name
-                      <span className="text-danger">*</span>
+                      Review Period
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
-                      name="project_name"
+                      name="review_period"
                       control={control}
-                      rules={{ required: "Project name is required" }}
+                      rules={{ required: "Review period is required" }}
                       render={({ field }) => {
                         return (
                           <input
                             {...field}
                             className="form-control"
-                            placeholder="Enter Project Name"
+                            placeholder="Enter Review Period"
                             value={field.value}
                             onChange={field.onChange}
                           />
                         );
                       }}
                     />
-                    {errors.leave_type_id && (
+                    {errors.review_period && (
                       <small className="text-danger">
-                        {errors.leave_type_id.message}
+                        {errors.review_period.message}
                       </small>
                     )}
                   </div>
@@ -208,70 +206,48 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Hours Worked<span className="text-danger">*</span>
+                    Rating<span className="text-danger"> *</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="hours_worked"
+                      name="rating"
                       control={control}
-                      rules={{ required: "Hours worked is required!" }}
+                      rules={{
+                        required: "Rating is required!",
+                        min: {
+                          value: 1,
+                          message: "Rating must be at least 1",
+                        },
+                        max: {
+                          value: 5,
+                          message: "Rating cannot exceed 5",
+                        },
+                      }}
                       render={({ field }) => (
                         <input
                           {...field}
                           type="number"
+                          min={1}
+                          max={5}
                           className="form-control"
-                          placeholder="Enter Hours Worked"
+                          placeholder="Enter Rating (1-5)"
                           value={field.value}
                           onChange={field.onChange}
                         />
                       )}
                     />
                   </div>
-                  {errors.leave_days && (
+                  {errors.rating && (
                     <small className="text-danger">
-                      {errors.leave_days.message}
-                    </small>
-                  )}
-                </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Work Date<span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <Controller
-                      name="work_date"
-                      control={control}
-                      rules={{ required: "Work date is required!" }}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          className="form-control"
-                          selected={field.value}
-                          value={
-                            field.value
-                              ? moment(field.value).format("DD-MM-YYYY")
-                              : null
-                          }
-                          onChange={field.onChange}
-                          dateFormat="DD-MM-YYYY"
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.encashment_date && (
-                    <small className="text-danger">
-                      {errors.encashment_date.message}
+                      {errors.rating.message}
                     </small>
                   )}
                 </div>
 
                 <div className="mb-3">
-                  <label className="col-form-label">Task Description</label>
+                  <label className="col-form-label">Reviewer Comments</label>
                   <Controller
-                    name="task_description"
+                    name="reviewer_comments"
                     control={control}
                     render={({ field }) => (
                       <DefaultEditor
@@ -294,7 +270,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {timeSheet
+                {selected
                   ? loading
                     ? " Updating..."
                     : "Update"
@@ -322,4 +298,4 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   );
 };
 
-export default ManageTimeSheet;
+export default ManageAppraisalEntries;

@@ -84,6 +84,7 @@ import LeaveApplicationsReducer from "./leaveApplication";
 import PayslipReducer from "./payslipViewer";
 import loanRequestsReducer from "./loanRequests";
 import LoneTypeReducer from "./loneType";
+import appraisalEntriesReducer from "./AppraisalsEntries";
 
 const store = configureStore({
   reducer: {
@@ -171,6 +172,7 @@ const store = configureStore({
     payslip: PayslipReducer,
     loan_requests: loanRequestsReducer,
     lone_type: LoneTypeReducer,
+    appraisalEntries: appraisalEntriesReducer,
   },
 });
 

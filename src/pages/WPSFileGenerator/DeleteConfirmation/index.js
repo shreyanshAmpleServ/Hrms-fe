@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deleteTimeSheet } from "../../../redux/TimeSheet";
+import { deleteWPSFile } from "../../../redux/WPSFileGenerator";
 
-const DeleteConfirmation = ({ showModal, setShowModal, timeSheetId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, wpsFileId }) => {
   const dispatch = useDispatch();
-  const handleDeleteTimeSheet = () => {
-    if (timeSheetId) {
-      dispatch(deleteTimeSheet(timeSheetId));
+  const handleDeleteWPSFile = () => {
+    if (wpsFileId) {
+      dispatch(deleteWPSFile(wpsFileId));
       setShowModal(false);
     }
   };
@@ -15,7 +15,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, timeSheetId }) => {
       {showModal && (
         <div
           className="modal fade show"
-          id="delete_time_sheet"
+          id="delete_wps_file"
           role="dialog"
           style={{ display: "block" }}
         >
@@ -26,10 +26,10 @@ const DeleteConfirmation = ({ showModal, setShowModal, timeSheetId }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove Time Sheet Entry?</h4>
+                  <h4 className="mb-2">Remove WPS File?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the time sheet entry
-                    you selected?
+                    Are you sure you want to remove <br /> the wps file you
+                    selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button
@@ -40,7 +40,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, timeSheetId }) => {
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={handleDeleteTimeSheet}
+                      onClick={handleDeleteWPSFile}
                     >
                       Yes, Delete it
                     </button>

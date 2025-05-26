@@ -640,7 +640,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Department Id
+                          Department
                           <span className="text-danger">*</span>
                         </label>
                         <Controller
