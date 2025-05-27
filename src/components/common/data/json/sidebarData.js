@@ -112,7 +112,7 @@ export const SidebarData = [
         ],
       },
       {
-        label: "Performance Management",
+        label: "Performance Manage...",
         icon: "ti ti-chart-line",
         showSubRoute: true,
         submenu: true,

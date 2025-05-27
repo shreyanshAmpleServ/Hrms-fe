@@ -24,7 +24,6 @@ const EmploymentContracts = () => {
 
   const { contracts, loading } = useSelector((state) => state.contracts || {});
 
-  console.log(contracts, "contracts");
   React.useEffect(() => {
     dispatch(
       fetchContracts({

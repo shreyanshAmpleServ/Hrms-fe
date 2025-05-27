@@ -5,44 +5,45 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const UpdateExperience = ({ employeeDetail }) => {
+const UpdateEducations = ({ employeeDetail }) => {
   const { loading } = useSelector((state) => state.employee);
-  const [experiences, setExperiences] = React.useState([
+  const [educations, setEducations] = React.useState([
     {
-      company: "",
-      position: "",
+      institute: "",
+      specialization: "",
+      degree: "",
       from: "",
       to: "",
     },
   ]);
   const dispatch = useDispatch();
 
-  const handleChangeExperience = (index, field, value) => {
-    const newExperiences = [...experiences];
-    newExperiences[index][field] = value;
-    setExperiences(newExperiences);
+  const handleChangeQualification = (index, field, value) => {
+    const newQualifications = [...educations];
+    newQualifications[index][field] = value;
+    setEducations(newQualifications);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const closeButton = document.getElementById(
-      "close_btn_update_experience_modal"
+      "close_btn_update_education_modal"
     );
-    console.log(experiences);
+    console.log(educations);
     closeButton.click();
   };
 
   return (
-    <div className="modal fade" id="update_experience_modal" role="dialog">
+    <div className="modal fade" id="update_education_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Edit Experience</h5>
+            <h5 className="modal-title">Edit Education</h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="close_btn_update_experience_modal"
+              id="close_btn_update_edu_modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -52,10 +53,10 @@ const UpdateExperience = ({ employeeDetail }) => {
               style={{ height: "calc(100vh - 210px)" }}
               className="overflow-y-auto modal-body"
             >
-              {experiences?.map((experience, index) => (
+              {educations?.map((education, index) => (
                 <div key={index}>
                   <div className="d-flex align-items-center justify-content-between">
-                    <h5 className="fw-bold mb-2">Experience {index + 1}</h5>
+                    <h5 className="fw-bold mb-2">Education {index + 1}</h5>
                     <Button
                       type="button"
                       size="small"
@@ -65,10 +66,10 @@ const UpdateExperience = ({ employeeDetail }) => {
                       onClick={() =>
                         index === 0
                           ? toast.error(
-                              "You cannot remove the first experience"
+                              "You cannot remove the first qualification"
                             )
-                          : setExperiences(
-                              experiences.filter((_, i) => i !== index)
+                          : setEducations(
+                              educations.filter((_, i) => i !== index)
                             )
                       }
                     >
@@ -80,17 +81,17 @@ const UpdateExperience = ({ employeeDetail }) => {
                       {/* Institute */}
                       <div className="mb-2">
                         <label className="col-form-label">
-                          Company <span className="text-danger"> *</span>
+                          Institute <span className="text-danger"> *</span>
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Enter Company"
-                          value={experience.company}
+                          placeholder="Enter Institute"
+                          value={education.institute}
                           onChange={(e) =>
-                            handleChangeExperience(
+                            handleChangeQualification(
                               index,
-                              "company",
+                              "institute",
                               e.target.value
                             )
                           }
@@ -98,20 +99,43 @@ const UpdateExperience = ({ employeeDetail }) => {
                       </div>
                     </div>
                     <div className="col-md-6">
-                      {/* Position */}
+                      {/* Degree */}
                       <div className="mb-2">
                         <label className="col-form-label">
-                          Position <span className="text-danger"> *</span>
+                          Degree <span className="text-danger"> *</span>
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Enter Position"
-                          value={experience.position}
+                          placeholder="Enter Degree"
+                          value={education.degree}
                           onChange={(e) =>
-                            handleChangeExperience(
+                            handleChangeQualification(
                               index,
-                              "position",
+                              "degree",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      {/* Specialization */}
+                      <div className="mb-2">
+                        <label className="col-form-label">
+                          Specialization <span className="text-danger"> *</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Enter Specialization"
+                          value={education.specialization}
+                          onChange={(e) =>
+                            handleChangeQualification(
+                              index,
+                              "specialization",
                               e.target.value
                             )
                           }
@@ -130,9 +154,9 @@ const UpdateExperience = ({ employeeDetail }) => {
                           type="text"
                           className="form-control"
                           placeholder="Enter From"
-                          value={experience.from}
+                          value={education.from}
                           onChange={(e) =>
-                            handleChangeExperience(
+                            handleChangeQualification(
                               index,
                               "from",
                               e.target.value
@@ -151,9 +175,13 @@ const UpdateExperience = ({ employeeDetail }) => {
                           type="text"
                           className="form-control"
                           placeholder="Enter To"
-                          value={experience.to}
+                          value={education.to}
                           onChange={(e) =>
-                            handleChangeExperience(index, "to", e.target.value)
+                            handleChangeQualification(
+                              index,
+                              "to",
+                              e.target.value
+                            )
                           }
                         />
                       </div>
@@ -167,13 +195,13 @@ const UpdateExperience = ({ employeeDetail }) => {
                     type="button"
                     className="btn btn-primary"
                     onClick={() =>
-                      setExperiences([
-                        ...experiences,
-                        { company: "", position: "", from: "", to: "" },
+                      setEducations([
+                        ...educations,
+                        { institute: "", degree: "", from: "", to: "" },
                       ])
                     }
                   >
-                    Add Experience
+                    Add Education
                   </button>
                 </div>
               </div>
@@ -211,4 +239,4 @@ const UpdateExperience = ({ employeeDetail }) => {
   );
 };
 
-export default UpdateExperience;
+export default UpdateEducations;

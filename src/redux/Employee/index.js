@@ -162,17 +162,27 @@ const employeesSlice = createSlice({
       })
       .addCase(updateEmployee.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.employee.data?.findIndex(
-          (data) => data.id === action.payload.data.id
-        );
-        if (index !== -1) {
-          state.employee.data[index] = action.payload.data;
-        } else {
+
+        if (!state.employee.data) {
           state.employee = {
             ...state.employee,
-            data: [...state.employee.data, action.payload.data],
+            data: [action.payload.data],
           };
+        } else {
+          const index = state.employee.data.findIndex(
+            (data) => data.id === action.payload.data.id
+          );
+
+          if (index !== -1 && action.payload.data) {
+            state.employee.data[index] = action.payload.data;
+          } else if (action.payload.data) {
+            state.employee = {
+              ...state.employee,
+              data: [...state.employee.data, action.payload.data],
+            };
+          }
         }
+
         state.success = action.payload.message;
       })
       .addCase(updateEmployee.rejected, (state, action) => {

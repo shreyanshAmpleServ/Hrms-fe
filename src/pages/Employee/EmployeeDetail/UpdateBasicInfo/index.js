@@ -106,7 +106,10 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
       formData.append("id", employeeDetail.id);
       formData.append("full_name", data.full_name);
       formData.append("first_name", data.full_name?.split(" ")[0] || "");
-      formData.append("last_name", data.full_name?.split(" ")[1] || "");
+      formData.append(
+        "last_name",
+        data.full_name?.split(" ").slice(1).join(" ") || ""
+      );
       formData.append("email", data.email);
       formData.append("phone_number", data.phone_number);
       formData.append("department_id", data.department_id);

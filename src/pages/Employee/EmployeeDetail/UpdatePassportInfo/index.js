@@ -1,39 +1,13 @@
-import moment from "moment";
 import React, { useEffect } from "react";
-import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Select from "react-select";
-import { fetchdepartment } from "../../../../redux/department";
-import { fetchdesignation } from "../../../../redux/designation";
 import { updateEmployee } from "../../../../redux/Employee";
+import moment from "moment";
+import DatePicker from "react-datepicker";
 const UpdatePassportInfo = ({ employeeDetail }) => {
   const { loading } = useSelector((state) => state.employee);
-  const { department } = useSelector((state) => state.department);
   const dispatch = useDispatch();
-  const { designation } = useSelector((state) => state.designation);
-  const departmentOptions = department?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.department_name,
-  }));
-
-  const designationOptions = designation?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.designation_name,
-  }));
-
-  const genderOptions = [
-    { value: "Male", label: "Male" },
-    { value: "Female", label: "Female" },
-  ];
-
-  useEffect(() => {
-    dispatch(fetchdepartment());
-    dispatch(fetchdesignation());
-  }, [dispatch]);
-
-  const address = employeeDetail?.hrms_employee_address?.[1];
 
   const {
     register,
@@ -44,77 +18,50 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
     watch,
   } = useForm({
     defaultValues: {
-      address:
-        [
-          address?.street_no,
-          address?.street,
-          address?.city,
-          address?.employee_state?.name,
-          address?.employee_country?.name,
-          address?.zip_code,
-        ]
-          .filter(Boolean)
-          .join(", ") ||
-        " - - " ||
-        "",
-      department_id: employeeDetail?.department_id || "",
-      designation_id: employeeDetail?.designation_id || "",
-      gender: employeeDetail?.gender || "",
-      date_of_birth: employeeDetail?.date_of_birth || "",
-      full_name: employeeDetail?.full_name || "",
-      email: employeeDetail?.email || "",
-      phone_number: employeeDetail?.phone_number || "",
+      passport_number: "",
+      nationality: "",
+      passport_issue_date: new Date().toISOString(),
+      passport_expiry_date: new Date().toISOString(),
     },
   });
 
   useEffect(() => {
     if (employeeDetail) {
       reset({
-        full_name: employeeDetail.full_name || "",
-        is_active: employeeDetail.is_active,
-        department_id: employeeDetail.department_id || "",
-        designation_id: employeeDetail.designation_id || "",
-        gender: employeeDetail.gender || "",
-        date_of_birth:
-          employeeDetail.date_of_birth || new Date().toISOString() || "",
-        email: employeeDetail.email || "",
-        phone_number: employeeDetail.phone_number || "",
-        address: employeeDetail.address || "",
-        join_date: employeeDetail.join_date || new Date().toISOString() || "",
+        passport_number: employeeDetail.passport_number || "",
+        nationality: employeeDetail.nationality || "",
+        passport_issue_date:
+          employeeDetail.passport_issue_date || new Date().toISOString(),
+        passport_expiry_date:
+          employeeDetail.passport_expiry_date || new Date().toISOString(),
       });
     } else {
       reset({
-        full_name: "",
-        department_id: "",
-        designation_id: "",
-        gender: "",
-        date_of_birth: "",
-        email: "",
-        phone_number: "",
-        address: "",
-        join_date: "",
+        passport_number: "",
+        nationality: "",
+        passport_issue_date: new Date().toISOString(),
+        passport_expiry_date: new Date().toISOString(),
       });
     }
   }, [employeeDetail, reset]);
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_update_contact_info_modal"
+      "close_btn_update_passport_info_modal"
     );
     const formData = new FormData();
     if (employeeDetail) {
       formData.append("id", employeeDetail.id);
-      formData.append("full_name", data.full_name);
-      formData.append("first_name", data.full_name?.split(" ")[0] || "");
-      formData.append("last_name", data.full_name?.split(" ")[1] || "");
-      formData.append("email", data.email);
-      formData.append("phone_number", data.phone_number);
-      formData.append("department_id", data.department_id);
-      formData.append("designation_id", data.designation_id);
-      formData.append("gender", data.gender);
-      formData.append("date_of_birth", data.date_of_birth);
-      formData.append("join_date", data.join_date);
-      formData.append("address", data.address);
+      formData.append("passport_number", data.passport_number);
+      formData.append("nationality", data.nationality);
+      formData.append(
+        "passport_issue_date",
+        new Date(data.passport_issue_date).toISOString()
+      );
+      formData.append(
+        "passport_expiry_date",
+        new Date(data.passport_expiry_date).toISOString()
+      );
       dispatch(updateEmployee(formData));
     }
     reset();
@@ -122,49 +69,45 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
   };
 
   return (
-    <div className="modal fade" id="update_contact_info_modal" role="dialog">
+    <div className="modal fade" id="update_passport_info_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Edit Contact Info</h5>
+            <h5 className="modal-title">Edit Passport Info</h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="close_btn_update_contact_info_modal"
+              id="close_btn_update_passport_info_modal"
             >
               <i className="ti ti-x" />
             </button>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div
-              style={{ height: "400px", overflowY: "auto" }}
-              className="modal-body"
-            >
-              <h5 className="fw-bold mb-2">Primary Contact</h5>
-
+            <div className="modal-body">
               <div className="row">
                 <div className="col-md-6">
-                  {/* Employee Name */}
+                  {/* Passport Number */}
                   <div className="mb-2">
                     <label className="col-form-label">
-                      Name <span className="text-danger">*</span>
+                      Passport Number <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.primary_contact_name ? "is-invalid" : ""}`}
-                      placeholder="Enter Employee Name"
-                      {...register("primary_contact_name", {
-                        required: "Name is required.",
+                      className={`form-control ${errors.passport_number ? "is-invalid" : ""}`}
+                      placeholder="Enter Passport Number"
+                      {...register("passport_number", {
+                        required: "Passport number is required.",
                         minLength: {
                           value: 3,
-                          message: "Name must be at least 3 characters.",
+                          message:
+                            "Passport number must be at least 3 characters.",
                         },
                       })}
                     />
-                    {errors.primary_contact_name && (
+                    {errors.passport_number && (
                       <small className="text-danger">
-                        {errors.primary_contact_name.message}
+                        {errors.passport_number.message}
                       </small>
                     )}
                   </div>
@@ -173,19 +116,19 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
                   {/* Email */}
                   <div className="mb-2">
                     <label className="col-form-label">
-                      Relationship <span className="text-danger">*</span>
+                      Nationality <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.primary_contact_relationship ? "is-invalid" : ""}`}
-                      placeholder="Enter Relationship"
-                      {...register("primary_contact_relationship", {
-                        required: "Relationship is required.",
+                      className={`form-control ${errors.nationality ? "is-invalid" : ""}`}
+                      placeholder="Enter Nationality"
+                      {...register("nationality", {
+                        required: "Nationality is required.",
                       })}
                     />
-                    {errors.primary_contact_relationship && (
+                    {errors.nationality && (
                       <small className="text-danger">
-                        {errors.primary_contact_relationship.message}
+                        {errors.nationality.message}
                       </small>
                     )}
                   </div>
@@ -193,108 +136,75 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
               </div>
               <div className="row">
                 <div className="col-md-6">
-                  {/* Phone Number */}
-                  <div className="mb-2">
-                    <label className="col-form-label">
-                      Phone Number <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className={`form-control ${errors.primary_contact_phone_number ? "is-invalid" : ""}`}
-                      placeholder="Enter Phone Number"
-                      {...register("primary_contact_phone_number", {
-                        required: "Phone number is required.",
-                        minLength: {
-                          value: 10,
-                          message:
-                            "Phone number must be at least 10 characters.",
-                        },
-                      })}
+                  {/* Issue Date */}
+                  <label className="col-form-label">
+                    Issue Date<span className="text-danger"> *</span>
+                  </label>
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
+                    <Controller
+                      name="passport_issue_date"
+                      control={control}
+                      placeholder="Select Issue Date"
+                      rules={{ required: "Issue date is required!" }}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={field.onChange}
+                          dateFormat="DD-MM-YYYY"
+                        />
+                      )}
                     />
-                    {errors.primary_contact_phone_number && (
-                      <small className="text-danger">
-                        {errors.primary_contact_phone_number.message}
-                      </small>
-                    )}
                   </div>
-                </div>
-              </div>
-              <h5 className="fw-bold mb-2">Secondary Contact</h5>
-
-              <div className="row">
-                <div className="col-md-6">
-                  {/* Employee Name */}
-                  <div className="mb-2">
-                    <label className="col-form-label">
-                      Name <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className={`form-control ${errors.secondary_contact_name ? "is-invalid" : ""}`}
-                      placeholder="Enter Employee Name"
-                      {...register("secondary_contact_name", {
-                        required: "Name is required.",
-                        minLength: {
-                          value: 3,
-                          message: "Name must be at least 3 characters.",
-                        },
-                      })}
-                    />
-                    {errors.secondary_contact_name && (
-                      <small className="text-danger">
-                        {errors.secondary_contact_name.message}
-                      </small>
-                    )}
-                  </div>
+                  {errors.passport_issue_date && (
+                    <small className="text-danger">
+                      {errors.passport_issue_date.message}
+                    </small>
+                  )}
                 </div>
                 <div className="col-md-6">
-                  {/* Email */}
-                  <div className="mb-2">
-                    <label className="col-form-label">
-                      Relationship <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className={`form-control ${errors.secondary_contact_relationship ? "is-invalid" : ""}`}
-                      placeholder="Enter Relationship"
-                      {...register("secondary_contact_relationship", {
-                        required: "Relationship is required.",
-                      })}
+                  {/* Date of Birth */}
+                  <label className="col-form-label">
+                    Expiry Date<span className="text-danger"> *</span>
+                  </label>
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
+                    <Controller
+                      name="passport_expiry_date"
+                      control={control}
+                      rules={{ required: "Expiry date is required!" }}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={field.onChange}
+                          dateFormat="DD-MM-YYYY"
+                        />
+                      )}
                     />
-                    {errors.secondary_contact_relationship && (
-                      <small className="text-danger">
-                        {errors.secondary_contact_relationship.message}
-                      </small>
-                    )}
                   </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  {/* Phone Number */}
-                  <div className="mb-2">
-                    <label className="col-form-label">
-                      Phone Number <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className={`form-control ${errors.secondary_contact_phone_number ? "is-invalid" : ""}`}
-                      placeholder="Enter Phone Number"
-                      {...register("secondary_contact_phone_number", {
-                        required: "Phone number is required.",
-                        minLength: {
-                          value: 10,
-                          message:
-                            "Phone number must be at least 10 characters.",
-                        },
-                      })}
-                    />
-                    {errors.primary_contact_phone_number && (
-                      <small className="text-danger">
-                        {errors.primary_contact_phone_number.message}
-                      </small>
-                    )}
-                  </div>
+                  {errors.passport_expiry_date && (
+                    <small className="text-danger">
+                      {errors.passport_expiry_date.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

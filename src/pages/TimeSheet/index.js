@@ -1,4 +1,4 @@
-import { Table, Tag } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,10 +7,9 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchLeaveEncashment } from "../../redux/LeaveEncashment/index.js";
+import { fetchTimeSheet } from "../../redux/TimeSheet/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageTimeSheet from "./ManageTimeSheet/index.js";
-import { fetchTimeSheet } from "../../redux/TimeSheet/index.js";
 
 const TimeSheet = () => {
   const [searchValue, setSearchValue] = useState("");

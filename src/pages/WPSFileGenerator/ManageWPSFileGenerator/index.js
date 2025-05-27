@@ -1,19 +1,15 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
-import { fetchEmployee } from "../../../redux/Employee";
-import { fetchLeaveType } from "../../../redux/LeaveType";
 import {
   createAppraisalEntries,
   updateAppraisalEntries,
 } from "../../../redux/AppraisalsEntries";
+import moment from "moment";
 
 const ManageWPSFileGenerator = ({ setSelected, selected }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -22,52 +18,55 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      employee_id: "",
-      review_period: "",
-      rating: "",
-      reviewer_comments: "",
+      payroll_month: "",
+      file_path: "",
+      generated_on: new Date().toISOString(),
+      submitted_to_bank: false,
     },
   });
+
+  const monthsOptions = [
+    { label: "January", value: "January" },
+    { label: "February", value: "February" },
+    { label: "March", value: "March" },
+    { label: "April", value: "April" },
+    { label: "May", value: "May" },
+    { label: "June", value: "June" },
+    { label: "July", value: "July" },
+    { label: "August", value: "August" },
+    { label: "September", value: "September" },
+    { label: "October", value: "October" },
+    { label: "November", value: "November" },
+    { label: "December", value: "December" },
+  ];
 
   const { loading } = useSelector((state) => state.leaveEncashment || {});
 
   React.useEffect(() => {
     if (selected) {
       reset({
-        employee_id: selected.employee_id || "",
-        review_period: selected.review_period || "",
-        rating: selected.rating || "",
-        reviewer_comments: selected.reviewer_comments || "",
+        payroll_month: selected.payroll_month || "",
+        file_path: "",
+        generated_on: selected.generated_on || new Date().toISOString(),
+        submitted_to_bank: selected.submitted_to_bank || false,
       });
     } else {
       reset({
-        employee_id: "",
-        review_period: "",
-        rating: "",
-        reviewer_comments: "",
+        payroll_month: "",
+        file_path: "",
+        generated_on: new Date().toISOString(),
+        submitted_to_bank: false,
       });
     }
   }, [selected, reset]);
 
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
-
-  useEffect(() => {
-    dispatch(fetchLeaveType({ searchValue }));
-  }, [dispatch, searchValue]);
-
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    const formData = new FormData();
+    formData.append("payroll_month", data.payroll_month);
+    formData.append("file_path", data.file_path);
+    formData.append("generated_on", data.generated_on);
+    formData.append("submitted_to_bank", data.submitted_to_bank);
     try {
       selected
         ? await dispatch(
@@ -138,29 +137,25 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Employee
+                      Payroll Month
                       <span className="text-danger"> *</span>
                     </label>
                     <Controller
-                      name="employee_id"
+                      name="payroll_month"
                       control={control}
-                      rules={{ required: "Employee is required" }}
+                      rules={{ required: "Payroll month is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                        const selectedMonth = monthsOptions?.find(
+                          (month) => month.value === field.value
                         );
                         return (
                           <Select
                             {...field}
                             className="select"
-                            options={employees}
-                            placeholder="Select Employee"
+                            options={monthsOptions}
+                            placeholder="Select Payroll Month"
                             classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
+                            value={selectedMonth || null}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)
                             }
@@ -174,9 +169,9 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                         );
                       }}
                     />
-                    {errors.employee_id && (
+                    {errors.payroll_month && (
                       <small className="text-danger">
-                        {errors.employee_id.message}
+                        {errors.payroll_month.message}
                       </small>
                     )}
                   </div>
@@ -184,28 +179,29 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Review Period
+                      File Path
                       <span className="text-danger"> *</span>
                     </label>
                     <Controller
-                      name="review_period"
+                      name="file_path"
                       control={control}
-                      rules={{ required: "Review period is required" }}
+                      rules={{ required: "File path is required" }}
                       render={({ field }) => {
                         return (
                           <input
                             {...field}
+                            type="file"
                             className="form-control"
-                            placeholder="Enter Review Period"
+                            placeholder="Enter File Path"
                             value={field.value}
                             onChange={field.onChange}
                           />
                         );
                       }}
                     />
-                    {errors.review_period && (
+                    {errors.file_path && (
                       <small className="text-danger">
-                        {errors.review_period.message}
+                        {errors.file_path.message}
                       </small>
                     )}
                   </div>
@@ -213,54 +209,52 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Rating<span className="text-danger"> *</span>
+                    Generated On<span className="text-danger"> *</span>
                   </label>
-                  <div className="mb-3">
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
                     <Controller
-                      name="rating"
+                      name="generated_on"
                       control={control}
-                      rules={{
-                        required: "Rating is required!",
-                        min: {
-                          value: 1,
-                          message: "Rating must be at least 1",
-                        },
-                        max: {
-                          value: 5,
-                          message: "Rating cannot exceed 5",
-                        },
-                      }}
                       render={({ field }) => (
-                        <input
+                        <DatePicker
                           {...field}
-                          type="number"
-                          min={1}
-                          max={5}
+                          type="date"
                           className="form-control"
-                          placeholder="Enter Rating (1-5)"
-                          value={field.value}
-                          onChange={field.onChange}
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={(date) => field.onChange(date)}
                         />
                       )}
                     />
                   </div>
-                  {errors.rating && (
+                  {errors.generated_on && (
                     <small className="text-danger">
-                      {errors.rating.message}
+                      {errors.generated_on.message}
                     </small>
                   )}
                 </div>
 
                 <div className="mb-3">
-                  <label className="col-form-label">Reviewer Comments</label>
+                  <label className="col-form-label">
+                    Submitted To Bank
+                    <span className="text-danger"> *</span>
+                  </label>
                   <Controller
-                    name="reviewer_comments"
+                    name="submitted_to_bank"
                     control={control}
                     render={({ field }) => (
-                      <DefaultEditor
-                        className="summernote"
+                      <input
                         {...field}
-                        value={field.value || ""}
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={field.value || false}
                         onChange={(content) => field.onChange(content)}
                       />
                     )}

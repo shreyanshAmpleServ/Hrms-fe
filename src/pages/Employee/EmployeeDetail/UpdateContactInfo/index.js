@@ -10,30 +10,7 @@ import { fetchdesignation } from "../../../../redux/designation";
 import { updateEmployee } from "../../../../redux/Employee";
 const UpdateContactInfo = ({ employeeDetail }) => {
   const { loading } = useSelector((state) => state.employee);
-  const { department } = useSelector((state) => state.department);
   const dispatch = useDispatch();
-  const { designation } = useSelector((state) => state.designation);
-  const departmentOptions = department?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.department_name,
-  }));
-
-  const designationOptions = designation?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.designation_name,
-  }));
-
-  const genderOptions = [
-    { value: "Male", label: "Male" },
-    { value: "Female", label: "Female" },
-  ];
-
-  useEffect(() => {
-    dispatch(fetchdepartment());
-    dispatch(fetchdesignation());
-  }, [dispatch]);
-
-  const address = employeeDetail?.hrms_employee_address?.[1];
 
   const {
     register,
@@ -44,55 +21,35 @@ const UpdateContactInfo = ({ employeeDetail }) => {
     watch,
   } = useForm({
     defaultValues: {
-      address:
-        [
-          address?.street_no,
-          address?.street,
-          address?.city,
-          address?.employee_state?.name,
-          address?.employee_country?.name,
-          address?.zip_code,
-        ]
-          .filter(Boolean)
-          .join(", ") ||
-        " - - " ||
-        "",
-      department_id: employeeDetail?.department_id || "",
-      designation_id: employeeDetail?.designation_id || "",
-      gender: employeeDetail?.gender || "",
-      date_of_birth: employeeDetail?.date_of_birth || "",
-      full_name: employeeDetail?.full_name || "",
-      email: employeeDetail?.email || "",
-      phone_number: employeeDetail?.phone_number || "",
+      primary_contact_name: employeeDetail?.primary_contact_name || "",
+      primary_contact_relation: employeeDetail?.primary_contact_relation || "",
+      primary_contact_number: employeeDetail?.primary_contact_number || "",
+      secondary_contact_name: employeeDetail?.secondary_contact_name || "",
+      secondary_contact_relation:
+        employeeDetail?.secondary_contact_relation || "",
+      secondary_contact_mumber: employeeDetail?.secondary_contact_mumber || "",
     },
   });
 
   useEffect(() => {
     if (employeeDetail) {
       reset({
-        full_name: employeeDetail.full_name || "",
-        is_active: employeeDetail.is_active,
-        department_id: employeeDetail.department_id || "",
-        designation_id: employeeDetail.designation_id || "",
-        gender: employeeDetail.gender || "",
-        date_of_birth:
-          employeeDetail.date_of_birth || new Date().toISOString() || "",
-        email: employeeDetail.email || "",
-        phone_number: employeeDetail.phone_number || "",
-        address: employeeDetail.address || "",
-        join_date: employeeDetail.join_date || new Date().toISOString() || "",
+        primary_contact_name: employeeDetail.primary_contact_name || "",
+        primary_contact_relation: employeeDetail.primary_contact_relation || "",
+        primary_contact_number: employeeDetail.primary_contact_number || "",
+        secondary_contact_name: employeeDetail.secondary_contact_name || "",
+        secondary_contact_relation:
+          employeeDetail.secondary_contact_relation || "",
+        secondary_contact_mumber: employeeDetail.secondary_contact_mumber || "",
       });
     } else {
       reset({
-        full_name: "",
-        department_id: "",
-        designation_id: "",
-        gender: "",
-        date_of_birth: "",
-        email: "",
-        phone_number: "",
-        address: "",
-        join_date: "",
+        primary_contact_name: "",
+        primary_contact_relation: "",
+        primary_contact_number: "",
+        secondary_contact_name: "",
+        secondary_contact_relation: "",
+        secondary_contact_mumber: "",
       });
     }
   }, [employeeDetail, reset]);
@@ -104,17 +61,21 @@ const UpdateContactInfo = ({ employeeDetail }) => {
     const formData = new FormData();
     if (employeeDetail) {
       formData.append("id", employeeDetail.id);
-      formData.append("full_name", data.full_name);
-      formData.append("first_name", data.full_name?.split(" ")[0] || "");
-      formData.append("last_name", data.full_name?.split(" ")[1] || "");
-      formData.append("email", data.email);
-      formData.append("phone_number", data.phone_number);
-      formData.append("department_id", data.department_id);
-      formData.append("designation_id", data.designation_id);
-      formData.append("gender", data.gender);
-      formData.append("date_of_birth", data.date_of_birth);
-      formData.append("join_date", data.join_date);
-      formData.append("address", data.address);
+      formData.append("primary_contact_name", data.primary_contact_name);
+      formData.append(
+        "primary_contact_relation",
+        data.primary_contact_relation
+      );
+      formData.append("primary_contact_number", data.primary_contact_number);
+      formData.append("secondary_contact_name", data.secondary_contact_name);
+      formData.append(
+        "secondary_contact_relation",
+        data.secondary_contact_relation
+      );
+      formData.append(
+        "secondary_contact_mumber",
+        data.secondary_contact_mumber
+      );
       dispatch(updateEmployee(formData));
     }
     reset();
@@ -153,7 +114,7 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                     <input
                       type="text"
                       className={`form-control ${errors.primary_contact_name ? "is-invalid" : ""}`}
-                      placeholder="Enter Employee Name"
+                      placeholder="Enter Primary Contact Name"
                       {...register("primary_contact_name", {
                         required: "Name is required.",
                         minLength: {
@@ -177,15 +138,15 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.primary_contact_relationship ? "is-invalid" : ""}`}
+                      className={`form-control ${errors.primary_contact_relation ? "is-invalid" : ""}`}
                       placeholder="Enter Relationship"
-                      {...register("primary_contact_relationship", {
+                      {...register("primary_contact_relation", {
                         required: "Relationship is required.",
                       })}
                     />
-                    {errors.primary_contact_relationship && (
+                    {errors.primary_contact_relation && (
                       <small className="text-danger">
-                        {errors.primary_contact_relationship.message}
+                        {errors.primary_contact_relation.message}
                       </small>
                     )}
                   </div>
@@ -200,9 +161,9 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.primary_contact_phone_number ? "is-invalid" : ""}`}
+                      className={`form-control ${errors.primary_contact_number ? "is-invalid" : ""}`}
                       placeholder="Enter Phone Number"
-                      {...register("primary_contact_phone_number", {
+                      {...register("primary_contact_number", {
                         required: "Phone number is required.",
                         minLength: {
                           value: 10,
@@ -211,9 +172,9 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                         },
                       })}
                     />
-                    {errors.primary_contact_phone_number && (
+                    {errors.primary_contact_number && (
                       <small className="text-danger">
-                        {errors.primary_contact_phone_number.message}
+                        {errors.primary_contact_number.message}
                       </small>
                     )}
                   </div>
@@ -231,7 +192,7 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                     <input
                       type="text"
                       className={`form-control ${errors.secondary_contact_name ? "is-invalid" : ""}`}
-                      placeholder="Enter Employee Name"
+                      placeholder="Enter Secondary Contact Name"
                       {...register("secondary_contact_name", {
                         required: "Name is required.",
                         minLength: {
@@ -255,15 +216,15 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.secondary_contact_relationship ? "is-invalid" : ""}`}
+                      className={`form-control ${errors.secondary_contact_relation ? "is-invalid" : ""}`}
                       placeholder="Enter Relationship"
-                      {...register("secondary_contact_relationship", {
+                      {...register("secondary_contact_relation", {
                         required: "Relationship is required.",
                       })}
                     />
-                    {errors.secondary_contact_relationship && (
+                    {errors.secondary_contact_relation && (
                       <small className="text-danger">
-                        {errors.secondary_contact_relationship.message}
+                        {errors.secondary_contact_relation.message}
                       </small>
                     )}
                   </div>
@@ -278,9 +239,9 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.secondary_contact_phone_number ? "is-invalid" : ""}`}
+                      className={`form-control ${errors.secondary_contact_mumber ? "is-invalid" : ""}`}
                       placeholder="Enter Phone Number"
-                      {...register("secondary_contact_phone_number", {
+                      {...register("secondary_contact_mumber", {
                         required: "Phone number is required.",
                         minLength: {
                           value: 10,
@@ -289,9 +250,9 @@ const UpdateContactInfo = ({ employeeDetail }) => {
                         },
                       })}
                     />
-                    {errors.primary_contact_phone_number && (
+                    {errors.primary_contact_number && (
                       <small className="text-danger">
-                        {errors.primary_contact_phone_number.message}
+                        {errors.primary_contact_number.message}
                       </small>
                     )}
                   </div>

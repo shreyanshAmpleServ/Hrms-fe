@@ -9,6 +9,11 @@ import { fetchEmployeeById } from "../../../redux/Employee";
 import { all_routes } from "../../../routes/all_routes";
 import UpdateBasicInfo from "./UpdateBasicInfo";
 import UpdateContactInfo from "./UpdateContactInfo";
+import UpdateBankInfo from "./UpdateBankInfo";
+import UpdatePassportInfo from "./UpdatePassportInfo";
+import UpdateSocialInfo from "./UpdateSocialInfo";
+import UpdateExperience from "./UpdateExperience";
+import UpdateEducations from "./UpdateEducations";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
@@ -21,8 +26,6 @@ const EmployeeDetail = () => {
   const { employeeDetail, loading } = useSelector((state) => state.employee);
 
   const route = all_routes;
-
-  const address = employeeDetail?.hrms_employee_address?.[1];
 
   if (loading) {
     return (
@@ -220,16 +223,7 @@ const EmployeeDetail = () => {
                           <strong> Address:</strong>
                         </p>
                         <p className="m-0">
-                          {[
-                            address?.street_no,
-                            address?.street,
-                            address?.city,
-                            address?.employee_state?.name,
-                            address?.employee_country?.name,
-                            address?.zip_code,
-                          ]
-                            .filter(Boolean)
-                            .join(", ") || " - - "}
+                          {employeeDetail?.address || " - - "}
                         </p>
                       </div>
                       <div className="d-flex flex-column gap-1">
@@ -260,15 +254,14 @@ const EmployeeDetail = () => {
                   </div>
                   <div className="d-flex justify-content-between px-3 flex-wrap">
                     <div className="d-flex flex-column w-50 gap-2">
-                      <h5 className="text-muted">Primary Contact</h5>
+                      <h5>Primary Contact</h5>
                       <div className="d-flex flex-column gap-3">
                         <div className="d-flex flex-column gap-1">
                           <p className="m-0">
                             <strong>Name:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.emergency_contact_person ||
-                              " - - "}
+                            {employeeDetail?.primary_contact_name || " - - "}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -276,7 +269,8 @@ const EmployeeDetail = () => {
                             <strong>Relationship:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.contact_relation || " - - "}
+                            {employeeDetail?.primary_contact_relation ||
+                              " - - "}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -284,25 +278,40 @@ const EmployeeDetail = () => {
                             <strong>Phone:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.emergency_contact || " - - "}
+                            {employeeDetail?.primary_contact_number || " - - "}
                           </p>
                         </div>
-                        {/* <div className="d-flex flex-column gap-1">
-                        <p className="m-0">
-                          <strong>Email:</strong>
-                        </p>
-                        <p className="m-0">
-                          {employeeDetail?.email || " - - "}
-                        </p>
                       </div>
-                      <div className="d-flex flex-column gap-1">
-                        <p className="m-0">
-                          <strong>Address:</strong>
-                        </p>
-                        <p className="m-0">
-                          {employeeDetail?.streetAddress || " - - "}
-                        </p>
-                      </div> */}
+                    </div>
+                    <div className="d-flex flex-column w-50 gap-2">
+                      <h5>Secondary Contact</h5>
+                      <div className="d-flex flex-column gap-3">
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0">
+                            <strong>Name:</strong>
+                          </p>
+                          <p className="m-0">
+                            {employeeDetail?.secondary_contact_name || " - - "}
+                          </p>
+                        </div>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0">
+                            <strong>Relationship:</strong>
+                          </p>
+                          <p className="m-0">
+                            {employeeDetail?.secondary_contact_relation ||
+                              " - - "}
+                          </p>
+                        </div>
+                        <div className="d-flex flex-column gap-1">
+                          <p className="m-0">
+                            <strong>Phone:</strong>
+                          </p>
+                          <p className="m-0">
+                            {employeeDetail?.secondary_contact_mumber ||
+                              " - - "}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -313,7 +322,18 @@ const EmployeeDetail = () => {
                 <div className="col-md-6">
                   <div className="card">
                     <div className="card-body pb-3">
-                      <h4>Education Qualification</h4>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h4>Education Qualification</h4>
+                        <Tooltip title="Update Qualifications">
+                          <Button
+                            variant="filled"
+                            shape="circle"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#update_education_modal`}
+                            icon={<EditFilled />}
+                          />
+                        </Tooltip>
+                      </div>
                       <div className="d-flex align-items-start mt-3 gap-2">
                         <i className="ti ti-point-filled text-primary fs-4"></i>
                         <div className="d-flex flex-column gap-1">
@@ -350,7 +370,18 @@ const EmployeeDetail = () => {
                 <div className="col-md-6">
                   <div className="card">
                     <div className="card-body pb-3">
-                      <h4>Experience Details</h4>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h4>Experience Details</h4>
+                        <Tooltip title="Update Experience">
+                          <Button
+                            variant="filled"
+                            shape="circle"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#update_experience_modal`}
+                            icon={<EditFilled />}
+                          />
+                        </Tooltip>
+                      </div>
                       <div className="d-flex align-items-start mt-3 gap-2">
                         <i className="ti ti-point-filled text-primary fs-4"></i>
                         <div className="d-flex flex-column gap-1">
@@ -389,36 +420,48 @@ const EmployeeDetail = () => {
                 <div className="col-md-4">
                   <div className="card">
                     <div className="card-body pb-2 flex-column gap-3 d-flex">
-                      <h4>Bank Account</h4>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h4>Bank Account</h4>
+                        <Tooltip title="Update Bank Info">
+                          <Button
+                            variant="filled"
+                            shape="circle"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#update_bank_info_modal`}
+                            icon={<EditFilled />}
+                          />
+                        </Tooltip>
+                      </div>
                       <div className="d-flex mt-2 justify-content-between">
                         <p className="m-0">
                           <strong>Account Holder Name:</strong>
                         </p>
-                        <p className="m-0">Ethan Mitchell</p>
+                        <p className="m-0">
+                          {employeeDetail?.account_holder_name || " - - "}
+                        </p>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="m-0">
                           <strong>Account Number:</strong>
                         </p>
-                        <p className="m-0">1234567890</p>
+                        <p className="m-0">
+                          {employeeDetail?.account_number || " - - "}
+                        </p>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="m-0">
                           <strong>Bank Name:</strong>
                         </p>
-                        <p className="m-0">Bank of America</p>
-                      </div>
-                      <div className="d-flex justify-content-between">
                         <p className="m-0">
-                          <strong>Branch Name:</strong>
+                          {employeeDetail?.hrms_employee_bank?.bank_name ||
+                            " - - "}
                         </p>
-                        <p className="m-0">XYZ Branch</p>
                       </div>
                       <div className="d-flex mb-2 justify-content-between">
                         <p className="m-0">
                           <strong>IFSC Code:</strong>
                         </p>
-                        <p className="m-0">IFSC1234567890</p>
+                        <p className="m-0">{employeeDetail?.ifsc || " - - "}</p>
                       </div>
                     </div>
                   </div>
@@ -426,36 +469,57 @@ const EmployeeDetail = () => {
                 <div className="col-md-4">
                   <div className="card">
                     <div className="card-body pb-2 flex-column gap-3 d-flex">
-                      <h4>Passport Information</h4>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h4>Passport Information</h4>
+                        <Tooltip title="Update Passport Info">
+                          <Button
+                            variant="filled"
+                            shape="circle"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#update_passport_info_modal`}
+                            icon={<EditFilled />}
+                          />
+                        </Tooltip>
+                      </div>
                       <div className="d-flex mt-2 justify-content-between">
                         <p className="m-0">
                           <strong>Passport Number:</strong>
                         </p>
-                        <p className="m-0">A1234567</p>
+                        <p className="m-0">
+                          {employeeDetail?.passport_number || " - - "}
+                        </p>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="m-0">
                           <strong>Nationality:</strong>
                         </p>
-                        <p className="m-0">American</p>
+                        <p className="m-0">
+                          {employeeDetail?.nationality || " - - "}
+                        </p>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="m-0">
                           <strong>Issue Date:</strong>
                         </p>
-                        <p className="m-0">Jan 2010</p>
+                        <p className="m-0">
+                          {employeeDetail?.passport_issue_date
+                            ? moment(
+                                employeeDetail?.passport_issue_date
+                              ).format("DD-MM-YYYY")
+                            : " - - "}
+                        </p>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="m-0">
                           <strong>Expiry Date:</strong>
                         </p>
-                        <p className="m-0">01 Jan 2025</p>
-                      </div>
-                      <div className="d-flex mb-2 justify-content-between">
                         <p className="m-0">
-                          <strong>Scan Copy:</strong>
+                          {employeeDetail?.passport_expiry_date
+                            ? moment(
+                                employeeDetail?.passport_expiry_date
+                              ).format("DD-MM-YYYY")
+                            : " - - "}
                         </p>
-                        <p className="m-0">passport.pdf</p>
                       </div>
                     </div>
                   </div>
@@ -464,10 +528,21 @@ const EmployeeDetail = () => {
                 <div className="col-md-4">
                   <div className="card">
                     <div className="card-body pb-2 flex-column gap-3 d-flex">
-                      <h4>Social Profile</h4>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h4>Social Profile</h4>
+                        <Tooltip title="Update Social Info">
+                          <Button
+                            variant="filled"
+                            shape="circle"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#update_social_info_modal`}
+                            icon={<EditFilled />}
+                          />
+                        </Tooltip>
+                      </div>
                       <div className="d-flex mt-2 justify-content-between">
                         <p className="m-0">
-                          <strong>LinkedIn:</strong>
+                          <strong>LinkedIn:</strong>{" "}
                         </p>
                         <p className="m-0">Ethan Mitchell</p>
                       </div>
@@ -489,12 +564,6 @@ const EmployeeDetail = () => {
                         </p>
                         <p className="m-0">Ethan Mitchell</p>
                       </div>
-                      <div className="d-flex mb-2 justify-content-between">
-                        <p className="m-0">
-                          <strong>WhatsApp:</strong>
-                        </p>
-                        <p className="m-0">123456789</p>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -504,6 +573,11 @@ const EmployeeDetail = () => {
         </div>
         <UpdateBasicInfo employeeDetail={employeeDetail} />
         <UpdateContactInfo employeeDetail={employeeDetail} />
+        <UpdateBankInfo employeeDetail={employeeDetail} />
+        <UpdatePassportInfo employeeDetail={employeeDetail} />
+        <UpdateSocialInfo employeeDetail={employeeDetail} />
+        <UpdateEducations employeeDetail={employeeDetail} />
+        <UpdateExperience employeeDetail={employeeDetail} />
       </div>
     </>
   );
