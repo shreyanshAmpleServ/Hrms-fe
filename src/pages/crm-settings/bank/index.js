@@ -6,11 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../components/common/modals/FlashMessage";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { clearMessages, deletebank, fetchbank } from "../../../redux/bank";
+import { deletebank, fetchbank } from "../../../redux/bank";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
@@ -92,7 +91,7 @@ const BanksList = () => {
       : []),
   ];
 
-  const { bank, loading, error, success } = useSelector((state) => state.bank);
+  const { bank, loading } = useSelector((state) => state.bank);
 
   React.useEffect(() => {
     dispatch(fetchbank({ search: searchText }));
@@ -158,21 +157,6 @@ const BanksList = () => {
         <meta name="banks" content="This is banks page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">

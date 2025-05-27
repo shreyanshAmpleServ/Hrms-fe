@@ -1,34 +1,33 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
 
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deletepay_component,
   fetchpay_component,
 } from "../../../../redux/pay-component";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const Paycomponent = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Pay Component"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -40,50 +39,40 @@ const Paycomponent = () => {
 
   const columns = [
     {
-      title: " Component Name",
+      title: "Name",
       dataIndex: "component_name",
-      render: (text, record) => <Link to={`#`}>{record.component_name}</Link>,
-      sorter: (a, b) => a - b,
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.component_name || "").localeCompare(b.component_name || ""),
     },
     {
-      title: "Component Code",
+      title: "Code",
       dataIndex: "component_code",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.component_code || "").localeCompare(b.component_code || ""),
     },
     {
-      title: "Component Type",
+      title: "Type",
       dataIndex: "component_type",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.component_type || "").localeCompare(b.component_type || ""),
     },
 
     {
       title: "Is Taxable",
       dataIndex: "is_taxable",
-      // render: (text) => (
-      //     <span className={` ${text === "Y"}`}>
-      //         {text === "Y" ? "Yes" : "No"}
-      //     </span>
-      // ),
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
       sorter: (a, b) => (a.is_taxable || "").localeCompare(b.is_taxable || ""),
     },
     {
       title: "Is Statutory",
       dataIndex: "is_statutory",
-      // render: (text) => (
-      //     <span className={` ${text === "Y"}`}>
-      //         {text === "Y" ? "Yes" : "No"}
-      //     </span>
-      // ),
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
       sorter: (a, b) =>
         (a.is_statutory || "").localeCompare(b.is_statutory || ""),
     },
-    {
-      title: "Created Date",
-      dataIndex: "create_date",
-      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
-    },
-
     {
       title: "Status",
       dataIndex: "is_active",
@@ -125,7 +114,7 @@ const Paycomponent = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_pay_component_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -149,13 +138,12 @@ const Paycomponent = () => {
       : []),
   ];
 
-  const { pay_component, loading, error, success } = useSelector(
-    (state) => state.payComponent
-  );
+  const { pay_component, loading } = useSelector((state) => state.payComponent);
 
   React.useEffect(() => {
     dispatch(fetchpay_component({ search: searchText }));
   }, [dispatch, searchText]);
+
   React.useEffect(() => {
     setPaginationData({
       currentPage: pay_component?.currentPage,
@@ -200,16 +188,13 @@ const Paycomponent = () => {
   }, [searchText, pay_component, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletepay_component(selectedIndustry.id));
-      // navigate(`/pay_component`);
+    if (selected) {
+      dispatch(deletepay_component(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -217,28 +202,13 @@ const Paycomponent = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Depanrtment</title>
+        <title>DCC HRMS - Pay Component</title>
         <meta
-          name="DepanrtmentList"
+          name="Pay Component"
           content="This is pay_component page of DCC HRMS."
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -264,7 +234,7 @@ const Paycomponent = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Pay Component"
+                    label="Search Pay Component..."
                   />
                   {isCreate && (
                     <div className="col-sm-8">
@@ -303,12 +273,15 @@ const Paycomponent = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Pay Component"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

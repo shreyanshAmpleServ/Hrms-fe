@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addsalary_structure, updatesalary_structure } from "../../../../../redux/salary-structure";
-// import { Modal, Button } from 'react-bootstrap';
+import {
+  addsalary_structure,
+  updatesalary_structure,
+} from "../../../../../redux/salary-structure";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.goalCategoryMaster);
   const dispatch = useDispatch();
 
@@ -16,19 +18,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      reset({
-        structure_name: initialData.structure_name || "",
-        // is_active: initialData.is_active || "Y",
-      });
+      reset({ structure_name: initialData.structure_name || "" });
     } else {
-      reset({
-        structure_name: "",
-        // is_active: "Y",
-      });
+      reset({ structure_name: "" });
     }
   }, [mode, initialData, reset]);
 
@@ -44,17 +38,24 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         })
       );
     }
+    setSelected(null);
     reset();
     closeButton?.click();
   };
 
   return (
-    <div className="modal fade" id="add_edit_salary_structure_modal" role="dialog">
+    <div
+      className="modal fade"
+      id="add_edit_salary_structure_modal"
+      role="dialog"
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Salary Structure " : "Edit Salary Structure"}
+              {mode === "add"
+                ? "Add New Salary Structure "
+                : "Edit Salary Structure"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -67,61 +68,30 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Structure Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.structure_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Structure Name"
                   {...register("structure_name", {
-                    required: "Industry name is required.",
+                    required: "Structure name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Structure name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.structure_name && (
+                  <small className="text-danger">
+                    {errors.structure_name.message}
+                  </small>
                 )}
               </div>
-
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

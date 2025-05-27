@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addpay_component, updatepay_component } from "../../../../../redux/pay-component";
+import {
+  addpay_component,
+  updatepay_component,
+} from "../../../../../redux/pay-component";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.payComponent);
 
   const {
@@ -14,7 +17,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     formState: { errors },
     reset,
     setValue,
-    watch, } = useForm();
+    watch,
+  } = useForm();
 
   const dispatch = useDispatch();
 
@@ -48,7 +52,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     const closeButton = document.getElementById("Close_pay_component_modal");
     const finalData = {
       ...data,
-    }
+    };
     if (mode === "add") {
       dispatch(addpay_component(finalData));
     } else if (mode === "edit" && initialData) {
@@ -60,6 +64,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -82,47 +87,52 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
+              {/* Component Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Component Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.component_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Component Name"
                   {...register("component_name", {
-                    required: "Industry name is required.",
+                    required: "Component name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Component name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.component_name && (
+                  <small className="text-danger">
+                    {errors.component_name.message}
+                  </small>
                 )}
               </div>
               <div className="row">
-
                 <div className="col-md-6">
-
                   <div className="mb-3">
                     <label className="col-form-label">
                       Component Code <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                      className={`form-control ${errors.component_code ? "is-invalid" : ""}`}
+                      placeholder="Enter Component Code"
                       {...register("component_code", {
-                        required: "Industry name is required.",
+                        required: "Component code is required.",
                         minLength: {
                           value: 3,
-                          message: "Industry name must be at least 3 characters.",
+                          message:
+                            "Component code must be at least 3 characters.",
                         },
                       })}
                     />
-                    {errors.name && (
-                      <small className="text-danger">{errors.name.message}</small>
+                    {errors.component_code && (
+                      <small className="text-danger">
+                        {errors.component_code.message}
+                      </small>
                     )}
                   </div>
                 </div>
@@ -133,52 +143,25 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                      className={`form-control ${errors.component_type ? "is-invalid" : ""}`}
+                      placeholder="Enter Component Type"
                       {...register("component_type", {
-                        required: "Industry name is required.",
+                        required: "Component type is required.",
                         minLength: {
                           value: 3,
-                          message: "Industry name must be at least 3 characters.",
+                          message:
+                            "Component type must be at least 3 characters.",
                         },
                       })}
                     />
-                    {errors.name && (
-                      <small className="text-danger">{errors.name.message}</small>
+                    {errors.component_type && (
+                      <small className="text-danger">
+                        {errors.component_type.message}
+                      </small>
                     )}
                   </div>
                 </div>
               </div>
-              {/* <div className="row">
-
-                <div className="col-md-6">
-
-                  <div className="mb-3 form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="is_taxable"
-                      {...register("is_taxable")}
-                    />
-                    <label className="form-check-label" htmlFor="is_taxable">
-                      Is Taxable
-                    </label>
-                  </div>
-                </div>
-                <div className="col-md-6">
-
-                  <div className="mb-3 form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="is_statutory"
-                      {...register("is_statutory")}
-                    />
-                    <label className="form-check-label" htmlFor="is_statutory">
-                      Is Statutory
-                    </label>
-                  </div>
-                </div>
-              </div> */}
 
               <div className="row">
                 {/* Is Taxable */}
@@ -246,7 +229,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>
