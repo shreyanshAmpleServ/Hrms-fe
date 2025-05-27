@@ -14,20 +14,32 @@ const UpdateSocialInfo = ({ employeeDetail }) => {
     reset,
   } = useForm({
     defaultValues: {
-      linkedin: employeeDetail?.linkedin || "https://www.linkedin.com/",
-      twitter: employeeDetail?.twitter || "https://www.twitter.com/",
-      facebook: employeeDetail?.facebook || "https://www.facebook.com/",
-      instagram: employeeDetail?.instagram || "https://www.instagram.com/",
+      linkedin:
+        employeeDetail?.social_medias?.linkedin || "https://www.linkedin.com/",
+      twitter:
+        employeeDetail?.social_medias?.twitter || "https://www.twitter.com/",
+      facebook:
+        employeeDetail?.social_medias?.facebook || "https://www.facebook.com/",
+      instagram:
+        employeeDetail?.social_medias?.instagram ||
+        "https://www.instagram.com/",
     },
   });
 
   useEffect(() => {
     if (employeeDetail) {
       reset({
-        linkedin: employeeDetail?.linkedin || "https://www.linkedin.com/",
-        twitter: employeeDetail?.twitter || "https://www.twitter.com/",
-        facebook: employeeDetail?.facebook || "https://www.facebook.com/",
-        instagram: employeeDetail?.instagram || "https://www.instagram.com/",
+        linkedin:
+          employeeDetail?.social_medias?.linkedin ||
+          "https://www.linkedin.com/",
+        twitter:
+          employeeDetail?.social_medias?.twitter || "https://www.twitter.com/",
+        facebook:
+          employeeDetail?.social_medias?.facebook ||
+          "https://www.facebook.com/",
+        instagram:
+          employeeDetail?.social_medias?.instagram ||
+          "https://www.instagram.com/",
       });
     } else {
       reset({

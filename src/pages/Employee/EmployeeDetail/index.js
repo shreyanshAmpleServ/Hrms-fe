@@ -7,13 +7,13 @@ import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import { fetchEmployeeById } from "../../../redux/Employee";
 import { all_routes } from "../../../routes/all_routes";
+import UpdateBankInfo from "./UpdateBankInfo";
 import UpdateBasicInfo from "./UpdateBasicInfo";
 import UpdateContactInfo from "./UpdateContactInfo";
-import UpdateBankInfo from "./UpdateBankInfo";
+import UpdateEducations from "./UpdateEducations";
+import UpdateExperience from "./UpdateExperience";
 import UpdatePassportInfo from "./UpdatePassportInfo";
 import UpdateSocialInfo from "./UpdateSocialInfo";
-import UpdateExperience from "./UpdateExperience";
-import UpdateEducations from "./UpdateEducations";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
@@ -509,7 +509,7 @@ const EmployeeDetail = () => {
                             : " - - "}
                         </p>
                       </div>
-                      <div className="d-flex justify-content-between">
+                      <div className="d-flex mb-2 justify-content-between">
                         <p className="m-0">
                           <strong>Expiry Date:</strong>
                         </p>
@@ -544,25 +544,58 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           <strong>LinkedIn:</strong>{" "}
                         </p>
-                        <p className="m-0">Ethan Mitchell</p>
+                        <a
+                          href={employeeDetail?.social_medias?.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <small className="m-0">
+                            {employeeDetail?.social_medias?.linkedin || " - - "}
+                          </small>
+                        </a>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="m-0">
                           <strong>Twitter:</strong>
                         </p>
-                        <p className="m-0">Ethan Mitchell</p>
+                        <a
+                          href={employeeDetail?.social_medias?.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <small className="m-0">
+                            {employeeDetail?.social_medias?.twitter || " - - "}
+                          </small>
+                        </a>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="m-0">
                           <strong>Facebook:</strong>
                         </p>
-                        <p className="m-0">Ethan</p>
+                        <a
+                          href={employeeDetail?.social_medias?.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <small className="m-0">
+                            {employeeDetail?.social_medias?.facebook || " - - "}
+                          </small>
+                        </a>
                       </div>
-                      <div className="d-flex justify-content-between">
+                      <div className="d-flex mb-2 justify-content-between">
                         <p className="m-0">
                           <strong>Instagram:</strong>
                         </p>
-                        <p className="m-0">Ethan Mitchell</p>
+                        <a
+                          href={employeeDetail?.social_medias?.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <small className="m-0">
+                            {employeeDetail?.social_medias?.instagram ||
+                              " - - "}
+                          </small>
+                        </a>
                       </div>
                     </div>
                   </div>

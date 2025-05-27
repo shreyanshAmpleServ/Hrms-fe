@@ -175,7 +175,9 @@ const employeesSlice = createSlice({
 
           if (index !== -1 && action.payload.data) {
             state.employee.data[index] = action.payload.data;
+            state.employeeDetail = action.payload.data;
           } else if (action.payload.data) {
+            state.employeeDetail = action.payload.data;
             state.employee = {
               ...state.employee,
               data: [...state.employee.data, action.payload.data],
