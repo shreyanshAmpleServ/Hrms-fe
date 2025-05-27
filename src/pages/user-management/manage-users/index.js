@@ -29,9 +29,9 @@ import UserGrid from "./UsersGrid";
 import { Helmet } from "react-helmet-async";
 
 const ManageUsers = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
@@ -39,13 +39,16 @@ const ManageUsers = () => {
     startDate: moment().subtract(30, "days"),
     endDate: moment(),
   });
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions =permissions.length &&  permissions?.filter((i)=>i?.module_name === "Manage Users")?.[0]?.permissions
-  const isAdmin = localStorage.getItem("role").toLocaleLowerCase( )=== "admin"
-  const isView =  isAdmin  ? true :  allPermissions?.view
-  const isCreate = isAdmin ? true : allPermissions?.create
-  const isUpdate = isAdmin ? true : allPermissions?.update
-  const isDelete = isAdmin ? true : allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions =
+    permissions.length &&
+    permissions?.filter((i) => i?.module_name === "Manage Users")?.[0]
+      ?.permissions;
+  const isAdmin = localStorage.getItem("role").toLocaleLowerCase() === "admin";
+  const isView = isAdmin ? true : allPermissions?.view;
+  const isCreate = isAdmin ? true : allPermissions?.create;
+  const isUpdate = isAdmin ? true : allPermissions?.update;
+  const isDelete = isAdmin ? true : allPermissions?.delete;
 
   const columns = [
     {
@@ -95,68 +98,83 @@ const ManageUsers = () => {
       ),
       sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""), // Fixed sorter logic
     },
-    ...((isUpdate || isDelete ) ?[{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_edit_user"
-              onClick={() => setSelectedUser(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-         {isDelete &&   <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_edit_user"
+                      onClick={() => setSelectedUser(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const { users, loading, error, success } = useSelector(
-    (state) => state.users,
+    (state) => state.users
   );
 
   React.useEffect(() => {
-    dispatch(fetchUsers({search:searchText, ...selectedDateRange}));
-  }, [dispatch,searchText, selectedDateRange]);
+    dispatch(fetchUsers({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     setPaginationData({
-      currentPage:users?.currentPage,
-      totalPage:users?.totalPages,
-      totalCount:users?.totalCount,
-      pageSize : users?.size
-    })
-  },[users])
+      currentPage: users?.currentPage,
+      totalPage: users?.totalPages,
+      totalCount: users?.totalCount,
+      pageSize: users?.size,
+    });
+  }, [users]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchUsers({search:searchText, ...selectedDateRange , page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchUsers({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
-  
+
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
@@ -214,9 +232,9 @@ const ManageUsers = () => {
     const doc = new jsPDF();
     doc.text("Exported Users", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ),
       startY: 20,
     });
@@ -240,8 +258,8 @@ const ManageUsers = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - User</title>
-        <meta name="User" content="This is User page of DCC CRMS." />
+        <title>DCC HRMS - User</title>
+        <meta name="User" content="This is User page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -266,7 +284,9 @@ const ManageUsers = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Users
-                    <span className="count-title">{users?.totalCount || 0}</span>
+                    <span className="count-title">
+                      {users?.totalCount || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -290,7 +310,7 @@ const ManageUsers = () => {
                       exportToPDF={exportToPDF}
                       exportToExcel={exportToExcel}
                       label="Add Users"
-                      isCreate= {isCreate}
+                      isCreate={isCreate}
                       id="offcanvas_add_user"
                     />
                   </div>
@@ -319,19 +339,23 @@ const ManageUsers = () => {
                   </div>
                 </div>
 
-              {isView ?   <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange} 
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div> : <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>

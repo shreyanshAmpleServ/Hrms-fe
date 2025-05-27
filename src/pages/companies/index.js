@@ -32,7 +32,7 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import { Helmet } from "react-helmet-async";
 
 const CompanyList = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
@@ -44,14 +44,16 @@ const CompanyList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [paginationData , setPaginationData] = useState()
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Companies")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const [paginationData, setPaginationData] = useState();
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Companies"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -106,69 +108,89 @@ const CompanyList = () => {
       dataIndex: "businessType",
       sorter: (a, b) => a.businessType.localeCompare(b.businessType),
     },
-   ...((isUpdate || isDelete) ?[{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_edit_company"
-              onClick={() => setSelectedCompany(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteCompany(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-           {isView && <Link className="dropdown-item" to={`/companies/${record?.id}`}>
-              <i className="ti ti-eye text-blue-light"></i> Preview
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_edit_company"
+                      onClick={() => setSelectedCompany(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteCompany(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {isView && (
+                    <Link
+                      className="dropdown-item"
+                      to={`/companies/${record?.id}`}
+                    >
+                      <i className="ti ti-eye text-blue-light"></i> Preview
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
   const navigate = useNavigate();
   const { companies, loading, error, success } = useSelector(
-    (state) => state.companies,
+    (state) => state.companies
   );
 
   React.useEffect(() => {
-    dispatch(fetchCompanies({search:searchText , ...selectedDateRange}));
-  }, [dispatch,searchText , selectedDateRange]);
+    dispatch(fetchCompanies({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
 
-React.useEffect(()=>{
+  React.useEffect(() => {
     setPaginationData({
-      currentPage:companies?.currentPage,
-      totalPage:companies?.totalPages,
-      totalCount:companies?.totalCount,
-      pageSize : companies?.size
-    })
-  },[companies])
+      currentPage: companies?.currentPage,
+      totalPage: companies?.totalPages,
+      totalCount: companies?.totalCount,
+      pageSize: companies?.size,
+    });
+  }, [companies]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchCompanies({search:searchText , ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchCompanies({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
 
   // Memoized handlers
@@ -224,9 +246,9 @@ React.useEffect(()=>{
     const doc = new jsPDF();
     doc.text("Exported Companies", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ),
       startY: 20,
     });
@@ -244,90 +266,91 @@ React.useEffect(()=>{
       setShowDeleteModal(false); // Close the modal
     }
   };
-  return (<>
-    <Helmet>
-    <title>DCC CRMS - Companies</title>
-    <meta name="Companies" content="This is Companies page of DCC CRMS." />
-  </Helmet>
-    <div className="page-wrapper">
-      <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
+  return (
+    <>
+      <Helmet>
+        <title>DCC HRMS - Companies</title>
+        <meta name="Companies" content="This is Companies page of DCC HRMS." />
+      </Helmet>
+      <div className="page-wrapper">
+        <div className="content">
+          {error && (
+            <FlashMessage
+              type="error"
+              message={error}
+              onClose={() => dispatch(clearMessages())}
+            />
+          )}
+          {success && (
+            <FlashMessage
+              type="success"
+              message={success}
+              onClose={() => dispatch(clearMessages())}
+            />
+          )}
 
-        <div className="row">
-          <div className="col-md-12">
-            {/* Page Header */}
-            <div className="page-header">
-              <div className="row align-items-center">
-                <div className="col-8">
-                  <h4 className="page-title">
-                    Companies
-                    <span className="count-title">
-                      {companies?.data?.length || 0}
-                    </span>
-                  </h4>
-                </div>
-                <div className="col-4 text-end">
-                  <div className="head-icons">
-                    <CollapseHeader />
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* /Page Header */}
-            <div className="card ">
-              <div className="card-header">
-                {/* Search */}
+          <div className="row">
+            <div className="col-md-12">
+              {/* Page Header */}
+              <div className="page-header">
                 <div className="row align-items-center">
-                  <SearchBar
-                    searchText={searchText}
-                    handleSearch={handleSearch}
-                    label="Search Companies"
-                  />
-
-                  <div className="col-sm-8">
-                    {/* Export Start & Add Button */}
-                    <ExportData
-                      exportToPDF={exportToPDF}
-                      exportToExcel={exportToExcel}
-                      label="Add Companies"
-                      isCreate={isCreate}
-                      id="offcanvas_add_company"
-                    />
-                    {/* Export End & Add Button  */}
+                  <div className="col-8">
+                    <h4 className="page-title">
+                      Companies
+                      <span className="count-title">
+                        {companies?.data?.length || 0}
+                      </span>
+                    </h4>
+                  </div>
+                  <div className="col-4 text-end">
+                    <div className="head-icons">
+                      <CollapseHeader />
+                    </div>
                   </div>
                 </div>
-                {/* /Search */}
               </div>
+              {/* /Page Header */}
+              <div className="card ">
+                <div className="card-header">
+                  {/* Search */}
+                  <div className="row align-items-center">
+                    <SearchBar
+                      searchText={searchText}
+                      handleSearch={handleSearch}
+                      label="Search Companies"
+                    />
 
-              <div className="card-body">
-                {/* Filter */}
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
-                  <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    <SortDropdown
-                      sortOrder={sortOrder}
-                      setSortOrder={setSortOrder}
-                    />
-                    <DateRangePickerComponent
-                      selectedDateRange={selectedDateRange}
-                      setSelectedDateRange={setSelectedDateRange}
-                    />
+                    <div className="col-sm-8">
+                      {/* Export Start & Add Button */}
+                      <ExportData
+                        exportToPDF={exportToPDF}
+                        exportToExcel={exportToExcel}
+                        label="Add Companies"
+                        isCreate={isCreate}
+                        id="offcanvas_add_company"
+                      />
+                      {/* Export End & Add Button  */}
+                    </div>
                   </div>
-                  <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    {/* <ManageColumnsDropdown /> */}
-                    {/* <FilterComponent
+                  {/* /Search */}
+                </div>
+
+                <div className="card-body">
+                  {/* Filter */}
+                  <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                    <div className="d-flex align-items-center flex-wrap row-gap-2">
+                      <SortDropdown
+                        sortOrder={sortOrder}
+                        setSortOrder={setSortOrder}
+                      />
+                      <DateRangePickerComponent
+                        selectedDateRange={selectedDateRange}
+                        setSelectedDateRange={setSelectedDateRange}
+                      />
+                    </div>
+                    <div className="d-flex align-items-center flex-wrap row-gap-2">
+                      {/* <ManageColumnsDropdown /> */}
+                      {/* <FilterComponent
                       countryList={countryList}
                       applyFilters={({ countries, status }) => {
                         setFilteredCountries(countries);
@@ -335,50 +358,54 @@ React.useEffect(()=>{
                       }}
                     /> */}
 
-                    <ViewIconsToggle view={view} setView={setView} />
+                      <ViewIconsToggle view={view} setView={setView} />
+                    </div>
                   </div>
-                </div>
 
-                {/* /Filter */}
-                {/* Company List */}
+                  {/* /Filter */}
+                  {/* Company List */}
 
-                {isView ?<div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange} 
-                    />
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          dataSource={filteredData}
+                          columns={columns}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        <CompanyGrid data={filteredData} />
+                      )}
+                    </div>
                   ) : (
-                    <CompanyGrid data={filteredData} />
+                    <UnauthorizedImage />
                   )}
-                </div>: <UnauthorizedImage />}
-                <div className="row align-items-center">
-                  <div className="col-md-6">
-                    <div className="datatable-length" />
+                  <div className="row align-items-center">
+                    <div className="col-md-6">
+                      <div className="datatable-length" />
+                    </div>
+                    <div className="col-md-6">
+                      <div className="datatable-paginate" />
+                    </div>
                   </div>
-                  <div className="col-md-6">
-                    <div className="datatable-paginate" />
-                  </div>
+                  {/* /Company List */}
                 </div>
-                {/* /Company List */}
               </div>
             </div>
           </div>
         </div>
+        <AddCompanyModal />
+        <EditCompanyModal company={selectedCompany} />
+        <DeleteAlert
+          label="Company"
+          showModal={showDeleteModal}
+          setShowModal={setShowDeleteModal}
+          selectedCompany={selectedCompany}
+          onDelete={deleteData}
+        />
       </div>
-      <AddCompanyModal />
-      <EditCompanyModal company={selectedCompany} />
-      <DeleteAlert
-        label="Company"
-        showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
-        selectedCompany={selectedCompany}
-        onDelete={deleteData}
-      />
-    </div>
     </>
   );
 };

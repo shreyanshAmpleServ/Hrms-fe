@@ -8,7 +8,6 @@ import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
-
 import moment from "moment";
 
 import { Helmet } from "react-helmet-async";
@@ -16,31 +15,34 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { deleteWorkScheduleTemp,clearMessages, fetchWorkScheduleTemp } from "../../../../redux/WorkScheduleTemp";
+import {
+  deleteWorkScheduleTemp,
+  clearMessages,
+  fetchWorkScheduleTemp,
+} from "../../../../redux/WorkScheduleTemp";
 
 const WorkTemplateList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Leave Type")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Leave Type"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Template Name",
       dataIndex: "template_name",
-      render: (text, record) => (
-        <div>{text}</div>
-      ),
+      render: (text, record) => <div>{text}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
 
-   
     // {
     //   title: "Holiday Date",
     //   dataIndex: "holiday_date",
@@ -57,7 +59,7 @@ const WorkTemplateList = () => {
       // ),
       sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
     },
-   
+
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -84,75 +86,89 @@ const WorkTemplateList = () => {
     //   ),
     //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     // },
-   ...((isUpdate || isDelete) ?[ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_holiday_calender_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_holiday_calender_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { WorkScheduleTemp, loading, error, success } = useSelector(
     (state) => state.WorkScheduleTemp
   );
-  
+
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
-    const [paginationData , setPaginationData] = useState()
-  
-    React.useEffect(() => {
-      dispatch(fetchWorkScheduleTemp({search:searchText}));
-    }, [dispatch, searchText]);
-  
-  React.useEffect(()=>{
-      setPaginationData({
-        currentPage:WorkScheduleTemp?.currentPage,
-        totalPage:WorkScheduleTemp?.totalPages,
-        totalCount:WorkScheduleTemp?.totalCount,
-        pageSize : WorkScheduleTemp?.size
+  const [paginationData, setPaginationData] = useState();
+
+  React.useEffect(() => {
+    dispatch(fetchWorkScheduleTemp({ search: searchText }));
+  }, [dispatch, searchText]);
+
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: WorkScheduleTemp?.currentPage,
+      totalPage: WorkScheduleTemp?.totalPages,
+      totalCount: WorkScheduleTemp?.totalCount,
+      pageSize: WorkScheduleTemp?.size,
+    });
+  }, [WorkScheduleTemp]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchWorkScheduleTemp({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
       })
-    },[WorkScheduleTemp])
-  
-    const handlePageChange = ({ currentPage, pageSize }) => {
-      setPaginationData((prev) => ({
-        ...prev,
-        currentPage,
-        pageSize
-      }));
-      dispatch(fetchWorkScheduleTemp({search:searchText , page: currentPage, size: pageSize })); 
-    };
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -200,7 +216,10 @@ const WorkTemplateList = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - Work Schedule Template</title>
-        <meta name="Work Schedule Template" content="This is Work Schedule Template page of DCC CRMS." />
+        <meta
+          name="Work Schedule Template"
+          content="This is Work Schedule Template page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -224,7 +243,7 @@ const WorkTemplateList = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                   Work Schedule Template
+                    Work Schedule Template
                     <span className="count-title">
                       {WorkScheduleTemp?.data?.length || 0}
                     </span>
@@ -245,13 +264,15 @@ const WorkTemplateList = () => {
                     handleSearch={handleSearch}
                     label="Search Holiday"
                   />
-                {isCreate &&  <div className="col-sm-8">
-                    <AddButton
-                      label="Add Holiday"
-                      id="add_edit_holiday_calender_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Holiday"
+                        id="add_edit_holiday_calender_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -270,8 +291,8 @@ const WorkTemplateList = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
-                     paginationData={paginationData}
-                        onPageChange={handlePageChange} 
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

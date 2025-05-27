@@ -15,17 +15,18 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import ExportData from "../../components/datatable/ExportData.js";
 import SearchBar from "../../components/datatable/SearchBar.js";
 import SortDropdown from "../../components/datatable/SortDropDown.js";
+import { clearMessages } from "../../redux/manage-user/index.js";
 import {
-  clearMessages
-} from "../../redux/manage-user/index.js";
-import { deleteSolutions, fetchSolutions } from "../../redux/solutions/index.js";
+  deleteSolutions,
+  fetchSolutions,
+} from "../../redux/solutions/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddSolutionModal from "./modal/AddSolutionModal.js";
 import UserGrid from "./UsersGrid.js";
 import { Helmet } from "react-helmet-async";
 
 const Solutions = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -33,16 +34,17 @@ const Solutions = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Solutions")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
-
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Solutions"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -70,9 +72,22 @@ const Solutions = () => {
     {
       title: "Status",
       dataIndex: "status",
-      render: (text) => (   <span className={`badge badge-pill badge-status ${text === "O" ? "bg-secondary" : text=== "L" ? "bg-success" : text === "C" ? "bg-danger" : text==="P" ? "bg-purple" : "  "}`}>
-        {text === "O" ? "Open"  :text=== "L" ? "Closed" : text === "C" ? "Canceled" : text==="P" ? "Pending" : " -- "  || " - "}</span> ),
-      sorter: (a, b) => (a || "").localeCompare(b || ""),// Sort by date
+      render: (text) => (
+        <span
+          className={`badge badge-pill badge-status ${text === "O" ? "bg-secondary" : text === "L" ? "bg-success" : text === "C" ? "bg-danger" : text === "P" ? "bg-purple" : "  "}`}
+        >
+          {text === "O"
+            ? "Open"
+            : text === "L"
+              ? "Closed"
+              : text === "C"
+                ? "Canceled"
+                : text === "P"
+                  ? "Pending"
+                  : " -- " || " - "}
+        </span>
+      ),
+      sorter: (a, b) => (a || "").localeCompare(b || ""), // Sort by date
     },
     {
       title: "Created Date",
@@ -82,38 +97,43 @@ const Solutions = () => {
       ),
       sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
     },
-    ...((isUpdate || isDelete) ?
-      [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_edit_solution"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-             {/* <Link
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_solution"
+                      onClick={() => setSelectedOrder(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {/* <Link
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="offcanvas"
@@ -122,7 +142,7 @@ const Solutions = () => {
             >
               <i className="ti ti-eye text-secondary"></i> Preview
             </Link> */}
-            {/* <Link
+                  {/* <Link
                to="#"
                 className="dropdown-item"
                data-bs-toggle="modal"
@@ -131,39 +151,45 @@ const Solutions = () => {
               >
              <i className="ti ti-upload text-success"></i>Upload File
             </Link> */}
-          </div>
-        </div>
-      ),
-    }]
-  : []),
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
- 
-
   React.useEffect(() => {
-    dispatch(fetchSolutions({search:searchText , ...selectedDateRange}))
-  }, [dispatch,selectedDateRange, searchText]);
+    dispatch(fetchSolutions({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, selectedDateRange, searchText]);
 
-  const { solutions , loading, error, success } = useSelector(
-    (state) => state.solutions,
+  const { solutions, loading, error, success } = useSelector(
+    (state) => state.solutions
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:solutions?.currentPage,
-      totalPage:solutions?.totalPages,
-      totalCount:solutions?.totalCount,
-      pageSize : solutions?.size
-    })
-  },[solutions])
+      currentPage: solutions?.currentPage,
+      totalPage: solutions?.totalPages,
+      totalCount: solutions?.totalCount,
+      pageSize: solutions?.size,
+    });
+  }, [solutions]);
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchSolutions({search: searchText ,...selectedDateRange,page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchSolutions({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
-  
+
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
@@ -202,17 +228,17 @@ const Solutions = () => {
     const doc = new jsPDF();
     doc.text("Exported Solution", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "solution_product") {
-            return row.case_product?.name || ""; 
+            return row.case_product?.name || "";
           }
           if (col.dataIndex === "solution_user_owner") {
-            return row.cases_user_owner?.full_name || ""; 
+            return row.cases_user_owner?.full_name || "";
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -240,8 +266,8 @@ const Solutions = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Solutions</title>
-        <meta name="Solutions" content="This is Solutions page of DCC CRMS." />
+        <title>DCC HRMS - Solutions</title>
+        <meta name="Solutions" content="This is Solutions page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -265,8 +291,10 @@ const Solutions = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                   Solutions
-                    <span className="count-title">{solutions?.data?.length || 0}</span>
+                    Solutions
+                    <span className="count-title">
+                      {solutions?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -319,29 +347,35 @@ const Solutions = () => {
                   </div>
                 </div>
 
-              {isView ?  <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div>: <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <AddSolutionModal solution={selectedOrder} setSolution={setSelectedOrder} />
+      <AddSolutionModal
+        solution={selectedOrder}
+        setSolution={setSelectedOrder}
+      />
       {/* <PreviewPurchaseOrder order={selectedOrder} formatNumber={formatNumber} setOrder={setSelectedOrder}   /> */}
 
       {/* <AddFile data={null} setData={setSelectedOrder} type={"cases"} type_id={selectedOrder?.id} type_name={selectedOrder?.order_code} /> */}
-
 
       {/* <EditUserModal user={selectedOrder} /> */}
       <DeleteAlert

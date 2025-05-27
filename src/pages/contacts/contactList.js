@@ -27,8 +27,8 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import { Helmet } from "react-helmet-async";
 const ContactList = () => {
-  const [view, setView] = useState("list"); 
-  const [paginationData , setPaginationData] = useState()
+  const [view, setView] = useState("list");
+  const [paginationData, setPaginationData] = useState();
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState(""); // For search
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -38,13 +38,15 @@ const ContactList = () => {
   const [sortOrder, setSortOrder] = useState("descending"); // Sorting
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Contacts")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Contacts"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -74,7 +76,11 @@ const ContactList = () => {
     {
       title: "Location",
       dataIndex: "contact_Country",
-      render: (text,record) => (<div>{record.contact_State?.name + ", "+record.contact_Country?.name}</div>),
+      render: (text, record) => (
+        <div>
+          {record.contact_State?.name + ", " + record.contact_Country?.name}
+        </div>
+      ),
       sorter: (a, b) => a.country.length - b.country.length,
     },
     {
@@ -84,57 +90,57 @@ const ContactList = () => {
         <div className="social-links d-flex align-items-center">
           <li>
             <Link target="_blank" to="#">
-            <a
-              href={`mailto:${record.email}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="ti ti-mail me-2"></i>
-            </a>
+              <a
+                href={`mailto:${record.email}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="ti ti-mail me-2"></i>
+              </a>
             </Link>
           </li>
           <li>
             <Link target="_blank" to="#">
-            <a
-              href={`tel:${record.phone1}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="ti ti-phone-check me-2"></i>
-            </a>
+              <a
+                href={`tel:${record.phone1}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="ti ti-phone-check me-2"></i>
+              </a>
             </Link>
           </li>
           <li>
             <Link target="_blank" to="#">
-            <a
-              href={`https://wa.me/${record.phone1}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="ti ti-message-circle-share me-2"></i>
-            </a>  
+              <a
+                href={`https://wa.me/${record.phone1}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="ti ti-message-circle-share me-2"></i>
+              </a>
             </Link>
           </li>
           <li>
             <Link target="_blank" to="">
-            <a
-              href={`skype:${record.phone1}?call`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="ti ti-brand-skype me-2"></i>
-            </a>
+              <a
+                href={`skype:${record.phone1}?call`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="ti ti-brand-skype me-2"></i>
+              </a>
             </Link>
           </li>
           <li>
             <Link target="_blank" to="#">
-            <a
-              href={record.socialProfiles?.facebook || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="ti ti-brand-facebook"></i>
-            </a>
+              <a
+                href={record.socialProfiles?.facebook || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className="ti ti-brand-facebook"></i>
+              </a>
             </Link>
           </li>
         </div>
@@ -166,83 +172,103 @@ const ContactList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-    ...((isUpdate || isDelete) ? [
-      {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record, index) => (
-        <div className="dropdown table-action" key={index}>
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div
-            className="dropdown-menu dropdown-menu-right"
-            style={{
-              position: "absolute",
-              inset: "0px auto auto 0px",
-              margin: "0px",
-              zIndex: 1000,
-              transform: "translate3d(-99.3333px, 35.3333px, 0px)",
-            }}
-            data-popper-placement="top-start"
-          >
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add"
-              onClick={() => setSelectedContact(record)} // Set selected contact
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              // data-bs-toggle="modal"
-              // data-bs-target="#delete_contact"
-              onClick={() => handleDeleteContact(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-            {isView && <Link className="dropdown-item z-3" to={`/contacts/${record?.id}`}>
-              <i className="ti ti-eye text-blue-light"></i> Preview
-            </Link>}
-          </div>
-        </div>
-     ),
-    }]
- : [])
-  ]
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record, index) => (
+              <div className="dropdown table-action" key={index}>
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div
+                  className="dropdown-menu dropdown-menu-right"
+                  style={{
+                    position: "absolute",
+                    inset: "0px auto auto 0px",
+                    margin: "0px",
+                    zIndex: 1000,
+                    transform: "translate3d(-99.3333px, 35.3333px, 0px)",
+                  }}
+                  data-popper-placement="top-start"
+                >
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add"
+                      onClick={() => setSelectedContact(record)} // Set selected contact
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#delete_contact"
+                      onClick={() => handleDeleteContact(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {isView && (
+                    <Link
+                      className="dropdown-item z-3"
+                      to={`/contacts/${record?.id}`}
+                    >
+                      <i className="ti ti-eye text-blue-light"></i> Preview
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
+  ];
 
   // Fetch contacts on component mount
   useEffect(() => {
-    dispatch(fetchContacts({search:searchText , ...selectedDateRange})).unwrap();
-  }, [dispatch,searchText,selectedDateRange]);
+    dispatch(
+      fetchContacts({ search: searchText, ...selectedDateRange })
+    ).unwrap();
+  }, [dispatch, searchText, selectedDateRange]);
 
   const { contacts, loading, error, success } = useSelector(
-    (state) => state.contacts,
+    (state) => state.contacts
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:contacts?.currentPage,
-      totalPage:contacts?.totalPages,
-      totalCount:contacts?.totalCount,
-      pageSize : contacts?.size
-    })
-  },[contacts])
+      currentPage: contacts?.currentPage,
+      totalPage: contacts?.totalPages,
+      totalCount: contacts?.totalCount,
+      pageSize: contacts?.size,
+    });
+  }, [contacts]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchContacts({search:searchText , ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchContacts({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
   // Show FlashMessage when success or error changes
   React.useEffect(() => {
@@ -297,7 +323,6 @@ const ContactList = () => {
     return data;
   }, [searchText, selectedDateRange, contacts, columns, filteredCountries]);
 
-
   // const settings = {
   //   startDate: selectedDateRange.startDate,
   //   endDate: selectedDateRange.endDate,
@@ -342,17 +367,23 @@ const ContactList = () => {
 
     // Generate table using autoTable
     doc.autoTable({
-      head: [columns.map((col) => (col.title !== "Actions" && col.title !== "Contact") ?  col.title : "")], // Extract column headers
+      head: [
+        columns.map((col) =>
+          col.title !== "Actions" && col.title !== "Contact" ? col.title : ""
+        ),
+      ], // Extract column headers
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "name") {
-            return `${row.firstName|| ""} ${row.lastName || ""}` || ""; 
+            return `${row.firstName || ""} ${row.lastName || ""}` || "";
           }
           if (col.dataIndex === "contact_Country") {
-          return row.contact_State?.name + ", "+row.contact_Country?.name|| ""; 
+            return (
+              row.contact_State?.name + ", " + row.contact_Country?.name || ""
+            );
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -370,8 +401,8 @@ const ContactList = () => {
   return (
     <div>
       <Helmet>
-        <title>DCC CRMS - Contacts</title>
-        <meta name="Contacts" content="This is Contacts page of DCC CRMS." />
+        <title>DCC HRMS - Contacts</title>
+        <meta name="Contacts" content="This is Contacts page of DCC HRMS." />
       </Helmet>
       {/* Page Wrapper */}
       <div className="page-wrapper">
@@ -449,7 +480,11 @@ const ContactList = () => {
                         setSortOrder={setSortOrder}
                       />
                       <DateRangePickerComponent
-                        selectedDateRange={selectedDateRange?.startDate ? selectedDateRange  : {startDate:moment(),endDate:moment()}}
+                        selectedDateRange={
+                          selectedDateRange?.startDate
+                            ? selectedDateRange
+                            : { startDate: moment(), endDate: moment() }
+                        }
                         setSelectedDateRange={setSelectedDateRange}
                       />
                     </div>
@@ -470,19 +505,23 @@ const ContactList = () => {
                   {/* /Filter */}
                   {/* Contact List */}
 
-                {isView ?  <div className="table-responsive custom-table">
-                    {view === "list" ? (
-                      <Table
-                        dataSource={filteredData}
-                        columns={columns}
-                        loading={loading}
-                        paginationData={paginationData}
-                        onPageChange={handlePageChange} 
-                      />
-                    ) : (
-                      <ContactGrid data={filteredData} />
-                    )}
-                  </div>: <UnauthorizedImage />}
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          dataSource={filteredData}
+                          columns={columns}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        <ContactGrid data={filteredData} />
+                      )}
+                    </div>
+                  ) : (
+                    <UnauthorizedImage />
+                  )}
                   <div className="row align-items-center">
                     <div className="col-md-6">
                       <div className="datatable-length" />
@@ -501,7 +540,10 @@ const ContactList = () => {
       {/* /Page Wrapper */}
       {/* Add Contact */}
 
-      <AddContactModal contact={selectedContact} setSelectedContact={setSelectedContact}/>
+      <AddContactModal
+        contact={selectedContact}
+        setSelectedContact={setSelectedContact}
+      />
       <EditContactModal contact={selectedContact} />
       {/* Include the Delete Contact Modal */}
       <DeleteAlert

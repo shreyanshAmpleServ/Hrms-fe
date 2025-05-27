@@ -5,9 +5,7 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTable/index";
 import FlashMessage from "../../../components/common/modals/FlashMessage";
-import {
-  clearMessages
-} from "../../../redux/calls"; // Redux actions and reducers for call statuses
+import { clearMessages } from "../../../redux/calls"; // Redux actions and reducers for call statuses
 import { all_routes } from "../../../routes/all_routes";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
@@ -18,29 +16,32 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { deleteCallPurpose, fetchCallPurposes } from "../../../redux/callPurpose";
+import {
+  deleteCallPurpose,
+  fetchCallPurposes,
+} from "../../../redux/callPurpose";
 import { Helmet } from "react-helmet-async";
 
 const CallPurposeList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
   const route = all_routes;
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Call Purpose")?.[0]?.permissions
-const isAdmin = localStorage.getItem("role")=== "Admin"
-const isView =  isAdmin  ? true :  allPermissions?.view
-const isCreate = isAdmin ? true : allPermissions?.create
-const isUpdate = isAdmin ? true : allPermissions?.update
-const isDelete = isAdmin ? true : allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Call Purpose"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role") === "Admin";
+  const isView = isAdmin ? true : allPermissions?.view;
+  const isCreate = isAdmin ? true : allPermissions?.create;
+  const isUpdate = isAdmin ? true : allPermissions?.update;
+  const isDelete = isAdmin ? true : allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Call Purpose Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <div>{record.name}</div>
-      ),
+      render: (text, record) => <div>{record.name}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
@@ -78,48 +79,56 @@ const isDelete = isAdmin ? true : allPermissions?.delete
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-    ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_call_status_modal"
-              onClick={() => {
-                setSelectedCallPurpose(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteCallStatus(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_call_status_modal"
+                      onClick={() => {
+                        setSelectedCallPurpose(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteCallStatus(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { callPurposes, loading, error, success } = useSelector(
-    (state) => state.callPurposes,
+    (state) => state.callPurposes
   );
 
   React.useEffect(() => {
@@ -141,17 +150,17 @@ const isDelete = isAdmin ? true : allPermissions?.delete
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
+            .includes(searchText.toLowerCase())
+        )
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -175,8 +184,11 @@ const isDelete = isAdmin ? true : allPermissions?.delete
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Call Purpose</title>
-        <meta name="Call-Purpose" content="This is Call-Purpose page of DCC CRMS." />
+        <title>DCC HRMS - Call Purpose</title>
+        <meta
+          name="Call-Purpose"
+          content="This is Call-Purpose page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -201,7 +213,9 @@ const isDelete = isAdmin ? true : allPermissions?.delete
                 <div className="col-8">
                   <h4 className="page-title">
                     Call Purpose
-                    <span className="count-title">{callPurposes?.length || 0}</span>
+                    <span className="count-title">
+                      {callPurposes?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -219,13 +233,15 @@ const isDelete = isAdmin ? true : allPermissions?.delete
                     handleSearch={handleSearch}
                     label="Search Call purposes"
                   />
-                  {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add Call Purpose"
-                      id="add_edit_call_status_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Call Purpose"
+                        id="add_edit_call_status_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -243,7 +259,7 @@ const isDelete = isAdmin ? true : allPermissions?.delete
                     dataSource={filteredData}
                     columns={columns}
                     loading={loading}
-                    isView = {isView}
+                    isView={isView}
                   />
                 </div>
               </div>

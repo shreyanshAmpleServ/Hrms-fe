@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useMemo } from "react";
+import DatePicker from "react-datepicker";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { updateCompany } from "../../../../../redux/company";
 import { fetchCountries } from "../../../../../redux/country";
 import { fetchCurrencies } from "../../../../../redux/currency";
-import { useMemo } from "react";
-import moment from "moment";
-import DatePicker from "react-datepicker";
 const EditCompanyModal = ({ company }) => {
-  const [selectedLogo, setSelectedLogo] = useState(null);
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.company);
 
@@ -21,8 +17,6 @@ const EditCompanyModal = ({ company }) => {
     watch,
     reset,
     formState: { errors },
-
-
   } = useForm({
     defaultValues: {
       company_name: company?.company_name || "",
@@ -35,82 +29,45 @@ const EditCompanyModal = ({ company }) => {
       financial_year_start: company?.financial_year_start || "",
       timezone: company?.timezone || "",
       address: company?.address || "",
-
-
     },
   });
 
   useEffect(() => {
     reset({ ...company });
-    setSelectedLogo(company?.logo);
   }, [company, reset]);
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedLogo(file);
-    }
-  };
-
-
   React.useEffect(() => {
-    dispatch(fetchCountries()); // Changed to fetchCountries
+    dispatch(fetchCountries());
   }, [dispatch]);
-  const { countries } = useSelector(
-    (state) => state.countries // Changed to 'countries'
-  );
+  const { countries } = useSelector((state) => state.countries);
 
   const CountriesList = countries.map((emnt) => ({
     value: emnt.id,
     label: "(" + emnt.code + ") " + emnt.name,
   }));
 
-  ////////////////////CURRENCIES/////////////////////////////////////////
-
-
   React.useEffect(() => {
-    dispatch(fetchCurrencies()); // Changed to fetchCountries
+    dispatch(fetchCurrencies());
   }, [dispatch]);
   const { currencies } = useSelector((state) => state.currencies);
 
-
   const CurrenciesList = useMemo(() => {
-    return currencies?.data?.map((item) => ({
-      value: item.id,
-      label: `${item.currency_code} ( ${item.currency_name} )`,
-    })) || [];
+    return (
+      currencies?.data?.map((item) => ({
+        value: item.id,
+        label: `${item.currency_code} ( ${item.currency_name} )`,
+      })) || []
+    );
   }, [currencies]);
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-
-    // Append all form fields
-    Object.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] !== undefined) {
-        formData.append(
-          key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
-        );
-      }
-    });
-
-    if (selectedLogo) {
-      formData.append("logo", selectedLogo);
-    }
-    // Log the FormData contents for debugging
-    // console.log("FormData contents:");
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(`${key}:`, value);
-    // }
-
     const closeButton = document.getElementById("close_company_edit_btn");
     try {
       await dispatch(
-        updateCompany({ id: company.id, companyData: data }),
+        updateCompany({ id: company.id, companyData: data })
       ).unwrap();
       closeButton.click();
       reset();
-      setSelectedLogo(null);
     } catch (error) {
       closeButton.click();
     }
@@ -136,22 +93,12 @@ const EditCompanyModal = ({ company }) => {
       </div>
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="hidden"
-            {...register("company_name", { value: "company" })}
-          />
           <div className="accordion" id="company_accordion">
-            {/* Basic Info */}
             <div className="accordion-item rounded mb-3">
               <div className="accordion-header">
-
-
-
                 <div className="accordion-body border-top">
                   <div className="row">
-                    <div className="col-md-12">
-
-                    </div>
+                    <div className="col-md-12"></div>
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
@@ -160,24 +107,25 @@ const EditCompanyModal = ({ company }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Company Name"
                           {...register("company_name", {
-                            required: "Company name is required",
+                            required: "Company Name is required",
                           })}
                         />
-                        {errors.name && (
+                        {errors.company_name && (
                           <small className="text-danger">
-                            {errors.name.message}
+                            {errors.company_name.message}
                           </small>
                         )}
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Company Code                        </label>
+                        <label className="col-form-label">Company Code </label>
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Company Code"
                           {...register("company_code")}
                         />
                       </div>
@@ -191,12 +139,12 @@ const EditCompanyModal = ({ company }) => {
                           type="email"
                           className="form-control"
                           {...register("contact_email", {
-                            required: "Email is required",
+                            required: "Contact Email is required",
                           })}
                         />
-                        {errors.email && (
+                        {errors.contact_email && (
                           <small className="text-danger">
-                            {errors.email.message}
+                            {errors.contact_email.message}
                           </small>
                         )}
                       </div>
@@ -213,39 +161,40 @@ const EditCompanyModal = ({ company }) => {
                             required: "Phone number is required",
                           })}
                         />
-                        {errors.phone && (
+                        {errors.contact_phone && (
                           <small className="text-danger">
-                            {errors.phone.message}
+                            {errors.contact_phone.message}
                           </small>
                         )}
                       </div>
                     </div>
 
-
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Country  <span className="text-danger">*</span>
+                          Country <span className="text-danger">*</span>
                         </label>
                         <Controller
                           name="country_id"
                           control={control}
-                          rules={{ required: "country_id" }} // Validation rule
+                          rules={{ required: "Country is required" }}
                           render={({ field }) => (
                             <Select
                               {...field}
                               options={CountriesList}
-                              placeholder="Choose"
-                              isDisabled={!CountriesList.length} // Disable if no stages are available
+                              placeholder="Choose Country"
+                              isDisabled={!CountriesList.length}
                               classNamePrefix="react-select"
                               className="select2"
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption?.value || null)
-                              } // Send only value
-                              value={CountriesList?.find(
-                                (option) =>
-                                  option.value === watch("country_id"),
-                              ) || ""}
+                              }
+                              value={
+                                CountriesList?.find(
+                                  (option) =>
+                                    option.value === watch("country_id")
+                                ) || ""
+                              }
                             />
                           )}
                         />
@@ -256,8 +205,7 @@ const EditCompanyModal = ({ company }) => {
                         )}
                       </div>
                     </div>
-                    {/* Currency */}
-                    {/* Currency */}
+
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
@@ -266,12 +214,12 @@ const EditCompanyModal = ({ company }) => {
                         <Controller
                           name="currency_code"
                           control={control}
-                          rules={{ required: "currency is required" }}
+                          rules={{ required: "Currency is required" }}
                           render={({ field }) => (
                             <Select
                               {...field}
                               options={CurrenciesList}
-                              placeholder="Choose"
+                              placeholder="Choose Currency"
                               isDisabled={!CurrenciesList.length}
                               classNamePrefix="react-select"
                               className="select2"
@@ -280,7 +228,8 @@ const EditCompanyModal = ({ company }) => {
                               }
                               value={
                                 CurrenciesList.find(
-                                  (option) => option.value == watch("currency_code")
+                                  (option) =>
+                                    option.value === watch("currency_code")
                                 ) || ""
                               }
                             />
@@ -296,76 +245,70 @@ const EditCompanyModal = ({ company }) => {
 
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Contact Person <span className="text-danger">*</span>
-                        </label>
+                        <label className="col-form-label">Contact Person</label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("contact_person", {
-                            required: "Industry type is required",
-                          })}
+                          placeholder="Enter Contact Person"
+                          {...register("contact_person")}
                         />
-                        {errors.industryType && (
-                          <small className="text-danger">
-                            {errors.industryType.message}
-                          </small>
-                        )}
                       </div>
                     </div>
 
-
                     <div className="col-md-6 mb-3">
                       <label className="col-form-label">
-                        Financial Year Start <span className="text-danger">*</span>
+                        Financial Year Start{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <Controller
                         name="financial_year_start"
                         control={control}
-                        rules={{ required: "Launch date is required." }}
+                        rules={{
+                          required: "Financial Year Start is required.",
+                        }}
                         render={({ field }) => (
                           <DatePicker
-                            placeholderText="Select date"
-                            className={`form-control ${errors.launch_date ? "is-invalid" : ""}`}
+                            placeholderText="Select Financial Year Start Date"
+                            className={`form-control ${errors.financial_year_start ? "is-invalid" : ""}`}
                             selected={field.value}
                             onChange={(date) => field.onChange(date)}
                             dateFormat="dd-MM-yyyy"
                           />
                         )}
                       />
-                      {errors.launch_date && (
-                        <small className="text-danger">{errors.launch_date.message}</small>
+                      {errors.financial_year_start && (
+                        <small className="text-danger">
+                          {errors.financial_year_start.message}
+                        </small>
                       )}
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Timezone <span className="text-danger">*</span>
-                        </label>
+                        <label className="col-form-label">Timezone</label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("timezone", {
-                            required: "Business type is required",
-                          })}
+                          {...register("timezone")}
                         />
-                        {errors.businessType && (
-                          <small className="text-danger">
-                            {errors.businessType.message}
-                          </small>
-                        )}
                       </div>
                     </div>
-                    {/* Contact Fields */}
 
                     <div className="col-md-12">
                       <div className="mb-3">
                         <label className="col-form-label">Address</label>
                         <textarea
+                          placeholder="Enter Address"
                           className="form-control"
                           rows="3"
-                          {...register("address")}
+                          {...register("address", {
+                            required: "Address is required",
+                          })}
                         ></textarea>
+                        {errors.address && (
+                          <small className="text-danger">
+                            {errors.address.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>

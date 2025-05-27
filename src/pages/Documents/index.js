@@ -16,10 +16,11 @@ import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
-import { deleteAttachment, fetchAttachment } from "../../redux/attachment/index.js";
 import {
-  clearMessages
-} from "../../redux/projects";
+  deleteAttachment,
+  fetchAttachment,
+} from "../../redux/attachment/index.js";
+import { clearMessages } from "../../redux/projects";
 import DeleteAlert from "./alert/DeleteAlert";
 import ProjectGrid from "./DocumentsGrid.js";
 import AddAttachmentModal from "./modal/AddDocumentModal.js";
@@ -28,10 +29,10 @@ import SendEmail from "../../utils/SendMail.js";
 import { Helmet } from "react-helmet-async";
 
 const DocumentLists = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
-  const [isRange,setIsRange] = useState(false)
+  const [paginationData, setPaginationData] = useState();
+  const [isRange, setIsRange] = useState(false);
   const [filteredType, setFilteredType] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [searchText, setSearchText] = useState("");
@@ -41,13 +42,15 @@ const DocumentLists = () => {
     endDate: moment(),
   });
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Documents")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Documents"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const handleDownload = (url, filename) => {
     fetch(url, {
@@ -83,46 +86,89 @@ const DocumentLists = () => {
       sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
     },
     {
-        title: "File",
-        dataIndex: "file",
-        render: (text,record) => {
-          const extension = text?.split('.')?.pop()?.split('?')?.[0]?.split('#')?.[0]?.toLowerCase();
-          const imageExtensions = [".jpg", ".jpeg", ".png" , ".avif"]; // Fixed ".jpeg" spelling
-      
-          return (<>
-          {(["jpeg","jpg","png"]?.includes(extension)) ? 
-          <div  className="dropdown-item" onClick={()=>handleDownload(text,`${record?.filename}`)}    style={{ width: "4rem", padding:"2px"}}  to={text}>
-            {imageExtensions.includes(`.${extension}`) ? (
-                <img
-                  src={text}
-                  alt="Preview"
-                  style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px" }}
-                />
-              ) : (
-                <div className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-2" style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px" }}>
-                  <i className="  ti ti-pdf" />
-                </div>
-              )} </div>
-               : <Link target="_blank"  className="dropdown-item"    style={{ width: "4rem", padding:"2px"}}  to={text}>
-              {imageExtensions.includes(`.${extension}`) ? (
-                <img
-                  src={text}
-                  alt="Preview"
-                  style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px" }}
-                />
-              ) : (
-                <div className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-2" style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px" }}>
-                  <i className="  ti ti-pdf" />
-                </div>
-              )}
-            </Link> 
-           }
-              </>
-          );
-        },
-        sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
-     
+      title: "File",
+      dataIndex: "file",
+      render: (text, record) => {
+        const extension = text
+          ?.split(".")
+          ?.pop()
+          ?.split("?")?.[0]
+          ?.split("#")?.[0]
+          ?.toLowerCase();
+        const imageExtensions = [".jpg", ".jpeg", ".png", ".avif"]; // Fixed ".jpeg" spelling
+
+        return (
+          <>
+            {["jpeg", "jpg", "png"]?.includes(extension) ? (
+              <div
+                className="dropdown-item"
+                onClick={() => handleDownload(text, `${record?.filename}`)}
+                style={{ width: "4rem", padding: "2px" }}
+                to={text}
+              >
+                {imageExtensions.includes(`.${extension}`) ? (
+                  <img
+                    src={text}
+                    alt="Preview"
+                    style={{
+                      width: "3rem",
+                      height: "3rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-2"
+                    style={{
+                      width: "3rem",
+                      height: "3rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <i className="  ti ti-pdf" />
+                  </div>
+                )}{" "}
+              </div>
+            ) : (
+              <Link
+                target="_blank"
+                className="dropdown-item"
+                style={{ width: "4rem", padding: "2px" }}
+                to={text}
+              >
+                {imageExtensions.includes(`.${extension}`) ? (
+                  <img
+                    src={text}
+                    alt="Preview"
+                    style={{
+                      width: "3rem",
+                      height: "3rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-2"
+                    style={{
+                      width: "3rem",
+                      height: "3rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <i className="  ti ti-pdf" />
+                  </div>
+                )}
+              </Link>
+            )}
+          </>
+        );
       },
+      sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
+    },
     {
       title: "Related type",
       dataIndex: "related_entity_type",
@@ -173,88 +219,125 @@ const DocumentLists = () => {
     //   ),
     //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     // },
-  ...((isDelete || isUpdate) ? [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_documents"
-              onClick={() => setSelectedProject(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteProject(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>} <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => SendEmail(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Mail
-            </Link>
-
-          {["jpeg","jpg","png"]?.includes(record?.file?.split('.').pop().split('?')[0].split('#')[0].toLowerCase()) ? 
-          <div className="dropdown-item" onClick={()=>handleDownload(record.file,`${record?.filename}`)}  >
-          <i className="ti ti-download text-info me-1" />
-            Download
-      </div> 
-      : <Link target="_blank" className="dropdown-item"    to={record?.file} >
-                <i className="ti ti-download text-info me-1" />
-                  Download
-            </Link>
-            }
-      {/* <Link className="dropdown-item" to={`/documents/${record?.id}`}>
+    ...(isDelete || isUpdate
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_documents"
+                      onClick={() => setSelectedProject(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteProject(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}{" "}
+                  <Link
+                    className="dropdown-item"
+                    to="#"
+                    onClick={() => SendEmail(record)}
+                  >
+                    <i className="ti ti-trash text-danger"></i> Mail
+                  </Link>
+                  {["jpeg", "jpg", "png"]?.includes(
+                    record?.file
+                      ?.split(".")
+                      .pop()
+                      .split("?")[0]
+                      .split("#")[0]
+                      .toLowerCase()
+                  ) ? (
+                    <div
+                      className="dropdown-item"
+                      onClick={() =>
+                        handleDownload(record.file, `${record?.filename}`)
+                      }
+                    >
+                      <i className="ti ti-download text-info me-1" />
+                      Download
+                    </div>
+                  ) : (
+                    <Link
+                      target="_blank"
+                      className="dropdown-item"
+                      to={record?.file}
+                    >
+                      <i className="ti ti-download text-info me-1" />
+                      Download
+                    </Link>
+                  )}
+                  {/* <Link className="dropdown-item" to={`/documents/${record?.id}`}>
               <i className="ti ti-eye text-blue-light"></i> Download
             </Link> */}
-          </div>
-        </div>
-      ),
-    }] : [])
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
   const { attachments, loading, error, success } = useSelector(
-    (state) => state.attachments,
+    (state) => state.attachments
   );
 
   React.useEffect(() => {
-    dispatch(fetchAttachment({filteredType ,search:searchText, ...selectedDateRange}));
-  }, [dispatch , filteredType,searchText,selectedDateRange]);
+    dispatch(
+      fetchAttachment({
+        filteredType,
+        search: searchText,
+        ...selectedDateRange,
+      })
+    );
+  }, [dispatch, filteredType, searchText, selectedDateRange]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     setPaginationData({
-      currentPage:attachments?.currentPage,
-      totalPage:attachments?.totalPages,
-      totalCount:attachments?.totalCount,
-      pageSize : attachments?.size
-    })
-  },[attachments])
+      currentPage: attachments?.currentPage,
+      totalPage: attachments?.totalPages,
+      totalCount: attachments?.totalCount,
+      pageSize: attachments?.size,
+    });
+  }, [attachments]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchAttachment({filteredType, search:searchText , ...selectedDateRange,page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchAttachment({
+        filteredType,
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
-
-
 
   // Memoized handlers
   const handleSearch = useCallback((e) => {
@@ -262,10 +345,10 @@ const DocumentLists = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = attachments?.data || [] ;
-  
-    if(filteredType) {
-      data = data?.filter((item)=>item?.related_entity_type === filteredType)
+    let data = attachments?.data || [];
+
+    if (filteredType) {
+      data = data?.filter((item) => item?.related_entity_type === filteredType);
     }
     if (selectedStatus !== null) {
       data = data.filter((item) => item.is_active === selectedStatus);
@@ -298,9 +381,9 @@ const DocumentLists = () => {
     const doc = new jsPDF();
     doc.text("Exported Documents", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ),
       startY: 20,
     });
@@ -321,140 +404,153 @@ const DocumentLists = () => {
       setShowDeleteModal(false); // Close the modal
     }
   };
-  
-  return (<>
-        <Helmet>
-        <title>DCC CRMS - Documents</title>
-        <meta name="Documents" content="This is Documents page of DCC CRMS." />
+
+  return (
+    <>
+      <Helmet>
+        <title>DCC HRMS - Documents</title>
+        <meta name="Documents" content="This is Documents page of DCC HRMS." />
       </Helmet>
-    <div className="page-wrapper">
-      <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
+      <div className="page-wrapper">
+        <div className="content">
+          {error && (
+            <FlashMessage
+              type="error"
+              message={error}
+              onClose={() => dispatch(clearMessages())}
+            />
+          )}
+          {success && (
+            <FlashMessage
+              type="success"
+              message={success}
+              onClose={() => dispatch(clearMessages())}
+            />
+          )}
 
-        <div className="row">
-          <div className="col-md-12">
-            {/* Page Header */}
-            <div className="page-header">
-              <div className="row align-items-center">
-                <div className="col-8">
-                  <h4 className="page-title">
-                    Documents
-                    <span className="count-title">{attachments?.data?.length || 0}</span>
-                  </h4>
-                </div>
-                <div className="col-4 text-end">
-                  <div className="head-icons">
-                    <CollapseHeader />
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* /Page Header */}
-            <div className="card ">
-              <div className="card-header">
-                {/* Search */}
+          <div className="row">
+            <div className="col-md-12">
+              {/* Page Header */}
+              <div className="page-header">
                 <div className="row align-items-center">
-                  <SearchBar
-                    searchText={searchText}
-                    handleSearch={handleSearch}
-                    label="Search Documents"
-                  />
-
-                  <div className="col-sm-8">
-                    {/* Export Start & Add Button */}
-                    <ExportData
-                      exportToPDF={exportToPDF}
-                      exportToExcel={exportToExcel}
-                      label="Add Document"
-                      isCreate={isCreate}
-                      id="offcanvas_add_documents"
-                    />
-                    {/* Export End & Add Button  */}
+                  <div className="col-8">
+                    <h4 className="page-title">
+                      Documents
+                      <span className="count-title">
+                        {attachments?.data?.length || 0}
+                      </span>
+                    </h4>
+                  </div>
+                  <div className="col-4 text-end">
+                    <div className="head-icons">
+                      <CollapseHeader />
+                    </div>
                   </div>
                 </div>
-                {/* /Search */}
               </div>
-
-              <div className="card-body">
-                {/* Filter */}
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
-                  <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    <SortDropdown
-                      sortOrder={sortOrder}
-                      setSortOrder={setSortOrder}
-                    />
-                    <DateRangePickerComponent
-                      selectedDateRange={selectedDateRange}
-                      setSelectedDateRange={setSelectedDateRange}
-                      setIsRange={setIsRange}
-                    />
-                  </div>
-                  <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    {/* <ManageColumnsDropdown /> */}
-                    <FilterComponent
-                      countryList={countryList}
-                      applyFilters={({ type, status }) => {
-                        setFilteredType(type);
-                        setSelectedStatus(status); // Set the selected status
-                      }}
+              {/* /Page Header */}
+              <div className="card ">
+                <div className="card-header">
+                  {/* Search */}
+                  <div className="row align-items-center">
+                    <SearchBar
+                      searchText={searchText}
+                      handleSearch={handleSearch}
+                      label="Search Documents"
                     />
 
-                    <ViewIconsToggle view={view} setView={setView} />
+                    <div className="col-sm-8">
+                      {/* Export Start & Add Button */}
+                      <ExportData
+                        exportToPDF={exportToPDF}
+                        exportToExcel={exportToExcel}
+                        label="Add Document"
+                        isCreate={isCreate}
+                        id="offcanvas_add_documents"
+                      />
+                      {/* Export End & Add Button  */}
+                    </div>
                   </div>
+                  {/* /Search */}
                 </div>
 
-                {/* /Filter */}
-                {/* Project List */}
+                <div className="card-body">
+                  {/* Filter */}
+                  <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                    <div className="d-flex align-items-center flex-wrap row-gap-2">
+                      <SortDropdown
+                        sortOrder={sortOrder}
+                        setSortOrder={setSortOrder}
+                      />
+                      <DateRangePickerComponent
+                        selectedDateRange={selectedDateRange}
+                        setSelectedDateRange={setSelectedDateRange}
+                        setIsRange={setIsRange}
+                      />
+                    </div>
+                    <div className="d-flex align-items-center flex-wrap row-gap-2">
+                      {/* <ManageColumnsDropdown /> */}
+                      <FilterComponent
+                        countryList={countryList}
+                        applyFilters={({ type, status }) => {
+                          setFilteredType(type);
+                          setSelectedStatus(status); // Set the selected status
+                        }}
+                      />
 
-               {isView ? <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
+                      <ViewIconsToggle view={view} setView={setView} />
+                    </div>
+                  </div>
+
+                  {/* /Filter */}
+                  {/* Project List */}
+
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          dataSource={filteredData}
+                          columns={columns}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        <ProjectGrid
+                          data={filteredData}
+                          setData={setSelectedProject}
+                        />
+                      )}
+                    </div>
                   ) : (
-                    <ProjectGrid data={filteredData}  setData={setSelectedProject} />
+                    <UnauthorizedImage />
                   )}
-                </div> : <UnauthorizedImage />}
-                <div className="row align-items-center">
-                  <div className="col-md-6">
-                    <div className="datatable-length" />
+                  <div className="row align-items-center">
+                    <div className="col-md-6">
+                      <div className="datatable-length" />
+                    </div>
+                    <div className="col-md-6">
+                      <div className="datatable-paginate" />
+                    </div>
                   </div>
-                  <div className="col-md-6">
-                    <div className="datatable-paginate" />
-                  </div>
+                  {/* /Project List */}
                 </div>
-                {/* /Project List */}
               </div>
             </div>
           </div>
         </div>
+        <AddAttachmentModal
+          data={selectedProject}
+          setData={setSelectedProject}
+        />
+        {/* <EditProjectModal project={selectedProject} /> */}
+        <DeleteAlert
+          label="Project"
+          showModal={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onDelete={deleteData}
+        />
       </div>
-      <AddAttachmentModal data={selectedProject} setData={setSelectedProject} />
-      {/* <EditProjectModal project={selectedProject} /> */}
-      <DeleteAlert
-        label="Project"
-        showModal={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onDelete={deleteData}
-      />
-    </div>
     </>
   );
 };

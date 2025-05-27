@@ -31,7 +31,7 @@ import { Helmet } from "react-helmet-async";
 
 const ProjectList = () => {
   const [view, setView] = useState("list"); // 'list' or 'grid'
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
@@ -44,13 +44,15 @@ const ProjectList = () => {
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Projects")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Projects"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -108,67 +110,87 @@ const ProjectList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-  ...((isDelete || isUpdate) ? [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_edit_project"
-              onClick={() => setSelectedProject(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteProject(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-         {isView &&   <Link className="dropdown-item" to={`/projects/${record?.id}`}>
-              <i className="ti ti-eye text-blue-light"></i> Preview
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isDelete || isUpdate
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_edit_project"
+                      onClick={() => setSelectedProject(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteProject(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {isView && (
+                    <Link
+                      className="dropdown-item"
+                      to={`/projects/${record?.id}`}
+                    >
+                      <i className="ti ti-eye text-blue-light"></i> Preview
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
-  
-    React.useEffect(() => {
-      dispatch(fetchProjects({ search:searchText , ...selectedDateRange}));
-    }, [dispatch,searchText,selectedDateRange]);
+
+  React.useEffect(() => {
+    dispatch(fetchProjects({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
   const { projects, loading, error, success } = useSelector(
-    (state) => state.projects,
+    (state) => state.projects
   );
- React.useEffect(()=>{
+  React.useEffect(() => {
     setPaginationData({
-      currentPage:projects?.currentPage,
-      totalPage:projects?.totalPages,
-      totalCount:projects?.totalCount,
-      pageSize : projects?.size
-    })
-  },[projects])
+      currentPage: projects?.currentPage,
+      totalPage: projects?.totalPages,
+      totalCount: projects?.totalCount,
+      pageSize: projects?.size,
+    });
+  }, [projects]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchProjects({ search:searchText , ...selectedDateRange,page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchProjects({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
   // Memoized handlers
   const handleSearch = useCallback((e) => {
@@ -209,17 +231,17 @@ const ProjectList = () => {
     const doc = new jsPDF();
     doc.text("Exported Projects", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "startDate") {
-            return moment(row.startDate).format("DD-MM-YYYY") || ""; 
+            return moment(row.startDate).format("DD-MM-YYYY") || "";
           }
           if (col.dataIndex === "createdDate") {
-            return moment(row.createdDate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdDate).format("DD-MM-YYYY") || "";
           }
           if (col.dataIndex === "dueDate") {
-            return moment(row.dueDate).format("DD-MM-YYYY") || ""; 
+            return moment(row.dueDate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -244,8 +266,8 @@ const ProjectList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Projects</title>
-        <meta name="Projects" content="This is Projects page of DCC CRMS." />
+        <title>DCC HRMS - Projects</title>
+        <meta name="Projects" content="This is Projects page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -271,7 +293,9 @@ const ProjectList = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Projects
-                    <span className="count-title">{projects?.data?.length || 0}</span>
+                    <span className="count-title">
+                      {projects?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -337,19 +361,23 @@ const ProjectList = () => {
                 {/* /Filter */}
                 {/* Project List */}
 
-               {isView ? <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <ProjectGrid data={filteredData} />
-                  )}
-                </div> : <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <ProjectGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
                 <div className="row align-items-center">
                   <div className="col-md-6">
                     <div className="datatable-length" />

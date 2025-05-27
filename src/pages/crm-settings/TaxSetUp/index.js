@@ -12,29 +12,33 @@ import moment from "moment";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 // import { clearMessages, fetchManufacturer } from "../../../redux/manufacturer";
-import { clearMessages, deleteTaxSetup, fetchTaxSetup } from "../../../redux/taxSetUp";
+import {
+  clearMessages,
+  deleteTaxSetup,
+  fetchTaxSetup,
+} from "../../../redux/taxSetUp";
 import ManageTaxModal from "./modal/ManageTaxModal";
 import { Helmet } from "react-helmet-async";
 
 const TaxSetUpList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i) => i?.module_name === "Tax Setup")?.[0]?.permissions
-  const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Tax Setup"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Tax Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <Link to={`#`}>{record.name}</Link>
-      ),
+      render: (text, record) => <Link to={`#`}>{record.name}</Link>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
@@ -98,48 +102,54 @@ const TaxSetUpList = () => {
       ),
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
-    ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_edit_tax_setup"
-              onClick={() => {
-                setSelectedTax(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-            {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteTax(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_tax_setup"
+                      onClick={() => {
+                        setSelectedTax(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteTax(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
-  const { taxs, loading, error, success } = useSelector(
-    (state) => state.taxs
-  );
+  const { taxs, loading, error, success } = useSelector((state) => state.taxs);
 
   React.useEffect(() => {
     dispatch(fetchTaxSetup());
@@ -194,8 +204,8 @@ const TaxSetUpList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Tax Setup</title>
-        <meta name="Tax Setup" content="This is Tax Setup page of DCC CRMS." />
+        <title>DCC HRMS - Tax Setup</title>
+        <meta name="Tax Setup" content="This is Tax Setup page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -220,9 +230,7 @@ const TaxSetUpList = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Tax Setup
-                    <span className="count-title">
-                      {taxs?.length || 0}
-                    </span>
+                    <span className="count-title">{taxs?.length || 0}</span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -240,20 +248,21 @@ const TaxSetUpList = () => {
                     handleSearch={handleSearch}
                     label="Search Tax"
                   />
-                  {isCreate &&
+                  {isCreate && (
                     <div className="col-8">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end"><Link
-                        to="#"
-                        className="btn btn-primary"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target={`#offcanvas_add_edit_tax_setup`}
-                      >
-                        <i className="ti ti-square-rounded-plus me-2" />
-                        Add Tax
-                      </Link> </div>
-                    </div>}
-
-
+                      <div className="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
+                        <Link
+                          to="#"
+                          className="btn btn-primary"
+                          data-bs-toggle="offcanvas"
+                          data-bs-target={`#offcanvas_add_edit_tax_setup`}
+                        >
+                          <i className="ti ti-square-rounded-plus me-2" />
+                          Add Tax
+                        </Link>{" "}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">

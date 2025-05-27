@@ -15,18 +15,19 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import ExportData from "../../components/datatable/ExportData.js";
 import SearchBar from "../../components/datatable/SearchBar.js";
 import SortDropdown from "../../components/datatable/SortDropDown.js";
+import { clearMessages } from "../../redux/manage-user/index.js";
 import {
-  clearMessages
-} from "../../redux/manage-user/index.js";
-import { deletePriceBook, fetchPriceBook } from "../../redux/priceBook/index.js";
+  deletePriceBook,
+  fetchPriceBook,
+} from "../../redux/priceBook/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddInvoiceModal from "./modal/AddPriceBookModal.js";
 import UserGrid from "./UsersGrid.js";
 import { Helmet } from "react-helmet-async";
 
 const PriceBook = () => {
-  const [view, setView] = useState("list"); 
-    
+  const [view, setView] = useState("list");
+
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -34,27 +35,30 @@ const PriceBook = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Price Book")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Price Book"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
       title: " Name",
       dataIndex: "name",
       sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
-    }, {
+    },
+    {
       title: "Model",
       dataIndex: "model",
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""), // Fixed sorter logic
     },
-  {
+    {
       title: "Effective form",
       dataIndex: "effectivate_from",
       render: (text) => (
@@ -78,38 +82,43 @@ const PriceBook = () => {
       ),
       sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
     },
-   ...((isUpdate || isDelete) ?
-      [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_edit_price_book"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-             {/* <Link
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_price_book"
+                      onClick={() => setSelectedOrder(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {/* <Link
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="offcanvas"
@@ -118,40 +127,44 @@ const PriceBook = () => {
             >
               <i className="ti ti-eye text-secondary"></i> Preview
             </Link> */}
-           
-          </div>
-        </div>
-      ),
-    }]
-  : []),
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
- 
-
   React.useEffect(() => {
-    dispatch(fetchPriceBook({search:searchText,...selectedDateRange}))
-  }, [dispatch,searchText,selectedDateRange]);
-  const { priceBooks , loading, error, success } = useSelector(
-    (state) => state.priceBooks,
+    dispatch(fetchPriceBook({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
+  const { priceBooks, loading, error, success } = useSelector(
+    (state) => state.priceBooks
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:priceBooks?.currentPage,
-      totalPage:priceBooks?.totalPages,
-      totalCount:priceBooks?.totalCount,
-      pageSize : priceBooks?.size
-    })
-  },[priceBooks])
+      currentPage: priceBooks?.currentPage,
+      totalPage: priceBooks?.totalPages,
+      totalCount: priceBooks?.totalCount,
+      pageSize: priceBooks?.size,
+    });
+  }, [priceBooks]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchPriceBook({ search:searchText,...selectedDateRange,page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchPriceBook({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
-
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -201,14 +214,14 @@ const PriceBook = () => {
     const doc = new jsPDF();
     doc.text("Exported Price book", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "effectivate_to") {
-            return moment(row.effectivate_to).format("DD-MM-YYYY") || ""; 
+            return moment(row.effectivate_to).format("DD-MM-YYYY") || "";
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -236,8 +249,11 @@ const PriceBook = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Pricebooks</title>
-        <meta name="Pricebooks" content="This is Pricebooks page of DCC CRMS." />
+        <title>DCC HRMS - Pricebooks</title>
+        <meta
+          name="Pricebooks"
+          content="This is Pricebooks page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -261,8 +277,10 @@ const PriceBook = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                   Price book
-                    <span className="count-title">{priceBooks?.data?.length || 0}</span>
+                    Price book
+                    <span className="count-title">
+                      {priceBooks?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -315,19 +333,23 @@ const PriceBook = () => {
                   </div>
                 </div>
 
-              {isView ?  <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div>: <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>
@@ -337,7 +359,6 @@ const PriceBook = () => {
       {/* <PreviewPurchaseOrder order={selectedOrder} formatNumber={formatNumber} setOrder={setSelectedOrder}   /> */}
 
       {/* <AddFile data={null} setData={setSelectedOrder} type={"priceBooks"} type_id={selectedOrder?.id} type_name={selectedOrder?.order_code} /> */}
-
 
       {/* <EditUserModal user={selectedOrder} /> */}
       <DeleteAlert

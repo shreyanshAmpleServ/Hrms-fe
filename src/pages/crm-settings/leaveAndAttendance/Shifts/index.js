@@ -8,7 +8,6 @@ import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import Table from "../../../../components/common/dataTable/index";
 import DeleteAlert from "./alert/DeleteAlert";
 
-
 import moment from "moment";
 
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -16,44 +15,43 @@ import SearchBar from "../../../../components/datatable/SearchBar";
 import { useNavigate } from "react-router-dom";
 import AddButton from "../../../../components/datatable/AddButton";
 import { Helmet } from "react-helmet-async";
-import { clearMessages, deleteShift, fetchShift } from "../../../../redux/Shift";
+import {
+  clearMessages,
+  deleteShift,
+  fetchShift,
+} from "../../../../redux/Shift";
 
 const ShiftList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Shift")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Shift"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Shift Name",
       dataIndex: "shift_name",
-      render: (text, record) => (
-        <div>{text}</div>
-      ),
+      render: (text, record) => <div>{text}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Start Time",
       dataIndex: "start_time",
-      render: (text, record) => (
-     <div>{moment(text).format("hh:mm A")}</div>
-      ),
+      render: (text, record) => <div>{moment(text).format("hh:mm A")}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "End Time",
       dataIndex: "end_time",
-      render: (text, record) => (
-          <div>{moment(text).format("hh:mm A")}</div>
-
-      ),
+      render: (text, record) => <div>{moment(text).format("hh:mm A")}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
 
@@ -83,76 +81,86 @@ const ShiftList = () => {
     //   ),
     //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     // },
-   ...((isUpdate || isDelete) ?[ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_shift_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_shift_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { shift, loading, error, success } = useSelector(
     (state) => state.shift
   );
-  
-  console.log("Shift",shift)
+
+  console.log("Shift", shift);
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
-    const [paginationData , setPaginationData] = useState()
-  
-    React.useEffect(() => {
-      dispatch(fetchShift({search:searchText}));
-    }, [dispatch, searchText]);
-  
-  React.useEffect(()=>{
-      setPaginationData({
-        currentPage:shift?.currentPage,
-        totalPage:shift?.totalPages,
-        totalCount:shift?.totalCount,
-        pageSize : shift?.size
-      })
-    },[shift])
-  
-    const handlePageChange = ({ currentPage, pageSize }) => {
-      setPaginationData((prev) => ({
-        ...prev,
-        currentPage,
-        pageSize
-      }));
-      dispatch(fetchShift({search:searchText , page: currentPage, size: pageSize })); 
-    };
+  const [paginationData, setPaginationData] = useState();
+
+  React.useEffect(() => {
+    dispatch(fetchShift({ search: searchText }));
+  }, [dispatch, searchText]);
+
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: shift?.currentPage,
+      totalPage: shift?.totalPages,
+      totalCount: shift?.totalCount,
+      pageSize: shift?.size,
+    });
+  }, [shift]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchShift({ search: searchText, page: currentPage, size: pageSize })
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -200,7 +208,7 @@ const ShiftList = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - Shift</title>
-        <meta name="Shift" content="This is Shift page of DCC CRMS." />
+        <meta name="Shift" content="This is Shift page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -245,13 +253,15 @@ const ShiftList = () => {
                     handleSearch={handleSearch}
                     label="Search Shift"
                   />
-                {isCreate &&  <div className="col-sm-8">
-                    <AddButton
-                      label="Add Shift"
-                      id="add_edit_shift_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Shift"
+                        id="add_edit_shift_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -270,8 +280,8 @@ const ShiftList = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
-                     paginationData={paginationData}
-                        onPageChange={handlePageChange} 
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

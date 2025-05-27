@@ -26,7 +26,7 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import { Helmet } from "react-helmet-async";
 
 const LeadList = () => {
-  const [callsDetails, setCallDetails] = useState()
+  const [callsDetails, setCallDetails] = useState();
   const [view, setView] = useState("list"); // 'list' or 'grid'
   const [showFlashModal, setShowFlashModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
@@ -40,15 +40,16 @@ const LeadList = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [paginationData , setPaginationData] = useState()
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Calls")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
-
+  const [paginationData, setPaginationData] = useState();
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Calls"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
 
@@ -56,11 +57,7 @@ const LeadList = () => {
     {
       title: "Call For",
       dataIndex: "call_for",
-      render: (text, record, index) => (
-        <div>
-          {`${record.call_for} `}
-        </div>
-      ),
+      render: (text, record, index) => <div>{`${record.call_for} `}</div>,
       sorter: (a, b) => {
         const nameA = `${a.call_for}`.toLowerCase();
         const nameB = `${b.call_for}`.toLowerCase();
@@ -73,11 +70,11 @@ const LeadList = () => {
       render: (text, record, index) => (
         <div>
           {/* {`${record?.crms_m_contact_call_for?.firstName + " " + record?.crms_m_contact_call_for?.lastName} `} */}
-          { record?.call_for === "Accounts"  ?
-           `${record?.crms_m_contact_call_for?.firstName + " " + record?.crms_m_contact_call_for?.lastName}` 
-           : record?.call_for === "Leads" ?
-          `${record?.crms_leads?.first_name + " " + record?.crms_leads?.last_name} `
-          : `${record?.crms_project?.name}` }
+          {record?.call_for === "Accounts"
+            ? `${record?.crms_m_contact_call_for?.firstName + " " + record?.crms_m_contact_call_for?.lastName}`
+            : record?.call_for === "Leads"
+              ? `${record?.crms_leads?.first_name + " " + record?.crms_leads?.last_name} `
+              : `${record?.crms_project?.name}`}
         </div>
       ),
       sorter: (a, b) => a?.firstName - b?.firstName,
@@ -87,8 +84,8 @@ const LeadList = () => {
       dataIndex: "ongoing_callStatus",
       render: (text, record, index) => (
         <span
-          className={`badge badge-pill badge-status ${text == "Completed" ? "bg-success" : text === "Scheduled" ? "bg-warning"  :  "bg-primary" }   `}
-           // style={{ backgroundColor: }}
+          className={`badge badge-pill badge-status ${text == "Completed" ? "bg-success" : text === "Scheduled" ? "bg-warning" : "bg-primary"}   `}
+          // style={{ backgroundColor: }}
         >
           {`${text} `}
         </span>
@@ -99,11 +96,14 @@ const LeadList = () => {
       title: "Related To",
       dataIndex: "related_to",
       render: (text, record, index) => (
-        <div>
-          {`${text == 1 ? "Accounts" : "Contacts"} `}
-        </div>
+        <div>{`${text == 1 ? "Accounts" : "Contacts"} `}</div>
       ),
-      sorter: (a, b) => a.text == 1 ? "Accounts" : "Contacts" - b.text == 1 ? "Accounts" : "Contacts",
+      sorter: (a, b) =>
+        a.text == 1
+          ? "Accounts"
+          : "Contacts" - b.text == 1
+            ? "Accounts"
+            : "Contacts",
     },
     {
       title: "Related To User",
@@ -160,45 +160,51 @@ const LeadList = () => {
       sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
     },
 
-    ...((isDelete || isUpdate ) ? [
-      {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record, index) => (
-        <div className="dropdown table-action" key={index}>
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_calls"
-              onClick={() => setCallDetails(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteLead(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isDelete || isUpdate
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record, index) => (
+              <div className="dropdown table-action" key={index}>
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_calls"
+                      onClick={() => setCallDetails(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteLead(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
   const { calls, loading, error, success } = useSelector(
-    (state) => state.calls,
+    (state) => state.calls
   );
 
   // Show FlashMessage when success or error changes
@@ -226,26 +232,42 @@ const LeadList = () => {
   };
 
   React.useEffect(() => {
-    dispatch(fetchCalls({search:searchText,callType:selectedType,category:selectedCategory, ...selectedDateRange}));
-  }, [dispatch, searchText , selectedType,selectedCategory,selectedDateRange]);
+    dispatch(
+      fetchCalls({
+        search: searchText,
+        callType: selectedType,
+        category: selectedCategory,
+        ...selectedDateRange,
+      })
+    );
+  }, [dispatch, searchText, selectedType, selectedCategory, selectedDateRange]);
 
-    React.useEffect(()=>{
-        setPaginationData({
-          currentPage:calls?.currentPage,
-          totalPage:calls?.totalPages,
-          totalCount:calls?.totalCount,
-          pageSize : calls?.size
-        })
-      },[calls])
-    
-      const handlePageChange = ({ currentPage, pageSize }) => {
-        setPaginationData((prev) => ({
-          ...prev,
-          currentPage,
-          pageSize
-        }));
-        dispatch(fetchCalls({search:searchText ,callType:selectedType,category:selectedCategory, ...selectedDateRange, page: currentPage, size: pageSize })); 
-      };
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: calls?.currentPage,
+      totalPage: calls?.totalPages,
+      totalCount: calls?.totalCount,
+      pageSize: calls?.size,
+    });
+  }, [calls]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchCalls({
+        search: searchText,
+        callType: selectedType,
+        category: selectedCategory,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -313,7 +335,6 @@ const LeadList = () => {
     calls,
   ]);
 
-
   const exportToExcel = useCallback(() => {
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
@@ -327,7 +348,7 @@ const LeadList = () => {
     doc.autoTable({
       head: [columns.map((col) => col.title)],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ),
       startY: 20,
     });
@@ -337,8 +358,8 @@ const LeadList = () => {
   return (
     <div>
       <Helmet>
-        <title>DCC CRMS - Calls</title>
-        <meta name="Calls" content="This is Calls page of DCC CRMS." />
+        <title>DCC HRMS - Calls</title>
+        <meta name="Calls" content="This is Calls page of DCC HRMS." />
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
@@ -363,7 +384,9 @@ const LeadList = () => {
                   <div className="col-8">
                     <h4 className="page-title">
                       Calls
-                      <span className="count-title">{calls?.data?.length || 0}</span>
+                      <span className="count-title">
+                        {calls?.data?.length || 0}
+                      </span>
                     </h4>
                   </div>
                   <div className="col-4 text-end">
@@ -384,7 +407,7 @@ const LeadList = () => {
                         exportToPDF={exportToPDF}
                         exportToExcel={exportToExcel}
                         label="Add Calls"
-                        isCreate= {isCreate}
+                        isCreate={isCreate}
                         id="offcanvas_add_calls"
                       />
                     </div>
@@ -404,29 +427,33 @@ const LeadList = () => {
                     </div>
                     <div className="d-flex align-items-center flex-wrap row-gap-2">
                       <FilterComponent
-                        applyFilters={({category, type, status }) => {
+                        applyFilters={({ category, type, status }) => {
                           setSelectedStatus(status);
                           setSelectedType(type);
-                          setSelectedCategory(category)
+                          setSelectedCategory(category);
                         }}
                       />
                       {/* <ViewIconsToggle view={view} setView={setView} /> */}
                     </div>
                   </div>
 
-                 {isView ? <div className="table-responsive custom-table">
-                    {view === "list" ? (
-                      <Table
-                        dataSource={filteredData}
-                        columns={columns}
-                        loading={loading}
-                        paginationData={paginationData}
-                        onPageChange={handlePageChange} 
-                      />
-                    ) : (
-                      <CallsGrid data={calls?.data} />
-                    )}
-                  </div> : <UnauthorizedImage />}
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          dataSource={filteredData}
+                          columns={columns}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        <CallsGrid data={calls?.data} />
+                      )}
+                    </div>
+                  ) : (
+                    <UnauthorizedImage />
+                  )}
                   <div className="row align-items-center">
                     <div className="col-md-6">
                       <div className="datatable-length" />
@@ -441,7 +468,10 @@ const LeadList = () => {
           </div>
         </div>
       </div>
-      <AddCallModal callsDetails={callsDetails} setCallDetails={setCallDetails} />
+      <AddCallModal
+        callsDetails={callsDetails}
+        setCallDetails={setCallDetails}
+      />
       <EditLeadsModal lead={selectedLead} />
       <DeleteAlert
         label={"Call"}

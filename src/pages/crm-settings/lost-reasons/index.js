@@ -23,16 +23,18 @@ import AddButton from "../../../components/datatable/AddButton";
 import { Helmet } from "react-helmet-async";
 
 const LostReasonsList = () => {
-  const [mode, setMode] = useState("add"); 
+  const [mode, setMode] = useState("add");
   const dispatch = useDispatch();
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Lead Status")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Lead Status"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -70,48 +72,56 @@ const LostReasonsList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-    ...((isUpdate || isDelete) ?[{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-          {isUpdate &&  <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_lost_reason_modal"
-              onClick={() => {
-                setSelectedLostReason(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteLostReason(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_lost_reason_modal"
+                      onClick={() => {
+                        setSelectedLostReason(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteLostReason(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { lostReasons, loading, error, success } = useSelector(
-    (state) => state.lostReasons,
+    (state) => state.lostReasons
   );
 
   React.useEffect(() => {
@@ -133,17 +143,17 @@ const LostReasonsList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
+            .includes(searchText.toLowerCase())
+        )
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -159,7 +169,7 @@ const LostReasonsList = () => {
   const deleteData = (sourcePage = null) => {
     if (selectedLostReason) {
       dispatch(deleteLostReason(selectedLostReason.id));
-      if (sourcePage === 'leads-kanban') {
+      if (sourcePage === "leads-kanban") {
         window.location.reload();
       }
       setShowDeleteModal(false);
@@ -169,8 +179,11 @@ const LostReasonsList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Lead Status</title>
-        <meta name="Lead Status" content="This is Lead Status page of DCC CRMS." />
+        <title>DCC HRMS - Lead Status</title>
+        <meta
+          name="Lead Status"
+          content="This is Lead Status page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -215,13 +228,15 @@ const LostReasonsList = () => {
                     handleSearch={handleSearch}
                     label="Search Lead Status"
                   />
-                {isCreate &&  <div className="col-sm-8">
-                    <AddButton
-                      label="Add Lead Status"
-                      id="add_edit_lost_reason_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Lead Status"
+                        id="add_edit_lost_reason_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">

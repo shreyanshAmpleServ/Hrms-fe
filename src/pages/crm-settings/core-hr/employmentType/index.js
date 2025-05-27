@@ -190,7 +190,7 @@ const Employee_TypeList = () => {
         <title>DCC HRMS - Employee Type</title>
         <meta
           name="employee-type"
-          content="This is employee_type page of DCC CRMS."
+          content="This is employee_type page of DCC HRMS."
         />
       </Helmet>
       <div className="content">

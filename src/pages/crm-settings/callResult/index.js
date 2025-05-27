@@ -5,9 +5,7 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTable/index";
 import FlashMessage from "../../../components/common/modals/FlashMessage";
-import {
-  clearMessages
-} from "../../../redux/calls"; // Redux actions and reducers for call statuses
+import { clearMessages } from "../../../redux/calls"; // Redux actions and reducers for call statuses
 import { all_routes } from "../../../routes/all_routes";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
@@ -23,23 +21,23 @@ import { Helmet } from "react-helmet-async";
 
 const CallResultList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
-  
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Call Result")?.[0]?.permissions
-const isAdmin = localStorage.getItem("role")=== "Admin"
-const isView =   isAdmin ? true :  allPermissions?.view
-const isCreate = isAdmin ? true : allPermissions?.create
-const isUpdate = isAdmin ? true : allPermissions?.update
-const isDelete = isAdmin ? true : allPermissions?.delete
+
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Call Result"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role") === "Admin";
+  const isView = isAdmin ? true : allPermissions?.view;
+  const isCreate = isAdmin ? true : allPermissions?.create;
+  const isUpdate = isAdmin ? true : allPermissions?.update;
+  const isDelete = isAdmin ? true : allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Call Result Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <div>{record.name}</div>
-      ),
+      render: (text, record) => <div>{record.name}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
@@ -77,48 +75,56 @@ const isDelete = isAdmin ? true : allPermissions?.delete
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-    ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_call_status_modal"
-              onClick={() => {
-                setSelectedCallStatus(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteCallStatus(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_call_status_modal"
+                      onClick={() => {
+                        setSelectedCallStatus(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteCallStatus(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { callResults, loading, error, success } = useSelector(
-    (state) => state.callResults,
+    (state) => state.callResults
   );
 
   React.useEffect(() => {
@@ -140,17 +146,17 @@ const isDelete = isAdmin ? true : allPermissions?.delete
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
+            .includes(searchText.toLowerCase())
+        )
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -173,10 +179,13 @@ const isDelete = isAdmin ? true : allPermissions?.delete
 
   return (
     <div className="page-wrapper">
-            <Helmet>
-              <title>DCC CRMS - Call Result</title>
-              <meta name="Call-Result" content="This is Call-Result page of DCC CRMS." />
-            </Helmet>
+      <Helmet>
+        <title>DCC HRMS - Call Result</title>
+        <meta
+          name="Call-Result"
+          content="This is Call-Result page of DCC HRMS."
+        />
+      </Helmet>
       <div className="content">
         {error && (
           <FlashMessage
@@ -200,7 +209,9 @@ const isDelete = isAdmin ? true : allPermissions?.delete
                 <div className="col-8">
                   <h4 className="page-title">
                     Call Result
-                    <span className="count-title">{callResults?.length || 0}</span>
+                    <span className="count-title">
+                      {callResults?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -218,13 +229,15 @@ const isDelete = isAdmin ? true : allPermissions?.delete
                     handleSearch={handleSearch}
                     label="Search Call Results"
                   />
-                 {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add Call Result"
-                      id="add_edit_call_status_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Call Result"
+                        id="add_edit_call_status_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -242,7 +255,7 @@ const isDelete = isAdmin ? true : allPermissions?.delete
                     dataSource={filteredData}
                     columns={columns}
                     loading={loading}
-                    isView = {isView}
+                    isView={isView}
                   />
                 </div>
               </div>

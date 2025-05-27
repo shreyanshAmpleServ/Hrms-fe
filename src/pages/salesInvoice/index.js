@@ -16,19 +16,20 @@ import ExportData from "../../components/datatable/ExportData.js";
 import SearchBar from "../../components/datatable/SearchBar.js";
 import SortDropdown from "../../components/datatable/SortDropDown.js";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle.js";
-import {
-  clearMessages
-} from "../../redux/manage-user/index.js";
+import { clearMessages } from "../../redux/manage-user/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddInvoiceModal from "./modal/AddSalesInvoiceModal.js";
 import FilterComponent from "./modal/FilterComponent.js";
 import PreviewPurchaseOrder from "./modal/PreviewInvoice.js";
 import UserGrid from "./UsersGrid.js";
-import { deleteSalesInvoice, fetchSalesInvoice } from "../../redux/salesInvoice/index.js";
+import {
+  deleteSalesInvoice,
+  fetchSalesInvoice,
+} from "../../redux/salesInvoice/index.js";
 import { Helmet } from "react-helmet-async";
 
 const SalesInvoice = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -36,25 +37,31 @@ const SalesInvoice = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Sales Invoice")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Sales Invoice"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   function formatNumber(num) {
-    num = Number(num)
+    num = Number(num);
     num = Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
-    if (num === 0 || isNaN(num)) { return '0';}
+    if (num === 0 || isNaN(num)) {
+      return "0";
+    }
     const number = parseFloat(num);
-    const [integerPart, decimalPart] = number.toString().split('.');
-    const formattedInteger = parseInt(integerPart).toLocaleString('en-IN');
+    const [integerPart, decimalPart] = number.toString().split(".");
+    const formattedInteger = parseInt(integerPart).toLocaleString("en-IN");
     if (decimalPart !== undefined) {
-      const fixedDecimal = parseFloat(`0.${decimalPart}`).toFixed(2).split('.')[1];
+      const fixedDecimal = parseFloat(`0.${decimalPart}`)
+        .toFixed(2)
+        .split(".")[1];
       return `${formattedInteger}.${fixedDecimal}`;
     }
     return formattedInteger;
@@ -65,7 +72,8 @@ const SalesInvoice = () => {
       title: " Code",
       dataIndex: "order_code",
       sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
-    }, {
+    },
+    {
       title: "Vendor",
       dataIndex: "invoice_vendor",
       render: (text) => (
@@ -86,20 +94,20 @@ const SalesInvoice = () => {
     {
       title: "Total Disc",
       dataIndex: "disc_prcnt",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) =>a-b, // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Total Tax",
       dataIndex: "tax_total",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) => a-b // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Total Amount",
       dataIndex: "total_amount",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) => a-b, // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Currency",
@@ -125,47 +133,52 @@ const SalesInvoice = () => {
       ),
       sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
     },
-   ...((isUpdate || isDelete) ?
-      [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_edit_sales_invoice"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-             <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_preview_sales_invoice"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-eye text-secondary"></i> Preview
-            </Link>
-            {/* <Link
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_sales_invoice"
+                      onClick={() => setSelectedOrder(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  <Link
+                    className="dropdown-item edit-popup"
+                    to="#"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas_preview_sales_invoice"
+                    onClick={() => setSelectedOrder(record)}
+                  >
+                    <i className="ti ti-eye text-secondary"></i> Preview
+                  </Link>
+                  {/* <Link
                to="#"
                 className="dropdown-item"
                data-bs-toggle="modal"
@@ -174,40 +187,44 @@ const SalesInvoice = () => {
               >
              <i className="ti ti-upload text-success"></i>Upload File
             </Link> */}
-          </div>
-        </div>
-      ),
-    }]
-  : []),
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
- 
-
   React.useEffect(() => {
-    dispatch(fetchSalesInvoice({search:searchText, ...selectedDateRange}))
-  }, [dispatch,searchText, selectedDateRange]);
-  const { salesInvoices , loading, error, success } = useSelector(
-    (state) => state.salesInvoices,
+    dispatch(fetchSalesInvoice({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
+  const { salesInvoices, loading, error, success } = useSelector(
+    (state) => state.salesInvoices
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:salesInvoices?.currentPage,
-      totalPage:salesInvoices?.totalPages,
-      totalCount:salesInvoices?.totalCount,
-      pageSize : salesInvoices?.size
-    })
-  },[salesInvoices])
+      currentPage: salesInvoices?.currentPage,
+      totalPage: salesInvoices?.totalPages,
+      totalCount: salesInvoices?.totalCount,
+      pageSize: salesInvoices?.size,
+    });
+  }, [salesInvoices]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchSalesInvoice({ search:searchText , ...selectedDateRange,page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchSalesInvoice({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
-  
-
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -247,20 +264,20 @@ const SalesInvoice = () => {
     const doc = new jsPDF();
     doc.text("Exported sales invoice", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "invoice_vendor") {
-            return row.invoice_vendor?.name || ""; 
+            return row.invoice_vendor?.name || "";
           }
           if (col.dataIndex === "invoice_currency") {
-            return row.invoice_currency?.code || ""; 
+            return row.invoice_currency?.code || "";
           }
           if (col.dataIndex === "due_date") {
-            return moment(row.due_date).format("DD-MM-YYYY") || ""; 
+            return moment(row.due_date).format("DD-MM-YYYY") || "";
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -288,8 +305,11 @@ const SalesInvoice = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Sales Invoice</title>
-        <meta name="Sales Invoice" content="This is Sales Invoice page of DCC CRMS." />
+        <title>DCC HRMS - Sales Invoice</title>
+        <meta
+          name="Sales Invoice"
+          content="This is Sales Invoice page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -313,8 +333,10 @@ const SalesInvoice = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                   Sales Invoices
-                    <span className="count-title">{salesInvoices?.data?.length || 0}</span>
+                    Sales Invoices
+                    <span className="count-title">
+                      {salesInvoices?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -367,29 +389,36 @@ const SalesInvoice = () => {
                   </div>
                 </div>
 
-              {isView ?  <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div>: <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
       <AddInvoiceModal order={selectedOrder} setOrder={setSelectedOrder} />
-      <PreviewPurchaseOrder order={selectedOrder} formatNumber={formatNumber} setOrder={setSelectedOrder}   />
+      <PreviewPurchaseOrder
+        order={selectedOrder}
+        formatNumber={formatNumber}
+        setOrder={setSelectedOrder}
+      />
 
       {/* <AddFile data={null} setData={setSelectedOrder} type={"salesInvoices"} type_id={selectedOrder?.id} type_name={selectedOrder?.order_code} /> */}
-
 
       {/* <EditUserModal user={selectedOrder} /> */}
       <DeleteAlert

@@ -27,7 +27,7 @@ import { Helmet } from "react-helmet-async";
 
 const DealList = () => {
   const navigate = useNavigate();
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const dispatch = useDispatch();
   const [showFlashModal, setShowFlashModal] = useState(false);
   const [selecectDeal, setSelectedDeal] = useState(null);
@@ -40,14 +40,16 @@ const DealList = () => {
   });
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedPriority, setSelectedPriority] = useState(null);
-  const [paginationData , setPaginationData] = useState()
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Deals")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const [paginationData, setPaginationData] = useState();
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Deals"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -71,12 +73,13 @@ const DealList = () => {
       dataIndex: "priority",
       render: (priority) => (
         <span
-          className={`badge ${priority === "High"
-            ? "bg-danger"
-            : priority === "Medium"
-              ? "bg-warning"
-              : "bg-success"
-            }`}
+          className={`badge ${
+            priority === "High"
+              ? "bg-danger"
+              : priority === "Medium"
+                ? "bg-warning"
+                : "bg-success"
+          }`}
         >
           {priority}
         </span>
@@ -88,12 +91,13 @@ const DealList = () => {
       dataIndex: "status",
       render: (status) => (
         <span
-          className={`badge ${status === "Open"
-            ? "bg-primary"
-            : status === "Closed"
-              ? "bg-success"
-              : "bg-secondary"
-            }`}
+          className={`badge ${
+            status === "Open"
+              ? "bg-primary"
+              : status === "Closed"
+                ? "bg-success"
+                : "bg-secondary"
+          }`}
         >
           {status}
         </span>
@@ -116,81 +120,117 @@ const DealList = () => {
     {
       title: "Assignee",
       dataIndex: "DealContacts",
-      render: (value) => <span>{value?.[0]?.contact?.firstName + " "+value?.[0]?.contact?.lastName}</span>, // Replace with assignee name if available
+      render: (value) => (
+        <span>
+          {value?.[0]?.contact?.firstName + " " + value?.[0]?.contact?.lastName}
+        </span>
+      ), // Replace with assignee name if available
       sorter: (a, b) => a.assigneeId - b.assigneeId,
     },
-   ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record, index) => (
-        <div className="dropdown table-action" key={index}>
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div
-            className="dropdown-menu dropdown-menu-right"
-            style={{
-              position: "absolute",
-              inset: "0px auto auto 0px",
-              margin: "0px",
-              transform: "translate3d(-99.3333px, 35.3333px, 0px)",
-            }}
-            data-popper-placement="bottom-start"
-          >
-            {isUpdate &&<Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_edit_deal"
-              onClick={() => setSelectedDeal(record)} // Set selected deal
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteDeal(record)} // Handle delete
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          {isView &&  <Link className="dropdown-item" to={`/deals/${record?.id}`}>
-              <i className="ti ti-eye text-blue-light"></i> Preview
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]: [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record, index) => (
+              <div className="dropdown table-action" key={index}>
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div
+                  className="dropdown-menu dropdown-menu-right"
+                  style={{
+                    position: "absolute",
+                    inset: "0px auto auto 0px",
+                    margin: "0px",
+                    transform: "translate3d(-99.3333px, 35.3333px, 0px)",
+                  }}
+                  data-popper-placement="bottom-start"
+                >
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_edit_deal"
+                      onClick={() => setSelectedDeal(record)} // Set selected deal
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteDeal(record)} // Handle delete
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {isView && (
+                    <Link className="dropdown-item" to={`/deals/${record?.id}`}>
+                      <i className="ti ti-eye text-blue-light"></i> Preview
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
   const { deals, loading, error, success } = useSelector(
-    (state) => state.deals,
+    (state) => state.deals
   );
 
   React.useEffect(() => {
-      dispatch(fetchDeals({search:searchText ,status:selectedStatus,priority:selectedPriority, ...selectedDateRange}));
-    }, [dispatch,searchText ,selectedStatus,selectedPriority, selectedDateRange]);
-  
-  React.useEffect(()=>{
-      setPaginationData({
-        currentPage:deals?.currentPage,
-        totalPage:deals?.totalPages,
-        totalCount:deals?.totalCount,
-        pageSize : deals?.size
+    dispatch(
+      fetchDeals({
+        search: searchText,
+        status: selectedStatus,
+        priority: selectedPriority,
+        ...selectedDateRange,
       })
-    },[deals])
-  
-    const handlePageChange = ({ currentPage, pageSize }) => {
-      setPaginationData((prev) => ({
-        ...prev,
-        currentPage,
-        pageSize
-      }));
-      dispatch(fetchDeals({search:searchText ,status: selectedStatus,priority:selectedPriority, ...selectedDateRange, page: currentPage, size: pageSize })); 
-    };
+    );
+  }, [
+    dispatch,
+    searchText,
+    selectedStatus,
+    selectedPriority,
+    selectedDateRange,
+  ]);
+
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: deals?.currentPage,
+      totalPage: deals?.totalPages,
+      totalCount: deals?.totalCount,
+      pageSize: deals?.size,
+    });
+  }, [deals]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchDeals({
+        search: searchText,
+        status: selectedStatus,
+        priority: selectedPriority,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
 
   // Show FlashMessage when success or error changes
   React.useEffect(() => {
@@ -198,7 +238,6 @@ const DealList = () => {
       setShowFlashModal(true);
     }
   }, [error, success]);
-
 
   const handleCloseFlashMessage = () => {
     setShowFlashModal(false);
@@ -266,18 +305,23 @@ const DealList = () => {
     doc.text("Exported Deals", 14, 10);
 
     // Generate table using autoTable
-    doc.autoTable({ // Extract column headers
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")], // Extract column headers
+    doc.autoTable({
+      // Extract column headers
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))], // Extract column headers
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "DealContacts") {
-            return row?.DealContacts?.[0]?.contact?.firstName + " "+row?.DealContacts?.[0]?.contact?.lastName || ""; 
+            return (
+              row?.DealContacts?.[0]?.contact?.firstName +
+                " " +
+                row?.DealContacts?.[0]?.contact?.lastName || ""
+            );
           }
           if (col.dataIndex === "createdDate") {
-            return moment(row.createdDate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdDate).format("DD-MM-YYYY") || "";
           }
           if (col.dataIndex === "expectedCloseDate") {
-            return moment(row.expectedCloseDate).format("DD-MM-YYYY") || ""; 
+            return moment(row.expectedCloseDate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -291,8 +335,8 @@ const DealList = () => {
   return (
     <div>
       <Helmet>
-        <title>DCC CRMS - Deals</title>
-        <meta name="Deals" content="This is Deals page of DCC CRMS." />
+        <title>DCC HRMS - Deals</title>
+        <meta name="Deals" content="This is Deals page of DCC HRMS." />
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
@@ -322,7 +366,9 @@ const DealList = () => {
                   <div className="col-8">
                     <h4 className="page-title">
                       Deals
-                      <span className="count-title">{deals?.data?.length || 0}</span>
+                      <span className="count-title">
+                        {deals?.data?.length || 0}
+                      </span>
                     </h4>
                   </div>
                   <div className="col-4 text-end">
@@ -386,22 +432,26 @@ const DealList = () => {
                     {/* End Manage Columns , Filter & Grid & List Button */}
                   </div>
                   {/* End card header */}
-                 {isView ? <div className="table-responsive custom-table">
-                    {view === "list" ? (
-                      <Table
-                        dataSource={filteredData}
-                        columns={columns}
-                        loading={loading}
-                        paginationData={paginationData}
-                        onPageChange={handlePageChange}
-                      />
-                    ) : (
-                      (() => {
-                        navigate(`/deals-kanban`);
-                        return null; // Ensure JSX doesn't break
-                      })()
-                    )}
-                  </div> : <UnauthorizedImage />}
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          dataSource={filteredData}
+                          columns={columns}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        (() => {
+                          navigate(`/deals-kanban`);
+                          return null; // Ensure JSX doesn't break
+                        })()
+                      )}
+                    </div>
+                  ) : (
+                    <UnauthorizedImage />
+                  )}
                   <div className="row align-items-center">
                     <div className="col-md-6">
                       <div className="datatable-length" />

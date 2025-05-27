@@ -15,20 +15,26 @@ import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deletebranch, fetchbranch } from "../../../../redux/branch";
+import {
+  clearMessages,
+  deletebranch,
+  fetchbranch,
+} from "../../../../redux/branch";
 
 const BranchList = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
-  const [paginationData, setPaginationData] = React.useState()
+  const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions = JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i) => i?.module_name === "Branch")?.[0]?.permissions
-  const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Branch"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
 
@@ -36,23 +42,20 @@ const BranchList = () => {
     {
       title: " Branch Name",
       dataIndex: "branch_name",
-      render: (text, record) => (
-        <Link to={`#`}>{record.branch_name}</Link>
-      ),
+      render: (text, record) => <Link to={`#`}>{record.branch_name}</Link>,
       sorter: (a, b) => a.branch_name.localeCompare(b.branch_name),
     },
     {
       title: "Company Id",
       dataIndex: "company_id",
 
-      sorter: (a, b) => a.company_id.toString().localeCompare(b.company_id.toString()),
+      sorter: (a, b) =>
+        a.company_id.toString().localeCompare(b.company_id.toString()),
     },
     {
       title: "location",
       dataIndex: "location",
-      render: (text, record) => (
-        <Link to={`#`}>{record.location}</Link>
-      ),
+      render: (text, record) => <Link to={`#`}>{record.location}</Link>,
       sorter: (a, b) => a.location.localeCompare(b.location),
     },
 
@@ -82,43 +85,51 @@ const BranchList = () => {
     //   ),
     //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     // },
-    ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_branch_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-            {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_branch_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const { branch, loading, error, success } = useSelector(
@@ -133,17 +144,19 @@ const BranchList = () => {
       currentPage: branch?.currentPage,
       totalPage: branch?.totalPages,
       totalCount: branch?.totalCount,
-      pageSize: branch?.size
-    })
-  }, [branch])
+      pageSize: branch?.size,
+    });
+  }, [branch]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchbranch({ search: searchText, page: currentPage, size: pageSize }));
+    dispatch(
+      fetchbranch({ search: searchText, page: currentPage, size: pageSize })
+    );
   };
 
   const handleSearch = useCallback((e) => {
@@ -184,7 +197,7 @@ const BranchList = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - Branch</title>
-        <meta name="branch" content="This is banks page of DCC CRMS." />
+        <meta name="branch" content="This is banks page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -229,13 +242,15 @@ const BranchList = () => {
                     handleSearch={handleSearch}
                     label="Search Branch"
                   />
-                  {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add Branch"
-                      id="add_edit_branch_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Branch"
+                        id="add_edit_branch_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">

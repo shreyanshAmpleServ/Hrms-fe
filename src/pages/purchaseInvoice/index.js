@@ -15,19 +15,23 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import ExportData from "../../components/datatable/ExportData.js";
 import SearchBar from "../../components/datatable/SearchBar.js";
 import SortDropdown from "../../components/datatable/SortDropDown.js";
+import { clearMessages } from "../../redux/manage-user/index.js";
 import {
-  clearMessages
-} from "../../redux/manage-user/index.js";
-import { deleteSalesInvoice, fetchSalesInvoice } from "../../redux/salesInvoice/index.js";
+  deleteSalesInvoice,
+  fetchSalesInvoice,
+} from "../../redux/salesInvoice/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddInvoiceModal from "./modal/AddPurchaseInvoiceModal.js";
 import PreviewPurchaseOrder from "./modal/PreviewInvoice.js";
 import UserGrid from "./UsersGrid.js";
-import { deletePurchaseInvoice, fetchPurchaseInvoice } from "../../redux/purchaseInvoice/index.js";
+import {
+  deletePurchaseInvoice,
+  fetchPurchaseInvoice,
+} from "../../redux/purchaseInvoice/index.js";
 import { Helmet } from "react-helmet-async";
 
 const PurchaseInvoice = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -35,25 +39,31 @@ const PurchaseInvoice = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Purchase Invoice")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Purchase Invoice"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   function formatNumber(num) {
-    num = Number(num)
+    num = Number(num);
     num = Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
-    if (num === 0 || isNaN(num)) { return '0';}
+    if (num === 0 || isNaN(num)) {
+      return "0";
+    }
     const number = parseFloat(num);
-    const [integerPart, decimalPart] = number.toString().split('.');
-    const formattedInteger = parseInt(integerPart).toLocaleString('en-IN');
+    const [integerPart, decimalPart] = number.toString().split(".");
+    const formattedInteger = parseInt(integerPart).toLocaleString("en-IN");
     if (decimalPart !== undefined) {
-      const fixedDecimal = parseFloat(`0.${decimalPart}`).toFixed(2).split('.')[1];
+      const fixedDecimal = parseFloat(`0.${decimalPart}`)
+        .toFixed(2)
+        .split(".")[1];
       return `${formattedInteger}.${fixedDecimal}`;
     }
     return formattedInteger;
@@ -86,20 +96,20 @@ const PurchaseInvoice = () => {
     {
       title: "Total Disc",
       dataIndex: "disc_prcnt",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) =>a-b, // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Total Tax",
       dataIndex: "tax_total",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) => a-b // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Total Amount",
       dataIndex: "total_amount",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) => a-b, // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Currency",
@@ -143,47 +153,52 @@ const PurchaseInvoice = () => {
     //   ),
     //   sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""), // Fixed sorter logic
     // },
-    ...((isUpdate || isDelete) ?
-      [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_edit_purchase_invoice"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-             <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_preview_purchase_invoice"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-eye text-secondary"></i> Preview
-            </Link>
-            {/* <Link
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_purchase_invoice"
+                      onClick={() => setSelectedOrder(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  <Link
+                    className="dropdown-item edit-popup"
+                    to="#"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas_preview_purchase_invoice"
+                    onClick={() => setSelectedOrder(record)}
+                  >
+                    <i className="ti ti-eye text-secondary"></i> Preview
+                  </Link>
+                  {/* <Link
                to="#"
                 className="dropdown-item"
                data-bs-toggle="modal"
@@ -192,37 +207,45 @@ const PurchaseInvoice = () => {
               >
              <i className="ti ti-upload text-success"></i>Upload File
             </Link> */}
-          </div>
-        </div>
-      ),
-    }]
-  : []),
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
- 
-
   React.useEffect(() => {
-    dispatch(fetchPurchaseInvoice({search:searchText, ...selectedDateRange}))
-  }, [dispatch,searchText, selectedDateRange]);
-  const { purchaseInvoices , loading, error, success } = useSelector(
-    (state) => state.purchaseInvoices,
+    dispatch(
+      fetchPurchaseInvoice({ search: searchText, ...selectedDateRange })
+    );
+  }, [dispatch, searchText, selectedDateRange]);
+  const { purchaseInvoices, loading, error, success } = useSelector(
+    (state) => state.purchaseInvoices
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:purchaseInvoices?.currentPage,
-      totalPage:purchaseInvoices?.totalPages,
-      totalCount:purchaseInvoices?.totalCount,
-      pageSize : purchaseInvoices?.size
-    })
-  },[purchaseInvoices])
+      currentPage: purchaseInvoices?.currentPage,
+      totalPage: purchaseInvoices?.totalPages,
+      totalCount: purchaseInvoices?.totalCount,
+      pageSize: purchaseInvoices?.size,
+    });
+  }, [purchaseInvoices]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchPurchaseInvoice({search:searchText, ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchPurchaseInvoice({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
 
   const handleSearch = useCallback((e) => {
@@ -232,7 +255,6 @@ const PurchaseInvoice = () => {
   // const filteredData = products
   const filteredData = useMemo(() => {
     let data = purchaseInvoices?.data || [];
-
 
     if (selectedStatus !== null) {
       data = data.filter((item) => item.is_active === selectedStatus);
@@ -264,20 +286,20 @@ const PurchaseInvoice = () => {
     const doc = new jsPDF();
     doc.text("Exported purchase invoice", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "purchase_invoice_vendor") {
-            return row.purchase_invoice_vendor?.name || ""; 
+            return row.purchase_invoice_vendor?.name || "";
           }
           if (col.dataIndex === "purchase_invoice_currency") {
-            return row.purchase_invoice_currency?.code || ""; 
+            return row.purchase_invoice_currency?.code || "";
           }
           if (col.dataIndex === "due_date") {
-            return moment(row.due_date).format("DD-MM-YYYY") || ""; 
+            return moment(row.due_date).format("DD-MM-YYYY") || "";
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -305,8 +327,11 @@ const PurchaseInvoice = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Purchase Invoice</title>
-        <meta name="Purchase Invoice" content="This is Purchase Invoice page of DCC CRMS." />
+        <title>DCC HRMS - Purchase Invoice</title>
+        <meta
+          name="Purchase Invoice"
+          content="This is Purchase Invoice page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -330,8 +355,10 @@ const PurchaseInvoice = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                   Purchase Invoices
-                    <span className="count-title">{purchaseInvoices?.data?.length || 0}</span>
+                    Purchase Invoices
+                    <span className="count-title">
+                      {purchaseInvoices?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -384,29 +411,36 @@ const PurchaseInvoice = () => {
                   </div>
                 </div>
 
-              {isView ?  <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div>: <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
       <AddInvoiceModal order={selectedOrder} setOrder={setSelectedOrder} />
-      <PreviewPurchaseOrder order={selectedOrder} formatNumber={formatNumber} setOrder={setSelectedOrder}   />
+      <PreviewPurchaseOrder
+        order={selectedOrder}
+        formatNumber={formatNumber}
+        setOrder={setSelectedOrder}
+      />
 
       {/* <AddFile data={null} setData={setSelectedOrder} type={"purchaseInvoices"} type_id={selectedOrder?.id} type_name={selectedOrder?.order_code} /> */}
-
 
       {/* <EditUserModal user={selectedOrder} /> */}
       <DeleteAlert

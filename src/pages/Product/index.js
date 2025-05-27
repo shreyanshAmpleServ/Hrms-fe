@@ -15,9 +15,7 @@ import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
-import {
-  clearMessages
-} from "../../redux/manage-user";
+import { clearMessages } from "../../redux/manage-user";
 import DeleteAlert from "./alert/DeleteAlert";
 import FilterComponent from "./modal/FilterComponent";
 import UserGrid from "./UsersGrid";
@@ -26,9 +24,8 @@ import AddProductModal from "./modal/AddProductModal.js";
 import { deleteProduct, fetchProducts } from "../../redux/products/index.js";
 import { Helmet } from "react-helmet-async";
 
-
 const Product = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -36,15 +33,17 @@ const Product = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Products")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Products"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -82,7 +81,7 @@ const Product = () => {
       // render: (text) => (
       //   <span>{text?.name}</span> // Format the date as needed
       // ),
-      sorter: (a, b) =>a-b, // Fixed sorter logic
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Currency",
@@ -118,68 +117,79 @@ const Product = () => {
       ),
       sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""), // Fixed sorter logic
     },
-    ...((isUpdate || isDelete) ?
-      [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_edit_product"
-              onClick={() => setSelectedproduct(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]
-  : []),
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_product"
+                      onClick={() => setSelectedproduct(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
- 
-
   React.useEffect(() => {
-    dispatch(fetchProducts({search:searchText , ...selectedDateRange}));
-  }, [dispatch,searchText,selectedDateRange]);
+    dispatch(fetchProducts({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
   const { products, loading, error, success } = useSelector(
-    (state) => state.products,
+    (state) => state.products
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:products?.currentPage,
-      totalPage:products?.totalPages,
-      totalCount:products?.totalCount,
-      pageSize : products?.size
-    })
-  },[products])
+      currentPage: products?.currentPage,
+      totalPage: products?.totalPages,
+      totalCount: products?.totalCount,
+      pageSize: products?.size,
+    });
+  }, [products]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchProducts({search:searchText, ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchProducts({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
 
   const handleSearch = useCallback((e) => {
@@ -220,24 +230,24 @@ const Product = () => {
     const doc = new jsPDF();
     doc.text("Exported products", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-              columns.map((col) => {
-                if (col.dataIndex === "manufacturer") {
-                  return row.manufacturer?.name || ""; 
-                }
-                if (col.dataIndex === "vendor") {
-                  return row.vendor?.name || ""; 
-                }
-                if (col.dataIndex === "Currency") {
-                  return row.Currency?.code || ""; 
-                }
-                if (col.dataIndex === "createdate") {
-                  return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-                }
-                return row[col.dataIndex] || "";
-              })
-            ),
+        columns.map((col) => {
+          if (col.dataIndex === "manufacturer") {
+            return row.manufacturer?.name || "";
+          }
+          if (col.dataIndex === "vendor") {
+            return row.vendor?.name || "";
+          }
+          if (col.dataIndex === "Currency") {
+            return row.Currency?.code || "";
+          }
+          if (col.dataIndex === "createdate") {
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
+          }
+          return row[col.dataIndex] || "";
+        })
+      ),
       startY: 20,
     });
     doc.save("Products.pdf");
@@ -260,10 +270,10 @@ const Product = () => {
 
   return (
     <div className="page-wrapper">
-       <Helmet>
-         <title>DCC CRMS - Products</title>
-         <meta name="Products" content="This is Products page of DCC CRMS." />
-       </Helmet>
+      <Helmet>
+        <title>DCC HRMS - Products</title>
+        <meta name="Products" content="This is Products page of DCC HRMS." />
+      </Helmet>
       <div className="content">
         {error && (
           <FlashMessage
@@ -287,7 +297,9 @@ const Product = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Product
-                    <span className="count-title">{products?.data?.length || 0}</span>
+                    <span className="count-title">
+                      {products?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -340,25 +352,32 @@ const Product = () => {
                   </div>
                 </div>
 
-              {isView ?  <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div>: <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <AddProductModal product={selectedproduct} setProduct={setSelectedproduct} />
+      <AddProductModal
+        product={selectedproduct}
+        setProduct={setSelectedproduct}
+      />
 
       {/* <EditUserModal user={selectedproduct} /> */}
       <DeleteAlert

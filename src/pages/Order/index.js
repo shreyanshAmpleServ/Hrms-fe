@@ -15,9 +15,7 @@ import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
-import {
-  clearMessages
-} from "../../redux/manage-user";
+import { clearMessages } from "../../redux/manage-user";
 import DeleteAlert from "./alert/DeleteAlert";
 import FilterComponent from "./modal/FilterComponent";
 import UserGrid from "./UsersGrid";
@@ -29,7 +27,7 @@ import PreviewOrder from "./modal/PreviewOrder.js";
 import { Helmet } from "react-helmet-async";
 
 const Orders = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -37,30 +35,35 @@ const Orders = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Orders")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Orders"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   function formatNumber(num) {
-    num = Number(num)
+    num = Number(num);
     num = Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
-    if (num === 0 || isNaN(num)) { return '0';}
+    if (num === 0 || isNaN(num)) {
+      return "0";
+    }
     const number = parseFloat(num);
-    const [integerPart, decimalPart] = number.toString().split('.');
-    const formattedInteger = parseInt(integerPart).toLocaleString('en-IN');
+    const [integerPart, decimalPart] = number.toString().split(".");
+    const formattedInteger = parseInt(integerPart).toLocaleString("en-IN");
     if (decimalPart !== undefined) {
-      const fixedDecimal = parseFloat(`0.${decimalPart}`).toFixed(2).split('.')[1];
+      const fixedDecimal = parseFloat(`0.${decimalPart}`)
+        .toFixed(2)
+        .split(".")[1];
       return `${formattedInteger}.${fixedDecimal}`;
     }
     return formattedInteger;
   }
-  
 
   const columns = [
     {
@@ -89,20 +92,20 @@ const Orders = () => {
     {
       title: "Total Disc",
       dataIndex: "disc_prcnt",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) =>a-b, // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Total Tax",
       dataIndex: "tax_total",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) => a-b // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Total Amount",
       dataIndex: "total_amount",
-      render: (text) => <span>{formatNumber(text)}</span> ,
-      sorter: (a, b) => a-b, // Fixed sorter logic
+      render: (text) => <span>{formatNumber(text)}</span>,
+      sorter: (a, b) => a - b, // Fixed sorter logic
     },
     {
       title: "Currency",
@@ -146,47 +149,52 @@ const Orders = () => {
     //   ),
     //   sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""), // Fixed sorter logic
     // },
-    ...((isUpdate || isDelete) ?
-      [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_edit_order"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-             <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_preview_order"
-              onClick={() => setSelectedOrder(record)}
-            >
-              <i className="ti ti-eye text-secondary"></i> Preview
-            </Link>
-            {/* <Link
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_order"
+                      onClick={() => setSelectedOrder(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  <Link
+                    className="dropdown-item edit-popup"
+                    to="#"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas_preview_order"
+                    onClick={() => setSelectedOrder(record)}
+                  >
+                    <i className="ti ti-eye text-secondary"></i> Preview
+                  </Link>
+                  {/* <Link
                to="#"
                 className="dropdown-item"
                data-bs-toggle="modal"
@@ -195,37 +203,43 @@ const Orders = () => {
               >
              <i className="ti ti-upload text-success"></i>Upload File
             </Link> */}
-          </div>
-        </div>
-      ),
-    }]
-  : []),
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
- 
-
   React.useEffect(() => {
-    dispatch(fetchorders({search:searchText, ...selectedDateRange}))
-  }, [dispatch,searchText, selectedDateRange]);
-  const { orders , loading, error, success } = useSelector(
-    (state) => state.orders,
+    dispatch(fetchorders({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
+  const { orders, loading, error, success } = useSelector(
+    (state) => state.orders
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:orders?.currentPage,
-      totalPage:orders?.totalPages,
-      totalCount:orders?.totalCount,
-      pageSize : orders?.size
-    })
-  },[orders])
+      currentPage: orders?.currentPage,
+      totalPage: orders?.totalPages,
+      totalCount: orders?.totalCount,
+      pageSize: orders?.size,
+    });
+  }, [orders]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchorders({search:searchText, ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchorders({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
 
   const handleSearch = useCallback((e) => {
@@ -266,20 +280,20 @@ const Orders = () => {
     const doc = new jsPDF();
     doc.text("Exported orders", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "order_vendor") {
-            return row.order_vendor?.name || ""; 
+            return row.order_vendor?.name || "";
           }
           if (col.dataIndex === "order_currency") {
-            return row.order_currency?.code || ""; 
+            return row.order_currency?.code || "";
           }
           if (col.dataIndex === "due_date") {
-            return moment(row.due_date).format("DD-MM-YYYY") || ""; 
+            return moment(row.due_date).format("DD-MM-YYYY") || "";
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -307,8 +321,11 @@ const Orders = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Sales Orders</title>
-        <meta name="Sales Orders" content="This is Sales Orders page of DCC CRMS." />
+        <title>DCC HRMS - Sales Orders</title>
+        <meta
+          name="Sales Orders"
+          content="This is Sales Orders page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -333,7 +350,9 @@ const Orders = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Orders
-                    <span className="count-title">{orders?.data?.length || 0}</span>
+                    <span className="count-title">
+                      {orders?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -386,29 +405,36 @@ const Orders = () => {
                   </div>
                 </div>
 
-              {isView ?  <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div>: <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
       <AddOrderModal order={selectedOrder} setOrder={setSelectedOrder} />
-      <PreviewOrder order={selectedOrder} formatNumber={formatNumber} setOrder={setSelectedOrder}   />
+      <PreviewOrder
+        order={selectedOrder}
+        formatNumber={formatNumber}
+        setOrder={setSelectedOrder}
+      />
 
       {/* <AddFile data={null} setData={setSelectedOrder} type={"Orders"} type_id={selectedOrder?.id} type_name={selectedOrder?.order_code} /> */}
-
 
       {/* <EditUserModal user={selectedOrder} /> */}
       <DeleteAlert

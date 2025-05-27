@@ -9,288 +9,276 @@ import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
-import moment from 'moment';
+import moment from "moment";
 
 import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deletekpi, fetchkpi } from "../../../../redux/kpiMaster";
+import {
+  clearMessages,
+  deletekpi,
+  fetchkpi,
+} from "../../../../redux/kpiMaster";
 
 const KpiMaster = () => {
-    const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
-    const [paginationData, setPaginationData] = React.useState()
-    const [searchText, setSearchText] = React.useState("");
-    const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-    const permissions = JSON?.parse(localStorage.getItem("permissions"))
-    const allPermissions = permissions?.filter((i) => i?.module_name === "Manufacturer")?.[0]?.permissions
-    const isAdmin = localStorage.getItem("role")?.includes("admin")
-    const isView = isAdmin || allPermissions?.view
-    const isCreate = isAdmin || allPermissions?.create
-    const isUpdate = isAdmin || allPermissions?.update
-    const isDelete = isAdmin || allPermissions?.delete
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [paginationData, setPaginationData] = React.useState();
+  const [searchText, setSearchText] = React.useState("");
+  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Manufacturer"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const columns = [
-        {
-            title: "KPI Name",
-            dataIndex: "kpi_name",
-            render: (_text, record) => (
-                <Link to={`#`}>{record.kpi_name}</Link>
-            ),
-            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-        },
-        {
-            title: "Description ",
-            dataIndex: "description",
-            sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-        },
+  const columns = [
+    {
+      title: "KPI Name",
+      dataIndex: "kpi_name",
+      render: (_text, record) => <Link to={`#`}>{record.kpi_name}</Link>,
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+    },
+    {
+      title: "Description ",
+      dataIndex: "description",
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+    },
 
-        {
-            title: "Created Date",
-            dataIndex: "create_date",
-            render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
-            sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
-        },
-        // {
-        //     title: "Status",
-        //     dataIndex: "is_active",
-        //     render: (text) => (
-        //         <div>
-        //             {text === "Y" ? (
-        //                 <span className="badge badge-pill badge-status bg-success">
-        //                     Active
-        //                 </span>
-        //             ) : (
-        //                 <span className="badge badge-pill badge-status bg-danger">
-        //                     Inactive
-        //                 </span>
-        //             )}
-        //         </div>
-        //     ),
-        //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-        // },
-        ...((isUpdate || isDelete) ? [{
+    {
+      title: "Created Date",
+      dataIndex: "create_date",
+      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
+      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
+    },
+    // {
+    //     title: "Status",
+    //     dataIndex: "is_active",
+    //     render: (text) => (
+    //         <div>
+    //             {text === "Y" ? (
+    //                 <span className="badge badge-pill badge-status bg-success">
+    //                     Active
+    //                 </span>
+    //             ) : (
+    //                 <span className="badge badge-pill badge-status bg-danger">
+    //                     Inactive
+    //                 </span>
+    //             )}
+    //         </div>
+    //     ),
+    //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    // },
+    ...(isUpdate || isDelete
+      ? [
+          {
             title: "Actions",
             dataIndex: "actions",
             render: (_text, record) => (
-                <div className="dropdown table-action">
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
                     <Link
-                        to="#"
-                        className="action-icon"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="true"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_kpi_modal"
+                      onClick={() => {
+                        setSelectedkpi(record);
+                        setMode("edit");
+                      }}
                     >
-                        <i className="fa fa-ellipsis-v"></i>
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
-                    <div className="dropdown-menu dropdown-menu-right">
-                        {isUpdate && <Link
-                            className="dropdown-item edit-popup"
-                            to="#"
-                            data-bs-toggle="modal"
-                            data-bs-target="#add_edit_kpi_modal"
-                            onClick={() => {
-                                setSelectedkpi
-
-                                    (record);
-                                setMode("edit");
-                            }}
-                        >
-                            <i className="ti ti-edit text-blue"></i> Edit
-                        </Link>}
-                        {isDelete && <Link
-                            className="dropdown-item"
-                            to="#"
-                            onClick={() => handleDeletekpi
-
-                                (record)}
-                        >
-                            <i className="ti ti-trash text-danger"></i> Delete
-                        </Link>}
-                    </div>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeletekpi(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
                 </div>
+              </div>
             ),
-        }] : [])
-    ];
+          },
+        ]
+      : []),
+  ];
 
-    const { kpi, loading, error, success } = useSelector(
-        (state) => state.KpiMaster
+  const { kpi, loading, error, success } = useSelector(
+    (state) => state.KpiMaster
+  );
+
+  React.useEffect(() => {
+    dispatch(fetchkpi({ search: searchText }));
+  }, [dispatch, searchText]);
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: kpi?.currentPage,
+      totalPage: kpi?.totalPages,
+      totalCount: kpi?.totalCount,
+      pageSize: kpi?.size,
+    });
+  }, [kpi]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchkpi({ search: searchText, page: currentPage, size: pageSize })
     );
+  };
 
-    React.useEffect(() => {
-        dispatch(fetchkpi({ search: searchText }));
-    }, [dispatch, searchText]);
-    React.useEffect(() => {
-        setPaginationData({
-            currentPage: kpi?.currentPage,
-            totalPage: kpi?.totalPages,
-            totalCount: kpi?.totalCount,
-            pageSize: kpi?.size
-        })
-    }, [kpi])
+  const handleSearch = useCallback((e) => {
+    setSearchText(e.target.value);
+  }, []);
 
-    const handlePageChange = ({ currentPage, pageSize }) => {
-        setPaginationData((prev) => ({
-            ...prev,
-            currentPage,
-            pageSize
-        }));
-        dispatch(fetchkpi({ search: searchText, page: currentPage, size: pageSize }));
-    };
+  const filteredData = useMemo(() => {
+    let data = kpi?.data || [];
 
-    const handleSearch = useCallback((e) => {
-        setSearchText(e.target.value);
-    }, []);
+    if (sortOrder === "ascending") {
+      data = [...data].sort((a, b) =>
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+      );
+    } else if (sortOrder === "descending") {
+      data = [...data].sort((a, b) =>
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+      );
+    }
+    return data;
+  }, [searchText, kpi, columns, sortOrder]);
 
-    const filteredData = useMemo(() => {
-        let data = kpi?.data || [];
+  const handleDeletekpi = (kpi) => {
+    setSelectedkpi(kpi);
+    setShowDeleteModal(true);
+  };
 
-        if (sortOrder === "ascending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-            );
-        } else if (sortOrder === "descending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-            );
-        }
-        return data;
-    }, [searchText, kpi, columns, sortOrder]);
+  const [selectedkpi, setSelectedkpi] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const deleteData = () => {
+    if (selectedkpi) {
+      dispatch(deletekpi(selectedkpi.id));
+      // navigate(`/kpi`);
+      setShowDeleteModal(false);
+    }
+  };
 
-    const handleDeletekpi
+  return (
+    <div className="page-wrapper">
+      <Helmet>
+        <title>DCC HRMS - KPI</title>
+        <meta name="DepanrtmentList" content="This is kpi page of DCC HRMS." />
+      </Helmet>
+      <div className="content">
+        {error && (
+          <FlashMessage
+            type="error"
+            message={error}
+            onClose={() => dispatch(clearMessages())}
+          />
+        )}
+        {success && (
+          <FlashMessage
+            type="success"
+            message={success}
+            onClose={() => dispatch(clearMessages())}
+          />
+        )}
 
-        = (kpi
-
-        ) => {
-            setSelectedkpi
-
-                (kpi
-
-                );
-            setShowDeleteModal(true);
-        };
-
-    const [selectedkpi
-
-        , setSelectedkpi
-
-    ] = React.useState(null);
-    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-    const deleteData = () => {
-        if (selectedkpi
-
-        ) {
-            dispatch(deletekpi(selectedkpi
-
-                .id));
-            // navigate(`/kpi`);
-            setShowDeleteModal(false);
-        }
-    };
-
-    return (
-        <div className="page-wrapper">
-            <Helmet>
-                <title>DCC HRMS - KPI</title>
-                <meta name="DepanrtmentList" content="This is kpi page of DCC CRMS." />
-            </Helmet>
-            <div className="content">
-                {error && (
-                    <FlashMessage
-                        type="error"
-                        message={error}
-                        onClose={() => dispatch(clearMessages())}
-                    />
-                )}
-                {success && (
-                    <FlashMessage
-                        type="success"
-                        message={success}
-                        onClose={() => dispatch(clearMessages())}
-                    />
-                )}
-
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="page-header">
-                            <div className="row align-items-center">
-                                <div className="col-8">
-                                    <h4 className="page-title">
-                                        KPI Master
-                                        <span className="count-title">
-                                            {kpi?.totalCount || 0}
-                                        </span>
-                                    </h4>
-                                </div>
-                                <div className="col-4 text-end">
-                                    <div className="head-icons">
-                                        <CollapseHeader />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="card ">
-                            <div className="card-header">
-                                <div className="row align-items-center">
-                                    <SearchBar
-                                        searchText={searchText}
-                                        handleSearch={handleSearch}
-                                        label="Search KPI"
-                                    />
-                                    {isCreate && <div className="col-sm-8">
-                                        <AddButton
-                                            label="Add KPI"
-                                            id="add_edit_kpi_modal"
-                                            setMode={() => setMode("add")}
-                                        />
-                                    </div>}
-                                </div>
-                            </div>
-                            <div className="card-body">
-                                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
-                                    <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                        <SortDropdown
-                                            sortOrder={sortOrder}
-                                            setSortOrder={setSortOrder}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="table-responsive custom-table">
-                                    <Table
-                                        dataSource={filteredData}
-                                        columns={columns}
-                                        loading={loading}
-                                        isView={isView}
-                                        paginationData={paginationData}
-                                        onPageChange={handlePageChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="page-header">
+              <div className="row align-items-center">
+                <div className="col-8">
+                  <h4 className="page-title">
+                    KPI Master
+                    <span className="count-title">{kpi?.totalCount || 0}</span>
+                  </h4>
                 </div>
+                <div className="col-4 text-end">
+                  <div className="head-icons">
+                    <CollapseHeader />
+                  </div>
+                </div>
+              </div>
             </div>
+            <div className="card ">
+              <div className="card-header">
+                <div className="row align-items-center">
+                  <SearchBar
+                    searchText={searchText}
+                    handleSearch={handleSearch}
+                    label="Search KPI"
+                  />
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add KPI"
+                        id="add_edit_kpi_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="card-body">
+                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                  <div className="d-flex align-items-center flex-wrap row-gap-2">
+                    <SortDropdown
+                      sortOrder={sortOrder}
+                      setSortOrder={setSortOrder}
+                    />
+                  </div>
+                </div>
 
-            <AddEditModal mode={mode} initialData={selectedkpi
+                <div className="table-responsive custom-table">
+                  <Table
+                    dataSource={filteredData}
+                    columns={columns}
+                    loading={loading}
+                    isView={isView}
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            } />
-            <DeleteAlert
-                label="kpi
+      <AddEditModal mode={mode} initialData={selectedkpi} />
+      <DeleteAlert
+        label="kpi
 
 "
-                showModal={showDeleteModal}
-                setShowModal={setShowDeleteModal}
-                selectedkpi
-
-                ={selectedkpi
-
-                }
-                onDelete={deleteData}
-            />
-        </div>
-    );
+        showModal={showDeleteModal}
+        setShowModal={setShowDeleteModal}
+        selectedkpi={selectedkpi}
+        onDelete={deleteData}
+      />
+    </div>
+  );
 };
 
 export default KpiMaster;

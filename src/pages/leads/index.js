@@ -27,9 +27,9 @@ import { Helmet } from "react-helmet-async";
 
 const LeadList = () => {
   const navigate = useNavigate();
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const dispatch = useDispatch();
-  
+
   const [showFlashModal, setShowFlashModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -37,20 +37,22 @@ const LeadList = () => {
 
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedPriority, setSelectedPriority] = useState(null);
-  const [paginationData , setPaginationData] = useState()
-    const [searchText, setSearchText] = useState(""); // For search
-    const [selectedDateRange, setSelectedDateRange] = useState({
-      startDate: moment().subtract(60, "days"),
-      endDate: moment(),
-    });
+  const [paginationData, setPaginationData] = useState();
+  const [searchText, setSearchText] = useState(""); // For search
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    startDate: moment().subtract(60, "days"),
+    endDate: moment(),
+  });
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Leads")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Leads"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -123,46 +125,56 @@ const LeadList = () => {
       sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
 
-   ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record, index) => (
-        <div className="dropdown table-action" key={index}>
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_lead"
-              onClick={() => setSelectedLead(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteLead(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          {isView &&  <Link className="dropdown-item" to={`/leads/${record?.id}`}>
-              <i className="ti ti-eye text-blue-light"></i> Preview
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record, index) => (
+              <div className="dropdown table-action" key={index}>
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_lead"
+                      onClick={() => setSelectedLead(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteLead(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {isView && (
+                    <Link className="dropdown-item" to={`/leads/${record?.id}`}>
+                      <i className="ti ti-eye text-blue-light"></i> Preview
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
   const { leads, loading, error, success } = useSelector(
-    (state) => state.leads,
+    (state) => state.leads
   );
 
   // Show FlashMessage when success or error changes
@@ -191,25 +203,39 @@ const LeadList = () => {
   };
 
   React.useEffect(() => {
-    dispatch(fetchLeads({search:searchText,status:selectedStatus  , ...selectedDateRange}));
-  }, [dispatch,searchText ,selectedStatus, selectedDateRange]);
+    dispatch(
+      fetchLeads({
+        search: searchText,
+        status: selectedStatus,
+        ...selectedDateRange,
+      })
+    );
+  }, [dispatch, searchText, selectedStatus, selectedDateRange]);
 
-React.useEffect(()=>{
+  React.useEffect(() => {
     setPaginationData({
-      currentPage:leads?.currentPage,
-      totalPage:leads?.totalPages,
-      totalCount:leads?.totalCount,
-      pageSize : leads?.size
-    })
-  },[leads])
+      currentPage: leads?.currentPage,
+      totalPage: leads?.totalPages,
+      totalCount: leads?.totalCount,
+      pageSize: leads?.size,
+    });
+  }, [leads]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchLeads({search:searchText ,status:selectedStatus, ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchLeads({
+        search: searchText,
+        status: selectedStatus,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
 
   const handleSearch = useCallback((e) => {
@@ -259,23 +285,23 @@ React.useEffect(()=>{
     const doc = new jsPDF();
     doc.text("Exported Data", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "leadName") {
-            return `${row.first_name} ${row.last_name}` || ""; 
+            return `${row.first_name} ${row.last_name}` || "";
           }
           if (col.dataIndex === "lead_company") {
-          return row.lead_company?.name || ""; 
+            return row.lead_company?.name || "";
           }
           if (col.dataIndex === "crms_m_lost_reasons") {
-            return row.crms_m_lost_reasons?.name || ""; 
+            return row.crms_m_lost_reasons?.name || "";
           }
           if (col.dataIndex === "crms_m_user") {
-            return row.crms_m_user?.full_name || ""; 
+            return row.crms_m_user?.full_name || "";
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -288,8 +314,8 @@ React.useEffect(()=>{
   return (
     <div>
       <Helmet>
-        <title>DCC CRMS - Leads</title>
-        <meta name="Leads" content="This is Leads page of DCC CRMS." />
+        <title>DCC HRMS - Leads</title>
+        <meta name="Leads" content="This is Leads page of DCC HRMS." />
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
@@ -314,7 +340,9 @@ React.useEffect(()=>{
                   <div className="col-8">
                     <h4 className="page-title">
                       Leads
-                      <span className="count-title">{leads?.data?.length || 0}</span>
+                      <span className="count-title">
+                        {leads?.data?.length || 0}
+                      </span>
                     </h4>
                   </div>
                   <div className="col-4 text-end">
@@ -335,7 +363,7 @@ React.useEffect(()=>{
                         exportToPDF={exportToPDF}
                         exportToExcel={exportToExcel}
                         label="Add Lead"
-                        isCreate = {isCreate}
+                        isCreate={isCreate}
                         id="offcanvas_add_lead"
                       />
                     </div>
@@ -364,22 +392,26 @@ React.useEffect(()=>{
                     </div>
                   </div>
 
-                  {isView ? <div className="table-responsive custom-table">
-                    {view === "list" ? (
-                      <Table
-                        dataSource={filteredData}
-                        columns={columns}
-                        loading={loading}
-                        paginationData={paginationData}
-                        onPageChange={handlePageChange} 
-                      />
-                    ) : (
-                      (() => {
-                        navigate(`/leads-kanban`);
-                        return null;
-                      })()
-                    )}
-                  </div>: <UnauthorizedImage />}
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          dataSource={filteredData}
+                          columns={columns}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        (() => {
+                          navigate(`/leads-kanban`);
+                          return null;
+                        })()
+                      )}
+                    </div>
+                  ) : (
+                    <UnauthorizedImage />
+                  )}
                   <div className="row align-items-center">
                     <div className="col-md-6">
                       <div className="datatable-length" />
@@ -394,7 +426,10 @@ React.useEffect(()=>{
           </div>
         </div>
       </div>
-      <AddLeadsModal setSelectedLead={setSelectedLead} selectedLead={selectedLead} />
+      <AddLeadsModal
+        setSelectedLead={setSelectedLead}
+        selectedLead={selectedLead}
+      />
       <EditLeadsModal lead={selectedLead} />
       <DeleteAlert
         showModal={showDeleteModal}

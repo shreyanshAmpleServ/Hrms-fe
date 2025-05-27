@@ -19,16 +19,18 @@ import { clearMessages, deletebank, fetchbank } from "../../../redux/bank";
 
 const BanksList = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
-  const [paginationData, setPaginationData] = React.useState()
+  const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions = JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i) => i?.module_name === "Manufacturer")?.[0]?.permissions
-  const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Manufacturer"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
 
@@ -36,9 +38,7 @@ const BanksList = () => {
     {
       title: "Bank Name",
       dataIndex: "bank_name",
-      render: (text, record) => (
-        <Link to={`#`}>{record.bank_name}</Link>
-      ),
+      render: (text, record) => <Link to={`#`}>{record.bank_name}</Link>,
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
@@ -68,48 +68,54 @@ const BanksList = () => {
     //   ),
     //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     // },
-    ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_manufacturer_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-            {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_manufacturer_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
-  const { bank, loading, error, success } = useSelector(
-    (state) => state.bank
-  );
+  const { bank, loading, error, success } = useSelector((state) => state.bank);
 
   React.useEffect(() => {
     dispatch(fetchbank({ search: searchText }));
@@ -119,17 +125,19 @@ const BanksList = () => {
       currentPage: bank?.currentPage,
       totalPage: bank?.totalPages,
       totalCount: bank?.totalCount,
-      pageSize: bank?.size
-    })
-  }, [bank])
+      pageSize: bank?.size,
+    });
+  }, [bank]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchbank({ search: searchText, page: currentPage, size: pageSize }));
+    dispatch(
+      fetchbank({ search: searchText, page: currentPage, size: pageSize })
+    );
   };
 
   const handleSearch = useCallback((e) => {
@@ -170,7 +178,7 @@ const BanksList = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - Banks</title>
-        <meta name="banks" content="This is banks page of DCC CRMS." />
+        <meta name="banks" content="This is banks page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -195,9 +203,7 @@ const BanksList = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Bank
-                    <span className="count-title">
-                      {bank?.totalCount || 0}
-                    </span>
+                    <span className="count-title">{bank?.totalCount || 0}</span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -215,13 +221,15 @@ const BanksList = () => {
                     handleSearch={handleSearch}
                     label="Search banks"
                   />
-                  {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add Bank"
-                      id="add_edit_bank_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Bank"
+                        id="add_edit_bank_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">

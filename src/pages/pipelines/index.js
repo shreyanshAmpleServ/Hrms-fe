@@ -31,11 +31,11 @@ const PipelineList = () => {
   const [selectedPipeline, setSelectedPipeline] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [paginationData , setPaginationData] = useState()
-    const [selectedDateRange, setSelectedDateRange] = useState({
-      startDate: moment().subtract(30, "days"),
-      endDate: moment(),
-    });
+  const [paginationData, setPaginationData] = useState();
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    startDate: moment().subtract(30, "days"),
+    endDate: moment(),
+  });
   const dispatch = useDispatch();
 
   const handleDeletePipeline = (pipeline) => {
@@ -51,13 +51,15 @@ const PipelineList = () => {
     }
   };
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Pipeline")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Pipeline"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -72,8 +74,7 @@ const PipelineList = () => {
     {
       title: "Total Deal Value",
       dataIndex: "totalDealValue",
-      render: (value) => 
-        new Intl.NumberFormat("en-IN").format(value),
+      render: (value) => new Intl.NumberFormat("en-IN").format(value),
       sorter: (a, b) => a.totalDealvalue - b.totalDealvalue,
     },
     {
@@ -99,88 +100,110 @@ const PipelineList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-    ...((isUpdate || isDelete ) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record, index) => (
-        <div className="dropdown table-action" key={index}>
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div
-            className="dropdown-menu dropdown-menu-right"
-            style={{
-              position: "absolute",
-              inset: "0px auto auto 0px",
-              margin: "0px",
-              transform: "translate3d(-99.3333px, 35.3333px, 0px)",
-            }}
-            data-popper-placement="bottom-start"
-          >
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#edit_offcanvas_pipeline"
-              onClick={() => setSelectedPipeline(record)} // Set selected pipeline
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              // data-bs-toggle="modal"
-              // data-bs-target="#delete_contact"
-              onClick={() => handleDeletePipeline(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record, index) => (
+              <div className="dropdown table-action" key={index}>
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div
+                  className="dropdown-menu dropdown-menu-right"
+                  style={{
+                    position: "absolute",
+                    inset: "0px auto auto 0px",
+                    margin: "0px",
+                    transform: "translate3d(-99.3333px, 35.3333px, 0px)",
+                  }}
+                  data-popper-placement="bottom-start"
+                >
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#edit_offcanvas_pipeline"
+                      onClick={() => setSelectedPipeline(record)} // Set selected pipeline
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#delete_contact"
+                      onClick={() => handleDeletePipeline(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
   // Get pipelines data from Redux store
   const { pipelines, loading, error, success } = useSelector(
-    (state) => state.pipelines,
+    (state) => state.pipelines
   );
-    React.useEffect(() => {
-      dispatch(fetchPipelines({search:searchText ,status:selectedStatus, ...selectedDateRange}));
-    }, [dispatch,searchText ,selectedStatus, selectedDateRange]);
-  
-  React.useEffect(()=>{
-      setPaginationData({
-        currentPage:pipelines?.currentPage,
-        totalPage:pipelines?.totalPages,
-        totalCount:pipelines?.totalCount,
-        pageSize : pipelines?.size
+  React.useEffect(() => {
+    dispatch(
+      fetchPipelines({
+        search: searchText,
+        status: selectedStatus,
+        ...selectedDateRange,
       })
-    },[pipelines])
-  
-    const handlePageChange = ({ currentPage, pageSize }) => {
-      setPaginationData((prev) => ({
-        ...prev,
-        currentPage,
-        pageSize
-      }));
-      dispatch(fetchPipelines({search:searchText ,status: selectedStatus, ...selectedDateRange, page: currentPage, size: pageSize })); 
-    };
+    );
+  }, [dispatch, searchText, selectedStatus, selectedDateRange]);
+
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: pipelines?.currentPage,
+      totalPage: pipelines?.totalPages,
+      totalCount: pipelines?.totalCount,
+      pageSize: pipelines?.size,
+    });
+  }, [pipelines]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchPipelines({
+        search: searchText,
+        status: selectedStatus,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
   // Memoized filtered data
   const filteredData = useMemo(() => {
     let data = pipelines?.data || [];
-    
+
     if (sortOrder === "ascending") {
       data = [...data].sort(
-        (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
+        (a, b) => new Date(a.createdDate) - new Date(b.createdDate)
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort(
-        (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
+        (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
       );
     }
     return data;
@@ -202,9 +225,9 @@ const PipelineList = () => {
 
     // Generate table using autoTable
     doc.autoTable({
-      head: [columns.map((col) =>col.title !== "Actions" ?  col.title : "")], // Extract column headers
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))], // Extract column headers
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ), // Extract row data
       startY: 20,
     });
@@ -219,8 +242,8 @@ const PipelineList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Pinplines</title>
-        <meta name="Pinplines" content="This is Pinplines page of DCC CRMS." />
+        <title>DCC HRMS - Pinplines</title>
+        <meta name="Pinplines" content="This is Pinplines page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -316,7 +339,7 @@ const PipelineList = () => {
                     loading={loading}
                     isView={isView}
                     paginationData={paginationData}
-                    onPageChange={handlePageChange} 
+                    onPageChange={handlePageChange}
                   />
                 </div>
                 <div className="row align-items-center">

@@ -2,12 +2,17 @@
  * Tabler Icons 2.45.0 by tabler - https://tabler.io
  * License - https://github.com/tabler/tabler-icons/blob/master/LICENSE
  */
+/* sourceMappingURL=none */
 @font-face {
   font-family: "tabler-icons";
   font-style: normal;
   font-weight: 400;
   src: url("./fonts/tabler-icons.eot?v2.45.0");
-  src: url("./fonts/tabler-icons.eot?#iefix-v2.45.0") format("embedded-opentype"), url("./fonts/tabler-icons.woff2?v2.45.0") format("woff2"), url("./fonts/tabler-icons.woff?") format("woff"), url("./fonts/tabler-icons.ttf?v2.45.0") format("truetype");
+  src:
+    url("./fonts/tabler-icons.eot?#iefix-v2.45.0") format("embedded-opentype"),
+    url("./fonts/tabler-icons.woff2?v2.45.0") format("woff2"),
+    url("./fonts/tabler-icons.woff?") format("woff"),
+    url("./fonts/tabler-icons.ttf?v2.45.0") format("truetype");
 }
 .ti {
   font-family: "tabler-icons" !important;
@@ -3996,10 +4001,6 @@
 
 .ti-brand-whatsapp:before {
   content: "\ec74";
-}
-
-.ti-brand-wikipedia:before {
-  content: "\fa79";
 }
 
 .ti-brand-windows:before {
@@ -14398,10 +14399,6 @@
   content: "\fc84";
 }
 
-.ti-pentagon-number-7:before {
-  content: "\fc85";
-}
-
 .ti-pentagon-number-8:before {
   content: "\fc86";
 }
@@ -15998,10 +15995,6 @@
   content: "\f2da";
 }
 
-.ti-script-minus:before {
-  content: "\f2d7";
-}
-
 .ti-script-plus:before {
   content: "\f2d8";
 }
@@ -17596,10 +17589,6 @@
 
 .ti-square-rounded-number-3:before {
   content: "\f5cb";
-}
-
-.ti-square-rounded-number-3-filled:before {
-  content: "\f77b";
 }
 
 .ti-square-rounded-number-4:before {
@@ -19726,4 +19715,4 @@
   content: "\f440";
 }
 
-/*# sourceMappingURL=tabler-icons.css.map */
+/*# sourceMappingURL=none */

@@ -14,28 +14,32 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { deleteProductCategory, fetchProductCategory, clearMessages } from "../../../redux/productCategory";
+import {
+  deleteProductCategory,
+  fetchProductCategory,
+  clearMessages,
+} from "../../../redux/productCategory";
 import { Helmet } from "react-helmet-async";
 
 const ProductCategory = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i) => i?.module_name === "Product Category")?.[0]?.permissions
-  const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Product Category"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Category Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <Link to={`#`}>{record.name}</Link>
-      ),
+      render: (text, record) => <Link to={`#`}>{record.name}</Link>,
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
@@ -65,43 +69,51 @@ const ProductCategory = () => {
       ),
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
-    ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_product_category_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-            {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_product_category_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const { productCategories, loading, error, success } = useSelector(
@@ -161,8 +173,11 @@ const ProductCategory = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Product categories</title>
-        <meta name="Product categories" content="This is Product categories page of DCC CRMS." />
+        <title>DCC HRMS - Product categories</title>
+        <meta
+          name="Product categories"
+          content="This is Product categories page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -207,13 +222,15 @@ const ProductCategory = () => {
                     handleSearch={handleSearch}
                     label="Search Category"
                   />
-                  {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add Category"
-                      id="add_edit_product_category_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Category"
+                        id="add_edit_product_category_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">

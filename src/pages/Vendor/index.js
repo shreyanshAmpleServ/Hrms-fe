@@ -15,9 +15,7 @@ import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
-import {
-  clearMessages
-} from "../../redux/manage-user";
+import { clearMessages } from "../../redux/manage-user";
 import { deleteVenor, fetchVendors } from "../../redux/vendor";
 import DeleteAlert from "./alert/DeleteAlert";
 import FilterComponent from "./modal/FilterComponent";
@@ -27,7 +25,7 @@ import AddVendorModal from "./modal/AddVendorModal.js";
 import { Helmet } from "react-helmet-async";
 
 const Vendor = () => {
-  const [view, setView] = useState("list"); 
+  const [view, setView] = useState("list");
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -36,15 +34,17 @@ const Vendor = () => {
   });
 
   const dispatch = useDispatch();
-    const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Vendor")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Vendor"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -102,69 +102,80 @@ const Vendor = () => {
       ),
       sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""), // Fixed sorter logic
     },
-    ...((isUpdate || isDelete) ?
-      [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_vendor"
-              onClick={() => setSelectedVendor(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteUser(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]
-  : []),
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_vendor"
+                      onClick={() => setSelectedVendor(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteUser(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
- 
-
   React.useEffect(() => {
-    dispatch(fetchVendors({search:searchText , ...selectedDateRange}));
-  }, [dispatch,searchText , selectedDateRange]);
-  
+    dispatch(fetchVendors({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
+
   const { vendor, loading, error, success } = useSelector(
-    (state) => state.vendor,
+    (state) => state.vendor
   );
-  useEffect(()=>{
+  useEffect(() => {
     setPaginationData({
-      currentPage:vendor?.currentPage,
-      totalPage:vendor?.totalPages,
-      totalCount:vendor?.totalCount,
-      pageSize : vendor?.size
-    })
-  },[vendor])
+      currentPage: vendor?.currentPage,
+      totalPage: vendor?.totalPages,
+      totalCount: vendor?.totalCount,
+      pageSize: vendor?.size,
+    });
+  }, [vendor]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchVendors({search:searchText , ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchVendors({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -203,14 +214,14 @@ const Vendor = () => {
     const doc = new jsPDF();
     doc.text("Exported vendor", 14, 10);
     doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
+      head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData?.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "crms_m_user") {
-            return row.crms_m_user?.full_name || ""; 
+            return row.crms_m_user?.full_name || "";
           }
           if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
+            return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
         })
@@ -237,8 +248,8 @@ const Vendor = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC CRMS - Vendors</title>
-        <meta name="Vendors" content="This is Vendors page of DCC CRMS." />
+        <title>DCC HRMS - Vendors</title>
+        <meta name="Vendors" content="This is Vendors page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -263,7 +274,9 @@ const Vendor = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Vendor
-                    <span className="count-title">{vendor?.data?.length || 0}</span>
+                    <span className="count-title">
+                      {vendor?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -316,19 +329,23 @@ const Vendor = () => {
                   </div>
                 </div>
 
-              {isView ?  <div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange}  
-                    />
-                  ) : (
-                    <UserGrid data={filteredData} />
-                  )}
-                </div>: <UnauthorizedImage />}
+                {isView ? (
+                  <div className="table-responsive custom-table">
+                    {view === "list" ? (
+                      <Table
+                        dataSource={filteredData}
+                        columns={columns}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    ) : (
+                      <UserGrid data={filteredData} />
+                    )}
+                  </div>
+                ) : (
+                  <UnauthorizedImage />
+                )}
               </div>
             </div>
           </div>

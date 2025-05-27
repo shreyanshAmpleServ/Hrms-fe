@@ -22,51 +22,64 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 
 const Activities = () => {
   // const data = activities_data;
-  const {name} = useParams()
+  const { name } = useParams();
   const [view, setView] = useState("list");
   const [filter, setFilter] = useState("");
-  const [newFilter,setNewFilter] = useState(name)
-  const [isLoading,setIsLoading] = useState(false)
+  const [newFilter, setNewFilter] = useState(name);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [activity, setActivity] = useState();
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [selectedDateRange, setSelectedDateRange] = useState({
-      startDate: moment().subtract(30, "days"),
-      endDate: moment(),
-    });
+    startDate: moment().subtract(30, "days"),
+    endDate: moment(),
+  });
   const dispatch = useDispatch();
 
   const { activities, loading, error, success } = useSelector(
     (state) => state.activities || {}
   );
-  React.useEffect(()=>{
+  React.useEffect(() => {
     dispatch(fetchActivityTypes());
-},[dispatch])
+  }, [dispatch]);
 
- React.useEffect(() => {
-   dispatch(fetchActivities({ search: searchValue , ...selectedDateRange, filter: filter,filter2:newFilter }));
- }, [dispatch, searchValue,selectedDateRange, filter,newFilter]);
-
- React.useEffect(()=>{
-       setPaginationData({
-         currentPage:activities?.currentPage,
-         totalPage:activities?.totalPages,
-         totalCount:activities?.totalCount,
-         pageSize : activities?.size
-
+  React.useEffect(() => {
+    dispatch(
+      fetchActivities({
+        search: searchValue,
+        ...selectedDateRange,
+        filter: filter,
+        filter2: newFilter,
       })
-   },[activities])
+    );
+  }, [dispatch, searchValue, selectedDateRange, filter, newFilter]);
 
-    const handlePageChange = ({ currentPage, pageSize }) => {
-       setPaginationData((prev) => ({
-         ...prev,
-         currentPage,
-         pageSize
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: activities?.currentPage,
+      totalPage: activities?.totalPages,
+      totalCount: activities?.totalCount,
+      pageSize: activities?.size,
+    });
+  }, [activities]);
 
-      }));
-      dispatch(fetchActivities({search:searchValue , ...selectedDateRange, filter: filter,filter2:newFilter, page: currentPage, size: pageSize })); 
-   };
-
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchActivities({
+        search: searchValue,
+        ...selectedDateRange,
+        filter: filter,
+        filter2: newFilter,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
 
   const data = activities?.data?.map((i) => ({
     ...i,
@@ -76,16 +89,17 @@ const Activities = () => {
     created_date: i?.createddate || new Date(),
   }));
 
+  const activityTypes = useSelector((state) => state.activities.activityTypes);
 
-const activityTypes = useSelector((state) => state.activities.activityTypes);
-
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Activities")?.[0]?.permissions
-  const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Activities"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
@@ -128,18 +142,29 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
     {
       title: "Status",
       dataIndex: "status",
-      render: (text) =>     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <span
-        style={{
-          width: "10px",
-          height: "10px",
-          borderRadius: "50%",
-          backgroundColor: text === "In Progress" ? "blue" :  text === "Completed" ? "green" : text === "Canceled" ? "red"  : text === "Waiting for someone else" ? "orange"  :  "black", // Use color property from options
-          display: "inline-block",
-        }}
-      />
-      {text}
-    </div>,
+      render: (text) => (
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span
+            style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              backgroundColor:
+                text === "In Progress"
+                  ? "blue"
+                  : text === "Completed"
+                    ? "green"
+                    : text === "Canceled"
+                      ? "red"
+                      : text === "Waiting for someone else"
+                        ? "orange"
+                        : "black", // Use color property from options
+              display: "inline-block",
+            }}
+          />
+          {text}
+        </div>
+      ),
       sorter: (a, b) => a.owner.length - b.owner.length,
     },
     {
@@ -148,49 +173,60 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
       render: (text) => <div>{moment(text).format("DD-MM-YYYY HH:mm A")}</div>,
       sorter: (a, b) => a.created_date.length - b.created_date.length,
     },
-   ...((isDelete || isUpdate) ? [ {
-      title: "Action",
-      render: (text, a) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon "
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-       {isUpdate && <Link
-              className="dropdown-item"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add"
-              onClick={() => setActivity(a)}
-            >
-              <i className="ti ti-edit text-blue" /> Edit
-            </Link>}
+    ...(isDelete || isUpdate
+      ? [
+          {
+            title: "Action",
+            render: (text, a) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon "
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add"
+                      onClick={() => setActivity(a)}
+                    >
+                      <i className="ti ti-edit text-blue" /> Edit
+                    </Link>
+                  )}
 
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#delete_activity"
-              onClick={() => setActivity(a.id)}
-            >
-              <i className="ti ti-trash text-danger" /> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#delete_activity"
+                      onClick={() => setActivity(a.id)}
+                    >
+                      <i className="ti ti-trash text-danger" /> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
     <>
       <Helmet>
-        <title>DCC CRMS - Activities</title>
-        <meta name="activities" content="This is activities page of DCC CRMS." />
+        <title>DCC HRMS - Activities</title>
+        <meta
+          name="activities"
+          content="This is activities page of DCC HRMS."
+        />
       </Helmet>
       {/* Page Wrapper */}
       <div className="page-wrapper">
@@ -202,7 +238,10 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Activities<span className="count-title">{activities?.data?.length}</span>
+                      Activities
+                      <span className="count-title">
+                        {activities?.data?.length}
+                      </span>
                     </h4>
                   </div>
                   <div className="col-8 text-end">
@@ -230,19 +269,21 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                         />
                       </div>
                     </div>
-                  {isCreate &&  <div className="col-sm-8">
-                      <div className="text-sm-end">
-                        <Link
-                          to="#"
-                          className="btn btn-primary"
-                          data-bs-toggle="offcanvas"
-                          data-bs-target="#offcanvas_add"
-                        >
-                          <i className="ti ti-square-rounded-plus me-2" />
-                          Add New Activity
-                        </Link>
+                    {isCreate && (
+                      <div className="col-sm-8">
+                        <div className="text-sm-end">
+                          <Link
+                            to="#"
+                            className="btn btn-primary"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvas_add"
+                          >
+                            <i className="ti ti-square-rounded-plus me-2" />
+                            Add New Activity
+                          </Link>
+                        </div>
                       </div>
-                    </div>}
+                    )}
                   </div>
                   {/* /Search */}
                 </div>
@@ -255,72 +296,98 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
                           <h4 className="mb-0 me-3">All Activity</h4>
                           <div className="active-list">
-                          <ul className="mb-0">
-                            {activityTypes?.map((item)=><>
-                              {item?.name === "Calls" && <li>
-                                <Link
-                                  // to={route.activityCalls}
-                                  to="#"
-                                  onClick={()=>{newFilter === "Calls" ? setNewFilter("") : setNewFilter("Calls")}}
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  data-bs-original-title="Calls"
-                                  className={`custom-link ${newFilter === "Calls" ? "active-link bg-info" : ""}`}
-                                >
-                                  <i className="ti ti-phone" />
-                                </Link>
-                              </li>}
-                              {item?.name === "Emails" && <li>
-                                <Link
-                                  // to={route.activityMail}
-                                  to="#"
-                                  onClick={()=>{newFilter === "Emails" ? setNewFilter("") : setNewFilter("Emails")}}
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  data-bs-original-title="Emails"
-                                  className={`custom-link ${newFilter === "Emails" ? "active-link bg-info" : ""}`}
-                                >
-                                  <i className="ti ti-mail" />
-                                </Link>
-                              </li>}
-                             {item?.name === "Task" &&  <li>
-                                <Link
-                                  // to={route.activityTask}
-                                  to="#"
-                                  onClick={()=>{newFilter === "Task" ? setNewFilter("") : setNewFilter("Task")}}
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  data-bs-original-title="Task"
-                                  className={`custom-link ${newFilter === "Task" ? "active-link bg-info" : ""}`}
-                                >
-                                  <i className="ti ti-subtask" />
-                                </Link>
-                              </li>}
-                             {item?.name === "Meeting" &&<li>
-                                <Link
-                                  // to={route.activityMeeting}
-                                  to="#"
-                                  onClick={()=>{newFilter === "Meeting" ? setNewFilter("") : setNewFilter("Meeting")}}
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  data-bs-original-title="Meeting"
-                                  className={`custom-link ${newFilter === "Meeting" ? "active-link bg-info" : ""}`}
-                                >
-                                  <i className="ti ti-user-share" />
-                                </Link>
-                              </li>}
-                            </>)}
+                            <ul className="mb-0">
+                              {activityTypes?.map((item) => (
+                                <>
+                                  {item?.name === "Calls" && (
+                                    <li>
+                                      <Link
+                                        // to={route.activityCalls}
+                                        to="#"
+                                        onClick={() => {
+                                          newFilter === "Calls"
+                                            ? setNewFilter("")
+                                            : setNewFilter("Calls");
+                                        }}
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-original-title="Calls"
+                                        className={`custom-link ${newFilter === "Calls" ? "active-link bg-info" : ""}`}
+                                      >
+                                        <i className="ti ti-phone" />
+                                      </Link>
+                                    </li>
+                                  )}
+                                  {item?.name === "Emails" && (
+                                    <li>
+                                      <Link
+                                        // to={route.activityMail}
+                                        to="#"
+                                        onClick={() => {
+                                          newFilter === "Emails"
+                                            ? setNewFilter("")
+                                            : setNewFilter("Emails");
+                                        }}
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-original-title="Emails"
+                                        className={`custom-link ${newFilter === "Emails" ? "active-link bg-info" : ""}`}
+                                      >
+                                        <i className="ti ti-mail" />
+                                      </Link>
+                                    </li>
+                                  )}
+                                  {item?.name === "Task" && (
+                                    <li>
+                                      <Link
+                                        // to={route.activityTask}
+                                        to="#"
+                                        onClick={() => {
+                                          newFilter === "Task"
+                                            ? setNewFilter("")
+                                            : setNewFilter("Task");
+                                        }}
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-original-title="Task"
+                                        className={`custom-link ${newFilter === "Task" ? "active-link bg-info" : ""}`}
+                                      >
+                                        <i className="ti ti-subtask" />
+                                      </Link>
+                                    </li>
+                                  )}
+                                  {item?.name === "Meeting" && (
+                                    <li>
+                                      <Link
+                                        // to={route.activityMeeting}
+                                        to="#"
+                                        onClick={() => {
+                                          newFilter === "Meeting"
+                                            ? setNewFilter("")
+                                            : setNewFilter("Meeting");
+                                        }}
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-original-title="Meeting"
+                                        className={`custom-link ${newFilter === "Meeting" ? "active-link bg-info" : ""}`}
+                                      >
+                                        <i className="ti ti-user-share" />
+                                      </Link>
+                                    </li>
+                                  )}
+                                </>
+                              ))}
                             </ul>
                           </div>
                         </div>
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
-                      <DateRangePickerComponent
-                      selectedDateRange={selectedDateRange}
-                      setSelectedDateRange={setSelectedDateRange}
-                    />
-                    </div>
+                          <DateRangePickerComponent
+                            selectedDateRange={selectedDateRange}
+                            setSelectedDateRange={setSelectedDateRange}
+                          />
+                        </div>
                         <div className="dropdown me-2">
                           <Link
                             to="#"
@@ -335,18 +402,20 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                                   ? " Descending"
                                   : " Recently Added"
                               : "Sort"}{" "}
-                           {loading && isLoading && <div
-                              style={{
-                                height: "15px",
-                                width: "15px",
-                              }}
-                              className="spinner-border ml-3 text-success"
-                              role="status"
-                            >
-                              <span className="visually-hidden">
-                                Loading...
-                              </span>
-                            </div>}
+                            {loading && isLoading && (
+                              <div
+                                style={{
+                                  height: "15px",
+                                  width: "15px",
+                                }}
+                                className="spinner-border ml-3 text-success"
+                                role="status"
+                              >
+                                <span className="visually-hidden">
+                                  Loading...
+                                </span>
+                              </div>
+                            )}
                           </Link>
                           <div className="dropdown-menu  dropdown-menu-start">
                             <ul>
@@ -354,7 +423,10 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                                 <Link
                                   to="#"
                                   className="dropdown-item"
-                                  onClick={() => {setFilter("asc");setIsLoading(true)}}
+                                  onClick={() => {
+                                    setFilter("asc");
+                                    setIsLoading(true);
+                                  }}
                                 >
                                   <i className="ti ti-circle-chevron-right me-1" />
                                   Ascending
@@ -364,7 +436,10 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                                 <Link
                                   to="#"
                                   className="dropdown-item"
-                                  onClick={() =>{ setFilter("desc");setIsLoading(true)}}
+                                  onClick={() => {
+                                    setFilter("desc");
+                                    setIsLoading(true);
+                                  }}
                                 >
                                   <i className="ti ti-circle-chevron-right me-1" />
                                   Descending
@@ -879,27 +954,34 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                             </div>
                           </div>
                         </div> */}
-                      <ViewIconsToggle view={view} isActivity={true} setView={setView} />
+                        <ViewIconsToggle
+                          view={view}
+                          isActivity={true}
+                          setView={setView}
+                        />
                       </div>
                     </div>
                     {/* /Filter */}
                   </>
 
                   {/* Activity List */}
-                  {isView ? <div className="table-responsive custom-table">
-                  {view === "list" ? ( 
-                    <Table
-                      columns={columns}
-                      dataSource={data}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange} 
-                    />
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          columns={columns}
+                          dataSource={data}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        <ActivitiesGrid data={activities?.data} />
+                      )}
+                    </div>
                   ) : (
-                    <ActivitiesGrid data={activities?.data} />
-                   
-                  )} 
-                  </div>: <UnauthorizedImage />}
+                    <UnauthorizedImage />
+                  )}
                   <div className="row align-items-center">
                     <div className="col-md-6">
                       <div className="datatable-length" />

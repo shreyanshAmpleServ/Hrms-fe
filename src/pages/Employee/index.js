@@ -263,8 +263,8 @@ const EmployeeList = () => {
   return (
     <div>
       <Helmet>
-        <title>DCC CRMS - Employee</title>
-        <meta name="campaign" content="This is campaign page of DCC CRMS." />
+        <title>DCC HRMS - Employee</title>
+        <meta name="campaign" content="This is campaign page of DCC HRMS." />
       </Helmet>
       {/* Page Wrapper */}
       <div className="page-wrapper">

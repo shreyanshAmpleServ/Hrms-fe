@@ -9,26 +9,32 @@ import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
-import moment from 'moment';
+import moment from "moment";
 
 import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deletedepartment, fetchdepartment } from "../../../../redux/department";
+import {
+  clearMessages,
+  deletedepartment,
+  fetchdepartment,
+} from "../../../../redux/department";
 
 const DepanrtmentList = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
-  const [paginationData, setPaginationData] = React.useState()
+  const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions = JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i) => i?.module_name === "Department")?.[0]?.permissions
-  const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Department"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
 
@@ -36,16 +42,14 @@ const DepanrtmentList = () => {
     {
       title: "Department Name",
       dataIndex: "department_name",
-      render: (_text, record) => (
-        <Link to={`#`}>{record.department_name}</Link>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || "")
+      render: (_text, record) => <Link to={`#`}>{record.department_name}</Link>,
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
     {
       title: "Created Date",
       dataIndex: "create_date",
-      render: (text) => moment(text).format('DD-MM-YYYY'),
+      render: (text) => moment(text).format("DD-MM-YYYY"),
       sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
     },
     {
@@ -66,43 +70,51 @@ const DepanrtmentList = () => {
       ),
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
-    ...((isUpdate || isDelete) ? [{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (_text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_department_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-            {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }] : [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (_text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_department_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const { department, loading, error, success } = useSelector(
@@ -117,17 +129,19 @@ const DepanrtmentList = () => {
       currentPage: department?.currentPage,
       totalPage: department?.totalPages,
       totalCount: department?.totalCount,
-      pageSize: department?.size
-    })
-  }, [department])
+      pageSize: department?.size,
+    });
+  }, [department]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchdepartment({ search: searchText, page: currentPage, size: pageSize }));
+    dispatch(
+      fetchdepartment({ search: searchText, page: currentPage, size: pageSize })
+    );
   };
 
   const handleSearch = useCallback((e) => {
@@ -168,7 +182,10 @@ const DepanrtmentList = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - Depanrtment</title>
-        <meta name="DepanrtmentList" content="This is department page of DCC CRMS." />
+        <meta
+          name="DepanrtmentList"
+          content="This is department page of DCC HRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -213,13 +230,15 @@ const DepanrtmentList = () => {
                     handleSearch={handleSearch}
                     label="Search Depanrtment"
                   />
-                  {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add Depanrtment"
-                      id="add_edit_department_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Depanrtment"
+                        id="add_edit_department_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">

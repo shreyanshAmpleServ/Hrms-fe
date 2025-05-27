@@ -13,11 +13,11 @@ import NoDataFound from "../../../components/common/NotFound/NotFount";
 import { Helmet } from "react-helmet-async";
 
 const DealsDashboard = () => {
-  const [dashboardData,setDashboardData] = useState([])
-  const [lostDealData,setLostDealData] = useState([])
-  const [winDealData,setWinDealData] = useState([])
-  const [monthlyDealData,setMonthlyDealData] = useState([])
-  const [whoChange,setWhoChange] =useState()
+  const [dashboardData, setDashboardData] = useState([]);
+  const [lostDealData, setLostDealData] = useState([]);
+  const [winDealData, setWinDealData] = useState([]);
+  const [monthlyDealData, setMonthlyDealData] = useState([]);
+  const [whoChange, setWhoChange] = useState();
   const [isFetching, setIsFetching] = useState(false); // Track API call
   const [dealStageFilter, setDealStageFilter] = useState();
   const [lostDealFilter, setLostDealFilter] = useState();
@@ -30,15 +30,15 @@ const DealsDashboard = () => {
   useEffect(() => {
     localStorage.setItem("menuOpened", "Dashboard");
   }, []);
-  useEffect(()=>{
-    setWhoChange("")
-  },[selectedDateRange])
+  useEffect(() => {
+    setWhoChange("");
+  }, [selectedDateRange]);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchPipelines());
   }, [dispatch]);
   React.useEffect(() => {
-    setIsFetching(true); 
+    setIsFetching(true);
     dispatch(
       fetchDashboard({
         ...selectedDateRange,
@@ -46,9 +46,10 @@ const DealsDashboard = () => {
         lostDealFilter: lostDealFilter?.id || null,
         wonDealFilter: wonDealFilter?.id || null,
         monthlyDealFilter: monthlyDealFilter?.id || null,
-      })).finally(() => {
-        setIsFetching(false); // Finish API call
-      });
+      })
+    ).finally(() => {
+      setIsFetching(false); // Finish API call
+    });
   }, [
     dispatch,
     selectedDateRange,
@@ -59,12 +60,15 @@ const DealsDashboard = () => {
   ]);
   const { pipelines } = useSelector((state) => state.pipelines);
 
- // Deals By Stage
+  // Deals By Stage
   const chartRef = useRef(null);
-  const { dashboard, loading, error, success } = useSelector((state) => state.dashboard);
-  useEffect(()=>{
-    (whoChange === "DealStage" || whoChange === "" || !dashboardData?.length) && setDashboardData(dashboard.deals)
-  },[dashboard,dealStageFilter])
+  const { dashboard, loading, error, success } = useSelector(
+    (state) => state.dashboard
+  );
+  useEffect(() => {
+    (whoChange === "DealStage" || whoChange === "" || !dashboardData?.length) &&
+      setDashboardData(dashboard.deals);
+  }, [dashboard, dealStageFilter]);
   useEffect(() => {
     const chart1 = dashboardData?.map((item) => ({
       x: item?.dealName,
@@ -142,10 +146,10 @@ const DealsDashboard = () => {
 
   //  Leads By Stage
   const LeadsBySatge = useRef(null);
-  useEffect(()=>{
-    (whoChange === "LostDeal" || whoChange === "" || !lostDealData?.length) && setLostDealData(dashboard.lostDeals)
-  },[dashboard,lostDealFilter])
- 
+  useEffect(() => {
+    (whoChange === "LostDeal" || whoChange === "" || !lostDealData?.length) &&
+      setLostDealData(dashboard.lostDeals);
+  }, [dashboard, lostDealFilter]);
 
   useEffect(() => {
     const lostChart = lostDealData?.map((item) => ({
@@ -195,17 +199,17 @@ const DealsDashboard = () => {
   }, [lostDealData]);
   // Won Deals Chat
   const wonChat = useRef(null);
-  useEffect(()=>{
-    (whoChange === "WinDeal" || whoChange === "" || !winDealData?.length) && setWinDealData(dashboard.wonDeals)
-  },[dashboard,wonDealFilter])
- 
+  useEffect(() => {
+    (whoChange === "WinDeal" || whoChange === "" || !winDealData?.length) &&
+      setWinDealData(dashboard.wonDeals);
+  }, [dashboard, wonDealFilter]);
 
   useEffect(() => {
     const winChart = winDealData?.map((item) => ({
       x: item?.dealName || "Unknowen",
       y: item?.dealValue || 0,
     }));
-    // if (!dashboard.wonDeals || isFetching) return; 
+    // if (!dashboard.wonDeals || isFetching) return;
     const options = {
       series: [
         {
@@ -250,12 +254,15 @@ const DealsDashboard = () => {
   // Deals By Year
   const dealsByYear = useRef(null);
   // Define all months in order
-  useEffect(()=>{
-    (whoChange === "MonthlyDeal" || whoChange === "" || !monthlyDealData?.length) && setMonthlyDealData(dashboard.monthlyDeals)
-  },[dashboard,monthlyDealFilter])
-  
+  useEffect(() => {
+    (whoChange === "MonthlyDeal" ||
+      whoChange === "" ||
+      !monthlyDealData?.length) &&
+      setMonthlyDealData(dashboard.monthlyDeals);
+  }, [dashboard, monthlyDealFilter]);
+
   // Convert `monthlyDeals` object into an array with correct month order
-  
+
   useEffect(() => {
     const defaultData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     const months = [
@@ -272,9 +279,7 @@ const DealsDashboard = () => {
       "Nov",
       "Dec",
     ];
-    const data = months.map(
-      (_, index) => monthlyDealData?.[index + 1] || 0
-    );
+    const data = months.map((_, index) => monthlyDealData?.[index + 1] || 0);
     const options = {
       series: [
         {
@@ -344,8 +349,8 @@ const DealsDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>DCC CRMS - Dashboard</title>
-        <meta name="Dashboard" content="This is Dashboard page of DCC CRMS." />
+        <title>DCC HRMS - Dashboard</title>
+        <meta name="Dashboard" content="This is Dashboard page of DCC HRMS." />
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
@@ -391,8 +396,12 @@ const DealsDashboard = () => {
             </div>
           </div>
           <div className="row">
-            <div  className="scroll-container col-md-6 position-relative">
-            <LoadingGraph isFetching={isFetching}  whoChange={whoChange} name="" />
+            <div className="scroll-container col-md-6 position-relative">
+              <LoadingGraph
+                isFetching={isFetching}
+                whoChange={whoChange}
+                name=""
+              />
               <div className="card flex-fill">
                 <div className="card-header border-0 pb-0">
                   <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-3">
@@ -427,7 +436,14 @@ const DealsDashboard = () => {
                   </div>
                 </div>
                 <div className="card-body">
-                  <div  style={{height:"38.7vh" , marginBottom:"15px", overflowY:"scroll"}} className="scroll-containe table-responsive custom-table">
+                  <div
+                    style={{
+                      height: "38.7vh",
+                      marginBottom: "15px",
+                      overflowY: "scroll",
+                    }}
+                    className="scroll-containe table-responsive custom-table"
+                  >
                     <table className="table dataTable" id="deals-project">
                       <thead className="thead-light">
                         <tr>
@@ -439,9 +455,9 @@ const DealsDashboard = () => {
                           <th>Status</th>
                         </tr>
                       </thead>
-                      <tbody >
-                        { dashboard?.deal?.map((item) => (
-                          <tr  className="odd">
+                      <tbody>
+                        {dashboard?.deal?.map((item) => (
+                          <tr className="odd">
                             <td>{item?.dealName}</td>
                             <td>{item?.deals?.name}</td>
                             <td>{item?.currency + " " + item?.dealValue}</td>
@@ -455,22 +471,33 @@ const DealsDashboard = () => {
                               </span>
                             </td>
                           </tr>
-                        )) }
-                      {/* // : <div style={{width:"100%", height:'60%'}} className=" d-flex justify-content-center mx-25 ">  </div>} */}
+                        ))}
+                        {/* // : <div style={{width:"100%", height:'60%'}} className=" d-flex justify-content-center mx-25 ">  </div>} */}
                       </tbody>
                     </table>
                     {/* <NoDataFound /> */}
-                    {!dashboard?.deal?.length &&  <div style={{marginLeft:"25%" , marginTop:"10%"}}  className="d-flex flex-column align-items-center justify-content-center h-50 w-50  py-5 gap-3">
-                    <img src="https://pub-16f3de4d2c4841169d66d16992f9f0d3.r2.dev/assets/Sales/pana.svg" alt="" />
-                    <p className="h5 font-weight-semibold">No Data Found</p>
-            
-      </div>}
+                    {!dashboard?.deal?.length && (
+                      <div
+                        style={{ marginLeft: "25%", marginTop: "10%" }}
+                        className="d-flex flex-column align-items-center justify-content-center h-50 w-50  py-5 gap-3"
+                      >
+                        <img
+                          src="https://pub-16f3de4d2c4841169d66d16992f9f0d3.r2.dev/assets/Sales/pana.svg"
+                          alt=""
+                        />
+                        <p className="h5 font-weight-semibold">No Data Found</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-            <div  className="col-md-6 position-relative ">
-            <LoadingGraph isFetching={isFetching}  whoChange={whoChange} name="DealStage" />
+            <div className="col-md-6 position-relative ">
+              <LoadingGraph
+                isFetching={isFetching}
+                whoChange={whoChange}
+                name="DealStage"
+              />
               <div className="card flex-fill">
                 <div className="card-header border-0 pb-0">
                   <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-3">
@@ -499,13 +526,13 @@ const DealsDashboard = () => {
                         <div className="dropdown-menu w-100 dropdown-menu-end">
                           <Link
                             to="#"
-                            onClick={() =>{
+                            onClick={() => {
                               setDealStageFilter({
                                 id: null,
                                 name: "Select Pipline",
                               });
-                            setWhoChange("DealStage")}
-                            }
+                              setWhoChange("DealStage");
+                            }}
                             className="dropdown-item"
                           >
                             All Pipline
@@ -514,12 +541,12 @@ const DealsDashboard = () => {
                             <Link
                               key={item.id}
                               to="#"
-                              onClick={() =>{
+                              onClick={() => {
                                 setDealStageFilter({
                                   id: item.id,
                                   name: item.name,
-                                })
-                                setWhoChange("DealStage")
+                                });
+                                setWhoChange("DealStage");
                               }}
                               className="dropdown-item"
                             >
@@ -555,7 +582,14 @@ const DealsDashboard = () => {
                     </div>
                   </div>
                 </div>
-                <div style={{height:"40vh" , marginBottom:"15px", overflowY:"hidden"}} className="card-body">
+                <div
+                  style={{
+                    height: "40vh",
+                    marginBottom: "15px",
+                    overflowY: "hidden",
+                  }}
+                  className="card-body"
+                >
                   <div id="deals-chart" ref={chartRef} />
                 </div>
               </div>
@@ -563,7 +597,11 @@ const DealsDashboard = () => {
           </div>
           <div className="row">
             <div className="col-md-6 position-relative ">
-            <LoadingGraph isFetching={isFetching}  whoChange={whoChange} name="LostDeal" />
+              <LoadingGraph
+                isFetching={isFetching}
+                whoChange={whoChange}
+                name="LostDeal"
+              />
               <div className="card flex-fill">
                 <div className="card-header border-0 pb-0">
                   <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-3">
@@ -592,13 +630,13 @@ const DealsDashboard = () => {
                         <div className="dropdown-menu w-100 dropdown-menu-end">
                           <Link
                             to="#"
-                            onClick={() =>{
+                            onClick={() => {
                               setLostDealFilter({
                                 id: null,
                                 name: "Select Pipline",
-                              })
-                              setWhoChange("LostDeal")
-                           } }
+                              });
+                              setWhoChange("LostDeal");
+                            }}
                             className="dropdown-item"
                           >
                             All Pipline
@@ -607,13 +645,13 @@ const DealsDashboard = () => {
                             <Link
                               key={item.id}
                               to="#"
-                              onClick={() =>{
+                              onClick={() => {
                                 setLostDealFilter({
                                   id: item.id,
                                   name: item.name,
                                 });
-                                setWhoChange("LostDeal")}
-                              }
+                                setWhoChange("LostDeal");
+                              }}
                               className="dropdown-item"
                             >
                               {item.name}
@@ -654,7 +692,11 @@ const DealsDashboard = () => {
               </div>
             </div>
             <div className="col-md-6 position-relative ">
-            <LoadingGraph isFetching={isFetching}  whoChange={whoChange} name="WinDeal" />
+              <LoadingGraph
+                isFetching={isFetching}
+                whoChange={whoChange}
+                name="WinDeal"
+              />
               <div className="card flex-fill">
                 <div className="card-header border-0 pb-0">
                   <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2">
@@ -683,12 +725,12 @@ const DealsDashboard = () => {
                         <div className="dropdown-menu w-100 dropdown-menu-end">
                           <Link
                             to="#"
-                            onClick={() =>{
+                            onClick={() => {
                               setWonDealFilter({
                                 id: null,
                                 name: "Select Pipline",
-                              })
-                              setWhoChange("WinDeal")
+                              });
+                              setWhoChange("WinDeal");
                             }}
                             className="dropdown-item"
                           >
@@ -698,12 +740,12 @@ const DealsDashboard = () => {
                             <Link
                               key={item.id}
                               to="#"
-                              onClick={() =>{
+                              onClick={() => {
                                 setWonDealFilter({
                                   id: item.id,
                                   name: item.name,
-                                })
-                                setWhoChange("WinDeal")
+                                });
+                                setWhoChange("WinDeal");
                               }}
                               className="dropdown-item"
                             >
@@ -746,10 +788,16 @@ const DealsDashboard = () => {
             </div>
           </div>
           <div className="row position-relative">
-          <LoadingGraph isFetching={isFetching}  whoChange={whoChange} name="MonthlyDeal" />
-           <div className="col-md-12 d-flex">
-              <div className="card
-               w-100">
+            <LoadingGraph
+              isFetching={isFetching}
+              whoChange={whoChange}
+              name="MonthlyDeal"
+            />
+            <div className="col-md-12 d-flex">
+              <div
+                className="card
+               w-100"
+              >
                 <div className="card-header border-0 pb-0">
                   <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-3">
                     <h4>
@@ -777,12 +825,12 @@ const DealsDashboard = () => {
                         <div className="dropdown-menu w-100 dropdown-menu-end">
                           <Link
                             to="#"
-                            onClick={() =>{
+                            onClick={() => {
                               setMonthlyDealFilter({
                                 id: null,
                                 name: "Select Pipline",
-                              })
-                              setWhoChange("MonthlyDeal")
+                              });
+                              setWhoChange("MonthlyDeal");
                             }}
                             className="dropdown-item"
                           >
@@ -792,12 +840,12 @@ const DealsDashboard = () => {
                             <Link
                               key={item.id}
                               to="#"
-                              onClick={() =>{
+                              onClick={() => {
                                 setMonthlyDealFilter({
                                   id: item.id,
                                   name: item.name,
-                                })
-                                setWhoChange("MonthlyDeal")
+                                });
+                                setWhoChange("MonthlyDeal");
                               }}
                               className="dropdown-item"
                             >

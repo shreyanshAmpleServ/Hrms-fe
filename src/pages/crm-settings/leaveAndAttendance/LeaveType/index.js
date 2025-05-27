@@ -8,7 +8,6 @@ import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
-
 import moment from "moment";
 
 import { Helmet } from "react-helmet-async";
@@ -16,38 +15,42 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deleteLeaveType, fetchLeaveType } from "../../../../redux/LeaveType";
+import {
+  clearMessages,
+  deleteLeaveType,
+  fetchLeaveType,
+} from "../../../../redux/LeaveType";
 
 const LeaveTypeList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Leave Type")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Leave Type"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Leave Type",
       dataIndex: "leave_type",
-      render: (text, record) => (
-        <div>{text}</div>
-      ),
+      render: (text, record) => <div>{text}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Carry Forward",
       dataIndex: "carry_forward",
-           render: (text, record) => (
+      render: (text, record) => (
         <div>{record?.carry_forward ? "True" : "False"}</div>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
-   
+
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -74,75 +77,85 @@ const LeaveTypeList = () => {
     //   ),
     //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     // },
-   ...((isUpdate || isDelete) ?[ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_leave_type_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_leave_type_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { leaveType, loading, error, success } = useSelector(
     (state) => state.leaveType
   );
-  
+
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
-    const [paginationData , setPaginationData] = useState()
-  
-    React.useEffect(() => {
-      dispatch(fetchLeaveType({search:searchText}));
-    }, [dispatch, searchText]);
-  
-  React.useEffect(()=>{
-      setPaginationData({
-        currentPage:leaveType?.currentPage,
-        totalPage:leaveType?.totalPages,
-        totalCount:leaveType?.totalCount,
-        pageSize : leaveType?.size
-      })
-    },[leaveType])
-  
-    const handlePageChange = ({ currentPage, pageSize }) => {
-      setPaginationData((prev) => ({
-        ...prev,
-        currentPage,
-        pageSize
-      }));
-      dispatch(fetchLeaveType({search:searchText , page: currentPage, size: pageSize })); 
-    };
+  const [paginationData, setPaginationData] = useState();
+
+  React.useEffect(() => {
+    dispatch(fetchLeaveType({ search: searchText }));
+  }, [dispatch, searchText]);
+
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: leaveType?.currentPage,
+      totalPage: leaveType?.totalPages,
+      totalCount: leaveType?.totalCount,
+      pageSize: leaveType?.size,
+    });
+  }, [leaveType]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchLeaveType({ search: searchText, page: currentPage, size: pageSize })
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -190,7 +203,7 @@ const LeaveTypeList = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - leaveType</title>
-        <meta name="leaveType" content="This is leaveType page of DCC CRMS." />
+        <meta name="leaveType" content="This is leaveType page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -235,13 +248,15 @@ const LeaveTypeList = () => {
                     handleSearch={handleSearch}
                     label="Search Leave Type"
                   />
-                {isCreate &&  <div className="col-sm-8">
-                    <AddButton
-                      label="Add Leave Type"
-                      id="add_edit_leave_type_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Leave Type"
+                        id="add_edit_leave_type_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -260,8 +275,8 @@ const LeaveTypeList = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
-                     paginationData={paginationData}
-                        onPageChange={handlePageChange} 
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>
