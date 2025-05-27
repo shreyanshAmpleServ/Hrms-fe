@@ -438,7 +438,7 @@ export const SidebarData = [
             showSubRoute: false,
           },
           {
-            label: "Lone Type",
+            label: "Loan Type",
             link: route.loneType,
             showSubRoute: false,
           },
@@ -536,7 +536,7 @@ export const SidebarData = [
             submenu: false,
           },
           {
-            label: "letter Type Master",
+            label: "Letter Type Master",
             link: route.letterTypeMaster,
             icon: "ti ti-building-factory", // Icon for Country
             showSubRoute: false,

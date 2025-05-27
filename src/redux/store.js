@@ -173,6 +173,7 @@ const store = configureStore({
     loan_requests: loanRequestsReducer,
     lone_type: LoneTypeReducer,
     appraisalEntries: appraisalEntriesReducer,
+    loan_type: LoneTypeReducer,
   },
 });
 

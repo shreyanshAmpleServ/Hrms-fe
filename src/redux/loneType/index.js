@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 
-// lone_type Slice loan-requests
+// loan_type Slice loan-requests
 
 
-// Fetch All lone_type
-export const fetchlone_type = createAsyncThunk(
-    "lone_type/fetchlone_type",
+// Fetch All loan_type
+export const fetchloan_type = createAsyncThunk(
+    "loan_type/fetchloan_type",
     async (datas, thunkAPI) => {
         try {
             const params = {}
@@ -24,28 +24,28 @@ export const fetchlone_type = createAsyncThunk(
     }
 );
 
-// Add an lone_type
-export const addlone_type = createAsyncThunk(
-    "lone_type/addlone_type",
-    async (lone_typeData, thunkAPI) => {
+// Add an loan_type
+export const addloan_type = createAsyncThunk(
+    "loan_type/addloan_type",
+    async (loan_typeData, thunkAPI) => {
         try {
             const response = await apiClient.post("/v1/loan-type",
-                lone_typeData);
+                loan_typeData);
             return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to add lone_type"
+                error.response?.data || "Failed to add loan_type"
             );
         }
     }
 );
 
-// Update an lone_type
-export const updatelone_type = createAsyncThunk(
-    "lone_type/updatelone_type",
-    async ({ id, lone_typeData }, thunkAPI) => {
+// Update an loan_type
+export const updateloan_type = createAsyncThunk(
+    "loan_type/updateloan_type",
+    async ({ id, loan_typeData }, thunkAPI) => {
         try {
-            const response = await apiClient.put(`/v1/loan-type/${id}`, lone_typeData);
+            const response = await apiClient.put(`/v1/loan-type/${id}`, loan_typeData);
             return response.data;
         } catch (error) {
             if (error.response?.status === 404) {
@@ -55,34 +55,34 @@ export const updatelone_type = createAsyncThunk(
                 });
             }
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to update lone_type"
+                error.response?.data || "Failed to update loan_type"
             );
         }
     }
 );
 
-// Delete an lone_type
-export const deletelone_type = createAsyncThunk(
-    "lone_type/deletelone_type",
+// Delete an loan_type
+export const deleteloan_type = createAsyncThunk(
+    "loan_type/deleteloan_type",
     async (id, thunkAPI) => {
         try {
             const response = await apiClient.delete(`/v1/loan-type/${id}`);
             return {
                 data: { id },
-                message: response.data.message || "lone_type deleted successfully",
+                message: response.data.message || "loan_type deleted successfully",
             };
         } catch (error) {
             return thunkAPI.rejectWithValue(
-                error.response?.data || "Failed to delete lone_type"
+                error.response?.data || "Failed to delete loan_type"
             );
         }
     }
 );
 
-const lone_typeSlice = createSlice({
-    name: "lone_type",
+const loan_typeSlice = createSlice({
+    name: "loan_type",
     initialState: {
-        lone_type: [],
+        loan_type: [],
         loading: false,
         error: null,
         success: null,
@@ -95,71 +95,71 @@ const lone_typeSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchlone_type.pending, (state) => {
+            .addCase(fetchloan_type.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchlone_type.fulfilled, (state, action) => {
+            .addCase(fetchloan_type.fulfilled, (state, action) => {
                 state.loading = false;
-                state.lone_type = action.payload.data;
+                state.loan_type = action.payload.data;
             })
-            .addCase(fetchlone_type.rejected, (state, action) => {
+            .addCase(fetchloan_type.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(addlone_type.pending, (state) => {
+            .addCase(addloan_type.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(addlone_type.fulfilled, (state, action) => {
+            .addCase(addloan_type.fulfilled, (state, action) => {
                 state.loading = false;
-                state.lone_type = { ...state.lone_type, data: [action.payload.data, ...state.lone_type.data] };
+                state.loan_type = { ...state.loan_type, data: [action.payload.data, ...state.loan_type.data] };
                 state.success = action.payload.message;
             })
-            .addCase(addlone_type.rejected, (state, action) => {
+            .addCase(addloan_type.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(updatelone_type.pending, (state) => {
+            .addCase(updateloan_type.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(updatelone_type.fulfilled, (state, action) => {
+            .addCase(updateloan_type.fulfilled, (state, action) => {
                 state.loading = false;
-                const index = state.lone_type?.data?.findIndex(
+                const index = state.loan_type?.data?.findIndex(
                     (data) => data.id === action.payload.data.id
                 );
                 if (index !== -1) {
-                    state.lone_type.data[index] = action.payload.data;
+                    state.loan_type.data[index] = action.payload.data;
                 } else {
-                    state.lone_type = { ...state.lone_type, data: [...state.lone_type, action.payload.data] };
+                    state.loan_type = { ...state.loan_type, data: [...state.loan_type, action.payload.data] };
                 }
                 state.success = action.payload.message;
             })
-            .addCase(updatelone_type.rejected, (state, action) => {
+            .addCase(updateloan_type.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
-            .addCase(deletelone_type.pending, (state) => {
+            .addCase(deleteloan_type.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(deletelone_type.fulfilled, (state, action) => {
+            .addCase(deleteloan_type.fulfilled, (state, action) => {
                 state.loading = false;
-                const filterData = state.lone_type.data.filter(
+                const filterData = state.loan_type.data.filter(
                     (data) => data.id !== action.payload.data.id
                 );
-                state.lone_type = { ...state.lone_type, data: filterData }
+                state.loan_type = { ...state.loan_type, data: filterData }
                 state.success = action.payload.message;
             })
-            .addCase(deletelone_type.rejected, (state, action) => {
+            .addCase(deleteloan_type.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             });
     },
 });
 
-export const { clearMessages } = lone_typeSlice.actions;
-export default lone_typeSlice.reducer;
+export const { clearMessages } = loan_typeSlice.actions;
+export default loan_typeSlice.reducer;
 
 

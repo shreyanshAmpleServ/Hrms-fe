@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { addloan_requests, updateloan_requests } from "../../../redux/loanRequests";
 import { fetchEmployee } from "../../../redux/Employee";
-import { fetchlone_type } from "../../../redux/loneType"; // assume you have lone_type redux
+import { fetchloan_type } from "../../../redux/loneType"; // assume you have fetchloan_type redux
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.loan_requests);
@@ -22,11 +22,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   // Fetch employees
   useEffect(() => {
     dispatch(fetchEmployee());
-    dispatch(fetchlone_type()); // fetch loan types
+    dispatch(fetchloan_type()); // fetch loan types
   }, [dispatch]);
 
   const employee = useSelector((state) => state.employee.employee);
-  const lone_type = useSelector((state) => state.lone_type.data); // loan types array
+  const loan_type = useSelector((state) => state.loan_type?.loan_type);
 
   const EmployeeList = useMemo(
     () =>
@@ -39,11 +39,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const LoanTypeList = useMemo(
     () =>
-      lone_type?.map((item) => ({
+      loan_type?.data?.map((item) => ({
         value: item.id,
-        label: item.loan_name,
+        label: item.loan_name
       })) || [],
-    [lone_type]
+    [loan_type]
   );
 
   useEffect(() => {
@@ -57,6 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         request_date: initialData.request_date
           ? new Date(initialData.request_date).toISOString().split("T")[0]
           : "",
+
       });
     } else {
       reset({
@@ -94,6 +95,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset();
     closeButton?.click();
   };
+
+
+  // console.log("Employee : ", EmployeeList)
+  // console.log("LoanTypeList : ", LoanTypeList)
+
 
   return (
     <div
@@ -147,7 +153,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               Loan Type <span className="text-danger">*</span>
             </label>
             <Controller
-              name="lone_name"
+              name="loan_type_id"
               control={control}
               rules={{ required: "Loan Type is required" }}
               render={({ field }) => (
@@ -158,12 +164,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   isDisabled={!LoanTypeList.length}
                   classNamePrefix="react-select"
                   onChange={(option) => field.onChange(option?.value || "")}
-                  value={LoanTypeList.find((option) => option.value == watch("lone_type"))}
+                  value={LoanTypeList.find((option) => option.value === watch("loan_type_id"))}
                 />
               )}
             />
-            {errors.lone_type && <small className="text-danger">{errors.lone_type.message}</small>}
-
+            {errors.loan_type_id && (
+              <small className="text-danger">{errors.loan_type_id.message}</small>
+            )}
           </div>
 
           {/* Amount */}
