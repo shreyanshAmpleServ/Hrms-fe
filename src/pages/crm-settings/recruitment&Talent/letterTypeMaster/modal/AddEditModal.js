@@ -58,7 +58,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Goal Category " : "Edit Goal Category"}
+              {mode === "add" ? "Add New Letter " : "Edit Letter"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

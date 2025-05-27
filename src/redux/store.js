@@ -85,6 +85,7 @@ import PayslipReducer from "./payslipViewer";
 import loanRequestsReducer from "./loanRequests";
 import LoneTypeReducer from "./loneType";
 
+
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -170,7 +171,7 @@ const store = configureStore({
     leave_Applications: LeaveApplicationsReducer,
     payslip: PayslipReducer,
     loan_requests: loanRequestsReducer,
-    lone_type: LoneTypeReducer,
+    loan_type: LoneTypeReducer,
   },
 });
 

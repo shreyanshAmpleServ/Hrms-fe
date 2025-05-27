@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addlone_type, updatelone_type } from "../../../../../redux/loneType";
+import { addloan_type, updateloan_type } from "../../../../../redux/loneType";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.lone_type);
+  const { loading } = useSelector((state) => state.loan_type);
 
   const {
     register,
@@ -34,16 +34,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById("Close_lone_type_modal");
+    const closeButton = document.getElementById("Close_loan_type_modal");
     const finalData = { ...data };
 
     if (mode === "add") {
-      dispatch(addlone_type(finalData));
+      dispatch(addloan_type(finalData));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updatelone_type({
+        updateloan_type({
           id: initialData.id,
-          lone_typeData: finalData,
+          loan_typeData: finalData,
         })
       );
     }
@@ -52,7 +52,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   };
 
   return (
-    <div className="modal fade" id="add_edit_lone_type_modal" role="dialog">
+    <div className="modal fade" id="add_edit_loan_type_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
@@ -63,7 +63,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="Close_lone_type_modal"
+              id="Close_loan_type_modal"
             >
               <i className="ti ti-x" />
             </button>

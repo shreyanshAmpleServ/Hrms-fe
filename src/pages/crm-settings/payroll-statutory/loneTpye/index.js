@@ -15,9 +15,9 @@ import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import { clearMessages, deletelone_type, fetchlone_type } from "../../../../redux/loneType";
+import { clearMessages, deleteloan_type, fetchloan_type } from "../../../../redux/loneType";
 
-const LoneType = () => {
+const LoanType = () => {
     const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
     const [paginationData, setPaginationData] = React.useState()
     const [searchText, setSearchText] = React.useState("");
@@ -89,7 +89,7 @@ const LoneType = () => {
                             className="dropdown-item edit-popup"
                             to="#"
                             data-bs-toggle="modal"
-                            data-bs-target="#add_edit_lone_type_modal"
+                            data-bs-target="#add_edit_loan_type_modal"
                             onClick={() => {
                                 setSelectedIndustry(record);
                                 setMode("edit");
@@ -110,21 +110,21 @@ const LoneType = () => {
         }] : [])
     ];
 
-    const { lone_type, loading, error, success } = useSelector(
-        (state) => state.lone_type
+    const { loan_type, loading, error, success } = useSelector(
+        (state) => state.loan_type
     );
 
     React.useEffect(() => {
-        dispatch(fetchlone_type({ search: searchText }));
+        dispatch(fetchloan_type({ search: searchText }));
     }, [dispatch, searchText]);
     React.useEffect(() => {
         setPaginationData({
-            currentPage: lone_type?.currentPage,
-            totalPage: lone_type?.totalPages,
-            totalCount: lone_type?.totalCount,
-            pageSize: lone_type?.size
+            currentPage: loan_type?.currentPage,
+            totalPage: loan_type?.totalPages,
+            totalCount: loan_type?.totalCount,
+            pageSize: loan_type?.size
         })
-    }, [lone_type])
+    }, [loan_type])
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -132,7 +132,7 @@ const LoneType = () => {
             currentPage,
             pageSize
         }));
-        dispatch(fetchlone_type({ search: searchText, page: currentPage, size: pageSize }));
+        dispatch(fetchloan_type({ search: searchText, page: currentPage, size: pageSize }));
     };
 
     const handleSearch = useCallback((e) => {
@@ -140,7 +140,7 @@ const LoneType = () => {
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = lone_type?.data || [];
+        let data = loan_type?.data || [];
 
         if (sortOrder === "ascending") {
             data = [...data].sort((a, b) =>
@@ -152,7 +152,7 @@ const LoneType = () => {
             );
         }
         return data;
-    }, [searchText, lone_type, columns, sortOrder]);
+    }, [searchText, loan_type, columns, sortOrder]);
 
     const handleDeleteIndustry = (industry) => {
         setSelectedIndustry(industry);
@@ -163,8 +163,8 @@ const LoneType = () => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const deleteData = () => {
         if (selectedIndustry) {
-            dispatch(deletelone_type(selectedIndustry.id));
-            // navigate(`/lone_type`);
+            dispatch(deleteloan_type(selectedIndustry.id));
+            // navigate(`/loan_type`);
             setShowDeleteModal(false);
         }
     };
@@ -172,8 +172,8 @@ const LoneType = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>DCC HRMS - Lone Type</title>
-                <meta name="DepanrtmentList" content="This is lone_type page of DCC CRMS." />
+                <title>DCC HRMS - Loan Type</title>
+                <meta name="DepanrtmentList" content="This is loan_type page of DCC CRMS." />
             </Helmet>
             <div className="content">
                 {error && (
@@ -197,9 +197,9 @@ const LoneType = () => {
                             <div className="row align-items-center">
                                 <div className="col-8">
                                     <h4 className="page-title">
-                                        Lone Type
+                                        Loan Type
                                         <span className="count-title">
-                                            {lone_type?.totalCount || 0}
+                                            {loan_type?.totalCount || 0}
                                         </span>
                                     </h4>
                                 </div>
@@ -216,12 +216,12 @@ const LoneType = () => {
                                     <SearchBar
                                         searchText={searchText}
                                         handleSearch={handleSearch}
-                                        label="Search Lone Type"
+                                        label="Search Loan Type"
                                     />
                                     {isCreate && <div className="col-sm-8">
                                         <AddButton
-                                            label="Add Lone Type"
-                                            id="add_edit_lone_type_modal"
+                                            label="Add Loan Type"
+                                            id="add_edit_loan_type_modal"
                                             setMode={() => setMode("add")}
                                         />
                                     </div>}
@@ -265,4 +265,4 @@ const LoneType = () => {
     );
 };
 
-export default LoneType;
+export default LoanType;
