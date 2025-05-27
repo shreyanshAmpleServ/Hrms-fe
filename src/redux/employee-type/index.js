@@ -1,14 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
-
-// employmentType Slice
+import toast from "react-hot-toast";
 
 // Fetch All employmentTypes
 export const fetchemploymentType = createAsyncThunk(
   "employmentType/fetchemploymentType",
   async (datas, thunkAPI) => {
     try {
-      const params = {};
+      let params = {};
       if (datas?.search) params.search = datas?.search;
       if (datas?.page) params.page = datas?.page;
       if (datas?.size) params.size = datas?.size;
@@ -28,14 +27,18 @@ export const addemploymentType = createAsyncThunk(
   "employmentType/addemploymentType",
   async (employmentTypeData, thunkAPI) => {
     try {
-      const response = await apiClient.post(
-        "/v1/employment-type",
-        employmentTypeData
+      const response = await toast.promise(
+        apiClient.post("/v1/employment-type", employmentTypeData),
+        {
+          loading: "Adding employment type...",
+          success: "Employment type added successfully",
+          error: "Failed to add employment type",
+        }
       );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add employmentType"
+        error.response?.data || "Failed to add employment type"
       );
     }
   }
@@ -46,9 +49,13 @@ export const updateemploymentType = createAsyncThunk(
   "employmentType/updateemploymentType",
   async ({ id, employmentTypeData }, thunkAPI) => {
     try {
-      const response = await apiClient.put(
-        `/v1/employment-type/${id}`,
-        employmentTypeData
+      const response = await toast.promise(
+        apiClient.put(`/v1/employment-type/${id}`, employmentTypeData),
+        {
+          loading: "Updating employment type...",
+          success: "Employment type updated successfully",
+          error: "Failed to update employment type",
+        }
       );
       return response.data;
     } catch (error) {
@@ -59,7 +66,7 @@ export const updateemploymentType = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update employmentType"
+        error.response?.data || "Failed to update employment type"
       );
     }
   }
@@ -70,14 +77,22 @@ export const deleteemploymentType = createAsyncThunk(
   "employmentType/deleteemploymentType",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/employment-type/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/employment-type/${id}`),
+        {
+          loading: "Deleting employment type...",
+          success: "Employment type deleted successfully",
+          error: "Failed to delete employment type",
+        }
+      );
       return {
         data: { id },
-        message: response.data.message || "employmentType deleted successfully",
+        message:
+          response.data.message || "employment type deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete employmentType"
+        error.response?.data || "Failed to delete employment type"
       );
     }
   }

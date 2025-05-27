@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 import { addbranch, updatebranch } from "../../../../../redux/branch";
 import { fetchCompany } from "../../../../../redux/company";
-import { Controller, } from "react-hook-form";
-import Select from "react-select";
-import { useMemo } from "react";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
+  const [searchValue, setSearchValue] = useState("");
   const { loading } = useSelector((state) => state.branch);
   const dispatch = useDispatch();
 
@@ -21,39 +20,31 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
   React.useEffect(() => {
-    dispatch(fetchCompany()); // Changed to fetchCountries
-  }, []);
+    dispatch(fetchCompany({ search: searchValue }));
+  }, [searchValue, dispatch]);
+
   const company = useSelector((state) => state.company.company);
-  const CompanyList = useMemo(() => {
-    return (
-      company?.data?.map((item) => ({
-        value: item.id,
-        label: item.company_name,
-      })) || []
-    );
-  }, [company]);
 
+  const CompanyList =
+    company?.data?.map((item) => ({
+      value: item.id,
+      label: item.company_name,
+    })) || [];
 
-
-
-
-
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        // company_id: initialData.company_id || "",
         branch_name: initialData.branch_name || "",
         location: initialData.location || "",
+        company_id: initialData.company_id || "",
         is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
-        // company_id: "",
         branch_name: "",
         location: "",
+        company_id: "",
         is_active: "Y",
       });
     }
@@ -93,104 +84,93 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
-              <div className="mb-3">
+              <div className="mb-3 col-md-12">
                 <label className="col-form-label">
                   Branch Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Branch Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("branch_name", {
-                    required: "Industry name is required.",
+                    required: "Branch name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Branch name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.branch_name && (
+                  <small className="text-danger">
+                    {errors.branch_name.message}
+                  </small>
                 )}
               </div>
-              <div className="row">
-                {/* Company Dropdown */}
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      Company ID    <span className="text-danger">*</span>
-                    </label>
-                    <Controller
-                      name="company_id"
-                      control={control}
-                      rules={{ required: "company_id" }} // Validation rule
-                      render={({ field }) => (
+
+              <div className="col-md-12">
+                <div className="mb-3">
+                  <label className="col-form-label">
+                    Company
+                    <span className="text-danger">*</span>
+                  </label>
+                  <Controller
+                    name="company_id"
+                    control={control}
+                    rules={{ required: "Company is required" }}
+                    render={({ field }) => {
+                      const selectedCompany = CompanyList?.find(
+                        (option) => option.value === field.value
+                      );
+                      return (
                         <Select
                           {...field}
+                          className="select"
                           options={CompanyList}
-                          placeholder="Choose"
-                          isDisabled={!CompanyList.length} // Disable if no stages are available
                           classNamePrefix="react-select"
-                          className="select2"
+                          placeholder="Choose Company"
+                          onInputChange={(inputValue) =>
+                            setSearchValue(inputValue)
+                          }
+                          value={selectedCompany || null}
                           onChange={(selectedOption) =>
-                            field.onChange(selectedOption?.value || null)
-                          } // Send only value
-                          value={CompanyList?.find(
-                            (option) =>
-                              option.value === watch("company_id"),
-                          ) || ""}
+                            field.onChange(selectedOption.value)
+                          }
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999,
+                            }),
+                          }}
                         />
-                      )}
-                    />
-                    {errors.company_id && (
-                      <small className="text-danger">
-                        {errors.company_id.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-
-                {/* Branch Name Input */}
-                {/* <div className="col-md-6 mb-3">
-                  <label className="col-form-label">
-                    Company ID <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.branch_name ? "is-invalid" : ""}`}
-                    {...register("company_id", {
-                      required: "Branch name is required.",
-                      minLength: {
-                        value: 3,
-                        message: "Branch name must be at least 3 characters.",
-                      },
-                    })}
+                      );
+                    }}
                   />
-                  {errors.branch_name && (
-                    <small className="text-danger">{errors.branch_name.message}</small>
-                  )}
-                </div> */}
-
-                {/* Branch Location Input */}
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">
-                    Location <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.location ? "is-invalid" : ""}`}
-                    {...register("location", {
-                      required: "Location is required.",
-                    })}
-                  />
-                  {errors.location && (
-                    <small className="text-danger">{errors.location.message}</small>
+                  {errors.employee_id && (
+                    <small className="text-danger">
+                      {errors.employee_id.message}
+                    </small>
                   )}
                 </div>
               </div>
 
-              {/* Status */}
-
+              <div className="col-md-12 mb-3">
+                <label className="col-form-label">
+                  Location <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Location"
+                  className={`form-control ${errors.location ? "is-invalid" : ""}`}
+                  {...register("location", {
+                    required: "Location is required.",
+                  })}
+                />
+                {errors.location && (
+                  <small className="text-danger">
+                    {errors.location.message}
+                  </small>
+                )}
+              </div>
             </div>
 
             {/* Footer */}

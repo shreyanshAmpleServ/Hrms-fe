@@ -1,5 +1,4 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -8,9 +7,7 @@ import Table from "../../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
-
 import moment from "moment";
-
 import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
@@ -22,10 +19,12 @@ import {
 } from "../../../../redux/department";
 
 const DepanrtmentList = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selectedDepartment, setSelectedDepartment] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
     (i) => i?.module_name === "Department"
@@ -93,7 +92,7 @@ const DepanrtmentList = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_department_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelectedDepartment(record);
                         setMode("edit");
                       }}
                     >
@@ -104,7 +103,7 @@ const DepanrtmentList = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteIndustry(record)}
+                      onClick={() => handleDeleteDepartment(record)}
                     >
                       <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
@@ -124,6 +123,7 @@ const DepanrtmentList = () => {
   React.useEffect(() => {
     dispatch(fetchdepartment({ search: searchText }));
   }, [dispatch, searchText]);
+
   React.useEffect(() => {
     setPaginationData({
       currentPage: department?.currentPage,
@@ -163,17 +163,14 @@ const DepanrtmentList = () => {
     return data;
   }, [searchText, department, columns, sortOrder]);
 
-  const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+  const handleDeleteDepartment = (department) => {
+    setSelectedDepartment(department);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletedepartment(selectedIndustry.id));
-      // navigate(`/department`);
+    if (selectedDepartment) {
+      dispatch(deletedepartment(selectedDepartment.id));
       setShowDeleteModal(false);
     }
   };
@@ -181,9 +178,9 @@ const DepanrtmentList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Depanrtment</title>
+        <title>DCC HRMS - Department</title>
         <meta
-          name="DepanrtmentList"
+          name="Department"
           content="This is department page of DCC HRMS."
         />
       </Helmet>
@@ -209,7 +206,7 @@ const DepanrtmentList = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Depanrtment
+                    Department
                     <span className="count-title">
                       {department?.totalCount || 0}
                     </span>
@@ -228,12 +225,12 @@ const DepanrtmentList = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Depanrtment"
+                    label="Search Department"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Depanrtment"
+                        label="Add Department"
                         id="add_edit_department_modal"
                         setMode={() => setMode("add")}
                       />
@@ -267,12 +264,12 @@ const DepanrtmentList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal mode={mode} initialData={selectedDepartment} />
       <DeleteAlert
-        label="Industry"
+        label="Department"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
+        selectedDepartment={selectedDepartment}
         onDelete={deleteData}
       />
     </div>

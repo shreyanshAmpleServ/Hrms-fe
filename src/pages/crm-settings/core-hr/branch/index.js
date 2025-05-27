@@ -26,6 +26,8 @@ const BranchList = () => {
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
     (i) => i?.module_name === "Branch"
@@ -40,51 +42,27 @@ const BranchList = () => {
 
   const columns = [
     {
-      title: " Branch Name",
+      title: "Branch Name",
       dataIndex: "branch_name",
       render: (text, record) => <Link to={`#`}>{record.branch_name}</Link>,
       sorter: (a, b) => a.branch_name.localeCompare(b.branch_name),
     },
     {
-      title: "Company Id",
-      dataIndex: "company_id",
-
-      sorter: (a, b) =>
-        a.company_id.toString().localeCompare(b.company_id.toString()),
+      title: "Company Name",
+      dataIndex: "branch_company",
+      render: (text) => text.company_name,
     },
     {
-      title: "location",
+      title: "Company Code",
+      dataIndex: "branch_company",
+      render: (text) => text.company_code,
+    },
+    {
+      title: "Location",
       dataIndex: "location",
       render: (text, record) => <Link to={`#`}>{record.location}</Link>,
       sorter: (a, b) => a.location.localeCompare(b.location),
     },
-
-    // {
-    //   title: "Created Date",
-    //   dataIndex: "createdate",
-    //   render: (text) => (
-    //     <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-    //   ),
-    //   sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
-    // },
-    // {
-    //   title: "Status",
-    //   dataIndex: "is_active",
-    //   render: (text) => (
-    //     <div>
-    //       {text === "Y" ? (
-    //         <span className="badge badge-pill badge-status bg-success">
-    //           Active
-    //         </span>
-    //       ) : (
-    //         <span className="badge badge-pill badge-status bg-danger">
-    //           Inactive
-    //         </span>
-    //       )}
-    //     </div>
-    //   ),
-    //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -139,6 +117,7 @@ const BranchList = () => {
   React.useEffect(() => {
     dispatch(fetchbranch({ search: searchText }));
   }, [dispatch, searchText]);
+
   React.useEffect(() => {
     setPaginationData({
       currentPage: branch?.currentPage,
@@ -165,7 +144,6 @@ const BranchList = () => {
 
   const filteredData = useMemo(() => {
     let data = branch?.data || [];
-
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
         moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
@@ -176,19 +154,16 @@ const BranchList = () => {
       );
     }
     return data;
-  }, [searchText, branch, columns, sortOrder]);
+  }, [branch, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelectedIndustry(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
     if (selectedIndustry) {
       dispatch(deletebranch(selectedIndustry.id));
-      // navigate(`/banks`);
       setShowDeleteModal(false);
     }
   };
@@ -281,7 +256,7 @@ const BranchList = () => {
 
       <AddEditModal mode={mode} initialData={selectedIndustry} />
       <DeleteAlert
-        label="Industry"
+        label="Branch"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         selectedIndustry={selectedIndustry}

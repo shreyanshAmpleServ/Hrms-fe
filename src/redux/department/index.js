@@ -1,14 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast";
 
-// department Slice
-
-// Fetch All department
 export const fetchdepartment = createAsyncThunk(
   "department/fetchdepartment",
   async (datas, thunkAPI) => {
     try {
-      const params = {};
+      let params = {};
       if (datas?.search) params.search = datas?.search;
       if (datas?.page) params.page = datas?.page;
       if (datas?.size) params.size = datas?.size;
@@ -23,12 +21,18 @@ export const fetchdepartment = createAsyncThunk(
   }
 );
 
-// Add an department
 export const adddepartment = createAsyncThunk(
   "department/adddepartment",
   async (departmentData, thunkAPI) => {
     try {
-      const response = await apiClient.post("/v1/department", departmentData);
+      const response = await toast.promise(
+        apiClient.post("/v1/department", departmentData),
+        {
+          loading: "Adding department...",
+          success: "Department added successfully",
+          error: "Failed to add department",
+        }
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -38,14 +42,17 @@ export const adddepartment = createAsyncThunk(
   }
 );
 
-// Update an department
 export const updatedepartment = createAsyncThunk(
   "department/updatedepartment",
   async ({ id, departmentData }, thunkAPI) => {
     try {
-      const response = await apiClient.put(
-        `/v1/department/${id}`,
-        departmentData
+      const response = await toast.promise(
+        apiClient.put(`/v1/department/${id}`, departmentData),
+        {
+          loading: "Updating department...",
+          success: "Department updated successfully",
+          error: "Failed to update department",
+        }
       );
       return response.data;
     } catch (error) {
@@ -62,12 +69,18 @@ export const updatedepartment = createAsyncThunk(
   }
 );
 
-// Delete an department
 export const deletedepartment = createAsyncThunk(
   "department/deletedepartment",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/department/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/department/${id}`),
+        {
+          loading: "Deleting department...",
+          success: "Department deleted successfully",
+          error: "Failed to delete department",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "department deleted successfully",

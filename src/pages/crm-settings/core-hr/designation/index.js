@@ -8,9 +8,7 @@ import Table from "../../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
-
 import moment from "moment";
-
 import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
@@ -22,13 +20,15 @@ import {
 } from "../../../../redux/designation";
 
 const DesignationList = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selectedDesignation, setSelectedDesignation] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Designation"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -40,19 +40,18 @@ const DesignationList = () => {
 
   const columns = [
     {
-      title: "Designation Name",
+      title: "Designation",
       dataIndex: "designation_name",
       render: (text, record) => <Link to={`#`}>{record.designation_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.designation_name || "").localeCompare(b.designation_name || ""),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
     },
     {
       title: "Status",
@@ -70,7 +69,7 @@ const DesignationList = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     ...(isUpdate || isDelete
       ? [
@@ -95,7 +94,7 @@ const DesignationList = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_designation_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelectedDesignation(record);
                         setMode("edit");
                       }}
                     >
@@ -106,7 +105,7 @@ const DesignationList = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteIndustry(record)}
+                      onClick={() => handleDeleteDesignation(record)}
                     >
                       <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
@@ -169,17 +168,14 @@ const DesignationList = () => {
     return data;
   }, [searchText, designation, columns, sortOrder]);
 
-  const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+  const handleDeleteDesignation = (designation) => {
+    setSelectedDesignation(designation);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletedesignation(selectedIndustry.id));
-      // navigate(`/designation`);
+    if (selectedDesignation) {
+      dispatch(deletedesignation(selectedDesignation.id));
       setShowDeleteModal(false);
     }
   };
@@ -273,12 +269,12 @@ const DesignationList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal mode={mode} initialData={selectedDesignation} />
       <DeleteAlert
-        label="Industry"
+        label="Designation"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
+        selectedDesignation={selectedDesignation}
         onDelete={deleteData}
       />
     </div>

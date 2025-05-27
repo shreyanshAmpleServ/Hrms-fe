@@ -1,9 +1,10 @@
 // Font import
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@use "sass:color";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 
 // Base Font
 $font-size-base: 14px;
-$font-size-sm: $font-size-base * .875;
+$font-size-sm: $font-size-base * 0.875;
 $font-size-lg: $font-size-base * 1.25;
 $font-weight-lighter: lighter;
 $font-weight-light: 300;
@@ -18,44 +19,42 @@ $font-family-primary: "Noto Sans", sans-serif;
 $font-awesome: "Fontawesome";
 
 // Theme Colors Variables
-// $primary: #E41F07;  1st Change
 $primary: #4453ff;
 $primary-hover: darken($primary, 10%);
-$secondary: #FFA201;
+$secondary: #ffa201;
 $secondary-hover: darken($secondary, 10%);
-$success: #5CB85C;
+$success: #5cb85c;
 $success-hover: darken($success, 10%);
-$info: #1ECBE2;
+$info: #1ecbe2;
 $info-hover: darken($info, 10%);
-$warning: #FDA700;
+$warning: #fda700;
 $warning-hover: darken($warning, 10%);
-// $danger: #4453ff;
-$danger: #FC0027;
+$danger: #fc0027;
 $danger-hover: darken($danger, 10%);
 $dark: #171724;
 $dark-border: #393947;
 $dark-text: #a3a6a6;
-$dark-textcolor: #B5B5B5;
+$dark-textcolor: #b5b5b5;
 $dark-hover: darken($dark, 10%);
-$darkmode-hover: #28283D;
-$dark-input: #1A1A25;
-$dark-bg: #1E1E2D;
-$gray-bg: #28283E;
-$light: #FDFDFE;
+$darkmode-hover: #28283d;
+$dark-input: #1a1a25;
+$dark-bg: #1e1e2d;
+$gray-bg: #28283e;
+$light: #fdfdfe;
 $light-hover: darken($light, 10%);
-$white: #FFF;
+$white: #fff;
 $black: #000;
-$purple: #4A00E5;
-$pink: #EA00B7;
-$blue: #339DFF;
+$purple: #4a00e5;
+$pink: #ea00b7;
+$blue: #339dff;
 $teal: #02a8b5;
-$violet: #676DFF;
+$violet: #676dff;
 $cyan: #299cdb;
-$green: #00918E;
-$orange: #FF9D0A;
-$indigo: #0092E4;
+$green: #00918e;
+$orange: #ff9d0a;
+$indigo: #0092e4;
 $indigo-hover: darken($indigo, 10%);
-$tertiary: #3C2371;
+$tertiary: #3c2371;
 $yellow: #ffff00;
 
 // Primary
@@ -81,171 +80,169 @@ $primary-900: #4453ff;
 // $primary-900: #E73520;
 
 // Secondary
-$secondary-100: #FFF6E6;
-$secondary-200: #FFECCC;
-$secondary-300: #FFE3B3;
-$secondary-400: #FFDA99;
-$secondary-500: #FFD180;
-$secondary-600: #FFC767;
-$secondary-700: #FFBE4D;
-$secondary-800: #FFB534;
-$secondary-900: #FFAB1A;
+$secondary-100: #fff6e6;
+$secondary-200: #ffeccc;
+$secondary-300: #ffe3b3;
+$secondary-400: #ffda99;
+$secondary-500: #ffd180;
+$secondary-600: #ffc767;
+$secondary-700: #ffbe4d;
+$secondary-800: #ffb534;
+$secondary-900: #ffab1a;
 
 // Tertiary
-$tertiary-100: #ECE9F1;
-$tertiary-200: #D8D3E3;
-$tertiary-300: #C5BDD4;
-$tertiary-400: #B1A7C6;
-$tertiary-500: #9E91B8;
-$tertiary-600: #8A7BAA;
-$tertiary-700: #77659C;
-$tertiary-800: #634F8D;
-$tertiary-900: #50397F;
+$tertiary-100: #ece9f1;
+$tertiary-200: #d8d3e3;
+$tertiary-300: #c5bdd4;
+$tertiary-400: #b1a7c6;
+$tertiary-500: #9e91b8;
+$tertiary-600: #8a7baa;
+$tertiary-700: #77659c;
+$tertiary-800: #634f8d;
+$tertiary-900: #50397f;
 
 // Green
-$green-100: #E6F4F4;
-$green-200: #CCE9E8;
-$green-300: #B3DEDD;
-$green-400: #99D3D2;
-$green-500: #80C8C7;
-$green-600: #66BDBB;
-$green-700: #4DB2B0;
-$green-800: #33A7A5;
-$green-900: #1A9C99;
+$green-100: #e6f4f4;
+$green-200: #cce9e8;
+$green-300: #b3dedd;
+$green-400: #99d3d2;
+$green-500: #80c8c7;
+$green-600: #66bdbb;
+$green-700: #4db2b0;
+$green-800: #33a7a5;
+$green-900: #1a9c99;
 
 // Blue
-$blue-100: #EBF5FF;
-$blue-200: #D6EBFF;
-$blue-300: #C2E2FF;
-$blue-400: #ADD8FF;
-$blue-500: #99CEFF;
-$blue-600: #85C4FF;
-$blue-700: #70BAFF;
-$blue-800: #5CB1FF;
-$blue-900: #47A7FF;
+$blue-100: #ebf5ff;
+$blue-200: #d6ebff;
+$blue-300: #c2e2ff;
+$blue-400: #add8ff;
+$blue-500: #99ceff;
+$blue-600: #85c4ff;
+$blue-700: #70baff;
+$blue-800: #5cb1ff;
+$blue-900: #47a7ff;
 
 // Orange
-$orange-100: #FFF5E7;
-$orange-200: #FFEBCE;
-$orange-300: #FFE2B6;
-$orange-400: #FFD89D;
-$orange-500: #FFCE85;
-$orange-600: #FFC46C;
-$orange-700: #FFBA54;
-$orange-800: #FFB13B;
-$orange-900: #FFA723;
+$orange-100: #fff5e7;
+$orange-200: #ffebce;
+$orange-300: #ffe2b6;
+$orange-400: #ffd89d;
+$orange-500: #ffce85;
+$orange-600: #ffc46c;
+$orange-700: #ffba54;
+$orange-800: #ffb13b;
+$orange-900: #ffa723;
 
 // Pink
-$pink-100: #FDE6F8;
-$pink-200: #FBCCF0;
-$pink-300: #F9B3E9;
-$pink-400: #F799E2;
-$pink-500: #F580DB;
-$pink-600: #F266D3;
-$pink-700: #F04DCC;
-$pink-800: #EE33C5;
-$pink-900: #EC1ABD;
+$pink-100: #fde6f8;
+$pink-200: #fbccf0;
+$pink-300: #f9b3e9;
+$pink-400: #f799e2;
+$pink-500: #f580db;
+$pink-600: #f266d3;
+$pink-700: #f04dcc;
+$pink-800: #ee33c5;
+$pink-900: #ec1abd;
 
 // Violet
-$violet-100: #F0F0FF;
-$violet-200: #E1E2FF;
-$violet-300: #D1D3FF;
-$violet-400: #C2C5FF;
-$violet-500: #B3B6FF;
-$violet-600: #A4A7FF;
-$violet-700: #9599FF;
-$violet-800: #858AFF;
-$violet-900: #767CFF;
+$violet-100: #f0f0ff;
+$violet-200: #e1e2ff;
+$violet-300: #d1d3ff;
+$violet-400: #c2c5ff;
+$violet-500: #b3b6ff;
+$violet-600: #a4a7ff;
+$violet-700: #9599ff;
+$violet-800: #858aff;
+$violet-900: #767cff;
 
 // Indigo
-$indigo-100: #E6F4FC;
-$indigo-200: #CCE9FA;
-$indigo-300: #B3DEF7;
-$indigo-400: #99D3F4;
-$indigo-500: #80C9F2;
-$indigo-600: #66BEEF;
-$indigo-700: #4DB3EC;
-$indigo-800: #33A8E9;
-$indigo-900: #1A9DE7;
+$indigo-100: #e6f4fc;
+$indigo-200: #cce9fa;
+$indigo-300: #b3def7;
+$indigo-400: #99d3f4;
+$indigo-500: #80c9f2;
+$indigo-600: #66beef;
+$indigo-700: #4db3ec;
+$indigo-800: #33a8e9;
+$indigo-900: #1a9de7;
 
 // Light
-$light-100: #FAFAFA;
-$light-200: #F9F9FC;
-$light-300: #F6F6F6;
-$light-400: #F5F5F5;
-$light-500: #F6F6F6;
-$light-600: #F4F4F4;
-$light-700: #F2ECFF;
-$light-800: #EAEAEA;
-$light-900: #E8E8E8;
+$light-100: #fafafa;
+$light-200: #f9f9fc;
+$light-300: #f6f6f6;
+$light-400: #f5f5f5;
+$light-500: #f6f6f6;
+$light-600: #f4f4f4;
+$light-700: #f2ecff;
+$light-800: #eaeaea;
+$light-900: #e8e8e8;
 
 // Gray
-$gray-100: #C0C0C0;
-$gray-200: #9B9B9B;
+$gray-100: #c0c0c0;
+$gray-200: #9b9b9b;
 $gray-300: #898989;
-$gray-400: #6F6F6F;
-$gray-500: #6F7A7A;
-$gray-600: #565E5E;
+$gray-400: #6f6f6f;
+$gray-500: #6f7a7a;
+$gray-600: #565e5e;
 $gray-700: #424848;
 $gray-800: #323737;
-$gray-900: #262A2A;
+$gray-900: #262a2a;
 
 // Info
-$info-100: #E9FAFC;
-$info-200: #D2F5F9;
-$info-300: #BCEFF6;
-$info-400: #A5EAF3;
-$info-500: #8FE5F1;
-$info-600: #78E0EE;
-$info-700: #62DBEB;
-$info-800: #4BD5E8;
-$info-900: #35D0E5;
+$info-100: #e9fafc;
+$info-200: #d2f5f9;
+$info-300: #bceff6;
+$info-400: #a5eaf3;
+$info-500: #8fe5f1;
+$info-600: #78e0ee;
+$info-700: #62dbeb;
+$info-800: #4bd5e8;
+$info-900: #35d0e5;
 
 // Success
-$success-100: #EFF8EF;
-$success-200: #E0F5D7;
-$success-300: #CEEACE;
-$success-400: #BEE3BE;
-$success-500: #AEDCAE;
-$success-600: #9DD49D;
-$success-700: #8DCD8D;
-$success-800: #7DC67D;
-$success-900: #6CBF6C;
+$success-100: #eff8ef;
+$success-200: #e0f5d7;
+$success-300: #ceeace;
+$success-400: #bee3be;
+$success-500: #aedcae;
+$success-600: #9dd49d;
+$success-700: #8dcd8d;
+$success-800: #7dc67d;
+$success-900: #6cbf6c;
 
 // Danger
-$danger-100: #FFEEEC;
-$danger-200: #FECCD4;
-$danger-300: #FEB3BE;
-$danger-400: #FE99A9;
-$danger-500: #FE8093;
-$danger-600: #FD667D;
-$danger-700: #FD4D68;
-$danger-800: #FD3352;
-$danger-900: #FC1A3D;
+$danger-100: #ffeeec;
+$danger-200: #feccd4;
+$danger-300: #feb3be;
+$danger-400: #fe99a9;
+$danger-500: #fe8093;
+$danger-600: #fd667d;
+$danger-700: #fd4d68;
+$danger-800: #fd3352;
+$danger-900: #fc1a3d;
 
 // Warning
-$warning-100: #FFF7D8;
-$warning-200: #FFEDCC;
-$warning-300: #FEE5B3;
-$warning-400: #FEDC99;
-$warning-500: #FED380;
-$warning-600: #FECA66;
-$warning-700: #FEC14D;
-$warning-800: #FDB933;
-$warning-900: #FDB01A;
+$warning-100: #fff7d8;
+$warning-200: #ffedcc;
+$warning-300: #fee5b3;
+$warning-400: #fedc99;
+$warning-500: #fed380;
+$warning-600: #feca66;
+$warning-700: #fec14d;
+$warning-800: #fdb933;
+$warning-900: #fdb01a;
 
 // Purple
-$purple-100: #F3EDFF;
-$purple-200: #DBCCFA;
-$purple-300: #C9B3F7;
-$purple-400: #B799F5;
-$purple-500: #A580F2;
-$purple-600: #9266EF;
-$purple-700: #804DED;
-$purple-800: #6E33EA;
-$purple-900: #5C1AE8;
-
-
+$purple-100: #f3edff;
+$purple-200: #dbccfa;
+$purple-300: #c9b3f7;
+$purple-400: #b799f5;
+$purple-500: #a580f2;
+$purple-600: #9266ef;
+$purple-700: #804ded;
+$purple-800: #6e33ea;
+$purple-900: #5c1ae8;
 
 $colors: (
   "blue": $blue,
@@ -259,7 +256,7 @@ $colors: (
   "cyan": $cyan,
   "white": $white,
   "gray": $gray-600,
-  "gray-dark": $gray-800
+  "gray-dark": $gray-800,
 );
 
 $theme-colors: (
@@ -274,48 +271,48 @@ $theme-colors: (
   "black": $black,
   "purple": $purple,
   "yellow": $yellow,
-  "teal": $teal
+  "teal": $teal,
 );
 
-$text-color: #6F6F6F;
-$title-color: #262A2A;
-$sub-title: #B8BCC9;
-$body-bg: #F9F9FC;
+$text-color: #6f6f6f;
+$title-color: #262a2a;
+$sub-title: #b8bcc9;
+$body-bg: #f9f9fc;
 $wrapper-bg: #f1f5f6;
 $text-muted: #9595b5;
 $default-background: #f7f8f9;
 $black-bg: #141432;
 $card-dark-bg: #1d1d42;
 $navy: #353570;
-$theme-title: #97A2D2;
+$theme-title: #97a2d2;
 $input-bg: #2c2c50;
 $form-control-bg: #ffffff;
-$background-3: #E0E2E7;
+$background-3: #e0e2e7;
 
 // Social Icons Colors
-$facebook: #3B5998;
-$twitter: #00ACEE;
-$google: #DD4B39;
-$telegram: #0088CC;
-$linkedin: #0E76A8;
-$youtube: #C4302B;
-$instagram: #3F729B;
-$reddit: #C6C6C6;
+$facebook: #3b5998;
+$twitter: #00acee;
+$google: #dd4b39;
+$telegram: #0088cc;
+$linkedin: #0e76a8;
+$youtube: #c4302b;
+$instagram: #3f729b;
+$reddit: #c6c6c6;
 $pinterest: #cc2127;
-$vk: #2B587A;
-$rss: #EE802F;
-$skype: #00AFF0;
+$vk: #2b587a;
+$rss: #ee802f;
+$skype: #00aff0;
 $xing: #126567;
-$tumblr: #34526F;
-$email: #6567A5;
-$delicious: #205CC0;
-$stumbleupon: #F74425;
+$tumblr: #34526f;
+$email: #6567a5;
+$delicious: #205cc0;
+$stumbleupon: #f74425;
 $digg: #191919;
-$blogger: #FC4F08;
-$flickr: #FF0084;
-$vimeo: #86C9EF;
-$yahoo: #720E9E;
-$gplus: #DD4B39;
+$blogger: #fc4f08;
+$flickr: #ff0084;
+$vimeo: #86c9ef;
+$yahoo: #720e9e;
+$gplus: #dd4b39;
 $appstore: #000;
 
 // Gradient Variables
@@ -325,12 +322,12 @@ $success-gradient: linear-gradient(to right, $success 0%, #5cf9e2 100%);
 $warning-gradient: linear-gradient(to right, $warning 0%, #fbc434 100%);
 $danger-gradient: linear-gradient(to right, $danger 0%, #fd4a68 100%);
 $info-gradient: linear-gradient(to right, $info 0%, #00f2fe 100%);
-$pink-gradient: linear-gradient(to right, $pink 0%, #FFA795 100%);
-$teal-gradient: linear-gradient(to right, $teal 0%, #0695DD 100%);
-$orange-gradient: linear-gradient(to right, $orange 0%, #FBB034 100%);
+$pink-gradient: linear-gradient(to right, $pink 0%, #ffa795 100%);
+$teal-gradient: linear-gradient(to right, $teal 0%, #0695dd 100%);
+$orange-gradient: linear-gradient(to right, $orange 0%, #fbb034 100%);
 $purple-gradient: linear-gradient(to right, $purple 0%, #9b25b7 100%);
-$light-gradient: linear-gradient(to right, $light 0%, #D1D6DE 100%);
-$dark-gradient: linear-gradient(to right, $dark 0%, #54505D 100%);
+$light-gradient: linear-gradient(to right, $light 0%, #d1d6de 100%);
+$dark-gradient: linear-gradient(to right, $dark 0%, #54505d 100%);
 
 // Style Anchor Elements
 $link-color: $primary;
@@ -357,8 +354,8 @@ $rounded: 50%;
 $rounded-pill: 1.5rem;
 
 // Box Shadow
-$box-shadow: 0px 4px 54px 0px #E0E0E040;
-$box-shadow-sm: 0px 4px 74px 0px #D0D0D040;
+$box-shadow: 0px 4px 54px 0px #e0e0e040;
+$box-shadow-sm: 0px 4px 74px 0px #d0d0d040;
 $box-shadow-lg: 0 5px 10px rgba(30, 32, 37, 0.12);
 
 // Font Size

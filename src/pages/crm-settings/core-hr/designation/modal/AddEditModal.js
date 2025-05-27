@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { adddesignation, updatedesignation } from "../../../../../redux/designation";
+import {
+  adddesignation,
+  updatedesignation,
+} from "../../../../../redux/designation";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.designation);
@@ -16,7 +19,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -32,27 +34,26 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "add_Close_designation_modal",
-    );
+    const closeButton = document.getElementById("add_Close_designation_modal");
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         adddesignation({
           designation_name: data.name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updatedesignation({
           id: initialData.id,
-          designationData: { designation_name: data.name, is_active: data.is_active },
-        }),
+          designationData: {
+            designation_name: data.name,
+            is_active: data.is_active,
+          },
+        })
       );
     }
-    reset(); // Clear the form
+    reset();
     closeButton.click();
   };
 
@@ -75,7 +76,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Designation Name <span className="text-danger">*</span>
@@ -83,11 +83,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  placeholder="Enter Designation Name"
                   {...register("name", {
-                    required: "Industry name is required.",
+                    required: "Designation name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message:
+                        "Designation name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -96,7 +98,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 )}
               </div>
 
-              {/* Status */}
               <div className="mb-0">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
@@ -124,12 +125,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

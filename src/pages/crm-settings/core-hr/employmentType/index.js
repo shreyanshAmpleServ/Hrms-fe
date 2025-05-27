@@ -1,6 +1,5 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
-import React, { useCallback, useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
@@ -8,9 +7,7 @@ import Table from "../../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
-
 import moment from "moment";
-
 import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
@@ -22,13 +19,15 @@ import {
 } from "../../../../redux/employee-type";
 
 const Employee_TypeList = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Employee Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -43,16 +42,14 @@ const Employee_TypeList = () => {
       title: "Employee Type",
       dataIndex: "type_name",
       render: (text, record) => <Link to={`#`}>{record.type_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.type_name || "").localeCompare(b.type_name || ""),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
     },
     {
       title: "Status",
@@ -70,7 +67,7 @@ const Employee_TypeList = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     ...(isUpdate || isDelete
       ? [
@@ -95,7 +92,7 @@ const Employee_TypeList = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_employee_type_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -170,15 +167,13 @@ const Employee_TypeList = () => {
   }, [searchText, employmentType, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteemploymentType(selectedIndustry.id));
+    if (selected) {
+      dispatch(deleteemploymentType(selected.id));
       // navigate(`/employee_type`);
       setShowDeleteModal(false);
     }
@@ -215,7 +210,7 @@ const Employee_TypeList = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Employee Name
+                    Employee Type
                     <span className="count-title">
                       {employmentType?.totalCount || 0}
                     </span>
@@ -234,12 +229,12 @@ const Employee_TypeList = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search employee Name"
+                    label="Search employee type"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Employee Name"
+                        label="Add Employee Type"
                         id="add_edit_employee_type_modal"
                         setMode={() => setMode("add")}
                       />
@@ -273,12 +268,15 @@ const Employee_TypeList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Employee Type"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

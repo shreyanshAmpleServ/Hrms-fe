@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addemployee_category, updateemployee_category } from "../../../../../redux/employee-category";
+import {
+  addemployee_category,
+  updateemployee_category,
+} from "../../../../../redux/employee-category";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.employee_category);
 
   const {
@@ -16,7 +19,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -33,36 +35,44 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "Close_edit_employee_category_modal",
+      "Close_edit_employee_category_modal"
     );
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addemployee_category({
           category_name: data.name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateemployee_category({
           id: initialData.id,
-          employee_categoeyData: { category_name: data.name, is_active: data.is_active },
-        }),
+          employee_categoeyData: {
+            category_name: data.name,
+            is_active: data.is_active,
+          },
+        })
       );
     }
-    reset(); // Clear the form
+    reset();
+    setSelected(null);
     closeButton.click();
   };
 
   return (
-    <div className="modal fade" id="add_edit_employee_category_modal" role="dialog">
+    <div
+      className="modal fade"
+      id="add_edit_employee_category_modal"
+      role="dialog"
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Employee" : "Edit employee_category"}
+              {mode === "add"
+                ? "Add New Employee Category"
+                : "Edit Employee Category"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -75,19 +85,20 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Employee Name <span className="text-danger">*</span>
+                  Employee Category <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  placeholder="Enter Employee Category Name"
                   {...register("name", {
-                    required: "Industry name is required.",
+                    required: "Employee category name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message:
+                        "Employee category name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -96,7 +107,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 )}
               </div>
 
-              {/* Status */}
               <div className="mb-0">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
@@ -124,12 +134,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

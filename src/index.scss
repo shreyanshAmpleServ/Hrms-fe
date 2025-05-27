@@ -44,14 +44,16 @@ a {
   }
 }
 .data-table-card {
+  background: #fff;
   .ant-table-content {
+    width: 100%;
     .ant-table-tbody {
+      width: 100%;
       tr {
         &:nth-of-type(2n + 1) {
           background-color: #fff;
         }
       }
-
       td {
         padding: 0.5rem;
       }
@@ -60,32 +62,35 @@ a {
 }
 
 .ant-table-cell-row-hover {
-  background-color: #fff;
   background: #fff;
 }
 
-//ant datatable pagination
-.ant-pagination-item.ant-pagination-item-1.ant-pagination-item-active {
-  background: #293aff;
-  border-color: #293aff;
-  color: #fff;
+.ant-pagination-item {
+  &.ant-pagination-item-1 {
+    &.ant-pagination-item-active {
+      background: #293aff;
+      border-color: #293aff;
+      color: #fff;
+    }
+  }
 }
 
-// manage columns in datatable page
 h4,
 .h4 {
   font-size: 1.125rem;
 }
 
-// date range picker
-.daterangepicker td.active,
-.daterangepicker td.active:hover {
-  background-color: #00918e;
-  color: #fff;
-}
-
-.daterangepicker .calendar-table td.in-range {
-  background-color: #fff;
+.daterangepicker {
+  td {
+    &.active,
+    &.active:hover {
+      background-color: #00918e;
+      color: #fff;
+    }
+    &.in-range {
+      background-color: #fff;
+    }
+  }
 }
 
 .applyBtn.btn.btn-sm.btn-primary {
@@ -94,13 +99,11 @@ h4,
   border: 1px solid #00918e;
 }
 
-// react-select plugin
 .css-1u9des2-indicatorSeparator {
   display: none;
 }
 
-//compaign data table
-div .badge-status {
+div.badge-status {
   border-radius: 5px;
   font-size: $font-size-12;
   padding: 4px 8px;
@@ -108,25 +111,21 @@ div .badge-status {
   color: $white;
 }
 
-div .bg-success {
+div.bg-success {
   background-color: $success !important;
 
   &.bg-opacity-10 {
     background-color: rgba($success, 0.1) !important;
   }
-
   &.bg-opacity-25 {
     background-color: rgba($success, 0.25) !important;
   }
-
   &.bg-opacity-50 {
     background-color: rgba($success, 0.5) !important;
   }
-
   &.bg-opacity-75 {
     background-color: rgba($success, 0.75) !important;
   }
-
   &.bg-opacity-100 {
     background-color: rgba($success, 1) !important;
   }
@@ -170,14 +169,16 @@ div .bg-success {
   position: sticky;
 }
 
-// select
-.select-details .css-1dimb5e-singleValue,
-.select-details .css-1jqq78o-placeholder {
-  padding-left: 15px;
+// Select styles
+.select-details {
+  .css-1dimb5e-singleValue,
+  .css-1jqq78o-placeholder {
+    padding-left: 15px;
+  }
 }
 
-div.css-13cymwt-control,
-div.css-t3ipsp-control {
+.css-13cymwt-control,
+.css-t3ipsp-control {
   min-width: 120px;
   border-color: #e8e8e8;
   box-shadow: 0px 4px 4px 0px rgba(219, 219, 219, 0.2509803922);
@@ -185,41 +186,56 @@ div.css-t3ipsp-control {
   border-radius: 5px;
 }
 
-div.css-t3ipsp-control:hover {
-  border-color: transparent;
-}
-span.p-dropdown-label.p-inputtext span {
-  font-family: "Noto Sans", sans-serif;
-}
-
-// datepicker
-.deals-details.react-datepicker__input-container {
-  width: 450px !important;
+.css-t3ipsp-control {
+  &:hover {
+    border-color: transparent;
+  }
 }
 
-div.react-datepicker-wrapper {
+.p-dropdown-label.p-inputtext {
+  span {
+    font-family: "Noto Sans", sans-serif;
+  }
+}
+
+// Datepicker styles
+.deals-details {
+  &.react-datepicker__input-container {
+    width: 450px !important;
+  }
+}
+
+.react-datepicker-wrapper {
   display: block;
   padding: 0;
   border: 0;
 }
 
-span.form-icon {
+.form-icon {
   z-index: 1;
 }
 
+// Image styles
 .img-checked {
   padding: 10px;
-  // width: 30px;
   background: rgb(49, 132, 199);
   color: white;
   border-radius: 20px;
   font-weight: bolder;
   position: relative;
-  /* margin-top: 2px ; */
 }
 
-.section-notes-slider .notes-slider .slick-list .slick-slide div {
-  margin-left: 12px !important;
+// Notes slider styles
+.section-notes-slider {
+  .notes-slider {
+    .slick-list {
+      .slick-slide {
+        div {
+          margin-left: 12px !important;
+        }
+      }
+    }
+  }
 }
 
 .page-add-notes {
@@ -227,28 +243,39 @@ span.form-icon {
   flex-wrap: wrap;
 }
 
-.visible .input-blocks .css-b62m3t-container .css-1dimb5e-singleValue {
-  margin-left: 25px !important;
+// Input block styles
+.visible {
+  .input-blocks {
+    .css-b62m3t-container {
+      .css-1dimb5e-singleValue {
+        margin-left: 25px !important;
+      }
+    }
+  }
 }
 
-[data-layout-mode="dark_mode"] .css-13cymwt-control {
-  background-color: #1d1d42;
-  border: 1px solid#67748E;
+// Dark mode styles
+[data-layout-mode="dark_mode"] {
+  .css-13cymwt-control {
+    background-color: #1d1d42;
+    border: 1px solid #67748e;
+  }
+
+  .css-t3ipsp-control {
+    background-color: #1d1d42;
+  }
+
+  .css-1nmdiq5-menu {
+    background-color: #1d1d42;
+  }
 }
 
-[data-layout-mode="dark_mode"] .css-t3ipsp-control {
-  background-color: #1d1d42;
-}
-
-[data-layout-mode="dark_mode"] .css-1nmdiq5-menu {
-  background-color: #1d1d42;
-}
-
-// .bx-microphone:before {
-//   content: "\eb89";
-// }
-.form-sorts.dropdown .radio-btn-items {
-  margin-top: 10px;
+// Form sort styles
+.form-sorts.dropdown {
+  .radio-btn-items {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .select__control {
@@ -643,6 +670,7 @@ div.sidebar-themesettings
 .ant-table {
   font-family: "Noto Sans", sans-serif !important;
 }
-.ti-shield:before {
-  content: "\eb24" !important;
+
+.dropdown .table-action {
+  z-index: 999;
 }

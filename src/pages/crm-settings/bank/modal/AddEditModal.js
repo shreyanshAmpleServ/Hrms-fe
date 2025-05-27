@@ -15,19 +15,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      reset({
-        bank_name: initialData.bank_name || "",
-        // is_active: initialData.is_active,
-      });
+      reset({ bank_name: initialData.bank_name || "" });
     } else {
-      reset({
-        bank_name: "",
-        // is_active: "Y",
-      });
+      reset({ bank_name: "" });
     }
   }, [mode, initialData, reset]);
 
@@ -36,12 +28,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (mode === "add") {
       dispatch(addbank(data));
     } else if (mode === "edit" && initialData) {
-      dispatch(
-        updatebank({
-          id: initialData.id,
-          ankData: data,
-        })
-      );
+      dispatch(updatebank({ id: initialData.id, ankData: data }));
     }
     reset();
     closeButton?.click();
@@ -53,7 +40,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Bank" : "Edit bank"}
+              {mode === "add" ? "Add New Bank" : "Edit Bank"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -66,60 +53,29 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Category Name <span className="text-danger">*</span>
+                  Bank Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.bank_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Bank Name"
                   {...register("bank_name", {
-                    required: "Industry name is required.",
+                    required: "Bank name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Bank name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.bank_name && (
+                  <small className="text-danger">
+                    {errors.bank_name.message}
+                  </small>
                 )}
               </div>
-
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
-
             {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">

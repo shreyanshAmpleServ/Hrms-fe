@@ -1,17 +1,12 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
-import React, { useCallback, useMemo, useEffect, useState } from "react";
+import moment from "moment";
+import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -20,15 +15,19 @@ import {
   deleteemployee_category,
   fetchemployee_category,
 } from "../../../../redux/employee-category";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const Employee_CategoryList = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Employee Category"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -40,19 +39,18 @@ const Employee_CategoryList = () => {
 
   const columns = [
     {
-      title: "employee Category",
+      title: "Employee Category",
       dataIndex: "category_name",
       render: (text, record) => <Link to={`#`}>{record.category_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.category_name || "").localeCompare(b.category_name || ""),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
     },
     {
       title: "Status",
@@ -95,7 +93,7 @@ const Employee_CategoryList = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_employee_category_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -170,16 +168,13 @@ const Employee_CategoryList = () => {
   }, [searchText, employee_category, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteemployee_category(selectedIndustry.id));
-      // navigate(`/employee_category`);
+    if (selected) {
+      dispatch(deleteemployee_category(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -187,10 +182,10 @@ const Employee_CategoryList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - employee Category</title>
+        <title>DCC HRMS - Employee Category</title>
         <meta
           name="employee-category"
-          content="This is employee_category page of DCC HRMS."
+          content="This is employee category page of DCC HRMS."
         />
       </Helmet>
       <div className="content">
@@ -234,12 +229,12 @@ const Employee_CategoryList = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search employee Name"
+                    label="Search employee category"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Employee Name"
+                        label="Add Employee Category"
                         id="add_edit_employee_category_modal"
                         setMode={() => setMode("add")}
                       />
@@ -273,12 +268,15 @@ const Employee_CategoryList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Employee Category"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

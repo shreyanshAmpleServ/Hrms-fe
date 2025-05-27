@@ -2,7 +2,6 @@
 @import "utils/variables";
 @import "utils/mixins";
 
-
 /****** Layout ******/
 @import "layout/common";
 @import "layout/content";
@@ -49,7 +48,6 @@
 @import "base/base";
 @import "base/background";
 
-
 /******* Pages ******/
 @import "pages/contact";
 @import "pages/dashboard";
@@ -65,8 +63,6 @@
 @import "pages/campaign";
 @import "pages/membership-plans";
 
-
 /******* Vendors ******/
 @import "vendors/select2";
 @import "vendors/datatables";
-

@@ -6,9 +6,8 @@ import {
   addemploymentType,
   updateemploymentType,
 } from "../../../../../redux/employee-type";
-// import { Modal, Button } from 'react-bootstrap';
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.employmentType);
   const dispatch = useDispatch();
 
@@ -19,7 +18,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -40,13 +38,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(addemploymentType(data));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateemploymentType({
-          id: initialData.id,
-          employee_typeData: data,
-        })
+        updateemploymentType({ id: initialData.id, employee_typeData: data })
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -56,7 +52,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Goal Category " : "Edit Goal Category"}
+              {mode === "add" ? "Add New Employee Type" : "Edit Employee Type"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -69,28 +65,29 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  employee Name <span className="text-danger">*</span>
+                  Employee Type <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.type_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Employee Type"
                   {...register("type_name", {
-                    required: "Industry name is required.",
+                    required: "Employee type is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Employee type must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.type_name && (
+                  <small className="text-danger">
+                    {errors.type_name.message}
+                  </small>
                 )}
               </div>
 
-              {/* Status */}
               <div className="mb-0">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
@@ -125,7 +122,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

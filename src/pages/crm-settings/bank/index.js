@@ -1,30 +1,27 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 import { clearMessages, deletebank, fetchbank } from "../../../redux/bank";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const BanksList = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Bank"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -38,36 +35,16 @@ const BanksList = () => {
     {
       title: "Bank Name",
       dataIndex: "bank_name",
-      render: (text, record) => <Link to={`#`}>{record.bank_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text,
+      sorter: (a, b) => (a.bank_name || "").localeCompare(b.bank_name || ""),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MMM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "is_active",
-    //   render: (text) => (
-    //     <div>
-    //       {text === "Y" ? (
-    //         <span className="badge badge-pill badge-status bg-success">
-    //           Active
-    //         </span>
-    //       ) : (
-    //         <span className="badge badge-pill badge-status bg-danger">
-    //           Inactive
-    //         </span>
-    //       )}
-    //     </div>
-    //   ),
-    //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -120,6 +97,7 @@ const BanksList = () => {
   React.useEffect(() => {
     dispatch(fetchbank({ search: searchText }));
   }, [dispatch, searchText]);
+
   React.useEffect(() => {
     setPaginationData({
       currentPage: bank?.currentPage,
@@ -169,7 +147,6 @@ const BanksList = () => {
   const deleteData = () => {
     if (selectedIndustry) {
       dispatch(deletebank(selectedIndustry.id));
-      // navigate(`/banks`);
       setShowDeleteModal(false);
     }
   };
@@ -202,7 +179,7 @@ const BanksList = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Bank
+                    Banks
                     <span className="count-title">{bank?.totalCount || 0}</span>
                   </h4>
                 </div>
@@ -219,7 +196,7 @@ const BanksList = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search banks"
+                    label="Search Bank..."
                   />
                   {isCreate && (
                     <div className="col-sm-8">
@@ -260,7 +237,7 @@ const BanksList = () => {
 
       <AddEditModal mode={mode} initialData={selectedIndustry} />
       <DeleteAlert
-        label="Industry"
+        label="Bank"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         selectedIndustry={selectedIndustry}

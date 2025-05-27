@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { adddepartment, updatedepartment } from "../../../../../redux/department";
+import {
+  adddepartment,
+  updatedepartment,
+} from "../../../../../redux/department";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.department);
@@ -16,7 +19,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -32,27 +34,26 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "add_Close_department_modal",
-    );
+    const closeButton = document.getElementById("add_Close_department_modal");
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         adddepartment({
           department_name: data.name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updatedepartment({
           id: initialData.id,
-          departmentData: { department_name: data.name, is_active: data.is_active },
-        }),
+          departmentData: {
+            department_name: data.name,
+            is_active: data.is_active,
+          },
+        })
       );
     }
-    reset(); // Clear the form
+    reset();
     closeButton.click();
   };
 
@@ -75,19 +76,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Depanrtment Name <span className="text-danger">*</span>
+                  Department Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  placeholder="Enter Department Name"
                   {...register("name", {
-                    required: "Industry name is required.",
+                    required: "Department name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Department name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -96,7 +97,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 )}
               </div>
 
-              {/* Status */}
               <div className="mb-0">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
@@ -124,12 +124,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link
