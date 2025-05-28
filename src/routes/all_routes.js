@@ -151,6 +151,8 @@ export const all_routes = {
   banIpAddrress: "/other-settings/ban-ip-address",
   storage: "/other-settings/storage",
 
+  disciplinaryActionLog: "/disciplinary-action-log",
+  grievanceSubmission: "/grievance-Submission",
   /* USER MANAGEMENT */
   manageusers: "/manage-users",
   manageusersDetails: "/manage-users/:id",

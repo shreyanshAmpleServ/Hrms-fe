@@ -125,6 +125,29 @@ export const SidebarData = [
           },
         ],
       },
+
+      {
+        label: "Grievance & Disciplinary",
+        link: route.callStatus,
+        icon: "ti ti-briefcase",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Disciplinary Action Log",
+            link: route.disciplinaryActionLog,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Grievance Submission",
+            link: route.grievanceSubmission,
+            showSubRoute: false,
+            submenu: false,
+          },
+
+        ]
+      },
       // {
       //   label: "Leads",
       //   link: route.leads,

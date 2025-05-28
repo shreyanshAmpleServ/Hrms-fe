@@ -148,6 +148,8 @@ import LeaveEncashment from "../pages/LeaveEncashment";
 import TimeSheet from "../pages/TimeSheet";
 import AppraisalEntries from "../pages/AppraisalEntries";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
+import DisciplinaryActionLog from "../pages/disciplinaryActionLog";
+import GrievanceSubmission from "../pages/grievanceSubmission";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -905,6 +907,18 @@ export const privateRoutes = [
   {
     path: route.wpsFileGenerator,
     element: <WPSFileGenerator />,
+    route: Route,
+    title: "WPS File Generator",
+  },
+  {
+    path: route.disciplinaryActionLog,
+    element: <DisciplinaryActionLog />,
+    route: Route,
+    title: "WPS File Generator",
+  },
+  {
+    path: route.grievanceSubmission,
+    element: <GrievanceSubmission />,
     route: Route,
     title: "WPS File Generator",
   },
