@@ -1,34 +1,31 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deleteprovident_fund,
   fetchprovident_fund,
 } from "../../../../redux/providentFund";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const ProvidentFund = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Provident Fund"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -40,45 +37,32 @@ const ProvidentFund = () => {
 
   const columns = [
     {
-      title: "Pf Name",
+      title: "Provident Fund Name",
       dataIndex: "pf_name",
       render: (_text, record) => <Link to={`#`}>{record.pf_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.pf_name || "").localeCompare(b.pf_name || ""),
     },
     {
       title: "Employer Contribution",
       dataIndex: "employer_contribution",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.employer_contribution || "").localeCompare(
+          b.employer_contribution || ""
+        ),
     },
     {
       title: "Employee Contribution",
       dataIndex: "employee_contribution",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-    },
-
-    {
-      title: " Create Date",
-      dataIndex: "create_date",
-      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
+      sorter: (a, b) =>
+        (a.employee_contribution || "").localeCompare(
+          b.employee_contribution || ""
+        ),
     },
     {
-      title: "Status",
-      dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      title: "Create Date",
+      dataIndex: "createdate",
+      render: (text) => moment(text).format("YYYY-MM-DD"),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     ...(isUpdate || isDelete
       ? [
@@ -103,7 +87,7 @@ const ProvidentFund = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_provident_fund_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -127,7 +111,7 @@ const ProvidentFund = () => {
       : []),
   ];
 
-  const { provident_fund, loading, error, success } = useSelector(
+  const { provident_fund, loading } = useSelector(
     (state) => state.providentFund
   );
 
@@ -178,16 +162,13 @@ const ProvidentFund = () => {
   }, [searchText, provident_fund, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteprovident_fund(selectedIndustry.id));
-      // navigate(`/provident_fund`);
+    if (selected) {
+      dispatch(deleteprovident_fund(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -202,21 +183,6 @@ const ProvidentFund = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -281,12 +247,15 @@ const ProvidentFund = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Provident Fund"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

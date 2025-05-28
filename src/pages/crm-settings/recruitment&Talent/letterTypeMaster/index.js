@@ -1,5 +1,4 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -8,9 +7,7 @@ import Table from "../../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
-
 import moment from "moment";
-
 import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
@@ -22,13 +19,13 @@ import {
 } from "../../../../redux/letterType";
 
 const LetterTypeMaster = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Letter Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -40,41 +37,25 @@ const LetterTypeMaster = () => {
 
   const columns = [
     {
-      title: "Letter Name",
+      title: "Letter Type Name",
       dataIndex: "letter_name",
-      render: (_text, record) => <Link to={`#`}>{record.letter_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.letter_name || "").localeCompare(b.letter_name || ""),
     },
     {
       title: "Template Path",
       dataIndex: "template_path",
-
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.template_path || "").localeCompare(b.template_path || ""),
     },
 
     {
       title: "Created Date",
-      dataIndex: "create_date",
+      dataIndex: "createdate",
       render: (text) => moment(text).format("DD-MM-YYYY"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
-    },
-    {
-      title: "Status",
-      dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     ...(isUpdate || isDelete
       ? [
@@ -99,7 +80,7 @@ const LetterTypeMaster = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_latter_type_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -174,16 +155,15 @@ const LetterTypeMaster = () => {
   }, [searchText, latter_type, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
+  const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletelatter_type(selectedIndustry.id));
-      // navigate(`/latter_type`);
+    if (selected) {
+      dispatch(deletelatter_type(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -198,21 +178,6 @@ const LetterTypeMaster = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -277,12 +242,15 @@ const LetterTypeMaster = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Letter Type"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

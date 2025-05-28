@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addloan_type, updateloan_type } from "../../../../../redux/loneType";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.loan_type);
 
   const {
@@ -12,7 +12,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm();
 
   const dispatch = useDispatch();
@@ -22,13 +21,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       reset({
         loan_name: initialData.loan_name || "",
         interest_rate: initialData.interest_rate || "",
-        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         loan_name: "",
         interest_rate: "",
-        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -48,6 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -78,6 +76,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <input
                   type="text"
                   className={`form-control ${errors.loan_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Loan Name"
                   {...register("loan_name", {
                     required: "Loan name is required.",
                     minLength: {
@@ -87,11 +86,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.loan_name && (
-                  <small className="text-danger">{errors.loan_name.message}</small>
+                  <small className="text-danger">
+                    {errors.loan_name.message}
+                  </small>
                 )}
               </div>
 
-              {/* Interest Rate */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Interest Rate (%) <span className="text-danger">*</span>
@@ -100,53 +100,27 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   type="number"
                   step="0.01"
                   className={`form-control ${errors.interest_rate ? "is-invalid" : ""}`}
+                  placeholder="Enter Interest Rate"
                   {...register("interest_rate", {
                     required: "Interest rate is required.",
                     min: {
                       value: 0,
                       message: "Must be non-negative.",
                     },
+                    max: {
+                      value: 100,
+                      message: "Must be less than 100.",
+                    },
                   })}
                 />
                 {errors.interest_rate && (
-                  <small className="text-danger">{errors.interest_rate.message}</small>
-                )}
-              </div>
-
-              {/* Status */}
-              <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.interest_rate.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

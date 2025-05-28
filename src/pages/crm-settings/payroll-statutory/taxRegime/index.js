@@ -1,34 +1,26 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deletetax_relief,
-  fetchtax_relief,
-} from "../../../../redux/taxRelief";
+import { deletetax_relief, fetchtax_relief } from "../../../../redux/taxRelief";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
-const TaxRelirf = () => {
+const TaxRelief = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Tax Relief"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,38 +34,21 @@ const TaxRelirf = () => {
     {
       title: "Relief Name",
       dataIndex: "relief_name",
-      render: (_text, record) => <Link to={`#`}>{record.relief_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text,
+      sorter: (a, b) =>
+        (a.relief_name || "").localeCompare(b.relief_name || ""),
     },
 
     {
-      title: "amount",
+      title: "Amount",
       dataIndex: "amount",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.amount || "").localeCompare(b.amount || ""),
     },
     {
       title: "Created Date",
-      dataIndex: "create_date",
-      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
-    },
-    {
-      title: "Status",
-      dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      dataIndex: "createdate",
+      render: (text) => moment(text).format("YYYY-MM-DD"),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     ...(isUpdate || isDelete
       ? [
@@ -98,7 +73,7 @@ const TaxRelirf = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_tax_relief_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -122,9 +97,7 @@ const TaxRelirf = () => {
       : []),
   ];
 
-  const { tax_relief, loading, error, success } = useSelector(
-    (state) => state.taxRelief
-  );
+  const { tax_relief, loading } = useSelector((state) => state.taxRelief);
 
   React.useEffect(() => {
     dispatch(fetchtax_relief({ search: searchText }));
@@ -169,16 +142,15 @@ const TaxRelirf = () => {
   }, [searchText, tax_relief, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
+  const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletetax_relief(selectedIndustry.id));
-      // navigate(`/tax_relief`);
+    if (selected) {
+      dispatch(deletetax_relief(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -186,35 +158,20 @@ const TaxRelirf = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Tax Relirf</title>
+        <title>DCC HRMS - Tax Relief</title>
         <meta
-          name="DepanrtmentList"
-          content="This is tax_relief page of DCC HRMS."
+          name="Tax Relief"
+          content="This is tax relief page of DCC HRMS."
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Tax Relirf
+                    Tax Relief
                     <span className="count-title">
                       {tax_relief?.totalCount || 0}
                     </span>
@@ -233,12 +190,12 @@ const TaxRelirf = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Tax Relirf"
+                    label="Search Tax Relief"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Tax Relirf"
+                        label="Add Tax Relief"
                         id="add_edit_tax_relief_modal"
                         setMode={() => setMode("add")}
                       />
@@ -272,16 +229,19 @@ const TaxRelirf = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Tax Relief"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>
   );
 };
 
-export default TaxRelirf;
+export default TaxRelief;

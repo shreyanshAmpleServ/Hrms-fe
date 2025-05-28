@@ -1,25 +1,17 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deletekpi,
-  fetchkpi,
-} from "../../../../redux/kpiMaster";
+import { deletekpi, fetchkpi } from "../../../../redux/kpiMaster";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const KpiMaster = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
@@ -28,7 +20,7 @@ const KpiMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "KPI Master"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,39 +34,22 @@ const KpiMaster = () => {
     {
       title: "KPI Name",
       dataIndex: "kpi_name",
-      render: (_text, record) => <Link to={`#`}>{record.kpi_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "",
+      sorter: (a, b) => (a.kpi_name || "").localeCompare(b.kpi_name || ""),
     },
     {
       title: "Description ",
       dataIndex: "description",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.description || "").localeCompare(b.description || ""),
     },
 
     {
       title: "Created Date",
-      dataIndex: "create_date",
-      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
+      dataIndex: "createdate",
+      render: (text) => moment(text).format("YYYY-MM-DD"),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
-    // {
-    //     title: "Status",
-    //     dataIndex: "is_active",
-    //     render: (text) => (
-    //         <div>
-    //             {text === "Y" ? (
-    //                 <span className="badge badge-pill badge-status bg-success">
-    //                     Active
-    //                 </span>
-    //             ) : (
-    //                 <span className="badge badge-pill badge-status bg-danger">
-    //                     Inactive
-    //                 </span>
-    //             )}
-    //         </div>
-    //     ),
-    //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -98,7 +73,7 @@ const KpiMaster = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_kpi_modal"
                       onClick={() => {
-                        setSelectedkpi(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -122,9 +97,7 @@ const KpiMaster = () => {
       : []),
   ];
 
-  const { kpi, loading, error, success } = useSelector(
-    (state) => state.KpiMaster
-  );
+  const { kpi, loading } = useSelector((state) => state.KpiMaster);
 
   React.useEffect(() => {
     dispatch(fetchkpi({ search: searchText }));
@@ -169,16 +142,15 @@ const KpiMaster = () => {
   }, [searchText, kpi, columns, sortOrder]);
 
   const handleDeletekpi = (kpi) => {
-    setSelectedkpi(kpi);
+    setSelected(kpi);
     setShowDeleteModal(true);
   };
 
-  const [selectedkpi, setSelectedkpi] = React.useState(null);
+  const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedkpi) {
-      dispatch(deletekpi(selectedkpi.id));
-      // navigate(`/kpi`);
+    if (selected) {
+      dispatch(deletekpi(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -187,24 +159,9 @@ const KpiMaster = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - KPI</title>
-        <meta name="DepanrtmentList" content="This is kpi page of DCC HRMS." />
+        <meta name="KPI" content="This is kpi page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -267,14 +224,15 @@ const KpiMaster = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedkpi} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="kpi
-
-"
+        label="KPI"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedkpi={selectedkpi}
         onDelete={deleteData}
       />
     </div>

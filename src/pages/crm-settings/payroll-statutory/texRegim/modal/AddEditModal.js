@@ -3,12 +3,14 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import {
+  addtax_Regime,
+  updatetax_Regime,
+} from "../../../../../redux/taxRegime";
+import { Controller } from "react-hook-form";
+import { fetchCountries } from "../../../../../redux/country";
 
-import { addtax_Regime, updatetax_Regime } from "../../../../../redux/taxRegime";
-import { Controller, } from "react-hook-form";
-import { fetchCountries } from '../../../../../redux/country'
-
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.taxRegime);
   const dispatch = useDispatch();
 
@@ -22,30 +24,25 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   } = useForm();
 
   React.useEffect(() => {
-    dispatch(fetchCountries()); // Changed to fetchCountries
+    dispatch(fetchCountries());
   }, [dispatch]);
-  const { countries } = useSelector(
-    (state) => state.countries // Changed to 'countries'
-  );
+  const { countries } = useSelector((state) => state.countries);
 
   const CountriesList = countries.map((emnt) => ({
     value: emnt.id,
     label: "(" + emnt.code + ") " + emnt.name,
   }));
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         regime_name: initialData.regime_name || "",
         country_code: initialData.country_code || "",
-        // is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         regime_name: "",
         country_code: "",
-        // is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -54,8 +51,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     const closeButton = document.getElementById("close_tax_Regime_modal");
     const finalData = {
       ...data,
-      country_code: String(data?.country_code)
-    }
+      country_code: String(data?.country_code),
+    };
     if (mode === "add") {
       dispatch(addtax_Regime(finalData));
     } else if (mode === "edit" && initialData) {
@@ -67,6 +64,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -89,10 +87,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="row">
-
-
                 <div className="mb-3">
                   <label className="col-form-label">
                     Regime Name <span className="text-danger">*</span>
@@ -100,41 +95,45 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   <input
                     type="text"
                     className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                    placeholder="Enter Regime Name"
                     {...register("regime_name", {
-                      required: "Industry name is required.",
+                      required: "Regime name is required.",
                       minLength: {
                         value: 3,
-                        message: "Industry name must be at least 3 characters.",
+                        message: "Regime name must be at least 3 characters.",
                       },
                     })}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.regime_name && (
+                    <small className="text-danger">
+                      {errors.regime_name.message}
+                    </small>
                   )}
                 </div>
                 <div className="mb-3">
                   <label className="col-form-label">
-                    Country  <span className="text-danger">*</span>
+                    Country <span className="text-danger">*</span>
                   </label>
                   <Controller
                     name="country_code"
                     control={control}
-                    rules={{ required: "Country is required" }} // Validation rule
+                    rules={{ required: "Country is required" }}
                     render={({ field }) => (
                       <Select
                         {...field}
                         options={CountriesList}
-                        placeholder="Choose"
-                        isDisabled={!CountriesList.length} // Disable if no stages are available
+                        placeholder="Choose Country"
+                        isDisabled={!CountriesList.length}
                         classNamePrefix="react-select"
                         className="select2"
                         onChange={(selectedOption) =>
                           field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={CountriesList?.find(
-                          (option) =>
-                            option.value === watch("country_code"),
-                        ) || ""}
+                        }
+                        value={
+                          CountriesList?.find(
+                            (option) => option.value === watch("country_code")
+                          ) || ""
+                        }
                       />
                     )}
                   />

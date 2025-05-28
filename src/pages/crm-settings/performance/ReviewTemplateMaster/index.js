@@ -1,34 +1,31 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deletereview_template,
   fetchreview_template,
 } from "../../../../redux/reviewTemplateMaster";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const ReviewTemplateMaster = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Review Template"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,40 +39,23 @@ const ReviewTemplateMaster = () => {
     {
       title: "Template Name",
       dataIndex: "template_name",
-      render: (_text, record) => <Link to={`#`}>{record.template_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.template_name || "").localeCompare(b.template_name || ""),
     },
     {
       title: "Valid From",
       dataIndex: "valid_from",
       render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.valid_from || "").localeCompare(b.valid_from || ""),
     },
 
     {
       title: "Created Date",
-      dataIndex: "create_date",
+      dataIndex: "createdate",
       render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
-    // {
-    //     title: "Status",
-    //     dataIndex: "is_active",
-    //     render: (text) => (
-    //         <div>
-    //             {text === "Y" ? (
-    //                 <span className="badge badge-pill badge-status bg-success">
-    //                     Active
-    //                 </span>
-    //             ) : (
-    //                 <span className="badge badge-pill badge-status bg-danger">
-    //                     Inactive
-    //                 </span>
-    //             )}
-    //         </div>
-    //     ),
-    //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -99,7 +79,7 @@ const ReviewTemplateMaster = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_review_template_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -123,13 +103,14 @@ const ReviewTemplateMaster = () => {
       : []),
   ];
 
-  const { review_template, loading, error, success } = useSelector(
+  const { review_template, loading } = useSelector(
     (state) => state.reviewTemplateMaster
   );
 
   React.useEffect(() => {
     dispatch(fetchreview_template({ search: searchText }));
   }, [dispatch, searchText]);
+
   React.useEffect(() => {
     setPaginationData({
       currentPage: review_template?.currentPage,
@@ -174,16 +155,13 @@ const ReviewTemplateMaster = () => {
   }, [searchText, review_template, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletereview_template(selectedIndustry.id));
-      // navigate(`/review_template`);
+    if (selected) {
+      dispatch(deletereview_template(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -193,26 +171,11 @@ const ReviewTemplateMaster = () => {
       <Helmet>
         <title>DCC HRMS - Review Template Master</title>
         <meta
-          name="DepanrtmentList"
+          name="ReviewTemplateMaster"
           content="This is review_template page of DCC HRMS."
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -238,12 +201,12 @@ const ReviewTemplateMaster = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Salary Structure"
+                    label="Search Review Template"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Salary Structure"
+                        label="Add Review Template"
                         id="add_edit_review_template_modal"
                         setMode={() => setMode("add")}
                       />
@@ -277,12 +240,15 @@ const ReviewTemplateMaster = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Review Template"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

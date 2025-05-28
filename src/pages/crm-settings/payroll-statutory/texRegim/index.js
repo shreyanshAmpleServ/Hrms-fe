@@ -1,17 +1,12 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
 import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -20,15 +15,20 @@ import {
   deletetax_Regime,
   fetchtax_Regime,
 } from "../../../../redux/taxRegime";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const TaxRegime = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Tax Regime"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,43 +42,25 @@ const TaxRegime = () => {
     {
       title: "Regime Name",
       dataIndex: "regime_name",
-      render: (_text, record) => <Link to={`#`}>{record.regime_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "",
+      sorter: (a, b) =>
+        (a.regime_name || "").localeCompare(b.regime_name || ""),
     },
-
     {
       title: "Country",
-      dataIndex: "country_code",
-      render: (text, record) => (
-        <div>{text?.code + text?.name}</div>
-        // <Link to={`/states/${record.id}`}>{record.name}</Link>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      dataIndex: "regime_country",
+      render: (text) => text?.name || "",
+      sorter: (a, b) =>
+        (a.regime_country?.name || "").localeCompare(
+          b.regime_country?.name || ""
+        ),
     },
     {
       title: "Created Date",
-      dataIndex: "create_date",
-      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
+      dataIndex: "createdDate",
+      render: (text) => moment(text).format("YYYY-MM-DD"),
+      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
     },
-    // {
-    //     title: "Status",
-    //     dataIndex: "is_active",
-    //     render: (text) => (
-    //         <div>
-    //             {text === "Y" ? (
-    //                 <span className="badge badge-pill badge-status bg-success">
-    //                     Active
-    //                 </span>
-    //             ) : (
-    //                 <span className="badge badge-pill badge-status bg-danger">
-    //                     Inactive
-    //                 </span>
-    //             )}
-    //         </div>
-    //     ),
-    //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -102,7 +84,7 @@ const TaxRegime = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_tax_Regime_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -173,15 +155,13 @@ const TaxRegime = () => {
   }, [searchText, tax_Regime, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletetax_Regime(selectedIndustry.id));
+    if (selected) {
+      dispatch(deletetax_Regime(selected.id));
       // navigate(`/tax_Regime`);
       setShowDeleteModal(false);
     }
@@ -242,7 +222,7 @@ const TaxRegime = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Tax Regimef"
+                        label="Add Tax Regime"
                         id="add_edit_tax_Regime_modal"
                         setMode={() => setMode("add")}
                       />
@@ -276,12 +256,16 @@ const TaxRegime = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Tax Regime"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
+        selected={selected}
         onDelete={deleteData}
       />
     </div>

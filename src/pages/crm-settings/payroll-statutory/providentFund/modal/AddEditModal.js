@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addprovident_fund, updateprovident_fund } from "../../../../../redux/providentFund";
+import {
+  addprovident_fund,
+  updateprovident_fund,
+} from "../../../../../redux/providentFund";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.providentFund);
   const dispatch = useDispatch();
-
 
   const {
     register,
@@ -16,22 +18,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         pf_name: initialData.pf_name || "",
         employee_contribution: initialData.employee_contribution || "",
         employer_contribution: initialData.employer_contribution || "",
-        // is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         pf_name: "",
         employer_contribution: "",
         employee_contribution: "",
-        // is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -49,16 +47,23 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
   return (
-    <div className="modal fade" id="add_edit_provident_fund_modal" role="dialog">
+    <div
+      className="modal fade"
+      id="add_edit_provident_fund_modal"
+      role="dialog"
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Provident Fund" : "Edit Provident Fund"}
+              {mode === "add"
+                ? "Add New Provident Fund"
+                : "Edit Provident Fund"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -71,26 +76,28 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="row">
-
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">
-                    Pf Name <span className="text-danger">*</span>
+                    Provident Fund Name <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                    className={`form-control ${errors.pf_name ? "is-invalid" : ""}`}
+                    placeholder="Enter Provident Fund Name"
                     {...register("pf_name", {
-                      required: "Industry name is required.",
+                      required: "Provident Fund name is required.",
                       minLength: {
                         value: 3,
-                        message: "Industry name must be at least 3 characters.",
+                        message:
+                          "Provident Fund name must be at least 3 characters.",
                       },
                     })}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.pf_name && (
+                    <small className="text-danger">
+                      {errors.pf_name.message}
+                    </small>
                   )}
                 </div>
                 <div className="col-md-6 mb-3">
@@ -98,18 +105,25 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     Employer Contribution <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="number"
-                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                    className={`form-control ${errors.employer_contribution ? "is-invalid" : ""}`}
+                    placeholder="Enter Employer Contribution"
                     {...register("employer_contribution", {
-                      required: "Industry name is required.",
-                      minLength: {
-                        value: 3,
-                        message: "Industry name must be at least 3 characters.",
+                      required: "Employer contribution is required.",
+                      min: {
+                        value: 0,
+                        message:
+                          "Employer contribution must be greater than 0.",
+                      },
+                      max: {
+                        value: 100,
+                        message: "Employer contribution must be less than 100.",
                       },
                     })}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.employer_contribution && (
+                    <small className="text-danger">
+                      {errors.employer_contribution.message}
+                    </small>
                   )}
                 </div>
                 <div className="col-md-6 mb-3">
@@ -118,55 +132,30 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </label>
                   <input
                     type="number"
-                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                    className={`form-control ${errors.employee_contribution ? "is-invalid" : ""}`}
+                    placeholder="Enter Employee Contribution"
                     {...register("employee_contribution", {
-                      required: "Industry name is required.",
-                      minLength: {
-                        value: 3,
-                        message: "Industry name must be at least 3 characters.",
+                      required: "Employee contribution is required.",
+                      min: {
+                        value: 0,
+                        message:
+                          "Employee contribution must be greater than 0.",
+                      },
+                      max: {
+                        value: 100,
+                        message: "Employee contribution must be less than 100.",
                       },
                     })}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.employee_contribution && (
+                    <small className="text-danger">
+                      {errors.employee_contribution.message}
+                    </small>
                   )}
                 </div>
               </div>
-
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

@@ -1,34 +1,31 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deletework_life,
   fetchwork_life,
 } from "../../../../redux/workLifeEventTypeMaster";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const WorkLifeEventTypeMaster = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Work Life Event Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,34 +39,16 @@ const WorkLifeEventTypeMaster = () => {
     {
       title: "Event Name",
       dataIndex: "event_type_name",
-      render: (_text, record) => <Link to={`#`}>{record.event_type_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.event_type_name || "").localeCompare(b.event_type_name || ""),
     },
-
     {
       title: "Created Date",
-      dataIndex: "create_date",
+      dataIndex: "createdate",
       render: (text) => moment(text).format("DD-MM-YYYY"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
-    // {
-    //     title: "Status",
-    //     dataIndex: "is_active",
-    //     render: (text) => (
-    //         <div>
-    //             {text === "Y" ? (
-    //                 <span className="badge badge-pill badge-status bg-success">
-    //                     Active
-    //                 </span>
-    //             ) : (
-    //                 <span className="badge badge-pill badge-status bg-danger">
-    //                     Inactive
-    //                 </span>
-    //             )}
-    //         </div>
-    //     ),
-    //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -93,7 +72,7 @@ const WorkLifeEventTypeMaster = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_work_life_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -117,9 +96,7 @@ const WorkLifeEventTypeMaster = () => {
       : []),
   ];
 
-  const { work_life, loading, error, success } = useSelector(
-    (state) => state.workLifeEvent
-  );
+  const { work_life, loading } = useSelector((state) => state.workLifeEvent);
 
   React.useEffect(() => {
     dispatch(fetchwork_life({ search: searchText }));
@@ -164,16 +141,13 @@ const WorkLifeEventTypeMaster = () => {
   }, [searchText, work_life, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletework_life(selectedIndustry.id));
-      // navigate(`/work_life`);
+    if (selected) {
+      dispatch(deletework_life(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -183,26 +157,11 @@ const WorkLifeEventTypeMaster = () => {
       <Helmet>
         <title>DCC HRMS - Work Life Event</title>
         <meta
-          name="DepanrtmentList"
-          content="This is work_life page of DCC HRMS."
+          name="Work Life Event Type"
+          content="This is Work Life Event Type page of DCC HRMS."
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -267,12 +226,15 @@ const WorkLifeEventTypeMaster = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Work Life Event"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

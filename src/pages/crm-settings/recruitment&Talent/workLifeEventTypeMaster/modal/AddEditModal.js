@@ -2,11 +2,13 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addwork_life, updatework_life } from "../../../../../redux/workLifeEventTypeMaster";
-// import { Modal, Button } from 'react-bootstrap';
+import {
+  addwork_life,
+  updatework_life,
+} from "../../../../../redux/workLifeEventTypeMaster";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.goalCategoryMaster);
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
+  const { loading } = useSelector((state) => state.workLifeEvent);
   const dispatch = useDispatch();
 
   const {
@@ -16,19 +18,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      reset({
-        event_type_name: initialData.event_type_name || "",
-        // is_active: initialData.is_active,
-      });
+      reset({ event_type_name: initialData.event_type_name || "" });
     } else {
-      reset({
-        event_type_name: "",
-        // is_active: "Y",
-      });
+      reset({ event_type_name: "" });
     }
   }, [mode, initialData, reset]);
 
@@ -37,14 +31,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (mode === "add") {
       dispatch(addwork_life(data));
     } else if (mode === "edit" && initialData) {
-      dispatch(
-        updatework_life({
-          id: initialData.id,
-          work_lifeData: data,
-        })
-      );
+      dispatch(updatework_life({ id: initialData.id, work_lifeData: data }));
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -54,7 +44,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Goal Category " : "Edit Goal Category"}
+              {mode === "add"
+                ? "Add New Work Life Event Type"
+                : "Edit Work Life Event Type"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -67,61 +59,30 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Category Name <span className="text-danger">*</span>
+                  Event Type Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.event_type_name ? "is-invalid" : ""}`}
+                  placeholder="Enter event type name"
                   {...register("event_type_name", {
-                    required: "Industry name is required.",
+                    required: "Event type name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Event type name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.event_type_name && (
+                  <small className="text-danger">
+                    {errors.event_type_name.message}
+                  </small>
                 )}
               </div>
-
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

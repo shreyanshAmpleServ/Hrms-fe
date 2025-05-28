@@ -1,20 +1,20 @@
-import React, { useState, useMemo, useCallback } from "react";
-import { Link } from "react-router-dom";
 import "bootstrap-daterangepicker/daterangepicker.css";
+import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
-import AddEditModal from "./modal/AddEditModal";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import Table from "../../../../components/common/dataTable/index";
+import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 import moment from "moment";
 
-import SortDropdown from "../../../../components/datatable/SortDropDown";
-import SearchBar from "../../../../components/datatable/SearchBar";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import AddButton from "../../../../components/datatable/AddButton";
-import { Helmet } from "react-helmet-async";
+import SearchBar from "../../../../components/datatable/SearchBar";
+import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
   clearMessages,
   deleteShift,

@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addgoal_category, updategoal_category } from "../../../../../redux/goalCategoryMaster";
-// import { Modal, Button } from 'react-bootstrap';
+import {
+  addgoal_category,
+  updategoal_category,
+} from "../../../../../redux/goalCategoryMaster";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.goalCategoryMaster);
   const dispatch = useDispatch();
 
@@ -16,19 +18,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      reset({
-        category_name: initialData.category_name || "",
-        is_active: initialData.is_active,
-      });
+      reset({ category_name: initialData.category_name || "" });
     } else {
-      reset({
-        category_name: "",
-        is_active: "Y",
-      });
+      reset({ category_name: "" });
     }
   }, [mode, initialData, reset]);
 
@@ -45,11 +39,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
   return (
-    <div className="modal fade" id="add_edit_Goal_Category_modal" role="dialog">
+    <div className="modal fade" id="add_edit_goal_category_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
@@ -67,56 +62,27 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
+              {/* Category Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Category Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.category_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Category Name"
                   {...register("category_name", {
-                    required: "Industry name is required.",
+                    required: "Category name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Category name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
-              </div>
-
-              {/* Status */}
-              <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                {errors.category_name && (
+                  <small className="text-danger">
+                    {errors.category_name.message}
+                  </small>
                 )}
               </div>
             </div>

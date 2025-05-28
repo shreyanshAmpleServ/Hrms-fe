@@ -1,34 +1,28 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deleteloan_type,
-  fetchloan_type,
-} from "../../../../redux/loneType";
+import { deleteloan_type, fetchloan_type } from "../../../../redux/loneType";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const LoanType = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Loan Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,38 +36,20 @@ const LoanType = () => {
     {
       title: "Loan Name",
       dataIndex: "loan_name",
-      render: (text, record) => <Link to={`#`}>{record.loan_name}</Link>,
+      render: (text) => text || "-",
       sorter: (a, b) => (a.loan_name || "").localeCompare(b.loan_name || ""),
     },
     {
       title: "Interest Rate",
       dataIndex: "interest_rate",
+      render: (text) => text || "-",
       sorter: (a, b) => (a.interest_rate || 0) - (b.interest_rate || 0),
     },
     {
       title: "Created Date",
       dataIndex: "create_date",
-      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
+      render: (text) => moment(text).format("YYYY-MM-DD") || "-",
       sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
-    },
-
-    {
-      title: "Status",
-      dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
     ...(isUpdate || isDelete
       ? [
@@ -98,7 +74,7 @@ const LoanType = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_loan_type_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -122,9 +98,7 @@ const LoanType = () => {
       : []),
   ];
 
-  const { loan_type, loading, error, success } = useSelector(
-    (state) => state.loan_type
-  );
+  const { loan_type, loading } = useSelector((state) => state.loan_type);
 
   React.useEffect(() => {
     dispatch(fetchloan_type({ search: searchText }));
@@ -169,16 +143,13 @@ const LoanType = () => {
   }, [searchText, loan_type, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteloan_type(selectedIndustry.id));
-      // navigate(`/loan_type`);
+    if (selected) {
+      dispatch(deleteloan_type(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -193,21 +164,6 @@ const LoanType = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -272,12 +228,15 @@ const LoanType = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Loan Type"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

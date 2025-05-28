@@ -2,14 +2,12 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
-
 import {
   addrating_scale,
   updaterating_scale,
 } from "../../../../../redux/ratingScaleMaster";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.ratingScaleMaster);
   const dispatch = useDispatch();
 
@@ -20,7 +18,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -40,7 +37,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     const finalData = {
       rating_value: Number(data?.rating_value),
       rating_description: data?.rating_description,
-    }
+    };
     if (mode === "add") {
       dispatch(addrating_scale(finalData));
     } else if (mode === "edit" && initialData) {
@@ -52,6 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -68,6 +66,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_rating_scale_modal"
+              onClick={() => setSelected(null)}
             >
               <i className="ti ti-x" />
             </button>
@@ -83,13 +82,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </label>
                   <input
                     type="number"
-                    className={`form-control ${errors.template_name ? "is-invalid" : ""}`}
+                    className={`form-control ${errors.rating_value ? "is-invalid" : ""}`}
+                    placeholder="Enter Rating Value"
                     {...register("rating_value", {
-                      required: "Country code is required.",
+                      required: "Rating value is required.",
                     })}
                   />
-                  {errors.template_name && (
-                    <small className="text-danger">{errors.template_name.message}</small>
+                  {errors.rating_value && (
+                    <small className="text-danger">
+                      {errors.rating_value.message}
+                    </small>
                   )}
                 </div>
 
@@ -98,53 +100,22 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   <label className="col-form-label">
                     Rating Description<span className="text-danger">*</span>
                   </label>
-                  <input
+                  <textarea
                     type="text"
-                    className={`form-control ${errors.lower_limit ? "is-invalid" : ""}`}
+                    rows={3}
+                    className={`form-control ${errors.rating_description ? "is-invalid" : ""}`}
+                    placeholder="Enter Rating Description"
                     {...register("rating_description", {
-                      required: "Lower limit is required.",
+                      required: "Rating description is required.",
                     })}
                   />
-                  {errors.lower_limit && (
-                    <small className="text-danger">{errors.lower_limit.message}</small>
+                  {errors.rating_description && (
+                    <small className="text-danger">
+                      {errors.rating_description.message}
+                    </small>
                   )}
                 </div>
-
-                {/* Statutory Type */}
-
               </div>
-
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
 
             {/* Footer */}

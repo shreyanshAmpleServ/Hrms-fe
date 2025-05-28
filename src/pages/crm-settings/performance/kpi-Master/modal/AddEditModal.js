@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addkpi, updatekpi } from "../../../../../redux/kpiMaster";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.KpiMaster);
   const dispatch = useDispatch();
 
@@ -15,14 +15,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         kpi_name: initialData.kpi_name || "",
         description: initialData.description || "",
-
       });
     } else {
       reset({
@@ -45,6 +42,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -70,30 +68,35 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  KPI-Master Name <span className="text-danger">*</span>
+                  KPI Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.kpi_name ? "is-invalid" : ""}`}
+                  placeholder="Enter KPI Name"
                   {...register("kpi_name", {
-                    required: "Industry name is required.",
+                    required: "KPI Name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "KPI Name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.kpi_name && (
+                  <small className="text-danger">
+                    {errors.kpi_name.message}
+                  </small>
                 )}
               </div>
               <div className="mb-3">
                 <label className="col-form-label">
                   Description <span className="text-danger">*</span>
                 </label>
-                <input
+                <textarea
                   type="text"
+                  rows={3}
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                  placeholder="Enter Description"
                   {...register("description", {
                     required: "Description is required.",
                     minLength: {
@@ -103,10 +106,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.description && (
-                  <small className="text-danger">{errors.description.message}</small>
+                  <small className="text-danger">
+                    {errors.description.message}
+                  </small>
                 )}
               </div>
-
 
               {/* Status */}
               {/* <div className="mb-0">

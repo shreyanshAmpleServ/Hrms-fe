@@ -1,34 +1,28 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deleteaward_type,
-  fetchaward_type,
-} from "../../../../redux/awardType";
+import { deleteaward_type, fetchaward_type } from "../../../../redux/awardType";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const AwardTypeMaster = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Award Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -40,41 +34,23 @@ const AwardTypeMaster = () => {
 
   const columns = [
     {
-      title: "Award Name",
+      title: "Award Type Name",
       dataIndex: "award_name",
-      render: (_text, record) => <Link to={`#`}>{record.award_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) => (a.award_name || "").localeCompare(b.award_name || ""),
     },
     {
       title: "Description",
       dataIndex: "description",
-
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.description || "").localeCompare(b.description || ""),
     },
-
     {
       title: "Created Date",
-      dataIndex: "create_date",
+      dataIndex: "createdate",
       render: (text) => moment(text).format("DD-MM-YYYY"),
-      sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
-    },
-    {
-      title: "Status",
-      dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     ...(isUpdate || isDelete
       ? [
@@ -99,7 +75,7 @@ const AwardTypeMaster = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_award_type_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -123,9 +99,7 @@ const AwardTypeMaster = () => {
       : []),
   ];
 
-  const { award_type, loading, error, success } = useSelector(
-    (state) => state.awardTypeMaster
-  );
+  const { award_type, loading } = useSelector((state) => state.awardTypeMaster);
 
   React.useEffect(() => {
     dispatch(fetchaward_type({ search: searchText }));
@@ -159,27 +133,24 @@ const AwardTypeMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
-  }, [searchText, award_type, columns, sortOrder]);
+  }, [award_type, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteaward_type(selectedIndustry.id));
-      // navigate(`/award_type`);
+    if (selected) {
+      dispatch(deleteaward_type(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -187,35 +158,20 @@ const AwardTypeMaster = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Award</title>
+        <title>DCC HRMS - Award Type</title>
         <meta
-          name="DepanrtmentList"
-          content="This is award_type page of DCC HRMS."
+          name="Award Type"
+          content="This is Award Type page of DCC HRMS."
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Award
+                    Award Type
                     <span className="count-title">
                       {award_type?.totalCount || 0}
                     </span>
@@ -228,18 +184,18 @@ const AwardTypeMaster = () => {
                 </div>
               </div>
             </div>
-            <div className="card ">
+            <div className="card">
               <div className="card-header">
                 <div className="row align-items-center">
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Award"
+                    label="Search Award Type"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Award"
+                        label="Add Award Type"
                         id="add_edit_award_type_modal"
                         setMode={() => setMode("add")}
                       />
@@ -273,12 +229,16 @@ const AwardTypeMaster = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Award Type"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
+        selected={selected}
         onDelete={deleteData}
       />
     </div>
