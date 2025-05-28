@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addlatter_type, updatelatter_type } from "../../../../../redux/letterType";
-// import { Modal, Button } from 'react-bootstrap';
+import {
+  addlatter_type,
+  updatelatter_type,
+} from "../../../../../redux/letterType";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.letterTypeMaster);
   const dispatch = useDispatch();
 
@@ -16,22 +18,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-
   // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         letter_name: initialData.letter_name || "",
         template_path: initialData.template_path || "",
-
-        // is_active: initialData.is_active,
       });
     } else {
       reset({
         letter_name: "",
         template_path: "",
-
-        // is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -49,6 +46,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 

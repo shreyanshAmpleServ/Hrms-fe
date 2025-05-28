@@ -1,22 +1,20 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-import moment from "moment";
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deletelatter_type,
   fetchlatter_type,
 } from "../../../../redux/letterType";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const LetterTypeMaster = () => {
   const [mode, setMode] = React.useState("add");
@@ -50,7 +48,6 @@ const LetterTypeMaster = () => {
       sorter: (a, b) =>
         (a.template_path || "").localeCompare(b.template_path || ""),
     },
-
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -104,7 +101,7 @@ const LetterTypeMaster = () => {
       : []),
   ];
 
-  const { latter_type, loading, error, success } = useSelector(
+  const { latter_type, loading } = useSelector(
     (state) => state.letterTypeMaster
   );
 
