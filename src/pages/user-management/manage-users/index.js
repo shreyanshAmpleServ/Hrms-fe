@@ -50,97 +50,100 @@ const ManageUsers = () => {
   const isUpdate = isAdmin ? true : allPermissions?.update;
   const isDelete = isAdmin ? true : allPermissions?.delete;
 
-  const columns = [
-    {
-      title: "User Name",
-      dataIndex: "full_name",
-      render: (text, record) => (
-        <Link to={`/manage-users/${record.id}`}>{record.full_name}</Link>
-      ),
-      sorter: (a, b) => (a.full_name || "").localeCompare(b.full_name || ""), // Fixed sorter logic
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      sorter: (a, b) => (a.email || "").localeCompare(b.email || ""), // Fixed sorter logic
-    },
-    {
-      title: "Role",
-      dataIndex: "hrms_d_user_role",
-      render: (text) => (
-        <span>{text?.[0]?.hrms_m_role?.role_name}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => (a.role || "").localeCompare(b.role || ""), // Fixed sorter logic
-    },
-    {
-      title: "Created Date",
-      dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
-    },
-    {
-      title: "Status",
-      dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""), // Fixed sorter logic
-    },
-    ...(isUpdate || isDelete
-      ? [
-          {
-            title: "Actions",
-            dataIndex: "actions",
-            render: (text, record) => (
-              <div className="dropdown table-action">
-                <Link
-                  to="#"
-                  className="action-icon"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="true"
-                >
-                  <i className="fa fa-ellipsis-v"></i>
-                </Link>
-                <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
-                    <Link
-                      className="dropdown-item edit-popup"
-                      to="#"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvas_edit_user"
-                      onClick={() => setSelectedUser(record)}
-                    >
-                      <i className="ti ti-edit text-blue"></i> Edit
-                    </Link>
-                  )}
-                  {isDelete && (
-                    <Link
-                      className="dropdown-item"
-                      to="#"
-                      onClick={() => handleDeleteUser(record)}
-                    >
-                      <i className="ti ti-trash text-danger"></i> Delete
-                    </Link>
-                  )}
+  const columns = useMemo(
+    () => [
+      {
+        title: "User Name",
+        dataIndex: "full_name",
+        render: (text, record) => (
+          <Link to={`/manage-users/${record.id}`}>{record.full_name}</Link>
+        ),
+        sorter: (a, b) => (a.full_name || "").localeCompare(b.full_name || ""), // Fixed sorter logic
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        sorter: (a, b) => (a.email || "").localeCompare(b.email || ""), // Fixed sorter logic
+      },
+      {
+        title: "Role",
+        dataIndex: "hrms_d_user_role",
+        render: (text) => (
+          <span>{text?.[0]?.hrms_m_role?.role_name}</span> // Format the date as needed
+        ),
+        sorter: (a, b) => (a.role || "").localeCompare(b.role || ""), // Fixed sorter logic
+      },
+      {
+        title: "Created Date",
+        dataIndex: "createdate",
+        render: (text) => (
+          <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
+        ),
+        sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      },
+      {
+        title: "Status",
+        dataIndex: "is_active",
+        render: (text) => (
+          <div>
+            {text === "Y" ? (
+              <span className="badge badge-pill badge-status bg-success">
+                Active
+              </span>
+            ) : (
+              <span className="badge badge-pill badge-status bg-danger">
+                Inactive
+              </span>
+            )}
+          </div>
+        ),
+        sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""), // Fixed sorter logic
+      },
+      ...(isUpdate || isDelete
+        ? [
+            {
+              title: "Actions",
+              dataIndex: "actions",
+              render: (text, record) => (
+                <div className="dropdown table-action">
+                  <Link
+                    to="#"
+                    className="action-icon"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="true"
+                  >
+                    <i className="fa fa-ellipsis-v"></i>
+                  </Link>
+                  <div className="dropdown-menu dropdown-menu-right">
+                    {isUpdate && (
+                      <Link
+                        className="dropdown-item edit-popup"
+                        to="#"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvas_edit_user"
+                        onClick={() => setSelectedUser(record)}
+                      >
+                        <i className="ti ti-edit text-blue"></i> Edit
+                      </Link>
+                    )}
+                    {isDelete && (
+                      <Link
+                        className="dropdown-item"
+                        to="#"
+                        onClick={() => handleDeleteUser(record)}
+                      >
+                        <i className="ti ti-trash text-danger"></i> Delete
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ),
-          },
-        ]
-      : []),
-  ];
+              ),
+            },
+          ]
+        : []),
+    ],
+    [isUpdate, isDelete]
+  );
 
   const { users, loading, error, success } = useSelector(
     (state) => state.users
@@ -219,7 +222,7 @@ const ManageUsers = () => {
       });
     }
     return data;
-  }, [searchText, selectedDateRange, users, columns, sortOrder]);
+  }, [selectedDateRange, users, sortOrder, selectedStatus]);
 
   const exportToExcel = useCallback(() => {
     const worksheet = XLSX.utils.json_to_sheet(filteredData);

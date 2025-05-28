@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import ImageWithBasePath from "../../../components/common/imageWithBasePath";
-import { ascendingandDecending } from "../../../components/common/selectoption/selectoption";
-import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
-import { Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { ActivityDetailOfUser } from "../../../components/common/detailPages/UserDetails/activityDetails";
 import { CallsDetailsOfUser } from "../../../components/common/detailPages/UserDetails/callsDetails";
 import FilesDetails from "../../../components/common/detailPages/UserDetails/FilesDetails";
-const ComapanyActvities = ({ company_id ,company_name }) => {
+const ComapanyActvities = ({ company_id, company_name }) => {
   return (
     <div className="col-xl-9">
       <div className="card mb-3">
@@ -418,7 +413,11 @@ const ComapanyActvities = ({ company_id ,company_name }) => {
         <CallsDetailsOfUser />
 
         {/* Files */}
-       <FilesDetails type={"Companies"} type_id={company_id} type_name={company_name} />
+        <FilesDetails
+          type={"Companies"}
+          type_id={company_id}
+          type_name={company_name}
+        />
 
         {/* Email */}
         {/* <div className="tab-pane fade" id="email">

@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
 import { fetchUserByToken, updateUser } from "../../../redux/manage-user";
-import { Link } from "react-router-dom";
-import { useState } from "react";
 
 const Profile = () => {
   const dispatch = useDispatch();

@@ -1,154 +1,129 @@
 import { Navigate, Route } from "react-router";
-import Dashboard from "../pages/main-menu/deals-dashboard";
-import { all_routes } from "./all_routes";
-
-import ContactDetail from "../pages/contacts/";
-import ContactList from "../pages/contacts/contactList";
-
-import LeadsList from "../pages/leads";
-import LeadsDetail from "../pages/leads/LeadsDetail";
-import LeadsKanban from "../pages/leads/LeadsKanban";
-
+import Activities from "../pages/Activities";
+import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
+import AppointmentLetters from "../pages/AppointmentLetters";
+import AppraisalEntries from "../pages/AppraisalEntries";
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
+import Calls from "../pages/call";
+import CampaignsList from "../pages/Campaign";
+import Cases from "../pages/Case";
 import Companies from "../pages/companies/";
 import CompanyDetail from "../pages/companies/CompanyDetail";
-
-import BranchList from "../pages/crm-settings/core-hr/branch";
-import Company from "../pages/crm-settings/core-hr/company";
-import DepanrtmentList from "../pages/crm-settings/core-hr/department";
-import DesignationList from "../pages/crm-settings/core-hr/designation";
-import Employee_CategoryList from "../pages/crm-settings/core-hr/employeeCategory";
-import Employee_TypeList from "../pages/crm-settings/core-hr/employmentType";
-
-import JobPosting from "../pages/jobPosting";
-
-import OfferLetters from "../pages/OfferLetters";
-import Pipelines from "../pages/pipelines/";
-import PipelineDetail from "../pages/pipelines/PipelineDetail";
-
-import Login from "../pages/auth/Login";
-import DealList from "../pages/deals";
-import DealDetail from "../pages/deals/DealDetail";
-import DealsKanban from "../pages/deals/DealsKanban";
-
-//CRM Settings
-import Calls from "../pages/call";
+import ContactDetail from "../pages/contacts/";
+import ContactList from "../pages/contacts/contactList";
 import BanksList from "../pages/crm-settings/bank";
 import CallResult from "../pages/crm-settings/callResult";
 import CallStatus from "../pages/crm-settings/calls";
 import CallPurpose from "../pages/crm-settings/callsPurpose";
 import CallType from "../pages/crm-settings/callType";
 import ContactStage from "../pages/crm-settings/contact-stages";
-import Industries from "../pages/crm-settings/industries";
-import LostReason from "../pages/crm-settings/lost-reasons";
-import SourceList from "../pages/crm-settings/sources";
-
-import ProjectDetail from "../pages/projects/ProjectsDetail";
-
-import Projects from "../pages/projects";
-
+import BranchList from "../pages/crm-settings/core-hr/branch";
+import Company from "../pages/crm-settings/core-hr/company";
+import DepanrtmentList from "../pages/crm-settings/core-hr/department";
+import DesignationList from "../pages/crm-settings/core-hr/designation";
+import EmployeeCategoryList from "../pages/crm-settings/core-hr/employeeCategory";
+import EmployeeTypeList from "../pages/crm-settings/core-hr/employmentType";
 import CountriesList from "../pages/crm-settings/country";
+import Industries from "../pages/crm-settings/industries";
+import HolidayCalenderList from "../pages/crm-settings/leaveAndAttendance/HolidayCalender";
+import LeaveTypeList from "../pages/crm-settings/leaveAndAttendance/LeaveType";
+import ShiftList from "../pages/crm-settings/leaveAndAttendance/Shifts";
+import WorkTemplateList from "../pages/crm-settings/leaveAndAttendance/WorkSchedule";
+import LostReason from "../pages/crm-settings/lost-reasons";
+import MeetingTypes from "../pages/crm-settings/meetingType";
+import Modules from "../pages/crm-settings/Modules";
 import CurrencyList from "../pages/crm-settings/payroll-statutory/currency";
+import LoneType from "../pages/crm-settings/payroll-statutory/loneTpye";
+import Paycomponent from "../pages/crm-settings/payroll-statutory/paycomponent";
+import ProvidentFund from "../pages/crm-settings/payroll-statutory/providentFund";
+import SalaryStructure from "../pages/crm-settings/payroll-statutory/salarystructure";
+import StatutoryRates from "../pages/crm-settings/payroll-statutory/statutoryRates";
+import TaxRelirf from "../pages/crm-settings/payroll-statutory/taxRegime";
+import TaxRegime from "../pages/crm-settings/payroll-statutory/texRegim";
+import GoalCategoryMaster from "../pages/crm-settings/performance/goalCategoryMaster";
+import KpiMaster from "../pages/crm-settings/performance/kpi-Master";
+import RatingScaleMaster from "../pages/crm-settings/performance/ratingScaleMaster";
+import ReviewTemplateMaster from "../pages/crm-settings/performance/ReviewTemplateMaster";
+import ProductCategory from "../pages/crm-settings/ProductCategory";
+import AssetTypeMaster from "../pages/crm-settings/recruitment&Talent/assetTypeMaster";
+import AwardTypeMaster from "../pages/crm-settings/recruitment&Talent/awardTypeMaster";
+import DisciplinaryPenaltyMaster from "../pages/crm-settings/recruitment&Talent/disciplinaryPenaltyMaster";
+import DocumentTypeMaster from "../pages/crm-settings/recruitment&Talent/documentTypeMaster";
+import GrievanceTypeMaster from "../pages/crm-settings/recruitment&Talent/grievanceTypeMaster";
+import JobCategoryMaster from "../pages/crm-settings/recruitment&Talent/jobCategoryMaster";
+import LetterTypeMaster from "../pages/crm-settings/recruitment&Talent/letterTypeMaster";
+import SurveyMaster from "../pages/crm-settings/recruitment&Talent/surveyMaster";
+import WorkLifeEventTypeMaster from "../pages/crm-settings/recruitment&Talent/workLifeEventTypeMaster";
+import SourceList from "../pages/crm-settings/sources";
 import StateList from "../pages/crm-settings/state";
+import TaxSetUpList from "../pages/crm-settings/TaxSetUp";
+import AdminDashboard from "../pages/dashboard/AdminDashboard";
+import DealList from "../pages/deals";
+import DealDetail from "../pages/deals/DealDetail";
+import DealsKanban from "../pages/deals/DealsKanban";
+import Documents from "../pages/Documents";
 import EmployeeList from "../pages/Employee";
-
-// USER MANAGEMENT
-import Manageusers from "../pages/user-management/manage-users";
-import UserDetail from "../pages/user-management/manage-users/UserDetail";
-
-import RolesPermissions from "../pages/user-management/roles";
-
-// SETTINGS //
+import AddEmployee from "../pages/Employee/AddEmployee";
+import EmployeeDetail from "../pages/Employee/EmployeeDetail";
+import EmploymentContracts from "../pages/EmploymentContracts";
+import JobPosting from "../pages/jobPosting";
+import LeadsList from "../pages/leads";
+import LeadsDetail from "../pages/leads/LeadsDetail";
+import LeadsKanban from "../pages/leads/LeadsKanban";
+import LeaveApplications from "../pages/leaveApplications";
+import LeaveEncashment from "../pages/LeaveEncashment";
+import LoanRequests from "../pages/loanRequests";
+import {
+  default as Dashboard,
+  default as DealsDashboard,
+} from "../pages/main-menu/deals-dashboard";
+import LeadsDashboard from "../pages/main-menu/leads-dashboard";
+import ProjectDashboard from "../pages/main-menu/project-dashboard";
+import OfferLetters from "../pages/OfferLetters";
+import Orders from "../pages/Order";
+import PayslipViewer from "../pages/payslipViewer";
+import Pipelines from "../pages/pipelines/";
+import PipelineDetail from "../pages/pipelines/PipelineDetail";
+import PriceBook from "../pages/priceBooks";
+import Product from "../pages/Product";
+import Projects from "../pages/projects";
+import ProjectDetail from "../pages/projects/ProjectsDetail";
+import PurchaseInvoice from "../pages/purchaseInvoice";
+import PurchaseOrders from "../pages/purchaseOrder";
+import Quotation from "../pages/Quotation";
+import ResumeUpload from "../pages/resumeUpload";
+import SalesInvoice from "../pages/salesInvoice";
+import CustomFields from "../pages/settings/app-settings/CustomFields";
+import InvoiceSettings from "../pages/settings/app-settings/InvoiceSettings";
+import Printers from "../pages/settings/app-settings/Printers";
+import BankAccounts from "../pages/settings/financial-settings/BankAccounts";
+import PaymentGateways from "../pages/settings/financial-settings/PaymentGateways";
+import TaxRates from "../pages/settings/financial-settings/TaxRates";
 import ConnectedApps from "../pages/settings/general-settings/ConnectedApp";
 import Notifications from "../pages/settings/general-settings/Notifications";
 import Profile from "../pages/settings/general-settings/Profile";
 import Security from "../pages/settings/general-settings/Security";
-
+import BanIpAddress from "../pages/settings/other-settings/BanIpAddress";
+import Storage from "../pages/settings/other-settings/Storage";
+import EmailSettings from "../pages/settings/system-settings/EmailSettings";
+import GdprCookies from "../pages/settings/system-settings/GdprCookies";
+import SmsGateways from "../pages/settings/system-settings/SmsGateways";
 import Appearance from "../pages/settings/website-settings/Appearance";
 import CompanySettings from "../pages/settings/website-settings/CompanySettings";
 import Language from "../pages/settings/website-settings/LanguageWeb";
 import Localization from "../pages/settings/website-settings/Localization";
 import Preference from "../pages/settings/website-settings/Preference";
 import Prefixes from "../pages/settings/website-settings/Prefixes";
-
-import CustomFields from "../pages/settings/app-settings/CustomFields";
-import InvoiceSettings from "../pages/settings/app-settings/InvoiceSettings";
-import Printers from "../pages/settings/app-settings/Printers";
-
-import EmailSettings from "../pages/settings/system-settings/EmailSettings";
-import GdprCookies from "../pages/settings/system-settings/GdprCookies";
-import SmsGateways from "../pages/settings/system-settings/SmsGateways";
-
-import BankAccounts from "../pages/settings/financial-settings/BankAccounts";
-// import Currencies from "../pages/settings/financial-settings/Currencies";
-import PaymentGateways from "../pages/settings/financial-settings/PaymentGateways";
-import BanIpAddress from "../pages/settings/other-settings/BanIpAddress";
-import Storage from "../pages/settings/other-settings/Storage";
-
-import Paycomponent from "../pages/crm-settings/payroll-statutory/paycomponent";
-import SalaryStructure from "../pages/crm-settings/payroll-statutory/salarystructure";
-import TaxRelirf from "../pages/crm-settings/payroll-statutory/taxRegime";
-import ProvidentFund from "../pages/crm-settings/payroll-statutory/providentFund";
-import TaxRegime from "../pages/crm-settings/payroll-statutory/texRegim";
-import KpiMaster from "../pages/crm-settings/performance/kpi-Master";
-import GoalCategoryMaster from "../pages/crm-settings/performance/goalCategoryMaster";
-import ReviewTemplateMaster from "../pages/crm-settings/performance/ReviewTemplateMaster";
-import RatingScaleMaster from "../pages/crm-settings/performance/ratingScaleMaster";
-import JobCategoryMaster from "../pages/crm-settings/recruitment&Talent/jobCategoryMaster";
-import GrievanceTypeMaster from "../pages/crm-settings/recruitment&Talent/grievanceTypeMaster";
-import DisciplinaryPenaltyMaster from "../pages/crm-settings/recruitment&Talent/disciplinaryPenaltyMaster";
-import WorkLifeEventTypeMaster from "../pages/crm-settings/recruitment&Talent/workLifeEventTypeMaster";
-import AwardTypeMaster from "../pages/crm-settings/recruitment&Talent/awardTypeMaster";
-import LetterTypeMaster from "../pages/crm-settings/recruitment&Talent/letterTypeMaster";
-import DocumentTypeMaster from "../pages/crm-settings/recruitment&Talent/documentTypeMaster";
-import SurveyMaster from "../pages/crm-settings/recruitment&Talent/surveyMaster";
-import AssetTypeMaster from "../pages/crm-settings/recruitment&Talent/assetTypeMaster";
-// import CurrenciesList from "../pages/crm-settings/payroll-statutory/currency";
-import TaxRates from "../pages/settings/financial-settings/TaxRates";
-import StatutoryRates from "../pages/crm-settings/payroll-statutory/statutoryRates";
-import Activities from "../pages/Activities";
-import MeetingTypes from "../pages/crm-settings/meetingType";
-import Modules from "../pages/crm-settings/Modules";
-import DealsDashboard from "../pages/main-menu/deals-dashboard";
-import LeadsDashboard from "../pages/main-menu/leads-dashboard";
-import ProjectDashboard from "../pages/main-menu/project-dashboard";
+import Solutions from "../pages/Solutions";
+import TimeSheet from "../pages/TimeSheet";
+import Manageusers from "../pages/user-management/manage-users";
+import UserDetail from "../pages/user-management/manage-users/UserDetail";
+import RolesPermissions from "../pages/user-management/roles";
 import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
-
-import LoneType from "../pages/crm-settings/payroll-statutory/loneTpye";
-import LoanRequests from "../pages/loanRequests";
-import LeaveApplications from "../pages/leaveApplications";
-import AddEmployee from "../pages/Employee/AddEmployee";
-import ResumeUpload from "../pages/resumeUpload";
-import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
-import PayslipViewer from "../pages/payslipViewer";
-// import ManufacturerList from "../pages/crm-settings/Manufacturer";
-import Register from "../pages/auth/Register";
-import CampaignsList from "../pages/Campaign";
-import Cases from "../pages/Case";
-import LeaveTypeList from "../pages/crm-settings/leaveAndAttendance/LeaveType";
-import ShiftList from "../pages/crm-settings/leaveAndAttendance/Shifts";
-import ProductCategory from "../pages/crm-settings/ProductCategory";
-import TaxSetUpList from "../pages/crm-settings/TaxSetUp";
-import AdminDashboard from "../pages/dashboard/AdminDashboard";
-import Documents from "../pages/Documents";
-import Orders from "../pages/Order";
-import PriceBook from "../pages/priceBooks";
-import Product from "../pages/Product";
-import PurchaseInvoice from "../pages/purchaseInvoice";
-import PurchaseOrders from "../pages/purchaseOrder";
-import Quotation from "../pages/Quotation";
-import SalesInvoice from "../pages/salesInvoice";
-import Solutions from "../pages/Solutions";
-import HolidayCalenderList from "../pages/crm-settings/leaveAndAttendance/HolidayCalender";
-import WorkTemplateList from "../pages/crm-settings/leaveAndAttendance/WorkSchedule";
-import AppointmentLetters from "../pages/AppointmentLetters";
-import EmploymentContracts from "../pages/EmploymentContracts";
-import EmployeeDetail from "../pages/Employee/EmployeeDetail";
-import LeaveEncashment from "../pages/LeaveEncashment";
-import TimeSheet from "../pages/TimeSheet";
-import AppraisalEntries from "../pages/AppraisalEntries";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
-// // Export components individually
+import { all_routes } from "./all_routes";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -253,13 +228,13 @@ export const privateRoutes = [
   },
   {
     path: route.employeeCategory,
-    element: <Employee_CategoryList />,
+    element: <EmployeeCategoryList />,
     route: Route,
     title: "employeeCategory",
   },
   {
     path: route.employmentType,
-    element: <Employee_TypeList />,
+    element: <EmployeeTypeList />,
     route: Route,
     title: "employeetype",
   },

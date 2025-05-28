@@ -1,12 +1,12 @@
-import { Switch, Checkbox, ConfigProvider } from "antd";
+import { Checkbox, ConfigProvider, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Table from "../../../../components/common/dataTable/index";
 import {
   addPermissions,
   fetchPermissions,
 } from "../../../../redux/permissions";
-import { Link } from "react-router-dom";
 
 export const PermissionModal = ({
   permissionModal,
@@ -16,9 +16,7 @@ export const PermissionModal = ({
   const dispatch = useDispatch();
   const [updatedData, setUpdatedData] = useState([]);
 
-  const { permissions, loading, error, success } = useSelector(
-    (state) => state.permissions
-  );
+  const { permissions, loading } = useSelector((state) => state.permissions);
   useEffect(() => {
     setUpdatedData(permissions);
   }, [permissions]);
@@ -78,10 +76,10 @@ export const PermissionModal = ({
     {
       title: "Module",
       ellipsis: true,
-      width:"30%",
+      width: "30%",
       dataIndex: "module_name",
       render: (text, record) => (
-        <div className="d-flex gap-2" >
+        <div className="d-flex gap-2">
           <Checkbox
             size="small"
             className=""
@@ -115,15 +113,18 @@ export const PermissionModal = ({
         </div>
       ),
       dataIndex: "permissions",
-      render: (text, record) => (<div className="text-center">
-        <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
-          <Switch
-            size="default"
-            className="1"
-            checked={text.view || false}
-            onChange={(checked) => handleSwitchChange(record, "view", checked)}
-          />
-        </ConfigProvider>
+      render: (text, record) => (
+        <div className="text-center">
+          <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
+            <Switch
+              size="default"
+              className="1"
+              checked={text.view || false}
+              onChange={(checked) =>
+                handleSwitchChange(record, "view", checked)
+              }
+            />
+          </ConfigProvider>
         </div>
       ),
     },
@@ -141,17 +142,18 @@ export const PermissionModal = ({
         </div>
       ),
       dataIndex: "permissions",
-      render: (text, record) => (<div className="text-center">
-        <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
-          <Switch
-            size="default"
-            className="1"
-            checked={text.create || false}
-            onChange={(checked) =>
-              handleSwitchChange(record, "create", checked)
-            }
-          />
-        </ConfigProvider>
+      render: (text, record) => (
+        <div className="text-center">
+          <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
+            <Switch
+              size="default"
+              className="1"
+              checked={text.create || false}
+              onChange={(checked) =>
+                handleSwitchChange(record, "create", checked)
+              }
+            />
+          </ConfigProvider>
         </div>
       ),
     },
@@ -169,17 +171,18 @@ export const PermissionModal = ({
         </div>
       ),
       dataIndex: "permissions",
-      render: (text, record) => (<div className="text-center">
-        <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
-          <Switch
-            size="default"
-            className="1"
-            checked={text.update || false}
-            onChange={(checked) =>
-              handleSwitchChange(record, "update", checked)
-            }
-          />
-        </ConfigProvider>
+      render: (text, record) => (
+        <div className="text-center">
+          <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
+            <Switch
+              size="default"
+              className="1"
+              checked={text.update || false}
+              onChange={(checked) =>
+                handleSwitchChange(record, "update", checked)
+              }
+            />
+          </ConfigProvider>
         </div>
       ),
     },
@@ -197,17 +200,18 @@ export const PermissionModal = ({
         </div>
       ),
       dataIndex: "permissions",
-      render: (text, record) => (<div className="text-center">
-        <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
-          <Switch
-            size="default"
-            className="1"
-            checked={text.delete || false}
-            onChange={(checked) =>
-              handleSwitchChange(record, "delete", checked)
-            }
-          />
-        </ConfigProvider>
+      render: (text, record) => (
+        <div className="text-center">
+          <ConfigProvider theme={{ token: { colorPrimary: "#22bb33" } }}>
+            <Switch
+              size="default"
+              className="1"
+              checked={text.delete || false}
+              onChange={(checked) =>
+                handleSwitchChange(record, "delete", checked)
+              }
+            />
+          </ConfigProvider>
         </div>
       ),
     },
@@ -228,23 +232,29 @@ export const PermissionModal = ({
             <div className="modal-content" style={{ width: "100%" }}>
               <div className="modal-body" style={{ width: "100%" }}>
                 <div>
-                <div className="d-flex justify-content-between align-content-center">
-                  <h4 className="mb-1">
-                    Map Role To Module
-                    <span
-                      className="text-success"
-                      style={{ fontWeight: "500", fontSize: "15px" }}
-                    >
-                      {" "}
-                      ({moduleId?.name})
-                    </span>
-                  </h4>
-                  <Link to="#" >
-                  <i className="ti ti-circle-x h2 text-primary "  onClick={() => setPermissionModal(false)} />
-                  </Link>
+                  <div className="d-flex justify-content-between align-content-center">
+                    <h4 className="mb-1">
+                      Map Role To Module
+                      <span
+                        className="text-success"
+                        style={{ fontWeight: "500", fontSize: "15px" }}
+                      >
+                        {" "}
+                        ({moduleId?.name})
+                      </span>
+                    </h4>
+                    <Link to="#">
+                      <i
+                        className="ti ti-circle-x h2 text-primary "
+                        onClick={() => setPermissionModal(false)}
+                      />
+                    </Link>
                   </div>
                   <hr className="border-dark" />
-                  <div className="d-flex  flex-wrap " style={{height:"70vh",overflow:"auto"}}>
+                  <div
+                    className="d-flex  flex-wrap "
+                    style={{ height: "70vh", overflow: "auto" }}
+                  >
                     <ConfigProvider
                       theme={{
                         components: {

@@ -7,7 +7,7 @@ import { fetchRoles } from "../../../../redux/roles";
 
 const EditUserModal = ({ user }) => {
   const dispatch = useDispatch();
-  const [isChangePassword,setIsChangePassword] = useState("N")
+  const [isChangePassword, setIsChangePassword] = useState("N");
 
   // Access roles and user update state from Redux
   const { roles, loading: rolesLoading } = useSelector((state) => state.roles);
@@ -33,7 +33,7 @@ const EditUserModal = ({ user }) => {
       full_name: user?.full_name || "",
       phone: user?.phone || "",
       address: user?.address || "",
-      role_id:user?.crms_d_user_role?.[0]?.crms_m_role?.id || null,
+      role_id: user?.crms_d_user_role?.[0]?.crms_m_role?.id || null,
       is_active: user?.is_active || "Y",
     },
   });
@@ -55,20 +55,21 @@ const EditUserModal = ({ user }) => {
       setSelectedAvatar(file);
     }
   };
-useEffect(()=>{
-  if (user) {
-    reset({
-      username: user?.username || "",
-      email: user?.email || "",
-      password: "",
-      repeatPassword: "",
-      full_name: user?.full_name || "",
-      phone: user?.phone || "",
-      address: user?.address || "",
-      role_id:user?.crms_d_user_role?.[0]?.crms_m_role?.id || null,
-      is_active: user?.is_active || "Y",
-});}
-},[user])
+  useEffect(() => {
+    if (user) {
+      reset({
+        username: user?.username || "",
+        email: user?.email || "",
+        password: "",
+        repeatPassword: "",
+        full_name: user?.full_name || "",
+        phone: user?.phone || "",
+        address: user?.address || "",
+        role_id: user?.crms_d_user_role?.[0]?.crms_m_role?.id || null,
+        is_active: user?.is_active || "Y",
+      });
+    }
+  }, [user, reset]);
   // Map roles for react-select
   const roleOptions = roles?.map((role) => ({
     value: role.id,
@@ -101,7 +102,7 @@ useEffect(()=>{
     const offcanvasElement = document.getElementById("offcanvas_edit_user");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        reset()
+        reset();
         setSelectedAvatar(null);
       };
       offcanvasElement.addEventListener(
@@ -115,7 +116,7 @@ useEffect(()=>{
         );
       };
     }
-  }, []);
+  }, [reset]);
 
   return (
     <div
@@ -254,7 +255,9 @@ useEffect(()=>{
                     setValue("role_id", selectedOption?.value);
                   }}
                   value={
-                    roleOptions?.find((option) => option.value === watch("role_id") ) || ""
+                    roleOptions?.find(
+                      (option) => option.value === watch("role_id")
+                    ) || ""
                   }
                   placeholder="Select Role"
                 />
@@ -285,72 +288,78 @@ useEffect(()=>{
               </div>
             </div>
             <div className="col-md-12">
-                  <div className="status-toggle small-toggle-btn d-flex align-items-center justify-content-end ">
-                    <span className="me-2 fw-semibold label-text">Change Password</span>
-                    <Controller
-                      name="is_reminder"
-                      control={control}
-                      render={({ field }) => (
-                        <>
-                          <input
-                            type="checkbox"
-                            id="emailOptOut"
-                            className="check"
-                            {...field}
-                            checked={isChangePassword === "Y"}
-                            onChange={(e) =>
-                              e.target.checked ? setIsChangePassword("Y") : setIsChangePassword("N")
+              <div className="status-toggle small-toggle-btn d-flex align-items-center justify-content-end ">
+                <span className="me-2 fw-semibold label-text">
+                  Change Password
+                </span>
+                <Controller
+                  name="is_reminder"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <input
+                        type="checkbox"
+                        id="emailOptOut"
+                        className="check"
+                        {...field}
+                        checked={isChangePassword === "Y"}
+                        onChange={(e) =>
+                          e.target.checked
+                            ? setIsChangePassword("Y")
+                            : setIsChangePassword("N")
                         }
-                          />
-                          <label htmlFor="emailOptOut" className="checktoggle" style={{height:"18px ",width:"32px"}} >
-                            
-                          </label>
-                        </>
-                      )}
-                    />
-                  </div>
+                      />
+                      <label
+                        htmlFor="emailOptOut"
+                        className="checktoggle"
+                        style={{ height: "18px ", width: "32px" }}
+                      ></label>
+                    </>
+                  )}
+                />
+              </div>
+            </div>
+            {/* Password */}
+            {isChangePassword === "Y" && (
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="col-form-label">Password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    {...register("password")}
+                  />
+                  {errors.password && (
+                    <small className="text-danger">
+                      {errors.password.message}
+                    </small>
+                  )}
                 </div>
-                 {/* Password */}
-               {isChangePassword === "Y" &&  <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  {...register("password")}
-                />
-                {errors.password && (
-                  <small className="text-danger">
-                    {errors.password.message}
-                  </small>
-                )}
               </div>
-            </div>}
+            )}
 
-              {/* Repeat password */}
-          {isChangePassword === "Y" &&  <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Confirm password
-                </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  {...register("repeatPassword", {
-                    required: "Confirm password  is not matched !",
-                    validate: (value) =>
-                      value === watch("password") || "Passwords is not match",
-                  })}
-                />
-                {errors.repeatPassword && (
-                  <small className="text-danger">
-                    {errors.repeatPassword.message}
-                  </small>
-                )}
+            {/* Repeat password */}
+            {isChangePassword === "Y" && (
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="col-form-label">Confirm password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    {...register("repeatPassword", {
+                      required: "Confirm password  is not matched !",
+                      validate: (value) =>
+                        value === watch("password") || "Passwords is not match",
+                    })}
+                  />
+                  {errors.repeatPassword && (
+                    <small className="text-danger">
+                      {errors.repeatPassword.message}
+                    </small>
+                  )}
+                </div>
               </div>
-            </div>}
+            )}
 
             {/* Address */}
             <div className="col-md-12">
@@ -411,17 +420,17 @@ useEffect(()=>{
             >
               {loading ? "Updating..." : "Update"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

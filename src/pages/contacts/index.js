@@ -7,19 +7,17 @@ import DefaultEditor from "react-simple-wysiwyg";
 import CollapseHeader from "../../components/common/collapse-header";
 import { ActivityDetailOfUser } from "../../components/common/detailPages/UserDetails/activityDetails";
 import { CallsDetailsOfUser } from "../../components/common/detailPages/UserDetails/callsDetails";
+import FilesDetails from "../../components/common/detailPages/UserDetails/FilesDetails";
 import ImageWithDatabase from "../../components/common/ImageFromDatabase";
 import ImageWithBasePath from "../../components/common/imageWithBasePath";
 import {
   accountType,
-  ascendingandDecending,
   documentType,
   LocaleData,
-  statusList
+  statusList,
 } from "../../components/common/selectoption/selectoption";
 import { SelectWithImage2 } from "../../components/common/selectWithImage2";
-import {
-  fetchContactById
-} from "../../redux/contacts/contactSlice";
+import { fetchContactById } from "../../redux/contacts/contactSlice";
 import { fetchLostReasons } from "../../redux/lostReasons";
 import { all_routes } from "../../routes/all_routes";
 import DateFormat from "../../utils/DateFormat";
@@ -27,7 +25,6 @@ import AddCompanyModal from "../companies/modal/AddCompanyModal";
 import AddDealModal from "../deals/modal/AddDealModal";
 import DeleteAlert from "./alert/DeleteAlert";
 import EditContactModal from "./modal/EditContactModal";
-import FilesDetails from "../../components/common/detailPages/UserDetails/FilesDetails";
 
 const ContactDetails = () => {
   const { id } = useParams();
@@ -37,11 +34,12 @@ const ContactDetails = () => {
     dispatch(fetchContactById(id));
     dispatch(fetchLostReasons());
   }, [id, dispatch]);
-  
 
   // Get the contact details from Redux store
-  const { contactDetail, loading } = useSelector((state) => state.contacts);
-  const {lostReasons: contactStatus} = useSelector((state) => state.lostReasons);
+  const { contactDetail } = useSelector((state) => state.contacts);
+  const { lostReasons: contactStatus } = useSelector(
+    (state) => state.lostReasons
+  );
 
   const route = all_routes;
 
@@ -85,7 +83,7 @@ const ContactDetails = () => {
     <>
       {/* Page Wrapper */}
       <div className="page-wrapper position-relative">
-      {/* {loading ? (
+        {/* {loading ? (
           <div
             style={{
               zIndex: 9999,
@@ -107,7 +105,8 @@ const ContactDetails = () => {
             </div>
           </div>
         ) : */}
-         ( <div className="content">
+        ({" "}
+        <div className="content">
           <div className="row">
             <div className="col-md-12">
               {/* Page Header */}
@@ -299,7 +298,9 @@ const ContactDetails = () => {
                     </li>
                     <li className="row mb-3">
                       <span className="col-6">Source</span>
-                      <span className="col-6">{contactDetail?.source_details?.name || " - - "}</span>
+                      <span className="col-6">
+                        {contactDetail?.source_details?.name || " - - "}
+                      </span>
                     </li>
                   </ul>
                   <hr />
@@ -331,20 +332,26 @@ const ContactDetails = () => {
                   <div className="mb-3">
                     <div className="d-flex align-items-center">
                       <span className="avatar avatar-lg rounded me-2 border">
-                        {contactDetail?.company_details?.logo ? 
-                        <ImageWithDatabase
-                          src={contactDetail?.company_details.logo}
-                          alt="img" 
-                          className="img-fluid w-auto h-auto"/> :
-                        <ImageWithBasePath
-                          src="assets/img/icons/google-icon.svg"
-                          alt=""
-                          className="img-fluid w-auto h-auto"
-                        />}
+                        {contactDetail?.company_details?.logo ? (
+                          <ImageWithDatabase
+                            src={contactDetail?.company_details.logo}
+                            alt="img"
+                            className="img-fluid w-auto h-auto"
+                          />
+                        ) : (
+                          <ImageWithBasePath
+                            src="assets/img/icons/google-icon.svg"
+                            alt=""
+                            className="img-fluid w-auto h-auto"
+                          />
+                        )}
                       </span>
                       <div>
                         <h6 className="fw-medium d-flex mb-1 text-capitalize">
-                        <div style={{width:'90%'}} className=""> {contactDetail?.company_details?.name}{" "}</div>
+                          <div style={{ width: "90%" }} className="">
+                            {" "}
+                            {contactDetail?.company_details?.name}{" "}
+                          </div>
                           <i className="fa-solid fa-circle-check text-success" />
                         </h6>
                         <p> {contactDetail?.company_details?.website}</p>
@@ -353,24 +360,25 @@ const ContactDetails = () => {
                   </div>
                   <hr />
                   <h6 className="mb-3 fw-semibold">Social Profile</h6>
-                  
+
                   <ul className="social-info">
                     {contactDetail?.socialProfiles &&
-                      Object.entries(JSON.parse(contactDetail?.socialProfiles)).map(
-                        ([platform, url]) =>
-                          url ? ( // Only render if a URL exists
-                            <li key={platform}>
-                              <Link
-                                to={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {/* {platform + " "+ url} */}
-                                
-                                <i className={socialIcons[platform]} />
-                              </Link>
-                            </li>
-                          ) : null
+                      Object.entries(
+                        JSON.parse(contactDetail?.socialProfiles)
+                      ).map(([platform, url]) =>
+                        url ? ( // Only render if a URL exists
+                          <li key={platform}>
+                            <Link
+                              to={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {/* {platform + " "+ url} */}
+
+                              <i className={socialIcons[platform]} />
+                            </Link>
+                          </li>
+                        ) : null
                       )}
                   </ul>
                   <hr />
@@ -496,12 +504,16 @@ const ContactDetails = () => {
               {/* Tab Content */}
               <div className="tab-content pt-0">
                 {/* Activities */}
-                   <ActivityDetailOfUser contact_id={id}  />
-              
+                <ActivityDetailOfUser contact_id={id} />
+
                 {/* Calls */}
-                <CallsDetailsOfUser contact_id={id}/>
+                <CallsDetailsOfUser contact_id={id} />
                 {/* Files */}
-                <FilesDetails type="Contacts" type_id={id} type_name={`${contactDetail?.firstName} ${contactDetail?.lastName}`} />
+                <FilesDetails
+                  type="Contacts"
+                  type_id={id}
+                  type_name={`${contactDetail?.firstName} ${contactDetail?.lastName}`}
+                />
                 {/* <div className="tab-pane fade" id="files">
                   <div className="card">
                     <div className="card-header">
@@ -806,7 +818,8 @@ const ContactDetails = () => {
             </div>
             {/* /Contact Details */}
           </div>
-        </div>)
+        </div>
+        )
         {/* {loading && <div style={{zIndex:9999, paddingTop:'20%',paddingLeft:"35%",width:"100%",marginLeft:"0%",  minHeight:"100vh",  backgroundColor: 'rgb(255, 255, 255)'}}  
           className=" position-fixed  w-screen  top-0   bg-gray  ">
           <div
@@ -1697,10 +1710,9 @@ const ContactDetails = () => {
       {/* Edit Contact */}
       <EditContactModal contact={contactDetail} />
       {/* /Edit Contact */}
-      
-     
+
       <AddCompanyModal />
-      <AddDealModal  />
+      <AddDealModal />
     </>
   );
 };

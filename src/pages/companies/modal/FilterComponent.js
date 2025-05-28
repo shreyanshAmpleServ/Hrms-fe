@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  status,
   priorityList,
+  status,
 } from "../../../components/common/selectoption/selectoption";
 const FilterComponent = ({ applyFilters }) => {
   const [selectedPriority, setSelectedPriorty] = useState(null);

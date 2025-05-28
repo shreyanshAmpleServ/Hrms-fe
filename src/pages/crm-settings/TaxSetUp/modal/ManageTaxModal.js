@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
-import Select from "react-select";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchContacts } from "../../../../redux/contacts/contactSlice";
 import { addTaxSetup, updateTaxSetup } from "../../../../redux/taxSetUp";
 
-const ManageTaxModal = ({tax,setTax}) => {
+const ManageTaxModal = ({ tax, setTax }) => {
   const dispatch = useDispatch();
-  const [searchValue,setSearchValue] = useState('')
-  const {loading} = useSelector((state)=>state.taxs)
+  const [searchValue, setSearchValue] = useState("");
+  const { loading } = useSelector((state) => state.taxs);
 
   // React Hook Form setup
   const {
@@ -26,29 +25,28 @@ const ManageTaxModal = ({tax,setTax}) => {
       rate: "",
       category: "",
       is_active: "Y",
-      validFrom:new Date(),
-      external_code:"",
+      validFrom: new Date(),
+      external_code: "",
       validTo: new Date(),
       account_id: 0,
       account_name: "",
-      effect_date:new Date(),
-      
+      effect_date: new Date(),
     },
   });
-React.useEffect(() => {
+  React.useEffect(() => {
     if (tax) {
       reset({
         name: tax?.name || "",
         rate: tax?.rate || "",
         category: tax?.category || "",
         is_active: tax?.is_active || "",
-        validFrom:new Date(tax?.validFrom) ||new Date(),
-        validTo: new Date(tax?.validTo) ||new Date(),
+        validFrom: new Date(tax?.validFrom) || new Date(),
+        validTo: new Date(tax?.validTo) || new Date(),
         account_id: 0,
-        account_name:  "",
-        external_code : tax?.external_code || "",
-        effect_date:new Date(tax?.effect_date) || new Date(),
- });
+        account_name: "",
+        external_code: tax?.external_code || "",
+        effect_date: new Date(tax?.effect_date) || new Date(),
+      });
     } else {
       reset({
         name: "",
@@ -56,27 +54,26 @@ React.useEffect(() => {
         category: "",
         is_active: "",
         external_code: "",
-        validFrom:new Date(),
+        validFrom: new Date(),
         validTo: new Date(),
         account_id: 0,
         account_name: "",
-        effect_date:new Date(),
-       
+        effect_date: new Date(),
       });
     }
   }, [tax]);
-useEffect(()=>{
-  dispatch(fetchContacts(searchValue))
-},[dispatch,searchValue])
+  useEffect(() => {
+    dispatch(fetchContacts(searchValue));
+  }, [dispatch, searchValue]);
 
-const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
-  
+  const { contacts, loading: loadingContact } = useSelector(
+    (state) => state.contacts
+  );
+
   const contactlist = contacts?.data?.map((contact) => ({
     value: contact.id,
     label: `${contact.firstName.trim()} ${contact.lastName.trim()}`,
   }));
-
-
 
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_tax_setup");
@@ -98,15 +95,15 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
     // });
     const formData = {
       ...data,
-      validFrom : data?.validFrom?.toISOString(),
-      validTo : data?.validTo?.toISOString(),
-      effect_date : data?.effect_date.toISOString()
-    }
+      validFrom: data?.validFrom?.toISOString(),
+      validTo: data?.validTo?.toISOString(),
+      effect_date: data?.effect_date.toISOString(),
+    };
 
-   
     try {
-      tax ? await dispatch(updateTaxSetup({id :tax?.id, taxData:formData}))
-      :  await dispatch(addTaxSetup(formData)).unwrap();
+      tax
+        ? await dispatch(updateTaxSetup({ id: tax?.id, taxData: formData }))
+        : await dispatch(addTaxSetup(formData)).unwrap();
       closeButton.click();
       reset();
     } catch (error) {
@@ -114,23 +111,25 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
     }
   };
   React.useEffect(() => {
-        const offcanvasElement = document.getElementById("offcanvas_add_edit_tax_setup");
-        if (offcanvasElement) {
-          const handleModalClose = () => {
-            setTax();
-          };
-          offcanvasElement.addEventListener(
-            "hidden.bs.offcanvas",
-            handleModalClose
-          );
-          return () => {
-            offcanvasElement.removeEventListener(
-              "hidden.bs.offcanvas",
-              handleModalClose
-            );
-          };
-        }
-      }, []);
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_edit_tax_setup"
+    );
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setTax();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -154,8 +153,6 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
           {/* <input type="hidden" {...register("entityType", { value: "user" })} />
           <input type="hidden" {...register("username", { value: watch('email') })} /> */}
           <div className="row">
-           
-
             {/* Full Name */}
             <div className="col-md-6">
               <div className="mb-3">
@@ -170,34 +167,32 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                   })}
                 />
                 {errors.full_name && (
-                  <small className="text-danger">
-                    {errors.name.message}
-                  </small>
+                  <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
             </div>
-
-
             {/* Email */}
             <div className="col-md-6">
               <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center">
-                <label className="col-form-label">
-                  Category <span className="text-danger">*</span>
-                </label>
+                  <label className="col-form-label">
+                    Category <span className="text-danger">*</span>
+                  </label>
                 </div>
                 <input
                   type="text"
                   className="form-control"
-                  {...register("category", { required: "category is required" })}
+                  {...register("category", {
+                    required: "category is required",
+                  })}
                 />
                 {errors.category && (
-                  <small className="text-danger">{errors.category.message}</small>
+                  <small className="text-danger">
+                    {errors.category.message}
+                  </small>
                 )}
               </div>
             </div>
-
-        
             {/* Manufacturer */}
             {/* <div className="col-md-6">
                 <div className="mb-3">
@@ -237,7 +232,6 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                   )}
                 </div>
               </div> */}
-
             {/* rate */}
             <div className="col-md-6">
               <div className="mb-3">
@@ -256,7 +250,6 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                 )}
               </div>
             </div>
-
             {/* Account */}
             {/* <div className="col-md-6">
               <div className="mb-3">
@@ -302,8 +295,7 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                 )}
               </div>
             </div> */}
-
-                   {/*Effect Dates */}
+            {/*Effect Dates */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -312,12 +304,11 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                 <DatePicker
                   className="form-control"
                   selected={watch("effect_date")}
-                  onChange={(date) => setValue("effect_date",date)}
+                  onChange={(date) => setValue("effect_date", date)}
                   dateFormat="yyyy-MM-dd"
                 />
               </div>
             </div>
-
             {/* external_code */}
             <div className="col-md-6">
               <div className="mb-3">
@@ -328,11 +319,9 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                   {...register("external_code")}
                 />
               </div>
-                  </div>
-
-
-                   {/*Valid From */}
-                   <div className="col-md-6">
+            </div>
+            {/*Valid From */}
+            <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
                   Valid From<span className="text-danger">*</span>
@@ -340,11 +329,12 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                 <DatePicker
                   className="form-control"
                   selected={watch("validFrom")}
-                  onChange={(date) => setValue("validFrom",date)}
+                  onChange={(date) => setValue("validFrom", date)}
                   dateFormat="yyyy-MM-dd"
                 />
               </div>
-            </div>                   {/* Valid To */}
+            </div>{" "}
+            {/* Valid To */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -353,7 +343,7 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
                 <DatePicker
                   className="form-control"
                   selected={watch("validTo")}
-                  onChange={(date) => setValue("validTo",date)}
+                  onChange={(date) => setValue("validTo", date)}
                   dateFormat="yyyy-MM-dd"
                 />
               </div>
@@ -373,19 +363,25 @@ const {contacts ,loading:loadingContact} = useSelector((state)=>state.contacts)
               className="btn btn-primary"
               disabled={loading}
             >
-              {tax ? loading ? "Updating ....": "Update" : loading ? "Creating..." : "Create"}
+              {tax
+                ? loading
+                  ? "Updating ...."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

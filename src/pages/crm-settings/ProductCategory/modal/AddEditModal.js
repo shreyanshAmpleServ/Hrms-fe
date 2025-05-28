@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { addIndustry, updateIndustry } from "../../../../redux/industry"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
-import { addProductCategory, updateProductCategory } from "../../../../redux/productCategory";
+import {
+  addProductCategory,
+  updateProductCategory,
+} from "../../../../redux/productCategory";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.productCategories);
@@ -34,7 +37,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_product_category_modal",
+      "close_btn_add_edit_product_category_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -42,7 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         addProductCategory({
           name: data.name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
@@ -50,7 +53,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateProductCategory({
           id: initialData.id,
           industryData: { name: data.name, is_active: data.is_active },
-        }),
+        })
       );
     }
     reset(); // Clear the form
@@ -58,12 +61,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   };
 
   return (
-    <div className="modal fade" id="add_edit_product_category_modal" role="dialog">
+    <div
+      className="modal fade"
+      id="add_edit_product_category_modal"
+      role="dialog"
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Product Category" : "Edit Product Category"}
+              {mode === "add"
+                ? "Add New Product Category"
+                : "Edit Product Category"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -125,7 +134,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>

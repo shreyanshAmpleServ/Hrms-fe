@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
-import { Link } from "react-router-dom";
-import Select from "react-select";
-
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import Select from "react-select";
 import { fetchCompanies } from "../../../redux/companies";
-import { addContact, updateContact } from "../../../redux/contacts/contactSlice";
+import {
+  addContact,
+  updateContact,
+} from "../../../redux/contacts/contactSlice";
 import { fetchCountries } from "../../../redux/country";
 import { fetchCurrencies } from "../../../redux/currency";
 import { fetchDeals } from "../../../redux/deals";
@@ -15,7 +17,7 @@ import { fetchUsers } from "../../../redux/manage-user";
 import { fetchMappedStates } from "../../../redux/mappedState";
 import { fetchSources } from "../../../redux/source";
 
-const AddContactModal = ({contact,setSelectedContact}) => {
+const AddContactModal = ({ contact, setSelectedContact }) => {
   const [selectedLogo, setSelectedLogo] = useState();
   const languages = [
     { value: "Choose", label: "Choose" },
@@ -68,7 +70,7 @@ const AddContactModal = ({contact,setSelectedContact}) => {
     },
   });
 
- React.useEffect(() => {
+  React.useEffect(() => {
     if (contact) {
       reset({
         firstName: contact?.firstName || "",
@@ -80,7 +82,7 @@ const AddContactModal = ({contact,setSelectedContact}) => {
         phone2: contact?.phone2 || "",
         fax: contact?.fax || "",
         deal_id: contact?.deal_id || null,
-        dateOfBirth: contact?.dateOfBirth ||new Date(),
+        dateOfBirth: contact?.dateOfBirth || new Date(),
         reviews: contact?.reviews || null,
         owner: contact?.owner || null,
         source: contact?.source || null,
@@ -88,7 +90,7 @@ const AddContactModal = ({contact,setSelectedContact}) => {
         currency: contact?.currency || "",
         language: contact?.language || null,
         description: contact?.description || "",
-        emailOptOut: contact?.emailOptOut || false ,
+        emailOptOut: contact?.emailOptOut || false,
         streetAddress: contact?.streetAddress || "",
         city: contact?.city || "",
         state: contact?.state || "",
@@ -96,7 +98,6 @@ const AddContactModal = ({contact,setSelectedContact}) => {
         zipcode: contact?.zipcode || "",
         visibility: contact?.visibility || "",
         is_active: contact?.is_active || "",
-
       });
     } else {
       reset({
@@ -151,29 +152,35 @@ const AddContactModal = ({contact,setSelectedContact}) => {
     dispatch(fetchUsers());
     dispatch(fetchSources());
     dispatch(fetchCountries());
-    dispatch(fetchCurrencies())
+    dispatch(fetchCurrencies());
   }, [dispatch]);
-  
-  const country_id = watch("country")
-    React.useEffect(() => {
-      country_id  &&  dispatch(fetchMappedStates(country_id));
-    }, [dispatch, country_id]);
-    
-    const { countries } = useSelector( (state) => state.countries  );
-    const { mappedStates } = useSelector( (state) => state.mappedStates );
-    const { currencies } = useSelector( (state) => state.currency);
-      
-    const currencyLists = currencies?.map(i => i?.is_active === "Y" ? ({label:`${i?.code} - ${i?.name}`,value:i?.code}) : null).filter(Boolean) || [];
-      
-  
-    const countryList = countries.map((emnt) => ({
-      value: emnt.id,
-      label: emnt.code + emnt.name,
-    }));
-    const stateList = mappedStates?.data?.map((emnt) => ({
-      value: emnt.id,
-      label:emnt.name,
-    }));
+
+  const country_id = watch("country");
+  React.useEffect(() => {
+    country_id && dispatch(fetchMappedStates(country_id));
+  }, [dispatch, country_id]);
+
+  const { countries } = useSelector((state) => state.countries);
+  const { mappedStates } = useSelector((state) => state.mappedStates);
+  const { currencies } = useSelector((state) => state.currency);
+
+  const currencyLists =
+    currencies
+      ?.map((i) =>
+        i?.is_active === "Y"
+          ? { label: `${i?.code} - ${i?.name}`, value: i?.code }
+          : null
+      )
+      .filter(Boolean) || [];
+
+  const countryList = countries.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.code + emnt.name,
+  }));
+  const stateList = mappedStates?.data?.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.name,
+  }));
 
   const { industries } = useSelector((state) => state.industries);
   const { sources } = useSelector((state) => state.sources);
@@ -199,43 +206,43 @@ const AddContactModal = ({contact,setSelectedContact}) => {
     if (selectedLogo) {
       formData.append("image", selectedLogo);
     }
-    if(contact){
-      formData.append("id",contact.id)
+    if (contact) {
+      formData.append("id", contact.id);
     }
     // formData.append("reviews",data.reviews ? Number(data.reviews) : null)
 
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      contact ?  await dispatch(updateContact(formData)).unwrap()
-      :await dispatch(addContact(formData)).unwrap();
+      contact
+        ? await dispatch(updateContact(formData)).unwrap()
+        : await dispatch(addContact(formData)).unwrap();
       closeButton.click();
     } catch (error) {
       closeButton.click();
-    }
-    finally{
-      setSelectedLogo(null)
+    } finally {
+      setSelectedLogo(null);
       setSelectedContact();
     }
   };
-   React.useEffect(() => {
-      const offcanvasElement = document.getElementById("offcanvas_add");
-      if (offcanvasElement) {
-        const handleModalClose = () => {
-          setSelectedContact();
-          setSelectedLogo(null);
-        };
-        offcanvasElement.addEventListener(
+  React.useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setSelectedContact();
+        setSelectedLogo(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
           handleModalClose
         );
-        return () => {
-          offcanvasElement.removeEventListener(
-            "hidden.bs.offcanvas",
-            handleModalClose
-          );
-        };
-      }
-    }, []);
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -243,7 +250,9 @@ const AddContactModal = ({contact,setSelectedContact}) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{contact ? "Update" : "Add New"} Contact</h5>
+        <h5 className="fw-semibold">
+          {contact ? "Update" : "Add New"} Contact
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -289,13 +298,13 @@ const AddContactModal = ({contact,setSelectedContact}) => {
                                 className="preview w-100 h-100 object-fit-cover"
                                 // style={{image}}
                               />
-                            ) : contact ?   
-                            <img
-                            src={contact.image}
-                            alt="Company Logo"
-                            className="preview w-100 h-100 object-fit-cover"
-                          />
-                            : (
+                            ) : contact ? (
+                              <img
+                                src={contact.image}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
                               <span>
                                 <i className="ti ti-photo" />
                               </span>
@@ -774,38 +783,37 @@ const AddContactModal = ({contact,setSelectedContact}) => {
                         )}
                       </div>
                     </div> */}
-                    
-                    <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="col-form-label">
-                            Currency <span className="text-danger">*</span>
-                          </label>
-                          <Controller
-                            name="currency"
-                            rules={{ required: "Currency is required" }} // Validation rule
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={currencyLists}
-                                placeholder="Choose"
-                                classNamePrefix="react-select"
-                                onChange={(selectedOption) =>
-                                  field.onChange(selectedOption.value)
-                                }
-                                value={currencyLists?.find(
-                                  (option) => option.value === field.value
-                                )}
-                              />
-                            )}
-                          />
 
-                          {errors.currency && (
-                            <small className="text-danger">
-                              {errors.currency.message}
-                            </small>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Currency <span className="text-danger">*</span>
+                        </label>
+                        <Controller
+                          name="currency"
+                          rules={{ required: "Currency is required" }} // Validation rule
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={currencyLists}
+                              placeholder="Choose"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption.value)
+                              }
+                              value={currencyLists?.find(
+                                (option) => option.value === field.value
+                              )}
+                            />
                           )}
-                    
+                        />
+
+                        {errors.currency && (
+                          <small className="text-danger">
+                            {errors.currency.message}
+                          </small>
+                        )}
                       </div>
                       {/* <div className="mb-3">
                         <label className="col-form-label">
@@ -922,86 +930,88 @@ const AddContactModal = ({contact,setSelectedContact}) => {
                         )}
                       </div>
                     </div>
-                      {/* Billing Country */}
-            <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                 Country
-                  </label>
-                  <Controller
-                    name="country"
-                    control={control}
-                    rules={{ required: "Country is required" }} // Validation rule
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={countryList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>{
-                          field.onChange(selectedOption?.value || null)
-                          setValue("state",null)
-                        }} // Send only value
-                        value={watch("country") && countryList?.find(
-                          (option) => option.value === watch("country")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                {errors.country && (
+                    {/* Billing Country */}
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">Country</label>
+                        <Controller
+                          name="country"
+                          control={control}
+                          rules={{ required: "Country is required" }} // Validation rule
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={countryList}
+                              placeholder="Choose"
+                              className="select2"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                                setValue("state", null);
+                              }} // Send only value
+                              value={
+                                watch("country") &&
+                                countryList?.find(
+                                  (option) => option.value === watch("country")
+                                )
+                              }
+                              styles={{
+                                menu: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                                }),
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.country && (
                           <small className="text-danger">
                             {errors.country.message}
                           </small>
                         )}
-                </div>
-              </div>
+                      </div>
+                    </div>
 
-            {/* Billing State */}
-            <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    State
-                  </label>
-                  <Controller
-                    name="state"
-                    control={control}
-                       rules={{ required: "State is required" }} // Validation rule
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={stateList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } 
-                        value={ watch("state") && stateList?.find(
-                          (option) => option.value === watch("state")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                      {errors.state && (
+                    {/* Billing State */}
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">State</label>
+                        <Controller
+                          name="state"
+                          control={control}
+                          rules={{ required: "State is required" }} // Validation rule
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={stateList}
+                              placeholder="Choose"
+                              className="select2"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption?.value || null)
+                              }
+                              value={
+                                watch("state") &&
+                                stateList?.find(
+                                  (option) => option.value === watch("state")
+                                )
+                              }
+                              styles={{
+                                menu: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                                }),
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.state && (
                           <small className="text-danger">
                             {errors.state.message}
                           </small>
                         )}
-                </div>
-              </div>
+                      </div>
+                    </div>
                     {/* City */}
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -1288,19 +1298,25 @@ const AddContactModal = ({contact,setSelectedContact}) => {
               className="btn btn-primary"
               disabled={loading}
             >
-              {contact ? loading ? "Updating..." : "Update" : loading ? "Creating..." : "Create"}
+              {contact
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

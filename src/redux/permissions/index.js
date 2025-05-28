@@ -25,7 +25,7 @@ export const addPermissions = createAsyncThunk(
     try {
       const role_id = localStorage.getItem("role_id");
       const response = await apiClient.post("/v1/permissions", permissionData);
-      if (role_id == response?.data?.data?.role_id) {
+      if (role_id === response?.data?.data?.role_id) {
         localStorage.setItem(
           "permissions",
           JSON.stringify(response?.data?.data?.permissions)

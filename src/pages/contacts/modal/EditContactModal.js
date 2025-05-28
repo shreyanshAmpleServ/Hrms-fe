@@ -1,22 +1,15 @@
 import React, { useState } from "react";
-import { Link ,useNavigate} from "react-router-dom";
-import Select from "react-select";
 import DatePicker from "react-datepicker";
-
-import {
-  companyName
-
-} from "../../../components/common/selectoption/selectoption";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Select from "react-select";
 import { SelectWithImage } from "../../../components/common/selectWithImage";
-import { TagsInput } from "react-tag-input-component";
 import { updateContact } from "../../../redux/contacts/contactSlice";
-import { useForm, Controller } from "react-hook-form";
-import { useDispatch,useSelector } from "react-redux";
 
+const EditContactModal = ({ contact }) => {
+  const [selectedLogo, setSelectedLogo] = useState();
 
-const EditContactModal = ({contact}) => {
-  const [selectedLogo , setSelectedLogo] = useState()
- 
   const dealsopen = [
     { value: "choose", label: "Choose" },
     { value: "collins", label: "Collins" },
@@ -143,8 +136,8 @@ const EditContactModal = ({contact}) => {
     }
   };
 
- const navigate = useNavigate();
- const { loading } = useSelector((state) => state.contacts);
+  const navigate = useNavigate();
+  const { loading } = useSelector((state) => state.contacts);
   // Submit Handler
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -155,7 +148,7 @@ const EditContactModal = ({contact}) => {
         // Convert complex data to strings if needed
         formData.append(
           key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
+          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
         );
       }
     });
@@ -163,21 +156,17 @@ const EditContactModal = ({contact}) => {
     if (selectedLogo) {
       formData.append("image", selectedLogo);
     }
-    formData.append("id",contact.id)
+    formData.append("id", contact.id);
 
-    const closeButton = document.getElementById('closeEditModal');
+    const closeButton = document.getElementById("closeEditModal");
     try {
-      const transformedData = {
-        ...data,
-        reviews: data.reviews ? Number(data.reviews) : null, // Convert to number or null
-      };
       await dispatch(updateContact(formData)).unwrap();
       // await dispatch(updateContact( {id:contact.id, contactData:transformedData})).unwrap();
-      closeButton.click(); 
-      navigate('/contacts')
+      closeButton.click();
+      navigate("/contacts");
     } catch (error) {
       closeButton.click();
-      navigate('/contacts')
+      navigate("/contacts");
     }
   };
   return (
@@ -199,7 +188,7 @@ const EditContactModal = ({contact}) => {
         </button>
       </div>
       <div className="offcanvas-body">
-        <form onSubmit={handleSubmit(onSubmit)} >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="accordion" id="main_accordion">
             {/* Basic Info */}
             <div className="accordion-item rounded mb-3">
@@ -227,16 +216,17 @@ const EditContactModal = ({contact}) => {
                       <div className="mb-3">
                         <div className="profile-upload">
                           <div className="profile-upload-img">
-                          {selectedLogo ? (
+                            {selectedLogo ? (
                               <img
                                 src={URL.createObjectURL(selectedLogo)}
                                 alt="Company Logo"
                                 className="preview"
                               />
-                                ) :
-                                <span>
-                                  <i className="ti ti-photo" />
-                                </span>}
+                            ) : (
+                              <span>
+                                <i className="ti ti-photo" />
+                              </span>
+                            )}
                             <button
                               type="button"
                               className="profile-remove"
@@ -247,9 +237,13 @@ const EditContactModal = ({contact}) => {
                           </div>
                           <div className="profile-upload-content">
                             <label className="profile-upload-btn">
-                              <i className="ti ti-file-broken" /> Upload
-                              File
-                              <input  type="file" accept="image/*" className="input-img" onChange={handleLogoChange} />
+                              <i className="ti ti-file-broken" /> Upload File
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="input-img"
+                                onChange={handleLogoChange}
+                              />
                             </label>
                             <p>JPG, GIF or PNG. Max size of 800K</p>
                           </div>
@@ -261,13 +255,19 @@ const EditContactModal = ({contact}) => {
                         <label className="col-form-label">
                           First Name <span className="text-danger">*</span>
                         </label>
-                        
+
                         <input
                           type="text"
                           className="form-control"
-                          {...register("firstName", { required: "First name is required" })}
+                          {...register("firstName", {
+                            required: "First name is required",
+                          })}
                         />
-                        {errors.firstName && <small className="text-danger">{errors.firstName.message}</small>}
+                        {errors.firstName && (
+                          <small className="text-danger">
+                            {errors.firstName.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -278,9 +278,15 @@ const EditContactModal = ({contact}) => {
                         <input
                           type="text"
                           className="form-control"
-                          {...register("lastName", { required: "Last name is required" })}
+                          {...register("lastName", {
+                            required: "Last name is required",
+                          })}
                         />
-                        {errors.lastName && <small className="text-danger">{errors.lastName.message}</small>}
+                        {errors.lastName && (
+                          <small className="text-danger">
+                            {errors.lastName.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -291,16 +297,20 @@ const EditContactModal = ({contact}) => {
                         <input
                           type="text"
                           className="form-control"
-                          {...register("jobTitle", { required: "Job title is required" })}
+                          {...register("jobTitle", {
+                            required: "Job title is required",
+                          })}
                         />
-                        {errors.jobTitle && <small className="text-danger">{errors.jobTitle.message}</small>}
+                        {errors.jobTitle && (
+                          <small className="text-danger">
+                            {errors.jobTitle.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Company Name
-                        </label>
+                        <label className="col-form-label">Company Name</label>
                         <input
                           type="text"
                           className="form-control"
@@ -330,29 +340,45 @@ const EditContactModal = ({contact}) => {
                                 />
                               )}
                             />
-                            
+
                             <label htmlFor="user" className="checktoggle" />
                           </div>
                         </div>
                         <input
                           type="email"
                           className="form-control"
-                          {...register("email", { required: "Email is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" } })}
+                          {...register("email", {
+                            required: "Email is required",
+                            pattern: {
+                              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                              message: "Invalid email format",
+                            },
+                          })}
                         />
-                        {errors.email && <small className="text-danger">{errors.email.message}</small>}
+                        {errors.email && (
+                          <small className="text-danger">
+                            {errors.email.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Phone1  <span className="text-danger">*</span>
+                          Phone1 <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("phone1", { required: "Phone 1 is required" })}
+                          {...register("phone1", {
+                            required: "Phone 1 is required",
+                          })}
                         />
-                        {errors.phone1 && <small className="text-danger">{errors.phone1.message}</small>}
+                        {errors.phone1 && (
+                          <small className="text-danger">
+                            {errors.phone1.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -367,10 +393,8 @@ const EditContactModal = ({contact}) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Fax 
-                        </label>
-                        
+                        <label className="col-form-label">Fax</label>
+
                         <input
                           type="text"
                           className="form-control"
@@ -393,48 +417,46 @@ const EditContactModal = ({contact}) => {
                           </Link>
                         </div>
                         <Controller
-                            name="deals"
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={dealsopen}
-                                placeholder="Choose"
-                                className="select2"
-                                classNamePrefix="react-select"
-                                onChange={(selectedOption) =>
-                                  field.onChange(selectedOption?.value || null)
-                                } // Send only value
-                                value={dealsopen?.find((option) => option.value === field.value)}
-                              />
-                            )}
-                        /> 
-                        
+                          name="deals"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={dealsopen}
+                              placeholder="Choose"
+                              className="select2"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption?.value || null)
+                              } // Send only value
+                              value={dealsopen?.find(
+                                (option) => option.value === field.value
+                              )}
+                            />
+                          )}
+                        />
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Date of Birth
-                        </label>
+                        <label className="col-form-label">Date of Birth</label>
                         <div className="icon-form-end">
                           <span className="form-icon">
                             <i className="ti ti-calendar-event" />
                           </span>
                           <Controller
-                              name="dateOfBirth"
-                              control={control}
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  className="form-control"
-                                  selected={field.value}
-                                  onChange={field.onChange}
-                                  dateFormat="dd-MM-yyyy"
-                                />
-                              )}
+                            name="dateOfBirth"
+                            control={control}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                className="form-control"
+                                selected={field.value}
+                                onChange={field.onChange}
+                                dateFormat="dd-MM-yyyy"
+                              />
+                            )}
                           />
-                          
                         </div>
                       </div>
                     </div>
@@ -450,7 +472,6 @@ const EditContactModal = ({contact}) => {
                             className="form-control"
                             {...register("reviews")}
                           />
-                          
                         </div>
                       </div>
                     </div>
@@ -464,9 +485,9 @@ const EditContactModal = ({contact}) => {
                       <div className="mb-3">
                         <label className="col-form-label">Tags </label>
                         <input
-                            type="text"
-                            className="form-control"
-                            {...register("tags")}
+                          type="text"
+                          className="form-control"
+                          {...register("tags")}
                         />
                       </div>
                     </div>
@@ -476,25 +497,30 @@ const EditContactModal = ({contact}) => {
                           Source <span className="text-danger">*</span>
                         </label>
                         <Controller
-                            name="source"
-                            rules={{ required: 'Source is required!' }} // Make the field required
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={activities}
-                                placeholder="Choose"
-                                className="select2"
-                                classNamePrefix="react-select"
-                                onChange={(selectedOption) =>
-                                  field.onChange(selectedOption?.value || null)
-                                } // Send only value
-                                value={activities?.find((option) => option.value === field.value)}
-                              />
-                            )}
-                        /> 
-                        {errors.source && <small className="text-danger">{errors.source.message}</small>}
-                         
+                          name="source"
+                          rules={{ required: "Source is required!" }} // Make the field required
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={activities}
+                              placeholder="Choose"
+                              className="select2"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption?.value || null)
+                              } // Send only value
+                              value={activities?.find(
+                                (option) => option.value === field.value
+                              )}
+                            />
+                          )}
+                        />
+                        {errors.source && (
+                          <small className="text-danger">
+                            {errors.source.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -503,25 +529,30 @@ const EditContactModal = ({contact}) => {
                           Industry <span className="text-danger">*</span>
                         </label>
                         <Controller
-                            name="industry"
-                            rules={{ required: 'Industry is required!' }}
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={industries}
-                                placeholder="Choose"
-                                className="select"
-                                classNamePrefix="react-select"
-                                onChange={(selectedOption) =>
-                                  field.onChange(selectedOption?.value || null)
-                                } // Send only value
-                                value={industries?.find((option) => option.value === field.value)}
-                              />
-                            )}
+                          name="industry"
+                          rules={{ required: "Industry is required!" }}
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={industries}
+                              placeholder="Choose"
+                              className="select"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption?.value || null)
+                              } // Send only value
+                              value={industries?.find(
+                                (option) => option.value === field.value
+                              )}
+                            />
+                          )}
                         />
-                        {errors.industry && <small className="text-danger">{errors.industry.message}</small>}
-                        
+                        {errors.industry && (
+                          <small className="text-danger">
+                            {errors.industry.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -530,11 +561,17 @@ const EditContactModal = ({contact}) => {
                           Currency <span className="text-danger">*</span>
                         </label>
                         <input
-                            type="text"
-                            className="form-control"
-                            {...register("currency",{required:"Currency is required"})}
+                          type="text"
+                          className="form-control"
+                          {...register("currency", {
+                            required: "Currency is required",
+                          })}
                         />
-                        {errors.currency && <small className="text-danger">{errors.currency.message}</small>}
+                        {errors.currency && (
+                          <small className="text-danger">
+                            {errors.currency.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -543,24 +580,30 @@ const EditContactModal = ({contact}) => {
                           Language <span className="text-danger">*</span>
                         </label>
                         <Controller
-                            name="language"
-                            rules={{ required: 'Language is required!' }}
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={languages}
-                                placeholder="English"
-                                className="select"
-                                classNamePrefix="react-select"
-                                onChange={(selectedOption) =>
-                                  field.onChange(selectedOption?.value || null)
-                                } // Send only value
-                                value={languages?.find((option) => option.value === field.value)}
-                              />
-                            )}
-                        /> 
-                        {errors.language && <small className="text-danger">{errors.language.message}</small>}
+                          name="language"
+                          rules={{ required: "Language is required!" }}
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={languages}
+                              placeholder="English"
+                              className="select"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption?.value || null)
+                              } // Send only value
+                              value={languages?.find(
+                                (option) => option.value === field.value
+                              )}
+                            />
+                          )}
+                        />
+                        {errors.language && (
+                          <small className="text-danger">
+                            {errors.language.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-12">
@@ -571,19 +614,23 @@ const EditContactModal = ({contact}) => {
                         <textarea
                           className="form-control"
                           rows={5}
-                          {...register("description",{required:"Description is required"})}
+                          {...register("description", {
+                            required: "Description is required",
+                          })}
                         />
-                        {errors.language && <small className="text-danger">{errors.language.message}</small>}
+                        {errors.language && (
+                          <small className="text-danger">
+                            {errors.language.message}
+                          </small>
+                        )}
                       </div>
-                    </div> 
-                    
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             {/* /Basic Info */}
-
-            {/* /Address Info */}              
+            {/* /Address Info */}
             <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
                 <Link
@@ -607,16 +654,21 @@ const EditContactModal = ({contact}) => {
                   <div className="row">
                     <div className="col-md-12">
                       <div className="mb-3">
-                        <label className="col-form-label">Street Address </label>
+                        <label className="col-form-label">
+                          Street Address{" "}
+                        </label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("streetAddress", { required: "Street address is required" })}
+                          {...register("streetAddress", {
+                            required: "Street address is required",
+                          })}
                         />
                         {errors.streetAddress && (
-                          <small className="text-danger">{errors.streetAddress.message}</small>
+                          <small className="text-danger">
+                            {errors.streetAddress.message}
+                          </small>
                         )}
-                        
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -625,20 +677,34 @@ const EditContactModal = ({contact}) => {
                         <input
                           type="text"
                           className="form-control"
-                          {...register("city", { required: "City is required" })}
+                          {...register("city", {
+                            required: "City is required",
+                          })}
                         />
-                        {errors.city && <small className="text-danger">{errors.city.message}</small>}
+                        {errors.city && (
+                          <small className="text-danger">
+                            {errors.city.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">State / Province </label>
+                        <label className="col-form-label">
+                          State / Province{" "}
+                        </label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("state", { required: "State is required" })}
+                          {...register("state", {
+                            required: "State is required",
+                          })}
                         />
-                        {errors.state && <small className="text-danger">{errors.state.message}</small>}
+                        {errors.state && (
+                          <small className="text-danger">
+                            {errors.state.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -658,11 +724,17 @@ const EditContactModal = ({contact}) => {
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value
-                              value={countries?.find((option) => option.value === field.value)}
+                              value={countries?.find(
+                                (option) => option.value === field.value
+                              )}
                             />
                           )}
                         />
-                        {errors.country && <small className="text-danger">{errors.country.message}</small>}
+                        {errors.country && (
+                          <small className="text-danger">
+                            {errors.country.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -671,9 +743,15 @@ const EditContactModal = ({contact}) => {
                         <input
                           type="text"
                           className="form-control"
-                          {...register("zipcode", { required: "Zipcode is required" })}
+                          {...register("zipcode", {
+                            required: "Zipcode is required",
+                          })}
                         />
-                        {errors.zipcode && <small className="text-danger">{errors.zipcode.message}</small>}
+                        {errors.zipcode && (
+                          <small className="text-danger">
+                            {errors.zipcode.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -681,7 +759,6 @@ const EditContactModal = ({contact}) => {
               </div>
             </div>
             {/* /Address Info */}
-
             {/* Social Profile */}
             <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
@@ -768,9 +845,7 @@ const EditContactModal = ({contact}) => {
                 </div>
               </div>
             </div>
-            {/* /Social Profile */}
-
-          ` {/* Access */}
+            {/* /Social Profile */}` {/* Access */}
             <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
                 <Link
@@ -863,7 +938,6 @@ const EditContactModal = ({contact}) => {
               </div>
             </div>
             {/* /Access */}`
-
           </div>
           <div className="d-flex align-items-center justify-content-end">
             <button
@@ -876,9 +950,9 @@ const EditContactModal = ({contact}) => {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loading} 
+              disabled={loading}
             >
-             {loading ? 'Updating...' : 'Update'}
+              {loading ? "Updating..." : "Update"}
             </button>
           </div>
         </form>

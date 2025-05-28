@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
+import { Link } from "react-router-dom";
 import { updateCompany } from "../../../redux/companies/";
 
 const EditCompanyModal = ({ company }) => {
@@ -60,7 +59,7 @@ const EditCompanyModal = ({ company }) => {
       if (data[key] !== null && data[key] !== undefined) {
         formData.append(
           key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
+          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
         );
       }
     });
@@ -77,7 +76,7 @@ const EditCompanyModal = ({ company }) => {
     const closeButton = document.getElementById("close_company_edit_btn");
     try {
       await dispatch(
-        updateCompany({ id: company.id, companyData: formData }),
+        updateCompany({ id: company.id, companyData: formData })
       ).unwrap();
       closeButton.click();
       reset();
@@ -424,17 +423,17 @@ const EditCompanyModal = ({ company }) => {
             >
               {loading ? "Updating..." : "Update"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

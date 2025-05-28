@@ -23,18 +23,9 @@ const UserDetail = () => {
   }, [id, dispatch]);
 
   // Get the user details from Redux store
-  const { userDetail, loading} = useSelector((state) => state.users);
+  const { userDetail } = useSelector((state) => state.users);
 
   const route = all_routes;
-
-  const badgeClasses = [
-    "badge-soft-success",
-    "badge-soft-warning",
-    "badge-soft-info",
-    "badge-soft-danger",
-    "badge-soft-primary",
-    "badge-soft-secondary",
-  ];
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const handleDeleteUser = () => {
@@ -48,21 +39,11 @@ const UserDetail = () => {
     }
   };
 
-  // Social icons mapping
-  const socialIcons = {
-    facebook: "fa-brands fa-facebook-f",
-    instagram: "fa-brands fa-instagram",
-    linkedin: "fa-brands fa-linkedin",
-    skype: "fa-brands fa-skype",
-    twitter: "fa-brands fa-twitter",
-    whatsapp: "fa-brands fa-whatsapp",
-  };
-
   return (
     <>
       {/* Page Wrapper */}
       <div className="page-wrapper position-relative">
-      {/* {loading ? (
+        {/* {loading ? (
           <div
             style={{
               zIndex: 9999,
@@ -232,7 +213,7 @@ const UserDetail = () => {
             </div>
             {/* /User Sidebar */}
             {/* User Activities */}
-            <UserActivities user={userDetail?.full_name}/>
+            <UserActivities user={userDetail?.full_name} />
             {/* /User Activities */}
           </div>
         </div>

@@ -25,16 +25,12 @@ const Modules = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [paginationData, setPaginationData] = useState();
-  const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
-    endDate: moment(),
-  });
+
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
     (i) => i?.module_name === "Modules"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role") === "admin";
-  const isView = isAdmin ? true : allPermissions?.view;
   const isCreate = isAdmin ? true : allPermissions?.create;
   const isUpdate = isAdmin ? true : allPermissions?.update;
   const isDelete = isAdmin ? true : allPermissions?.delete;

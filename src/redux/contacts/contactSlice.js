@@ -1,28 +1,32 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import apiClient from '../../utils/axiosConfig';
-import toast from 'react-hot-toast';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
+import apiClient from "../../utils/axiosConfig";
 
 // Fetch All Contacts
 export const fetchContacts = createAsyncThunk(
-  'contacts/fetchContacts',
+  "contacts/fetchContacts",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/contacts?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`);
+      const response = await apiClient.get(
+        `/v1/contacts?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`
+      );
       return response.data; // Returns a list of contacts
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to fetch contacts');
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch contacts"
+      );
     }
   }
 );
 
 // Add a Contact
 export const addContact = createAsyncThunk(
-  'contacts/addContact',
+  "contacts/addContact",
   async (contactData, thunkAPI) => {
     try {
       // const response = await apiClient.post('/v1/contacts', contactData);
       const response = await toast.promise(
-        apiClient.post('/v1/contacts', contactData),
+        apiClient.post("/v1/contacts", contactData),
         {
           loading: " Contact adding...",
           success: (res) => res.data.message || "Contact added successfully!",
@@ -31,19 +35,21 @@ export const addContact = createAsyncThunk(
       );
       return response.data; // Returns the newly added contact
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to add contact');
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to add contact"
+      );
     }
   }
 );
 
 // Update a Contact
 export const updateContact = createAsyncThunk(
-  'contacts/updateContact',
-  async (contactData , thunkAPI) => {
+  "contacts/updateContact",
+  async (contactData, thunkAPI) => {
     try {
       // const response = await apiClient.put(`/v1/contacts/${contactData.get('id')}`, contactData);
       const response = await toast.promise(
-        apiClient.put(`/v1/contacts/${contactData.get('id')}`, contactData),
+        apiClient.put(`/v1/contacts/${contactData.get("id")}`, contactData),
         {
           loading: " Contact updating...",
           success: (res) => res.data.message || "Contact updated successfully!",
@@ -52,56 +58,60 @@ export const updateContact = createAsyncThunk(
       );
       return response.data; // Returns the updated contact
     } catch (error) {
-
       if (error.response?.status === 404) {
         // Handle 404 Not Found explicitly
         return thunkAPI.rejectWithValue({
           status: 404,
-          message: 'Not found',
+          message: "Not found",
         });
       }
-      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to update contact');
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to update contact"
+      );
     }
   }
 );
 
 // Delete a Contact
 export const deleteContact = createAsyncThunk(
-  'contacts/deleteContact',
+  "contacts/deleteContact",
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.delete(`/v1/contacts/${id}`);
       return {
         data: { id },
-        message: response.data.message || 'Contact deleted successfully',
+        message: response.data.message || "Contact deleted successfully",
       };
-      return id; // Returns the ID of the deleted contact
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to delete contact');
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to delete contact"
+      );
     }
   }
 );
 
 // Fetch a Single Contact by ID
 export const fetchContactById = createAsyncThunk(
-  'contacts/fetchContactById',
+  "contacts/fetchContactById",
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/contacts/${id}`);
       return response.data; // Returns the contact details
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to fetch contact');
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch contact"
+      );
     }
   }
 );
 const contactsSlice = createSlice({
-  name: 'contacts',
+  name: "contacts",
   initialState: {
     contacts: {},
     contactDetail: null,
     loading: false,
     error: false,
-    success: false
+    success: false,
   },
   reducers: {
     clearMessages(state) {
@@ -118,12 +128,10 @@ const contactsSlice = createSlice({
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.loading = false;
         state.contacts = action.payload.data;
-
       })
       .addCase(fetchContacts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
-
       })
       .addCase(addContact.pending, (state) => {
         state.loading = true;
@@ -131,13 +139,15 @@ const contactsSlice = createSlice({
       })
       .addCase(addContact.fulfilled, (state, action) => {
         state.loading = false;
-        state.contacts ={...state.contacts, data: [action.payload.data, ...state.contacts.data]};
+        state.contacts = {
+          ...state.contacts,
+          data: [action.payload.data, ...state.contacts.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addContact.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-
       })
       .addCase(updateContact.pending, (state) => {
         state.loading = true;
@@ -145,12 +155,17 @@ const contactsSlice = createSlice({
       })
       .addCase(updateContact.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.contacts.data?.findIndex(contact => contact.id === action.payload.data.id);
+        const index = state.contacts.data?.findIndex(
+          (contact) => contact.id === action.payload.data.id
+        );
 
         if (index !== -1) {
           state.contacts.data[index] = action.payload.data;
         } else {
-          state.contacts ={...state.contacts , data: [action.payload.data, ...state.contacts.data]};
+          state.contacts = {
+            ...state.contacts,
+            data: [action.payload.data, ...state.contacts.data],
+          };
         }
 
         state.success = action.payload.message;
@@ -166,9 +181,9 @@ const contactsSlice = createSlice({
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.loading = false;
         let filteredData = state.contacts.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.contacts = {...state.contacts,data:filteredData}
+        state.contacts = { ...state.contacts, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteContact.rejected, (state, action) => {
@@ -187,7 +202,6 @@ const contactsSlice = createSlice({
         state.loading = false;
         state.error = action.payload.message;
       });
-
   },
 });
 export const { clearMessages } = contactsSlice.actions;
