@@ -124,6 +124,9 @@ import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
+import DisciplinaryActionLog from "../pages/disciplinaryActionLog";
+import GrievanceSubmission from "../pages/grievanceSubmission";
+// // Export components individually
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -880,6 +883,18 @@ export const privateRoutes = [
   {
     path: route.wpsFileGenerator,
     element: <WPSFileGenerator />,
+    route: Route,
+    title: "WPS File Generator",
+  },
+  {
+    path: route.disciplinaryActionLog,
+    element: <DisciplinaryActionLog />,
+    route: Route,
+    title: "WPS File Generator",
+  },
+  {
+    path: route.grievanceSubmission,
+    element: <GrievanceSubmission />,
     route: Route,
     title: "WPS File Generator",
   },

@@ -85,6 +85,8 @@ import PayslipReducer from "./payslipViewer";
 import loanRequestsReducer from "./loanRequests";
 import LoneTypeReducer from "./loneType";
 import appraisalEntriesReducer from "./AppraisalsEntries";
+import DisciplinryActionLogReducer from "./disciplinaryActionLog";
+import GrievanceSubmissionReducer from "./grievanceSubmission";
 
 const store = configureStore({
   reducer: {
@@ -174,6 +176,9 @@ const store = configureStore({
     lone_type: LoneTypeReducer,
     appraisalEntries: appraisalEntriesReducer,
     loan_type: LoneTypeReducer,
+    disciplinryAction: DisciplinryActionLogReducer,
+    grievanceSubmission: GrievanceSubmissionReducer,
+
   },
 });
 

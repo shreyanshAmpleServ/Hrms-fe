@@ -96,7 +96,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   };
 
   useEffect(() => {
-    const offcanvasElement = document.getElementById("add_edit_loan_requests_modal");
+    const offcanvasElement = document.getElementById("add_edit_offer_letter_modal");
     if (offcanvasElement) {
       const handleModalClose = () => {
         // Clean up state if needed
@@ -109,7 +109,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   return (
     <div className="offcanvas offcanvas-end offcanvas-large"
       tabIndex={-1}
-      id="add_edit_loan_requests_modal"
+      id="add_edit_offer_letter_modal"
     // aria-labelledby="offcanvasLabel"
     >
       <div className="offcanvas-header border-bottom">
