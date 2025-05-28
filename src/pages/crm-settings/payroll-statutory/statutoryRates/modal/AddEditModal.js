@@ -1,20 +1,17 @@
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Select from 'react-select';
-
+import Select from "react-select";
+import { fetchCountries } from "../../../../../redux/country";
 import {
   addstatutory_rates,
   updatestatutory_rates,
 } from "../../../../../redux/statutoryRate";
-import { Controller } from "react-hook-form";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { fetchCountries } from "../../../../../redux/country";
 
-
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.reviewTemplateMaster);
   const dispatch = useDispatch();
 
@@ -22,25 +19,22 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     register,
     handleSubmit,
     watch,
-
     control,
     formState: { errors },
     reset,
   } = useForm();
 
   React.useEffect(() => {
-    dispatch(fetchCountries()); // Changed to fetchCountries
+    dispatch(fetchCountries());
   }, [dispatch]);
-  const { countries } = useSelector(
-    (state) => state.countries // Changed to 'countries'
-  );
+
+  const { countries } = useSelector((state) => state.countries);
 
   const CountriesList = countries.map((emnt) => ({
     value: String(emnt.id),
     label: "(" + emnt.code + ") " + emnt.name,
   }));
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -78,16 +72,23 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
   return (
-    <div className="modal fade" id="add_edit_statutory_rates_modal" role="dialog">
+    <div
+      className="modal fade"
+      id="add_edit_statutory_rates_modal"
+      role="dialog"
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Statutory Rates" : "Edit Statutory Rates"}
+              {mode === "add"
+                ? "Add New Statutory Rates"
+                : "Edit Statutory Rates"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -116,7 +117,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     })}
                   />
                   {errors.statutory_type && (
-                    <small className="text-danger">{errors.statutory_type.message}</small>
+                    <small className="text-danger">
+                      {errors.statutory_type.message}
+                    </small>
                   )}
                 </div>
                 <div className="col-md-6 mb-3">
@@ -138,7 +141,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     )}
                   />
                   {errors.valid_from && (
-                    <small className="text-danger">{errors.valid_from.message}</small>
+                    <small className="text-danger">
+                      {errors.valid_from.message}
+                    </small>
                   )}
                 </div>
                 {/* Lower Limit */}
@@ -154,12 +159,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     })}
                   />
                   {errors.lower_limit && (
-                    <small className="text-danger">{errors.lower_limit.message}</small>
+                    <small className="text-danger">
+                      {errors.lower_limit.message}
+                    </small>
                   )}
                 </div>
 
                 {/* Statutory Type */}
-
 
                 {/* Upper Limit */}
                 <div className="col-md-6 mb-3">
@@ -174,7 +180,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     })}
                   />
                   {errors.upper_limit && (
-                    <small className="text-danger">{errors.upper_limit.message}</small>
+                    <small className="text-danger">
+                      {errors.upper_limit.message}
+                    </small>
                   )}
                 </div>
 
@@ -197,14 +205,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     })}
                   />
                   {errors.rate_percent && (
-                    <small className="text-danger">{errors.rate_percent.message}</small>
+                    <small className="text-danger">
+                      {errors.rate_percent.message}
+                    </small>
                   )}
                 </div>
 
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Country  <span className="text-danger">*</span>
+                      Country <span className="text-danger">*</span>
                     </label>
                     <Controller
                       name="country_code"
@@ -221,10 +231,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                           onChange={(selectedOption) =>
                             field.onChange(selectedOption?.value || null)
                           } // Send only value
-                          value={CountriesList?.find(
-                            (option) =>
-                              option.value === watch("country_code"),
-                          ) || ""}
+                          value={
+                            CountriesList?.find(
+                              (option) => option.value === watch("country_code")
+                            ) || ""
+                          }
                         />
                       )}
                     />
@@ -265,7 +276,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>

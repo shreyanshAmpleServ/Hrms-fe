@@ -1,34 +1,31 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deletestatutory_rates,
   fetchstatutory_rates,
 } from "../../../../redux/statutoryRate";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const StatutoryRates = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Statutory Rates"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -40,42 +37,47 @@ const StatutoryRates = () => {
 
   const columns = [
     {
-      title: "Statutory Typee",
+      title: "Statutory Type",
       dataIndex: "statutory_type",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.statutory_type || "").localeCompare(b.statutory_type || ""),
     },
     {
       title: "Country",
       dataIndex: "country_code",
-      render: (_text, record) => <Link to={`#`}>{record.country_code}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.country_code || "").localeCompare(b.country_code || ""),
     },
 
     {
       title: "Lower limit",
       dataIndex: "lower_limit",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.lower_limit || "").localeCompare(b.lower_limit || ""),
     },
     {
       title: "Upper limit",
       dataIndex: "upper_limit",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.upper_limit || "").localeCompare(b.upper_limit || ""),
     },
     {
       title: "Effective From",
       dataIndex: "effective_from",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => moment(text).format("YYYY-MM-DD"),
+      sorter: (a, b) => new Date(a.effective_from) - new Date(b.effective_from),
     },
 
     {
       title: "Rate Percent",
       dataIndex: "rate_percent",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.rate_percent || "").localeCompare(b.rate_percent || ""),
     },
     {
       title: "Created Date",
       dataIndex: "create_date",
-      render: (text) => moment(text).format("YYYY-MM-DD HH:mm:ss"),
+      render: (text) => moment(text).format("YYYY-MM-DD"),
       sorter: (a, b) => new Date(a.create_date) - new Date(b.create_date),
     },
     {
@@ -94,7 +96,7 @@ const StatutoryRates = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     ...(isUpdate || isDelete
       ? [
@@ -119,7 +121,7 @@ const StatutoryRates = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_statutory_rates_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -143,7 +145,7 @@ const StatutoryRates = () => {
       : []),
   ];
 
-  const { statutory_rates, loading, error, success } = useSelector(
+  const { statutory_rates, loading } = useSelector(
     (state) => state.statutoryRates
   );
 
@@ -194,16 +196,13 @@ const StatutoryRates = () => {
   }, [searchText, statutory_rates, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletestatutory_rates(selectedIndustry.id));
-      // navigate(`/statutory_rates`);
+    if (selected) {
+      dispatch(deletestatutory_rates(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -218,21 +217,6 @@ const StatutoryRates = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -297,12 +281,15 @@ const StatutoryRates = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Industry"
+        label="Statutory Rates"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

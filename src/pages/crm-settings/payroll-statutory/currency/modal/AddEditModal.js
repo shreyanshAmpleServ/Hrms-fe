@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addCurrencies, updateCurrencies } from "../../../../../redux/currency";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.currencies);
 
   const {
@@ -16,20 +16,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         currency_name: initialData.currency_name || "",
         currency_code: initialData.currency_code || "",
-        // is_active: initialData.is_active || "Y",
       });
     } else {
-      reset({
-        currency_name: "",
-        currency_code: "",
-        // is_active: "Y",
-      });
+      reset({ currency_name: "", currency_code: "" });
     }
   }, [mode, initialData, reset]);
 
@@ -41,9 +35,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(updateCurrencies({ id: initialData.id, CurrenciesData: data }));
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
-  console.log("Add function : ")
   return (
     <div className="modal fade" id="add_edit_currencies_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
@@ -63,10 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="row">
-
-
                 <div className=" mb-3">
                   <label className="col-form-label">
                     Currency Name <span className="text-danger">*</span>
@@ -74,72 +65,46 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   <input
                     type="text"
                     className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                    placeholder="Enter Currency Name"
                     {...register("currency_name", {
-                      required: "Industry name is required.",
+                      required: "Currency name is required.",
                       minLength: {
                         value: 3,
-                        message: "Industry name must be at least 3 characters.",
+                        message: "Currency name must be at least 3 characters.",
                       },
                     })}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.currency_name && (
+                    <small className="text-danger">
+                      {errors.currency_name.message}
+                    </small>
                   )}
                 </div>
                 <div className=" mb-3">
                   <label className="col-form-label">
-                    Currency Code  <span className="text-danger">*</span>
+                    Currency Code <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                    className={`form-control ${errors.currency_code ? "is-invalid" : ""}`}
+                    placeholder="Enter Currency Code"
                     {...register("currency_code", {
-                      required: "Industry name is required.",
+                      required: "Currency code is required.",
                       minLength: {
                         value: 3,
-                        message: "Industry name must be at least 3 characters.",
+                        message: "Currency code must be at least 3 characters.",
                       },
                     })}
                   />
-                  {errors.name && (
-                    <small className="text-danger">{errors.name.message}</small>
+                  {errors.currency_code && (
+                    <small className="text-danger">
+                      {errors.currency_code.message}
+                    </small>
                   )}
                 </div>
               </div>
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link
