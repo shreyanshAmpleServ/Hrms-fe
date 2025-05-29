@@ -6,7 +6,7 @@ import moment from "moment";
 const DateRangePickerComponent = ({
   selectedDateRange,
   setSelectedDateRange,
-  setIsRange= ()=>{},
+  setIsRange = () => { },
 }) => {
   const settings = {
     startDate: selectedDateRange.startDate,

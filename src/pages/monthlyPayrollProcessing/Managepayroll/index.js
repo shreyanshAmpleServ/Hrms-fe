@@ -6,10 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
-import { createdisciplinryAction, updatedisciplinryAction } from "../../../redux/disciplinaryActionLog";
-import { fetchdisciplinary_penalty } from "../../../redux/disciplinaryPenalty"
+import { createmonthlyPayroll, updatemonthlyPayroll } from "../../../redux/monthlyPayrollProcessing";
+import { fetchgrievance_type } from "../../../redux/grievanceTypeMaster"
 
-const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) => {
+const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -20,86 +20,89 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
   } = useForm({
     defaultValues: {
       employee_id: "",
-      incident_date: new Date().toISOString(),
-      incident_description: "",
-      action_taken: "",
-      committee_notes: "",
-      penalty_type: "",
-      effective_from: new Date().toISOString(),
+      grievance_type: "",
+      description: "",
+      anonymous: false,
+      submitted_on: new Date().toISOString(),
       status: "Pending",
+      assigned_to: "",
+      resolution_notes: "",
+      resolved_on: "",
     },
   });
 
-  const { loading } = useSelector((state) => state.disciplinryAction || {}); // Updated slice name if applicable
+  const { loading } = useSelector((state) => state.monthlyPayroll || {}); // ✅ Use correct slice
 
   useEffect(() => {
-    if (disciplinryAction) {
+    if (monthlyPayroll) {
       reset({
-        employee_id: disciplinryAction.employee_id || "",
-        incident_date: disciplinryAction.incident_date || new Date().toISOString(),
-        incident_description: disciplinryAction.incident_description || "",
-        action_taken: disciplinryAction.action_taken || "",
-        committee_notes: disciplinryAction.committee_notes || "",
-        penalty_type: disciplinryAction.penalty_type || "",
-        effective_from: disciplinryAction.effective_from || new Date().toISOString(),
-        status: disciplinryAction.status || "Pending",
+        employee_id: monthlyPayroll.employee_id || "",
+        grievance_type: monthlyPayroll.grievance_type || "",
+        description: monthlyPayroll.description || "",
+        anonymous: monthlyPayroll.anonymous || false,
+        submitted_on: monthlyPayroll.submitted_on || new Date().toISOString(),
+        status: monthlyPayroll.status || "Pending",
+        assigned_to: monthlyPayroll.assigned_to || "",
+        resolution_notes: monthlyPayroll.resolution_notes || "",
+        resolved_on: monthlyPayroll.resolved_on || "",
       });
     } else {
       reset({
         employee_id: "",
-        incident_date: new Date().toISOString(),
-        incident_description: "",
-        action_taken: "",
-        committee_notes: "",
-        penalty_type: "",
-        effective_from: new Date().toISOString(),
+        grievance_type: "",
+        description: "",
+        anonymous: false,
+        submitted_on: new Date().toISOString(),
         status: "Pending",
+        assigned_to: "",
+        resolution_notes: "",
+        resolved_on: "",
       });
     }
-  }, [disciplinryAction, reset]);
+  }, [monthlyPayroll, reset]);
 
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
-    dispatch(fetchdisciplinary_penalty({ searchValue }));
+    dispatch(fetchgrievance_type());
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
     (state) => state.employee || {}
   );
 
-  const { disciplinary } = useSelector((state) => state.disciplinary_penalty || {});
-
-
+  const { grievance_type } = useSelector(
+    (state) => state.grievanceType || {}
+  );
 
   const employees = employee?.data?.map((i) => ({
     label: i?.full_name,
     value: i?.id,
   }));
 
-  const penaltyOptions = disciplinary?.data.map((p) => ({
-    label: p?.description,
-    value: p?.id,
+  const grievanceTypeOptions = grievance_type?.data?.map((i) => ({
+    label: i?.grievance_type_name,
+    value: i?.id,
   }));
-
-  ;
-
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      disciplinryAction
-        ? await dispatch(
-          updatedisciplinryAction({
-            id: disciplinryAction.id,
-            disciplinryActionData: { ...data },
+      if (monthlyPayroll) {
+        await dispatch(
+          updatemonthlyPayroll({
+            id: monthlyPayroll.id,
+            monthlyPayrollData: { ...data },
           })
-        ).unwrap()
-        : await dispatch(createdisciplinryAction({ ...data })).unwrap();
+        ).unwrap();
+      } else {
+        await dispatch(createmonthlyPayroll({ ...data })).unwrap();
+      }
       closeButton?.click();
       reset();
-      setdisciplinryAction(null);
+      setmonthlyPayroll(null);
     } catch (error) {
       closeButton?.click();
+      console.error("Submission error:", error);
     }
   };
 
@@ -107,14 +110,15 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setdisciplinryAction(null);
+        setmonthlyPayroll(null);
       };
       offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
       return () => {
         offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
       };
     }
-  }, [setdisciplinryAction]);
+  }, [setmonthlyPayroll]);
+
 
   return (
     <>
@@ -125,14 +129,14 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{disciplinryAction ? "Update " : "Add New "} Disciplinary Action Log</h4>
+          <h4>{monthlyPayroll ? "Update " : "Add New "} Grievance Submission</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setdisciplinryAction(null);
+              setmonthlyPayroll(null);
               reset();
             }}
           >
@@ -144,9 +148,9 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
             <div>
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Employee <span className="text-danger">*</span></label>
+                  <label className="col-form-label">Employee<span className="text-danger">*</span></label>
                   <Controller
-                    name="description"
+                    name="employee_id"
                     control={control}
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
@@ -175,82 +179,6 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
 
 
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label"> Penalty Type<span className="text-danger">*</span></label>
-                  <Controller
-                    name="penalty_id"
-                    control={control}
-                    rules={{ required: "disciplinary penalty is required" }}
-                    render={({ field }) => {
-                      const selected = (penaltyOptions || []).find(opt => opt.value === field.value);
-                      return (
-                        <Select
-                          {...field}
-                          options={penaltyOptions}
-                          placeholder="Select Training"
-                          value={selected || null}
-                          onChange={(opt) => field.onChange(opt?.value)}
-                          classNamePrefix="react-select"
-                        />
-                      );
-                    }}
-                  />
-                  {errors.penalty_id && <small className="text-danger">{errors.penalty_id.message}</small>}
-                </div>
-
-
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Incident Date <span className="text-danger">*</span></label>
-                  <Controller
-                    name="incident_date"
-                    control={control}
-                    rules={{ required: "Incident date is required" }}
-                    render={({ field }) => (
-                      <DatePicker
-                        {...field}
-                        selected={field.value ? new Date(field.value) : null}
-                        onChange={field.onChange}
-                        className="form-control"
-                        dateFormat="dd-MM-yyyy"
-                      />
-                    )}
-                  />
-                </div>
-
-
-
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Action Taken</label>
-                  <Controller
-                    name="action_taken"
-                    control={control}
-                    render={({ field }) => (
-                      <input {...field} className="form-control" placeholder="e.g., Verbal warning" />
-                    )}
-                  />
-                </div>
-
-
-
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Effective From</label>
-                  <Controller
-                    name="effective_from"
-                    control={control}
-                    render={({ field }) => (
-                      <DatePicker
-                        {...field}
-                        selected={field.value ? new Date(field.value) : null}
-                        onChange={field.onChange}
-                        className="form-control"
-                        dateFormat="dd-MM-yyyy"
-                      />
-                    )}
-                  />
-                </div>
-
-
-
-                <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
                   <Controller
                     name="status"
@@ -274,10 +202,124 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                   />
                 </div>
 
-                <div className="col-12 mb-3">
-                  <label className="col-form-label">Committee Notes</label>
+                {/* Grievance Type */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">
+                    Grievance Type <span className="text-danger">*</span>
+                  </label>
                   <Controller
-                    name="committee_notes"
+                    name="grievance_type"
+                    control={control}
+                    rules={{ required: "Grievance type is required" }}
+                    render={({ field }) => {
+                      const selectedGrievance = grievanceTypeOptions?.find(gt => gt.value === field.value);
+                      return (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={grievanceTypeOptions}
+                          placeholder="Select Grievance Type"
+                          classNamePrefix="react-select"
+                          value={selectedGrievance || null}
+                          onChange={(opt) => field.onChange(opt?.value)}
+                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                        />
+                      );
+                    }}
+                  />
+                  {errors.grievance_type && (
+                    <small className="text-danger">{errors.grievance_type.message}</small>
+                  )}
+                </div>
+
+
+                {/* Resolved On */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Resolved On</label>
+                  <Controller
+                    name="resolved_on"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={field.onChange}
+                        className="form-control"
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    )}
+                  />
+                </div>
+
+
+
+
+                {/* Submitted On */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Submitted On</label>
+                  <Controller
+                    name="submitted_on"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={field.onChange}
+                        className="form-control"
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Assigned To</label>
+                  <Controller
+                    name="assigned_to"
+                    control={control}
+                    render={({ field }) => {
+                      const selectedUser = employees?.find(emp => emp.value === field.value);
+                      return (
+                        <Select
+                          {...field}
+                          options={employees}
+                          placeholder="Select Assignee"
+                          value={selectedUser || null}
+                          onInputChange={setSearchValue}
+                          onChange={(opt) => field.onChange(opt?.value)}
+                          classNamePrefix="react-select"
+                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                        />
+                      );
+                    }}
+                  />
+                </div>
+
+
+                {/* Anonymous */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Anonymous?</label>
+                  <Controller
+                    name="anonymous"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={field.value}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                      />
+                    )}
+                  />
+                </div>
+
+
+
+                {/* Resolution Notes */}
+                <div className="col-12 mb-3">
+                  <label className="col-form-label">Resolution Notes</label>
+                  <Controller
+                    name="resolution_notes"
                     control={control}
                     render={({ field }) => (
                       <DefaultEditor
@@ -289,10 +331,11 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                   />
                 </div>
 
+                {/* Description */}
                 <div className="col-12 mb-3">
-                  <label className="col-form-label">Incident Description</label>
+                  <label className="col-form-label">Description</label>
                   <Controller
-                    name="incident_description"
+                    name="description"
                     control={control}
                     render={({ field }) => (
                       <DefaultEditor
@@ -303,6 +346,11 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                     )}
                   />
                 </div>
+
+
+
+
+
               </div>
 
             </div>
@@ -315,7 +363,7 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {disciplinryAction
+                {monthlyPayroll
                   ? loading
                     ? " Updating..."
                     : "Update"
@@ -343,4 +391,4 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
   );
 };
 
-export default ManagedisciplinryAction;
+export default ManagemonthlyPayroll;

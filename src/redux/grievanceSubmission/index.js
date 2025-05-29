@@ -16,7 +16,7 @@ export const fetchgrievanceSubmission = createAsyncThunk(
                 startDate: datas?.startDate?.toISOString() || "",
                 endDate: datas?.endDate?.toISOString() || "",
             };
-            const response = await apiClient.get("/v1/disciplinary-action", {
+            const response = await apiClient.get("/v1/grievance-submission", {
                 params,
             });
             return response.data; // Returns list of grievance Submission
@@ -36,7 +36,7 @@ export const creategrievanceSubmission = createAsyncThunk(
     async (grievanceSubmissionData, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.post("/v1/disciplinary-action", grievanceSubmissionData),
+                apiClient.post("/v1/grievance-submission", grievanceSubmissionData),
                 {
                     loading: "Creating grievance Submission...",
                     success: (res) =>
@@ -61,7 +61,7 @@ export const updategrievanceSubmission = createAsyncThunk(
     async ({ id, grievanceSubmissionData }, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.put(`/v1/disciplinary-action/${id}`, grievanceSubmissionData),
+                apiClient.put(`/v1/grievance-submission/${id}`, grievanceSubmissionData),
                 {
                     loading: "Updating grievance Submission...",
                     success: (res) =>
@@ -92,7 +92,7 @@ export const deletegrievanceSubmission = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.delete(`/v1/disciplinary-action/${id}`),
+                apiClient.delete(`/v1/grievance-submission/${id}`),
                 {
                     loading: "Deleting grievance Submission...",
                     success: (res) =>
@@ -120,7 +120,7 @@ export const fetchgrievanceSubmissionById = createAsyncThunk(
     "grievanceSubmission/fetchgrievanceSubmissionById",
     async (id, thunkAPI) => {
         try {
-            const response = await apiClient.get(`/v1/disciplinary-action/${id}`);
+            const response = await apiClient.get(`/v1/grievance-submission/${id}`);
             return response.data; // Returns grievance Submission details
         } catch (error) {
             return thunkAPI.rejectWithValue(

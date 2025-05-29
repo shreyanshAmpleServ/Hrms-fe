@@ -128,6 +128,11 @@ import DisciplinaryActionLog from "../pages/disciplinaryActionLog";
 import GrievanceSubmission from "../pages/grievanceSubmission";
 import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import CompetencyTracking from "../pages/CompetencyTracking";
+import MonthlyPayrollProcessing from "../pages/monthlyPayrollProcessing";
+import TrainingSessionSchedule from "../pages/trainingSessionSchedule";
+import TrainingFeedbackEntry from "../pages/trainingFeedbackEntry";
+import ProbationReview from "../pages/probationReview";
+import SuccessionPlanningEntry from "../pages/successionPlanningEntry";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -911,6 +916,38 @@ export const privateRoutes = [
     element: <CompetencyTracking />,
     route: Route,
     title: "Competency Tracking",
+    title: "grievance Submission",
+  },
+  {
+    path: route.monthlyPayrollProcessing,
+    element: <MonthlyPayrollProcessing />,
+    route: Route,
+    title: "Monthly Payroll Processing",
+  },
+  {
+    path: route.trainingSessionSchedule,
+    element: <TrainingSessionSchedule />,
+    route: Route,
+    title: "training Session Schedule",
+  },
+  {
+    path: route.trainingFeedbackEntry,
+    element: <TrainingFeedbackEntry />,
+    route: Route,
+    title: "training Session Schedule",
+  },
+  {
+    path: route.probationReview,
+    element: <ProbationReview />,
+    route: Route,
+    title: "Probation Review",
+  },
+
+  {
+    path: route.successionPlanningEntry,
+    element: <SuccessionPlanningEntry />,
+    route: Route,
+    title: "Probation Review",
   },
 ];
 

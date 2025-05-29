@@ -83,6 +83,12 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "Daily Attendance Entry",
+            link: route.dailyAttendanceEntry,
+            showSubRoute: false,
+            submenu: false,
+          },
         ],
       },
       {
@@ -109,6 +115,13 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "Monthly Payroll Processing",
+            link: route.monthlyPayrollProcessing,
+            showSubRoute: false,
+            submenu: false,
+          },
+
         ],
       },
       {
@@ -168,6 +181,59 @@ export const SidebarData = [
           },
         ],
       },
+
+      {
+        label: "Training & Competency",
+        icon: "ti ti-file-text", // updated icon
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Training Session Schedule",
+            link: route.trainingSessionSchedule,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Training Feedback Entry",
+            link: route.trainingFeedbackEntry,
+            showSubRoute: false,
+            submenu: false,
+          },
+
+
+        ]
+      },
+
+
+      {
+        label: "Life Events & HR Ops",
+        link: route.callStatus,
+        icon: "ti ti-briefcase",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Probation Review",
+            link: route.probationReview,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Succession Planning Entry",
+            link: route.successionPlanningEntry,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Exit Interview",
+            link: route.exitInterview,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ]
+      },
+
       // {
       //   label: "Leads",
       //   link: route.leads,

@@ -89,6 +89,12 @@ import DisciplinryActionLogReducer from "./disciplinaryActionLog";
 import GrievanceSubmissionReducer from "./grievanceSubmission";
 import workLifeEventLogReducer from "./WorkLifeEventLog";
 import competencyTrackingReducer from "./CompetencyTracking";
+import MonthlyPayrollProcessingReducer from "./monthlyPayrollProcessing";
+import WpsFilesReducer from "./WPSFileGenerator";
+import trainingSessionReducer from "./trainingSessionSchedule";
+import TrainingFeedbackReducer from "./trainingFeedbackEntry";
+import probationReviewReducer from "./ProbationReview";
+import successionPlanningEntryReducer from "./successionPlanningEntry";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -181,6 +187,12 @@ const store = configureStore({
     grievanceSubmission: GrievanceSubmissionReducer,
     workLifeEventLog: workLifeEventLogReducer,
     competencyTracking: competencyTrackingReducer,
+    monthlyPayroll: MonthlyPayrollProcessingReducer,
+    wpsFiles: WpsFilesReducer,
+    trainingSession: trainingSessionReducer,
+    trainingFeedback: TrainingFeedbackReducer,
+    probationReview: probationReviewReducer,
+    successionPlanning: successionPlanningEntryReducer,
   },
 });
 

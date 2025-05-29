@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchgrievanceSubmission } from "../../redux/grievanceSubmission/index.js";
+import { fetchmonthlyPayroll } from "../../redux/monthlyPayrollProcessing/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagegrievanceSubmission from "./ManagegrievanceSubmission/index.js";
+import ManagemonthlyPayroll from "./Managepayroll/index.js";
 
-const GrievanceSubmission = () => {
+const MonthlyPayrollProcessing = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [selectedgrievanceSubmission, setSelectedgrievanceSubmission] = useState(null);
+    const [selectedmonthlyPayroll, setSelectedmonthlyPayroll] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState({});
     const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,11 +22,11 @@ const GrievanceSubmission = () => {
     });
     const dispatch = useDispatch();
 
-    const { grievanceSubmission, loading } = useSelector((state) => state.grievanceSubmission || {});
+    const { monthlyPayroll, loading } = useSelector((state) => state.monthlyPayroll || {});
 
     React.useEffect(() => {
         dispatch(
-            fetchgrievanceSubmission({
+            fetchmonthlyPayroll({
                 search: searchValue,
                 ...selectedDateRange,
             })
@@ -35,12 +35,12 @@ const GrievanceSubmission = () => {
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: grievanceSubmission?.currentPage,
-            totalPage: grievanceSubmission?.totalPages,
-            totalCount: grievanceSubmission?.totalCount,
-            pageSize: grievanceSubmission?.size,
+            currentPage: monthlyPayroll?.currentPage,
+            totalPage: monthlyPayroll?.totalPages,
+            totalCount: monthlyPayroll?.totalCount,
+            pageSize: monthlyPayroll?.size,
         });
-    }, [grievanceSubmission]);
+    }, [monthlyPayroll]);
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -49,7 +49,7 @@ const GrievanceSubmission = () => {
             pageSize,
         }));
         dispatch(
-            fetchgrievanceSubmission({
+            fetchmonthlyPayroll({
                 search: searchValue,
                 ...selectedDateRange,
                 page: currentPage,
@@ -58,7 +58,7 @@ const GrievanceSubmission = () => {
         );
     };
 
-    const data = grievanceSubmission?.data;
+    const data = monthlyPayroll?.data;
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"));
     const allPermissions = permissions?.filter(
@@ -73,12 +73,12 @@ const GrievanceSubmission = () => {
     const columns = [
         {
             title: "Employee Name",
-            render: (text) => text?.grievance_employee?.full_name || "-", // assuming relation
+            render: (text) => text?.employee?.full_name || "-", // assuming relation
         },
         {
             title: "Grievance Type",
-            render: (text) => text?.grievance_types?.grievance_type_name || "-", // assuming relation
-
+            dataIndex: "grievance_type",
+            render: (text) => text || "-",
         },
         {
             title: "Description",
@@ -103,7 +103,7 @@ const GrievanceSubmission = () => {
         },
         {
             title: "Assigned To",
-            render: (text) => text?.grievance_assigned_to?.full_name || "-", // assuming relation
+            render: (text) => text?.assigned_to_user?.full_name || "-", // assuming relation
         },
         {
             title: "Resolution Notes",
@@ -136,7 +136,7 @@ const GrievanceSubmission = () => {
                                         to="#"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvas_add"
-                                        onClick={() => setSelectedgrievanceSubmission(a)}
+                                        onClick={() => setSelectedmonthlyPayroll(a)}
                                     >
                                         <i className="ti ti-edit text-blue" /> Edit
                                     </Link>
@@ -146,7 +146,7 @@ const GrievanceSubmission = () => {
                                     <Link
                                         className="dropdown-item"
                                         to="#"
-                                        onClick={() => handleDeletegrievanceSubmission(a)}
+                                        onClick={() => handleDeletemonthlyPayroll(a)}
                                     >
                                         <i className="ti ti-trash text-danger" /> Delete
                                     </Link>
@@ -159,15 +159,15 @@ const GrievanceSubmission = () => {
             : []),
     ];
 
-    const handleDeletegrievanceSubmission = (grievanceSubmission) => {
-        setSelectedgrievanceSubmission(grievanceSubmission);
+    const handleDeletemonthlyPayroll = (monthlyPayroll) => {
+        setSelectedmonthlyPayroll(monthlyPayroll);
         setShowDeleteModal(true);
     };
 
     return (
         <>
             <Helmet>
-                <title>DCC HRMS - Grievance Submission</title>
+                <title>DCC HRMS -Monthly Payroll Processing</title>
                 <meta
                     name="time-sheet"
                     content="This is time sheet page of DCC HRMS."
@@ -183,9 +183,9 @@ const GrievanceSubmission = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Grievance Submission
+                                            Monthly Payroll Processing
                                             <span className="count-title">
-                                                {grievanceSubmission?.totalCount}
+                                                {monthlyPayroll?.totalCount}
                                             </span>
                                         </h4>
                                     </div>
@@ -224,7 +224,7 @@ const GrievanceSubmission = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Grievance Submission
+                                                        Monthly Payroll Processing
                                                     </Link>
                                                 </div>
                                             </div>
@@ -238,7 +238,7 @@ const GrievanceSubmission = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Grievance Submission </h4>
+                                                    <h4 className="mb-0 me-3">All Monthly Payroll Processing</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -278,18 +278,18 @@ const GrievanceSubmission = () => {
                         </div>
                     </div>
                 </div>
-                <ManagegrievanceSubmission
-                    setgrievanceSubmission={setSelectedgrievanceSubmission}
-                    grievanceSubmission={selectedgrievanceSubmission}
+                <ManagemonthlyPayroll
+                    setmonthlyPayroll={setSelectedmonthlyPayroll}
+                    monthlyPayroll={selectedmonthlyPayroll}
                 />
             </div>
             <DeleteConfirmation
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
-                grievanceSubmissionId={selectedgrievanceSubmission?.id}
+                monthlyPayrollId={selectedmonthlyPayroll?.id}
             />
         </>
     );
 };
 
-export default GrievanceSubmission;
+export default MonthlyPayrollProcessing;
