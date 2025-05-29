@@ -145,8 +145,28 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
-
-        ]
+        ],
+      },
+      {
+        label: "Life Events & HR Ops",
+        link: route.callStatus,
+        icon: "ti ti-briefcase",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Work Life Event Log",
+            link: route.workLifeEventLog,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Competency Tracking",
+            link: route.competencyTracking,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
       },
       // {
       //   label: "Leads",

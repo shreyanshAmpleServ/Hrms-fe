@@ -126,6 +126,8 @@ import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import DisciplinaryActionLog from "../pages/disciplinaryActionLog";
 import GrievanceSubmission from "../pages/grievanceSubmission";
+import WorkLifeEventLog from "../pages/WorkLifeEventLog";
+import CompetencyTracking from "../pages/CompetencyTracking";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -890,13 +892,25 @@ export const privateRoutes = [
     path: route.disciplinaryActionLog,
     element: <DisciplinaryActionLog />,
     route: Route,
-    title: "WPS File Generator",
+    title: "Disciplinary Action Log",
   },
   {
     path: route.grievanceSubmission,
     element: <GrievanceSubmission />,
     route: Route,
-    title: "WPS File Generator",
+    title: "Grievance Submission",
+  },
+  {
+    path: route.workLifeEventLog,
+    element: <WorkLifeEventLog />,
+    route: Route,
+    title: "Work Life Event Log",
+  },
+  {
+    path: route.competencyTracking,
+    element: <CompetencyTracking />,
+    route: Route,
+    title: "Competency Tracking",
   },
 ];
 

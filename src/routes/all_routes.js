@@ -97,6 +97,12 @@ export const all_routes = {
   // WPS File Generator
   wpsFileGenerator: "/wps-file-generator",
 
+  // Work Life Event Log
+  workLifeEventLog: "/work-life-event-log",
+
+  // Competency Tracking
+  competencyTracking: "/competency-tracking",
+
   // currency: "/currency",
   // core-hr //
 

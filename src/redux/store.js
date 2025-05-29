@@ -87,7 +87,8 @@ import LoneTypeReducer from "./loneType";
 import appraisalEntriesReducer from "./AppraisalsEntries";
 import DisciplinryActionLogReducer from "./disciplinaryActionLog";
 import GrievanceSubmissionReducer from "./grievanceSubmission";
-
+import workLifeEventLogReducer from "./WorkLifeEventLog";
+import competencyTrackingReducer from "./CompetencyTracking";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -178,7 +179,8 @@ const store = configureStore({
     loan_type: LoneTypeReducer,
     disciplinryAction: DisciplinryActionLogReducer,
     grievanceSubmission: GrievanceSubmissionReducer,
-
+    workLifeEventLog: workLifeEventLogReducer,
+    competencyTracking: competencyTrackingReducer,
   },
 });
 
