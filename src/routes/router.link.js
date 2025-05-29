@@ -133,6 +133,7 @@ import TrainingSessionSchedule from "../pages/trainingSessionSchedule";
 import TrainingFeedbackEntry from "../pages/trainingFeedbackEntry";
 import ProbationReview from "../pages/probationReview";
 import SuccessionPlanningEntry from "../pages/successionPlanningEntry";
+import ExitInterview from "../pages/ExitInterview";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -916,7 +917,6 @@ export const privateRoutes = [
     element: <CompetencyTracking />,
     route: Route,
     title: "Competency Tracking",
-    title: "grievance Submission",
   },
   {
     path: route.monthlyPayrollProcessing,
@@ -928,13 +928,13 @@ export const privateRoutes = [
     path: route.trainingSessionSchedule,
     element: <TrainingSessionSchedule />,
     route: Route,
-    title: "training Session Schedule",
+    title: "Training Session Schedule",
   },
   {
     path: route.trainingFeedbackEntry,
     element: <TrainingFeedbackEntry />,
     route: Route,
-    title: "training Session Schedule",
+    title: "Training Feedback Entry",
   },
   {
     path: route.probationReview,
@@ -947,7 +947,13 @@ export const privateRoutes = [
     path: route.successionPlanningEntry,
     element: <SuccessionPlanningEntry />,
     route: Route,
-    title: "Probation Review",
+    title: "Succession Planning Entry",
+  },
+  {
+    path: route.exitInterview,
+    element: <ExitInterview />,
+    route: Route,
+    title: "Exit Interview",
   },
 ];
 

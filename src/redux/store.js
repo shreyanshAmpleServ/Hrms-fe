@@ -95,6 +95,7 @@ import trainingSessionReducer from "./trainingSessionSchedule";
 import TrainingFeedbackReducer from "./trainingFeedbackEntry";
 import probationReviewReducer from "./ProbationReview";
 import successionPlanningEntryReducer from "./successionPlanningEntry";
+import exitInterviewReducer from "./ExitInterview";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -193,6 +194,7 @@ const store = configureStore({
     trainingFeedback: TrainingFeedbackReducer,
     probationReview: probationReviewReducer,
     successionPlanning: successionPlanningEntryReducer,
+    exitInterview: exitInterviewReducer,
   },
 });
 

@@ -121,7 +121,6 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
-
         ],
       },
       {
@@ -161,9 +160,8 @@ export const SidebarData = [
         ],
       },
       {
-        label: "Life Events & HR Ops",
-        link: route.callStatus,
-        icon: "ti ti-briefcase",
+        label: "Training & Competency",
+        icon: "ti ti-file-text", // updated icon
         showSubRoute: false,
         submenu: true,
         submenuItems: [
@@ -173,21 +171,6 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
-          {
-            label: "Competency Tracking",
-            link: route.competencyTracking,
-            showSubRoute: false,
-            submenu: false,
-          },
-        ],
-      },
-
-      {
-        label: "Training & Competency",
-        icon: "ti ti-file-text", // updated icon
-        showSubRoute: false,
-        submenu: true,
-        submenuItems: [
           {
             label: "Training Session Schedule",
             link: route.trainingSessionSchedule,
@@ -200,11 +183,14 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
-
-
-        ]
+          {
+            label: "Competency Tracking",
+            link: route.competencyTracking,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
       },
-
 
       {
         label: "Life Events & HR Ops",
@@ -231,7 +217,7 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
-        ]
+        ],
       },
 
       // {

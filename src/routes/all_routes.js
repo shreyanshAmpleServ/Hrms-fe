@@ -103,6 +103,9 @@ export const all_routes = {
   // Competency Tracking
   competencyTracking: "/competency-tracking",
 
+  // Exit Interview
+  exitInterview: "/exit-interview",
+
   // currency: "/currency",
   // core-hr //
 
