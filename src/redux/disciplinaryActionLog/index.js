@@ -19,7 +19,7 @@ export const fetchdisciplinryAction = createAsyncThunk(
             const response = await apiClient.get("/v1/diciplinary-action", {
                 params,
             });
-            return response; // Returns list of disciplinary action
+            return response.data; // Returns list of disciplinary action
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data || "Failed to fetch disciplinary action"

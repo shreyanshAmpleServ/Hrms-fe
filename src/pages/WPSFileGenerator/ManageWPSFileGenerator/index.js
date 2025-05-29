@@ -4,9 +4,9 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import {
-  createAppraisalEntries,
-  updateAppraisalEntries,
-} from "../../../redux/AppraisalsEntries";
+  createWPSFile,
+  updateWPSFile,
+} from "../../../redux/WPSFileGenerator";
 import moment from "moment";
 
 const ManageWPSFileGenerator = ({ setSelected, selected }) => {
@@ -70,17 +70,17 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     try {
       selected
         ? await dispatch(
-            updateAppraisalEntries({
-              id: selected.id,
-              appraisalEntriesData: { ...data, rating: Number(data.rating) },
-            })
-          ).unwrap()
+          updateWPSFile({
+            id: selected.id,
+            wpsFileData: { ...data, rating: Number(data.rating) },
+          })
+        ).unwrap()
         : await dispatch(
-            createAppraisalEntries({
-              ...data,
-              rating: Number(data.rating),
-            })
-          ).unwrap();
+          createWPSFile({
+            ...data,
+            rating: Number(data.rating),
+          })
+        ).unwrap();
       closeButton.click();
       reset();
       setSelected(null);

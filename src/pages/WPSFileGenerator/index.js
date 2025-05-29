@@ -72,60 +72,82 @@ const WPSFileGenerator = () => {
 
   const columns = [
     {
-      title: "Employee Name",
-      render: (text) => text?.employee?.full_name || "-",
-    },
-    {
-      title: "Review Period",
-      dataIndex: "review_period",
+      title: "Payroll Month",
+      dataIndex: "payroll_month",
       render: (text) => text || "-",
     },
     {
-      title: "Reviewer Comments",
-      dataIndex: "reviewer_comments",
-      render: (text) => text || "-",
+      title: "File",
+      dataIndex: "file_path",
+      render: (_text, record) => (
+        <a
+          href={record.pdf_path}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          className="d-inline-flex align-items-center gap-2 text-decoration-none"
+          title="Download Payslip"
+        >
+          <i className="ti ti-file-invoice fs-5"></i>
+          <span>Download</span>
+        </a>
+      ),
     },
+
+
+
+    {
+      title: "Generated On",
+      dataIndex: "generated_on",
+      render: (date) => date ? new Date(date).toLocaleDateString() : "-",
+    },
+    {
+      title: "Submitted to Bank",
+      dataIndex: "submitted_to_bank",
+      render: (val) => val ? "Yes" : "No",
+    },
+
     ...(isDelete || isUpdate
       ? [
-          {
-            title: "Action",
-            render: (text, a) => (
-              <div className="dropdown table-action">
-                <Link
-                  to="#"
-                  className="action-icon "
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <i className="fa fa-ellipsis-v"></i>
-                </Link>
-                <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
-                    <Link
-                      className="dropdown-item"
-                      to="#"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvas_add"
-                      onClick={() => setSelected(a)}
-                    >
-                      <i className="ti ti-edit text-blue" /> Edit
-                    </Link>
-                  )}
+        {
+          title: "Action",
+          render: (text, a) => (
+            <div className="dropdown table-action">
+              <Link
+                to="#"
+                className="action-icon "
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="fa fa-ellipsis-v"></i>
+              </Link>
+              <div className="dropdown-menu dropdown-menu-right">
+                {isUpdate && (
+                  <Link
+                    className="dropdown-item"
+                    to="#"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas_add"
+                    onClick={() => setSelected(a)}
+                  >
+                    <i className="ti ti-edit text-blue" /> Edit
+                  </Link>
+                )}
 
-                  {isDelete && (
-                    <Link
-                      className="dropdown-item"
-                      to="#"
-                      onClick={() => handleDeleteWPSFile(a)}
-                    >
-                      <i className="ti ti-trash text-danger" /> Delete
-                    </Link>
-                  )}
-                </div>
+                {isDelete && (
+                  <Link
+                    className="dropdown-item"
+                    to="#"
+                    onClick={() => handleDeleteWPSFile(a)}
+                  >
+                    <i className="ti ti-trash text-danger" /> Delete
+                  </Link>
+                )}
               </div>
-            ),
-          },
-        ]
+            </div>
+          ),
+        },
+      ]
       : []),
   ];
 

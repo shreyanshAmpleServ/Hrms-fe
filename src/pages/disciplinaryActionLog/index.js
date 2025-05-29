@@ -9,7 +9,7 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js"
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchdisciplinryAction } from "../../redux/disciplinaryActionLog/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagedisciplinryAction from "./ManagedisciplinryAction/index.js";
+import ManagedisciplinryAction from "./ManagedisciplinryAction";
 
 const DisciplinaryActionLog = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -23,6 +23,7 @@ const DisciplinaryActionLog = () => {
     const dispatch = useDispatch();
 
     const { disciplinryAction, loading } = useSelector((state) => state.disciplinryAction || {});
+
     React.useEffect(() => {
         dispatch(
             fetchdisciplinryAction({
@@ -97,13 +98,14 @@ const DisciplinaryActionLog = () => {
         },
         {
             title: "Penalty Type",
-            dataIndex: "penalty_type",
-            render: (text) => text || "-",
+            render: (text) => text?.disciplinary_penalty?.description || "-",
         },
         {
             title: "Effective From",
             dataIndex: "effective_from",
             render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+            sorter: (a, b) => new Date(a.effective_from) - new Date(b.effective_from),
+
         },
         {
             title: "Status",
@@ -113,7 +115,7 @@ const DisciplinaryActionLog = () => {
         {
             title: "Created On",
             dataIndex: "createdate",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY HH:mm") : "-"),
+            render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
         },
 
         ...(isDelete || isUpdate

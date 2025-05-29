@@ -153,6 +153,12 @@ export const all_routes = {
 
   disciplinaryActionLog: "/disciplinary-action-log",
   grievanceSubmission: "/grievance-Submission",
+  monthlyPayrollProcessing: "/monthly-payroll-processing",
+  trainingSessionSchedule: "/training-session-schedule",
+  trainingFeedbackEntry: "/training-feedback-entry",
+  probationReview: "/probation-review",
+  successionPlanningEntry: "/succession-planning-entry",
+
   /* USER MANAGEMENT */
   manageusers: "/manage-users",
   manageusersDetails: "/manage-users/:id",

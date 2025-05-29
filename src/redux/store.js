@@ -87,7 +87,12 @@ import LoneTypeReducer from "./loneType";
 import appraisalEntriesReducer from "./AppraisalsEntries";
 import DisciplinryActionLogReducer from "./disciplinaryActionLog";
 import GrievanceSubmissionReducer from "./grievanceSubmission";
-
+import MonthlyPayrollProcessingReducer from "./monthlyPayrollProcessing";
+import WpsFilesReducer from "./WPSFileGenerator";
+import trainingSessionReducer from "./trainingSessionSchedule";
+import TrainingFeedbackReducer from "./trainingFeedbackEntry";
+import probationReviewReducer from "./ProbationReview";
+import successionPlanningEntryReducer from "./successionPlanningEntry";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -178,7 +183,12 @@ const store = configureStore({
     loan_type: LoneTypeReducer,
     disciplinryAction: DisciplinryActionLogReducer,
     grievanceSubmission: GrievanceSubmissionReducer,
-
+    monthlyPayroll: MonthlyPayrollProcessingReducer,
+    wpsFiles: WpsFilesReducer,
+    trainingSession: trainingSessionReducer,
+    trainingFeedback: TrainingFeedbackReducer,
+    probationReview: probationReviewReducer,
+    successionPlanning: successionPlanningEntryReducer,
   },
 });
 

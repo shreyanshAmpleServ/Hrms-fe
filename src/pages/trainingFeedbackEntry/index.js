@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Rate, Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchgrievanceSubmission } from "../../redux/grievanceSubmission/index.js";
+import { fetchtrainingFeedback } from "../../redux/trainingFeedbackEntry";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagegrievanceSubmission from "./ManagegrievanceSubmission/index.js";
+import Managetrainingfeedback from "./Managetriningfeedback";
 
-const GrievanceSubmission = () => {
+const TrainingFeedbackEntry = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [selectedgrievanceSubmission, setSelectedgrievanceSubmission] = useState(null);
+    const [selectedtrainingFeedback, setSelectedtrainingFeedback] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState({});
     const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,11 +22,11 @@ const GrievanceSubmission = () => {
     });
     const dispatch = useDispatch();
 
-    const { grievanceSubmission, loading } = useSelector((state) => state.grievanceSubmission || {});
+    const { trainingFeedback, loading } = useSelector((state) => state.trainingFeedback || {});
 
     React.useEffect(() => {
         dispatch(
-            fetchgrievanceSubmission({
+            fetchtrainingFeedback({
                 search: searchValue,
                 ...selectedDateRange,
             })
@@ -35,12 +35,12 @@ const GrievanceSubmission = () => {
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: grievanceSubmission?.currentPage,
-            totalPage: grievanceSubmission?.totalPages,
-            totalCount: grievanceSubmission?.totalCount,
-            pageSize: grievanceSubmission?.size,
+            currentPage: trainingFeedback?.currentPage,
+            totalPage: trainingFeedback?.totalPages,
+            totalCount: trainingFeedback?.totalCount,
+            pageSize: trainingFeedback?.size,
         });
-    }, [grievanceSubmission]);
+    }, [trainingFeedback]);
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -49,7 +49,7 @@ const GrievanceSubmission = () => {
             pageSize,
         }));
         dispatch(
-            fetchgrievanceSubmission({
+            fetchtrainingFeedback({
                 search: searchValue,
                 ...selectedDateRange,
                 page: currentPage,
@@ -58,7 +58,7 @@ const GrievanceSubmission = () => {
         );
     };
 
-    const data = grievanceSubmission?.data;
+    const data = trainingFeedback?.data;
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"));
     const allPermissions = permissions?.filter(
@@ -73,48 +73,27 @@ const GrievanceSubmission = () => {
     const columns = [
         {
             title: "Employee Name",
-            render: (text) => text?.grievance_employee?.full_name || "-", // assuming relation
+            render: (record) => record?.training_employee?.full_name || "-", // Assuming employee relation
         },
         {
-            title: "Grievance Type",
-            render: (text) => text?.grievance_types?.grievance_type_name || "-", // assuming relation
+            title: "Training Title",
+            render: (record) => record?.training_details?.training_title || "-", // Assuming employee relation
 
         },
+
         {
-            title: "Description",
-            dataIndex: "description",
+            title: "Feedback",
+            dataIndex: "feedback_text",
             render: (text) => text || "-",
         },
         {
-            title: "Anonymous",
-            dataIndex: "anonymous",
-            render: (val) => (val ? "Yes" : "No"),
+            title: "Rating",
+            dataIndex: "rating",
+            render: (text) => <Rate allowHalf disabled defaultValue={text} /> || "-",
         },
-        {
-            title: "Submitted On",
-            dataIndex: "submitted_on",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY HH:mm") : "-"),
-            sorter: (a, b) => new Date(a.submitted_on) - new Date(b.submitted_on),
-        },
-        {
-            title: "Status",
-            dataIndex: "status",
-            render: (text) => text || "-",
-        },
-        {
-            title: "Assigned To",
-            render: (text) => text?.grievance_assigned_to?.full_name || "-", // assuming relation
-        },
-        {
-            title: "Resolution Notes",
-            dataIndex: "resolution_notes",
-            render: (text) => text || "-",
-        },
-        {
-            title: "Resolved On",
-            dataIndex: "resolved_on",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-        },
+
+
+
         ...(isDelete || isUpdate
             ? [
                 {
@@ -136,7 +115,7 @@ const GrievanceSubmission = () => {
                                         to="#"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvas_add"
-                                        onClick={() => setSelectedgrievanceSubmission(a)}
+                                        onClick={() => setSelectedtrainingFeedback(a)}
                                     >
                                         <i className="ti ti-edit text-blue" /> Edit
                                     </Link>
@@ -146,7 +125,7 @@ const GrievanceSubmission = () => {
                                     <Link
                                         className="dropdown-item"
                                         to="#"
-                                        onClick={() => handleDeletegrievanceSubmission(a)}
+                                        onClick={() => handleDeletetrainingFeedback(a)}
                                     >
                                         <i className="ti ti-trash text-danger" /> Delete
                                     </Link>
@@ -159,15 +138,15 @@ const GrievanceSubmission = () => {
             : []),
     ];
 
-    const handleDeletegrievanceSubmission = (grievanceSubmission) => {
-        setSelectedgrievanceSubmission(grievanceSubmission);
+    const handleDeletetrainingFeedback = (trainingFeedback) => {
+        setSelectedtrainingFeedback(trainingFeedback);
         setShowDeleteModal(true);
     };
 
     return (
         <>
             <Helmet>
-                <title>DCC HRMS - Grievance Submission</title>
+                <title>DCC HRMS -Training Session Schedule</title>
                 <meta
                     name="time-sheet"
                     content="This is time sheet page of DCC HRMS."
@@ -183,9 +162,9 @@ const GrievanceSubmission = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Grievance Submission
+                                            Training Session Schedule
                                             <span className="count-title">
-                                                {grievanceSubmission?.totalCount}
+                                                {trainingFeedback?.totalCount}
                                             </span>
                                         </h4>
                                     </div>
@@ -209,7 +188,7 @@ const GrievanceSubmission = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Grievance Submission"
+                                                    placeholder="Search Training Session Schedule"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -224,7 +203,7 @@ const GrievanceSubmission = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Grievance Submission
+                                                        Training Session Schedule
                                                     </Link>
                                                 </div>
                                             </div>
@@ -238,7 +217,7 @@ const GrievanceSubmission = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Grievance Submission </h4>
+                                                    <h4 className="mb-0 me-3">All Training Session Schedule</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -278,18 +257,18 @@ const GrievanceSubmission = () => {
                         </div>
                     </div>
                 </div>
-                <ManagegrievanceSubmission
-                    setgrievanceSubmission={setSelectedgrievanceSubmission}
-                    grievanceSubmission={selectedgrievanceSubmission}
+                <Managetrainingfeedback
+                    settrainingFeedback={setSelectedtrainingFeedback}
+                    trainingFeedback={selectedtrainingFeedback}
                 />
             </div>
             <DeleteConfirmation
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
-                grievanceSubmissionId={selectedgrievanceSubmission?.id}
+                trainingFeedbackId={selectedtrainingFeedback?.id}
             />
         </>
     );
 };
 
-export default GrievanceSubmission;
+export default TrainingFeedbackEntry;

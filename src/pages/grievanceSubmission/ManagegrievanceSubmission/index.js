@@ -8,6 +8,7 @@ import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchLeaveType } from "../../../redux/LeaveType";
 import { creategrievanceSubmission, updategrievanceSubmission } from "../../../redux/grievanceSubmission";
+import { fetchgrievance_type } from "../../../redux/grievanceTypeMaster"
 
 const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -20,50 +21,58 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
   } = useForm({
     defaultValues: {
       employee_id: "",
-      incident_date: new Date().toISOString(),
-      incident_description: "",
-      action_taken: "",
-      committee_notes: "",
-      penalty_type: "",
-      effective_from: new Date().toISOString(),
+      grievance_type: "",
+      description: "",
+      anonymous: false,
+      submitted_on: new Date().toISOString(),
       status: "Pending",
+      assigned_to: "",
+      resolution_notes: "",
+      resolved_on: "",
     },
   });
 
-  const { loading } = useSelector((state) => state.disciplinaryActionLog || {}); // Updated slice name if applicable
+  const { loading } = useSelector((state) => state.grievanceSubmission || {}); // ✅ Use correct slice
 
   useEffect(() => {
     if (grievanceSubmission) {
       reset({
         employee_id: grievanceSubmission.employee_id || "",
-        incident_date: grievanceSubmission.incident_date || new Date().toISOString(),
-        incident_description: grievanceSubmission.incident_description || "",
-        action_taken: grievanceSubmission.action_taken || "",
-        committee_notes: grievanceSubmission.committee_notes || "",
-        penalty_type: grievanceSubmission.penalty_type || "",
-        effective_from: grievanceSubmission.effective_from || new Date().toISOString(),
+        grievance_type: grievanceSubmission.grievance_type || "",
+        description: grievanceSubmission.description || "",
+        anonymous: grievanceSubmission.anonymous || false,
+        submitted_on: grievanceSubmission.submitted_on || new Date().toISOString(),
         status: grievanceSubmission.status || "Pending",
+        assigned_to: grievanceSubmission.assigned_to || "",
+        resolution_notes: grievanceSubmission.resolution_notes || "",
+        resolved_on: grievanceSubmission.resolved_on || "",
       });
     } else {
       reset({
         employee_id: "",
-        incident_date: new Date().toISOString(),
-        incident_description: "",
-        action_taken: "",
-        committee_notes: "",
-        penalty_type: "",
-        effective_from: new Date().toISOString(),
+        grievance_type: "",
+        description: "",
+        anonymous: false,
+        submitted_on: new Date().toISOString(),
         status: "Pending",
+        assigned_to: "",
+        resolution_notes: "",
+        resolved_on: "",
       });
     }
   }, [grievanceSubmission, reset]);
 
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchgrievance_type());
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
     (state) => state.employee || {}
+  );
+
+  const { grievance_type } = useSelector(
+    (state) => state.grievanceType || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -71,22 +80,30 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
     value: i?.id,
   }));
 
+  const grievanceTypeOptions = grievance_type?.data?.map((i) => ({
+    label: i?.grievance_type_name,
+    value: i?.id,
+  }));
+
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      grievanceSubmission
-        ? await dispatch(
+      if (grievanceSubmission) {
+        await dispatch(
           updategrievanceSubmission({
             id: grievanceSubmission.id,
             grievanceSubmissionData: { ...data },
           })
-        ).unwrap()
-        : await dispatch(creategrievanceSubmission({ ...data })).unwrap();
+        ).unwrap();
+      } else {
+        await dispatch(creategrievanceSubmission({ ...data })).unwrap();
+      }
       closeButton?.click();
       reset();
       setgrievanceSubmission(null);
     } catch (error) {
       closeButton?.click();
+      console.error("Submission error:", error);
     }
   };
 
@@ -102,6 +119,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
       };
     }
   }, [setgrievanceSubmission]);
+
 
   return (
     <>
@@ -131,7 +149,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
             <div>
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Employee <span className="text-danger">*</span></label>
+                  <label className="col-form-label">Employee<span className="text-danger">*</span></label>
                   <Controller
                     name="employee_id"
                     control={control}
@@ -157,64 +175,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                   {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
                 </div>
 
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Incident Date <span className="text-danger">*</span></label>
-                  <Controller
-                    name="incident_date"
-                    control={control}
-                    rules={{ required: "Incident date is required" }}
-                    render={({ field }) => (
-                      <DatePicker
-                        {...field}
-                        selected={field.value ? new Date(field.value) : null}
-                        onChange={field.onChange}
-                        className="form-control"
-                        dateFormat="dd-MM-yyyy"
-                      />
-                    )}
-                  />
-                </div>
 
-
-
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Action Taken</label>
-                  <Controller
-                    name="action_taken"
-                    control={control}
-                    render={({ field }) => (
-                      <input {...field} className="form-control" placeholder="e.g., Verbal warning" />
-                    )}
-                  />
-                </div>
-
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Penalty Type</label>
-                  <Controller
-                    name="penalty_type"
-                    control={control}
-                    render={({ field }) => (
-                      <input {...field} className="form-control" placeholder="e.g., Warning, Suspension" />
-                    )}
-                  />
-                </div>
-
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Effective From</label>
-                  <Controller
-                    name="effective_from"
-                    control={control}
-                    render={({ field }) => (
-                      <DatePicker
-                        {...field}
-                        selected={field.value ? new Date(field.value) : null}
-                        onChange={field.onChange}
-                        className="form-control"
-                        dateFormat="dd-MM-yyyy"
-                      />
-                    )}
-                  />
-                </div>
 
 
 
@@ -242,10 +203,127 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                   />
                 </div>
 
-                <div className="col-12 mb-3">
-                  <label className="col-form-label">Committee Notes</label>
+                {/* Grievance Type */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">
+                    Grievance Type <span className="text-danger">*</span>
+                  </label>
                   <Controller
-                    name="committee_notes"
+                    name="grievance_type"
+                    control={control}
+                    rules={{ required: "Grievance type is required" }}
+                    render={({ field }) => {
+                      const selectedGrievance = grievanceTypeOptions?.find(gt => gt.value === field.value);
+                      return (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={grievanceTypeOptions}
+                          placeholder="Select Grievance Type"
+                          classNamePrefix="react-select"
+                          value={selectedGrievance || null}
+                          onChange={(opt) => field.onChange(opt?.value)}
+                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                        />
+                      );
+                    }}
+                  />
+                  {errors.grievance_type && (
+                    <small className="text-danger">{errors.grievance_type.message}</small>
+                  )}
+                </div>
+
+
+                {/* Resolved On */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Resolved On</label>
+                  <Controller
+                    name="resolved_on"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={field.onChange}
+                        className="form-control"
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    )}
+                  />
+                </div>
+
+
+
+
+                {/* Submitted On */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Submitted On</label>
+                  <Controller
+                    name="submitted_on"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={field.onChange}
+                        className="form-control"
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Assigned To</label>
+                  <Controller
+                    name="assigned_to"
+                    control={control}
+                    render={({ field }) => {
+                      const selectedUser = employees?.find(emp => emp.value === field.value);
+                      return (
+                        <Select
+                          {...field}
+                          options={employees}
+                          placeholder="Assigned To"
+                          value={selectedUser || null}
+                          onInputChange={setSearchValue}
+                          onChange={(opt) => field.onChange(opt?.value)}
+                          classNamePrefix="react-select"
+                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                        />
+                      );
+                    }}
+                  />
+                </div>
+
+
+                {/* Anonymous */}
+                <div className="col-md-6 mb-3">
+                  <Controller
+                    name="anonymous"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={field.value}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                      />
+                    )}
+
+                  />
+
+                  <label className="col-form-label">Anonymous?</label>
+
+                </div>
+
+
+
+                {/* Resolution Notes */}
+                <div className="col-12 mb-3">
+                  <label className="col-form-label">Resolution Notes</label>
+                  <Controller
+                    name="resolution_notes"
                     control={control}
                     render={({ field }) => (
                       <DefaultEditor
@@ -257,10 +335,11 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                   />
                 </div>
 
+                {/* Description */}
                 <div className="col-12 mb-3">
-                  <label className="col-form-label">Incident Description</label>
+                  <label className="col-form-label">Description</label>
                   <Controller
-                    name="incident_description"
+                    name="description"
                     control={control}
                     render={({ field }) => (
                       <DefaultEditor
@@ -271,6 +350,11 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                     )}
                   />
                 </div>
+
+
+
+
+
               </div>
 
             </div>
