@@ -1,14 +1,14 @@
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addWorkScheduleTemp, updateWorkScheduleTemp } from "../../../../../redux/WorkScheduleTemp";
+import {
+  addWorkScheduleTemp,
+  updateWorkScheduleTemp,
+} from "../../../../../redux/WorkScheduleTemp";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.WorkScheduleTemp);
-  dayjs.extend(customParseFormat);
   const {
     register,
     control,
@@ -19,7 +19,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -28,7 +27,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       });
     } else {
       reset({
-        name: "",
+        template_name: "",
         description: "",
       });
     }
@@ -36,46 +35,45 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_holiday_calender_modal",
+      "close_btn_add_edit_work_schedule_modal"
     );
-    console.log("DAta",data)
+    console.log("DAta", data);
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addWorkScheduleTemp({
           template_name: data.template_name,
-           description:data?.description || "",
-        }),
+          description: data?.description || "",
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateWorkScheduleTemp({
           id: initialData.id,
-          reqData: { 
+          reqData: {
             template_name: data.template_name,
-          description:data?.description || "",
-         },
-        }),
+            description: data?.description || "",
+          },
+        })
       );
     }
     reset(); // Clear the form
+    setSelected(null);
     closeButton.click();
   };
 
   return (
-    <div className="modal fade" id="add_edit_holiday_calender_modal" role="dialog">
+    <div className="modal fade" id="add_edit_work_schedule_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Shift" : "Edit Shift"}
+              {mode === "add" ? "Add New Work Schedule" : "Edit Work Schedule"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="close_btn_add_edit_holiday_calender_modal"
+              id="close_btn_add_edit_work_schedule_modal"
             >
               <i className="ti ti-x" />
             </button>
@@ -85,42 +83,49 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/*Temp name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                   Template Name<span className="text-danger">*</span>
+                  Template Name<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.template_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Template Name"
                   {...register("template_name", {
                     required: "Template name is required.",
                     minLength: {
                       value: 3,
-                      message: "Shift name must be at least 3 characters.",
+                      message: "Template name must be at least 3 characters.",
                     },
                   })}
                 />
                 {errors.template_name && (
-                  <small className="text-danger">{errors.template_name.message}</small>
+                  <small className="text-danger">
+                    {errors.template_name.message}
+                  </small>
                 )}
               </div>
-          
+
               {/* description  */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Description<span className="text-danger">*</span>
                 </label>
-                <input
+                <textarea
+                  rows={3}
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                  placeholder="Enter Description"
                   {...register("description", {
-                    required: "Shift name is required.",
+                    required: "Description is required.",
                     minLength: {
                       value: 3,
-                      message: "Shift name must be at least 3 characters.",
+                      message: "Description must be at least 3 characters.",
                     },
                   })}
                 />
                 {errors.description && (
-                  <small className="text-danger">{errors.description.message}</small>
+                  <small className="text-danger">
+                    {errors.description.message}
+                  </small>
                 )}
               </div>
               {/* <div className="row col-12">
@@ -185,8 +190,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 )}
               </div>
               </div> */}
-
-          
             </div>
 
             {/* Footer */}

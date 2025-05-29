@@ -7,14 +7,16 @@ export const fetchHolidayCalender = createAsyncThunk(
   "holidayCalender/fetchHolidayCalender",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/holiday-calender?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`);
+      const response = await apiClient.get(
+        `/v1/holiday-calender?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`
+      );
       return response.data; // Returns a list of holiday calender
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch holiday calender",
+        error.response?.data || "Failed to fetch holiday calender"
       );
     }
-  },
+  }
 );
 
 // Add a holiday calender
@@ -26,20 +28,19 @@ export const addHolidayCalender = createAsyncThunk(
         apiClient.post("/v1/holiday-calender", reqData),
         {
           loading: "Holiday calender adding...",
-          success: (res) => res.data.message || "Holiday calender added successfully!",
+          success: (res) =>
+            res.data.message || "Holiday calender added successfully!",
           error: "Failed to add holiday calender",
         }
       );
-      // const response = await apiClient.post("/v1/holiday-calender", reqData);
-      // toast.success(response.data.message || "Holiday calender created successfully");
       return response.data; // Returns the newly added holiday calender
     } catch (error) {
       toast.error(error.response?.data || "Failed to add holiday calender");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add holiday calender",
+        error.response?.data || "Failed to add holiday calender"
       );
     }
-  },
+  }
 );
 
 // Update a holiday calender
@@ -51,12 +52,12 @@ export const updateHolidayCalender = createAsyncThunk(
         apiClient.put(`/v1/holiday-calender/${id}`, reqData),
         {
           loading: "Holiday calender updating...",
-          success: (res) => res.data.message || "Holiday calender updated successfully!",
+          success: (res) =>
+            res.data.message || "Holiday calender updated successfully!",
           error: "Failed to update holiday calender",
         }
       );
-      // const response = await apiClient.put(`/v1/holidayCalender/${id}`, reqData);
-      // toast.success(response.data.message || "Holiday calender updated successfully");
+
       return response.data; // Returns the updated holiday calender
     } catch (error) {
       if (error.response?.status === 404) {
@@ -68,30 +69,36 @@ export const updateHolidayCalender = createAsyncThunk(
       }
       toast.error(error.response?.data || "Failed to update holiday calender");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update holiday calender",
+        error.response?.data || "Failed to update holiday calender"
       );
     }
-  },
+  }
 );
 
-// Delete a holiday calender
 export const deleteHolidayCalender = createAsyncThunk(
   "holidayCalender/deleteHolidayCalender",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/holiday-calender/${id}`);
-      toast.success(response.data.message || "Holiday calender deleted successfully");
+      const response = await toast.promise(
+        apiClient.delete(`/v1/holiday-calender/${id}`),
+        {
+          loading: "Holiday calender deleting...",
+          success: (res) =>
+            res.data.message || "Holiday calender deleted successfully",
+          error: "Failed to delete holiday calender",
+        }
+      );
       return {
         data: { id },
-        message: response.data.message || "Holiday calender deleted successfully",
+        message:
+          response.data.message || "Holiday calender deleted successfully",
       };
     } catch (error) {
-      toast.error( error.response?.data || "Failed to delete holiday calender");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete holiday calender",
+        error.response?.data || "Failed to delete holiday calender"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single holiday calender by ID
@@ -103,10 +110,10 @@ export const fetchHolidayCalenderById = createAsyncThunk(
       return response.data; // Returns the holiday calender details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch holiday calender",
+        error.response?.data || "Failed to fetch holiday calender"
       );
     }
-  },
+  }
 );
 
 const holidayCalenderSlice = createSlice({
@@ -144,7 +151,10 @@ const holidayCalenderSlice = createSlice({
       })
       .addCase(addHolidayCalender.fulfilled, (state, action) => {
         state.loading = false;
-        state.holidayCalender ={...state.holidayCalender,data: [action.payload.data, ...state.holidayCalender.data]};
+        state.holidayCalender = {
+          ...state.holidayCalender,
+          data: [action.payload.data, ...state.holidayCalender.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addHolidayCalender.rejected, (state, action) => {
@@ -158,12 +168,15 @@ const holidayCalenderSlice = createSlice({
       .addCase(updateHolidayCalender.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.holidayCalender.data?.findIndex(
-          (user) => user.id === action.payload.data.id,
+          (user) => user.id === action.payload.data.id
         );
         if (index !== -1) {
           state.holidayCalender.data[index] = action.payload.data;
         } else {
-          state.holidayCalender ={...state.holidayCalender , data: [action.payload.data, ...state.holidayCalender.data]};
+          state.holidayCalender = {
+            ...state.holidayCalender,
+            data: [action.payload.data, ...state.holidayCalender.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -178,9 +191,12 @@ const holidayCalenderSlice = createSlice({
       .addCase(deleteHolidayCalender.fulfilled, (state, action) => {
         state.loading = false;
         let filteredData = state.holidayCalender.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.holidayCalender = {...state.holidayCalender,data:filteredData}
+        state.holidayCalender = {
+          ...state.holidayCalender,
+          data: filteredData,
+        };
         state.success = action.payload.message;
       })
       .addCase(deleteHolidayCalender.rejected, (state, action) => {

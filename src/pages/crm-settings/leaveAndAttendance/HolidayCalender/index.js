@@ -1,32 +1,31 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTable/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deleteHolidayCalender,
   fetchHolidayCalender,
 } from "../../../../redux/HolidayCalender";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const HolidayCalenderList = () => {
-  const [mode, setMode] = useState("add"); // 'add' or 'edit'
-
+  const [mode, setMode] = useState("add");
+  const [selected, setSelected] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending");
+  const [paginationData, setPaginationData] = useState();
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Leave Type"
+    (i) => i?.module_name === "Holiday Calender"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -39,53 +38,28 @@ const HolidayCalenderList = () => {
     {
       title: "Holiday",
       dataIndex: "holiday_name",
-      render: (text, record) => <div>{text}</div>,
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text) => text,
+      sorter: (a, b) => a.holiday_name.localeCompare(b.holiday_name),
     },
-
     {
       title: "Holiday Date",
       dataIndex: "holiday_date",
-      render: (text) => (
-        <span>{moment(text).format("DD/MM/YYYY")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.holiday_date) - new Date(b.holiday_date),
     },
     {
       title: "Location",
       dataIndex: "location",
-      // render: (text) => (
-      //   <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      // ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => text,
+      sorter: (a, b) => a.location.localeCompare(b.location),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "is_active",
-    //   render: (text) => (
-    //     <div>
-    //       {text === "Y" ? (
-    //         <span className="badge badge-pill badge-status bg-success">
-    //           Active
-    //         </span>
-    //       ) : (
-    //         <span className="badge badge-pill badge-status bg-danger">
-    //           Inactive
-    //         </span>
-    //       )}
-    //     </div>
-    //   ),
-    //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -109,7 +83,7 @@ const HolidayCalenderList = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_holiday_calender_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -133,14 +107,9 @@ const HolidayCalenderList = () => {
       : []),
   ];
 
-  const navigate = useNavigate();
-  const { holidayCalender, loading, error, success } = useSelector(
+  const { holidayCalender, loading } = useSelector(
     (state) => state.holidayCalender
   );
-
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
-  const [paginationData, setPaginationData] = useState();
 
   React.useEffect(() => {
     dispatch(fetchHolidayCalender({ search: searchText }));
@@ -176,38 +145,26 @@ const HolidayCalenderList = () => {
 
   const filteredData = useMemo(() => {
     let data = holidayCalender?.data || [];
-    // if (searchText) {
-    //   data = data.filter((item) =>
-    //     columns.some((col) =>
-    //       item[col.dataIndex]
-    //         ?.toString()
-    //         .toLowerCase()
-    //         .includes(searchText.toLowerCase())
-    //     )
-    //   );
-    // }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? 1 : -1
       );
     }
     return data;
-  }, [searchText, holidayCalender, columns, sortOrder]);
+  }, [holidayCalender, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteHolidayCalender(selectedIndustry.id));
+    if (selected) {
+      dispatch(deleteHolidayCalender(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -219,21 +176,6 @@ const HolidayCalenderList = () => {
         <meta name="holiday" content="This is holiday page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -298,12 +240,15 @@ const HolidayCalenderList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Holiday"
+        label="Holiday Calender"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

@@ -6,9 +6,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { addsurvey, updatesurvey } from "../../../../../redux/surveyMaster";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.goalCategoryMaster);
+  const { loading } = useSelector((state) => state.surveyMaster);
 
   const {
     register,
@@ -53,6 +53,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -86,6 +87,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <input
                   type="text"
                   className={`form-control ${errors.survey_title ? "is-invalid" : ""}`}
+                  placeholder="Enter Survey Title"
                   {...register("survey_title", {
                     required: "Survey title is required.",
                     minLength: {
@@ -95,7 +97,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.survey_title && (
-                  <small className="text-danger">{errors.survey_title.message}</small>
+                  <small className="text-danger">
+                    {errors.survey_title.message}
+                  </small>
                 )}
               </div>
 
@@ -104,9 +108,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <label className="col-form-label">
                   Description <span className="text-danger">*</span>
                 </label>
-                <input
+                <textarea
                   type="text"
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                  placeholder="Enter Description"
                   {...register("description", {
                     required: "Description is required.",
                     minLength: {
@@ -116,7 +121,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.description && (
-                  <small className="text-danger">{errors.description.message}</small>
+                  <small className="text-danger">
+                    {errors.description.message}
+                  </small>
                 )}
               </div>
 
@@ -132,7 +139,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     rules={{ required: "Launch date is required." }}
                     render={({ field }) => (
                       <DatePicker
-                        placeholderText="Select date"
+                        placeholderText="Select Launch Date"
                         className={`form-control ${errors.launch_date ? "is-invalid" : ""}`}
                         selected={field.value}
                         onChange={(date) => field.onChange(date)}
@@ -141,7 +148,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     )}
                   />
                   {errors.launch_date && (
-                    <small className="text-danger">{errors.launch_date.message}</small>
+                    <small className="text-danger">
+                      {errors.launch_date.message}
+                    </small>
                   )}
                 </div>
 
@@ -156,7 +165,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     rules={{ required: "Close date is required." }}
                     render={({ field }) => (
                       <DatePicker
-                        placeholderText="Select date"
+                        placeholderText="Select Close Date"
                         className={`form-control ${errors.close_date ? "is-invalid" : ""}`}
                         selected={field.value}
                         onChange={(date) => field.onChange(date)}
@@ -165,7 +174,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     )}
                   />
                   {errors.close_date && (
-                    <small className="text-danger">{errors.close_date.message}</small>
+                    <small className="text-danger">
+                      {errors.close_date.message}
+                    </small>
                   )}
                 </div>
               </div>
@@ -174,10 +185,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             {/* Modal Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
-                <Link to="#" className="btn btn-light me-2" data-bs-dismiss="modal">
+                <Link
+                  to="#"
+                  className="btn btn-light me-2"
+                  data-bs-dismiss="modal"
+                >
                   Cancel
                 </Link>
-                <button type="submit" className="btn btn-primary" disabled={loading}>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
                   {loading
                     ? mode === "add"
                       ? "Creating..."

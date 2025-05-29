@@ -1,20 +1,22 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import apiClient from "../../utils/axiosConfig";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
+import apiClient from "../../utils/axiosConfig";
 
 // Fetch All work schedule templates
 export const fetchWorkScheduleTemp = createAsyncThunk(
   "WorkScheduleTemp/fetchWorkScheduleTemp",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/work-schedule-template?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`);
+      const response = await apiClient.get(
+        `/v1/work-schedule-template?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`
+      );
       return response.data; // Returns a list of work schedule template
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch work schedule template",
+        error.response?.data || "Failed to fetch work schedule template"
       );
     }
-  },
+  }
 );
 
 // Add a work schedule template
@@ -26,20 +28,21 @@ export const addWorkScheduleTemp = createAsyncThunk(
         apiClient.post("/v1/work-schedule-template", reqData),
         {
           loading: "Work schedule template adding...",
-          success: (res) => res.data.message || "Work schedule template added successfully!",
+          success: (res) =>
+            res.data.message || "Work schedule template added successfully!",
           error: "Failed to add work schedule template",
         }
       );
-      // const response = await apiClient.post("/v1/work-schedule-template", reqData);
-      // toast.success(response.data.message || "Work schedule template created successfully");
       return response.data; // Returns the newly added work schedule template
     } catch (error) {
-      toast.error(error.response?.data || "Failed to add work schedule template");
+      toast.error(
+        error.response?.data || "Failed to add work schedule template"
+      );
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add work schedule template",
+        error.response?.data || "Failed to add work schedule template"
       );
     }
-  },
+  }
 );
 
 // Update a work schedule template
@@ -51,12 +54,11 @@ export const updateWorkScheduleTemp = createAsyncThunk(
         apiClient.put(`/v1/work-schedule-template/${id}`, reqData),
         {
           loading: "Work schedule template updating...",
-          success: (res) => res.data.message || "Work schedule template updated successfully!",
+          success: (res) =>
+            res.data.message || "Work schedule template updated successfully!",
           error: "Failed to update work schedule template",
         }
       );
-      // const response = await apiClient.put(`/v1/WorkScheduleTemp/${id}`, reqData);
-      // toast.success(response.data.message || "Work schedule template updated successfully");
       return response.data; // Returns the updated work schedule template
     } catch (error) {
       if (error.response?.status === 404) {
@@ -66,12 +68,14 @@ export const updateWorkScheduleTemp = createAsyncThunk(
           message: "Work schedule template not found",
         });
       }
-      toast.error(error.response?.data || "Failed to update work schedule template");
+      toast.error(
+        error.response?.data || "Failed to update work schedule template"
+      );
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update work schedule template",
+        error.response?.data || "Failed to update work schedule template"
       );
     }
-  },
+  }
 );
 
 // Delete a work schedule template
@@ -79,19 +83,27 @@ export const deleteWorkScheduleTemp = createAsyncThunk(
   "WorkScheduleTemp/deleteWorkScheduleTemp",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/work-schedule-template/${id}`);
-      toast.success(response.data.message || "Work schedule template deleted successfully");
+      const response = await toast.promise(
+        apiClient.delete(`/v1/work-schedule-template/${id}`),
+        {
+          loading: "Work schedule template deleting...",
+          success: (res) =>
+            res.data.message || "Work schedule template deleted successfully!",
+          error: "Failed to delete work schedule template",
+        }
+      );
       return {
         data: { id },
-        message: response.data.message || "Work schedule template deleted successfully",
+        message:
+          response.data.message ||
+          "Work schedule template deleted successfully",
       };
     } catch (error) {
-      toast.error( error.response?.data || "Failed to delete work schedule template");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete work schedule template",
+        error.response?.data || "Failed to delete work schedule template"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single work schedule template by ID
@@ -103,10 +115,10 @@ export const fetchWorkScheduleTempById = createAsyncThunk(
       return response.data; // Returns the work schedule template details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch work schedule template",
+        error.response?.data || "Failed to fetch work schedule template"
       );
     }
-  },
+  }
 );
 
 const WorkScheduleTempSlice = createSlice({
@@ -144,7 +156,10 @@ const WorkScheduleTempSlice = createSlice({
       })
       .addCase(addWorkScheduleTemp.fulfilled, (state, action) => {
         state.loading = false;
-        state.WorkScheduleTemp ={...state.WorkScheduleTemp,data: [action.payload.data, ...state.WorkScheduleTemp.data]};
+        state.WorkScheduleTemp = {
+          ...state.WorkScheduleTemp,
+          data: [action.payload.data, ...state.WorkScheduleTemp.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addWorkScheduleTemp.rejected, (state, action) => {
@@ -158,12 +173,15 @@ const WorkScheduleTempSlice = createSlice({
       .addCase(updateWorkScheduleTemp.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.WorkScheduleTemp?.data?.findIndex(
-          (user) => user.id === action.payload.data.id,
+          (user) => user.id === action.payload.data.id
         );
         if (index !== -1) {
           state.WorkScheduleTemp.data[index] = action.payload.data;
         } else {
-          state.WorkScheduleTemp ={...state.WorkScheduleTemp , data: [action.payload.data, ...state.WorkScheduleTemp.data]};
+          state.WorkScheduleTemp = {
+            ...state.WorkScheduleTemp,
+            data: [action.payload.data, ...state.WorkScheduleTemp.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -178,9 +196,12 @@ const WorkScheduleTempSlice = createSlice({
       .addCase(deleteWorkScheduleTemp.fulfilled, (state, action) => {
         state.loading = false;
         let filteredData = state.WorkScheduleTemp.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.WorkScheduleTemp = {...state.WorkScheduleTemp,data:filteredData}
+        state.WorkScheduleTemp = {
+          ...state.WorkScheduleTemp,
+          data: filteredData,
+        };
         state.success = action.payload.message;
       })
       .addCase(deleteWorkScheduleTemp.rejected, (state, action) => {

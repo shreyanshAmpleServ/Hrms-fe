@@ -4,8 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addModules, updateModules } from "../../../../redux/Modules";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.currency || {});
+const AddEditModal = ({
+  mode = "add",
+  initialData = null,
+  setSelectedModule,
+}) => {
+  const { loading } = useSelector((state) => state.modules || {});
   const {
     register,
     handleSubmit,
@@ -15,21 +19,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         module_name: initialData.module_name || "",
         description: initialData.description || "",
         is_active: initialData.is_active || "Y",
-      
       });
     } else {
       reset({
         module_name: "",
         description: "",
         is_active: "Y",
-   
       });
     }
   }, [mode, initialData, reset]);
@@ -43,7 +44,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           module_name: data.module_name,
           description: data.description,
           is_active: data.is_active,
-     
         })
       );
     } else if (mode === "edit" && initialData) {
@@ -59,7 +59,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
 
-    reset(); // Clear the form
+    reset();
+    setSelectedModule(null);
     closeButton.click();
   };
 
@@ -89,7 +90,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.module_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Module Name"
                   {...register("module_name", {
                     required: "Module name is required.",
                     minLength: {
@@ -99,58 +101,57 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.module_name && (
-                  <small className="text-danger">{errors.module_name.message}</small>
+                  <small className="text-danger">
+                    {errors.module_name.message}
+                  </small>
                 )}
               </div>
 
-                {/* Description */}
-                <div className="mb-3">
-                <label className="col-form-label">
-                  Description <span className="text-danger">*</span>
-                </label>
+              {/* Description */}
+              <div className="mb-3">
+                <label className="col-form-label">Description</label>
                 <textarea
                   type="text"
                   rows="4"
-                  className={`form-control ${errors.descpiption ? "is-invalid" : ""}`}
-                  {...register("description", {
-                  })}
+                  className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                  placeholder="Enter Description"
+                  {...register("description", {})}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors?.description?.message}</small>
+                {errors.description && (
+                  <small className="text-danger">
+                    {errors?.description?.message}
+                  </small>
                 )}
               </div>
-        
-                {/* Status */}
-                <div className="me-4">
-                  <label className="col-form-label">Status</label>
-                  <div className="d-flex align-items-center">
-                    <div className="me-3">
-                      <input
-                        type="radio"
-                        className="status-radio"
-                        id="active"
-                        value="Y"
-                        {...register("is_active", {
-                          required: "Status is required.",
-                        })}
-                      />
-                      <label htmlFor="active">Active</label>
-                    </div>
-                    <div>
-                      <input
-                        type="radio"
-                        className="status-radio"
-                        id="inactive"
-                        value="N"
-                        {...register("is_active")}
-                      />
-                      <label htmlFor="inactive">Inactive</label>
-                    </div>
+
+              {/* Status */}
+              <div className="me-4">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-3">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active", {
+                        required: "Status is required.",
+                      })}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
                   </div>
                 </div>
-
-
-
+              </div>
             </div>
 
             {/* Footer */}

@@ -18,7 +18,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     reset,
   } = useForm();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -69,7 +68,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Latter Name <span className="text-danger">*</span>
@@ -77,11 +75,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  placeholder="Enter Latter Name"
                   {...register("letter_name", {
-                    required: "Industry name is required.",
+                    required: "Latter name is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Latter name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -95,52 +94,22 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   Template Path <span className="text-danger">*</span>
                 </label>
                 <input
-                  type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  type="file"
+                  className={`form-control ${errors.template_path ? "is-invalid" : ""}`}
                   {...register("template_path", {
-                    required: "Industry name is required.",
+                    required: "Template path is required.",
                     minLength: {
                       value: 3,
-                      message: "Industry name must be at least 3 characters.",
+                      message: "Template path must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                {errors.template_path && (
+                  <small className="text-danger">
+                    {errors.template_path.message}
+                  </small>
                 )}
               </div>
-
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
 
             {/* Footer */}

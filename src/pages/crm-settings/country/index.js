@@ -1,28 +1,24 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTable/index";
-import FlashMessage from "../../../components/common/modals/FlashMessage";
-import {
-  clearMessages,
-  deleteCountry,
-  fetchCountries,
-} from "../../../redux/country"; // Change to 'country' action file
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { Helmet } from "react-helmet-async";
+import { deleteCountry, fetchCountries } from "../../../redux/country";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const CountriesList = () => {
   const [mode, setMode] = useState("add");
-
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
     (i) => i?.module_name === "Country"
@@ -37,27 +33,19 @@ const CountriesList = () => {
     {
       title: "Country Code",
       dataIndex: "code",
-      // render: (text, record) => (
-      //     <Link to={`/countries/${record.id}`}>{record.name}</Link>
-      // ),
-      sorter: (a, b) => a.code.localeCompare(b.name),
+      sorter: (a, b) => a.code.localeCompare(b.code),
     },
     {
-      title: "Countries",
+      title: "Country",
       dataIndex: "name",
-      render: (text, record) => (
-        <Link to={`/countries/${record.id}`}>{record.name}</Link>
-      ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD MMM YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     {
       title: "Status",
@@ -82,7 +70,7 @@ const CountriesList = () => {
           {
             title: "Actions",
             dataIndex: "actions",
-            render: (text, record) => (
+            render: (_, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -125,14 +113,10 @@ const CountriesList = () => {
   ];
 
   React.useEffect(() => {
-    dispatch(fetchCountries()); // Changed to fetchCountries
+    dispatch(fetchCountries());
   }, [dispatch]);
-  const { countries, loading, error, success } = useSelector(
-    (state) => state.countries // Changed to 'countries'
-  );
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const { countries, loading } = useSelector((state) => state.countries);
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -167,11 +151,9 @@ const CountriesList = () => {
     setShowDeleteModal(true);
   };
 
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const deleteData = () => {
     if (selectedCountry) {
-      dispatch(deleteCountry(selectedCountry.id)); // Changed to deleteCountry
+      dispatch(deleteCountry(selectedCountry.id));
       setShowDeleteModal(false);
     }
   };
@@ -179,25 +161,10 @@ const CountriesList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Countries</title>
-        <meta name="Countries" content="This is Countries page of DCC HRMS." />
+        <title>DCC HRMS - Country</title>
+        <meta name="Country" content="This is Country page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -223,7 +190,7 @@ const CountriesList = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Countries"
+                    label="Search Country"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
@@ -260,12 +227,15 @@ const CountriesList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedCountry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selectedCountry}
+        setSelected={setSelectedCountry}
+      />
       <DeleteAlert
         label="Country"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedCountry={selectedCountry}
         onDelete={deleteData}
       />
     </div>

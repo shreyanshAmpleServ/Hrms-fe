@@ -7,14 +7,16 @@ export const fetchShift = createAsyncThunk(
   "shift/fetchShift",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/shift?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`);
+      const response = await apiClient.get(
+        `/v1/shift?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`
+      );
       return response.data; // Returns a list of shift
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch shift",
+        error.response?.data || "Failed to fetch shift"
       );
     }
-  },
+  }
 );
 
 // Add a shift
@@ -25,8 +27,8 @@ export const addShift = createAsyncThunk(
       const response = await toast.promise(
         apiClient.post("/v1/shift", shiftData),
         {
-          loading: " shift adding...",
-          success: (res) => res.data.message || "shift added successfully!",
+          loading: "Adding shift...",
+          success: (res) => res.data.message || "Shift added successfully!",
           error: "Failed to add shift",
         }
       );
@@ -36,10 +38,10 @@ export const addShift = createAsyncThunk(
     } catch (error) {
       toast.error(error.response?.data || "Failed to add shift");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add shift",
+        error.response?.data || "Failed to add shift"
       );
     }
-  },
+  }
 );
 
 // Update a shift
@@ -50,8 +52,8 @@ export const updateShift = createAsyncThunk(
       const response = await toast.promise(
         apiClient.put(`/v1/shift/${id}`, ShiftData),
         {
-          loading: " shift updating...",
-          success: (res) => res.data.message || "shift updated successfully!",
+          loading: "Updating shift...",
+          success: (res) => res.data.message || "Shift updated successfully!",
           error: "Failed to update shift",
         }
       );
@@ -68,10 +70,10 @@ export const updateShift = createAsyncThunk(
       }
       toast.error(error.response?.data || "Failed to update shift");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update shift",
+        error.response?.data || "Failed to update shift"
       );
     }
-  },
+  }
 );
 
 // Delete a shift
@@ -79,19 +81,25 @@ export const deleteShift = createAsyncThunk(
   "shift/deleteShift",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/shift/${id}`);
-      toast.success(response.data.message || "shift deleted successfully");
+      const response = await toast.promise(
+        apiClient.delete(`/v1/shift/${id}`),
+        {
+          loading: "Deleting shift...",
+          success: (res) => res.data.message || "Shift deleted successfully!",
+          error: "Failed to delete shift",
+        }
+      );
       return {
         data: { id },
-        message: response.data.message || "shift deleted successfully",
+        message: response.data.message || "Shift deleted successfully",
       };
     } catch (error) {
-      toast.error( error.response?.data || "Failed to delete shift");
+      toast.error(error.response?.data || "Failed to delete shift");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete shift",
+        error.response?.data || "Failed to delete shift"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single shift by ID
@@ -103,10 +111,10 @@ export const fetchShiftById = createAsyncThunk(
       return response.data; // Returns the shift details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch shift",
+        error.response?.data || "Failed to fetch shift"
       );
     }
-  },
+  }
 );
 
 const shiftSlice = createSlice({
@@ -144,7 +152,10 @@ const shiftSlice = createSlice({
       })
       .addCase(addShift.fulfilled, (state, action) => {
         state.loading = false;
-        state.shift ={...state.shift,data: [action.payload.data, ...state.shift.data]};
+        state.shift = {
+          ...state.shift,
+          data: [action.payload.data, ...state.shift.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addShift.rejected, (state, action) => {
@@ -158,12 +169,15 @@ const shiftSlice = createSlice({
       .addCase(updateShift.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.shift.data?.findIndex(
-          (user) => user.id === action.payload.data.id,
+          (user) => user.id === action.payload.data.id
         );
         if (index !== -1) {
           state.shift.data[index] = action.payload.data;
         } else {
-          state.shift ={...state.shift , data: [action.payload.data, ...state.shift.data]};
+          state.shift = {
+            ...state.shift,
+            data: [action.payload.data, ...state.shift.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -178,9 +192,9 @@ const shiftSlice = createSlice({
       .addCase(deleteShift.fulfilled, (state, action) => {
         state.loading = false;
         let filteredData = state.shift.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.shift = {...state.shift,data:filteredData}
+        state.shift = { ...state.shift, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteShift.rejected, (state, action) => {

@@ -6,12 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addLeaveType, updateLeaveType } from "../../../../../redux/LeaveType";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.leaveType);
   dayjs.extend(customParseFormat);
   const {
     register,
-    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -19,46 +18,41 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         leave_type: initialData.leave_type || "",
-        carry_forward:initialData?.carry_forward || ""
+        carry_forward: initialData?.carry_forward || false,
       });
     } else {
-      reset({
-        name: "",
-        carry_forward:true,
-      });
+      reset({ leave_type: "", carry_forward: false });
     }
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_leave_type_modal",
+      "close_btn_add_edit_leave_type_modal"
     );
-    console.log("DAta",data)
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addLeaveType({
           leave_type: data.leave_type,
-           carry_forward:data?.carry_forward == "true" ? Boolean(true)  : false,
-        }),
+          carry_forward: data?.carry_forward || false,
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateLeaveType({
           id: initialData.id,
-          reqData: { 
+          reqData: {
             leave_type: data.leave_type,
-          carry_forward:data?.carry_forward == "true" ? Boolean(true)  : false  },
-        }),
+            carry_forward: data?.carry_forward || false,
+          },
+        })
       );
     }
-    reset(); // Clear the form
+    reset();
+    setSelected(null);
     closeButton.click();
   };
 
@@ -68,7 +62,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Shift" : "Edit Shift"}
+              {mode === "add" ? "Add New Leave Type" : "Edit Leave Type"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -81,119 +75,37 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Shift Name */}
+              {/* Leave Type */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Leave Type <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.leave_type ? "is-invalid" : ""}`}
+                  placeholder="Enter Leave Type"
                   {...register("leave_type", {
-                    required: "Shift name is required.",
+                    required: "Leave type is required.",
                     minLength: {
                       value: 3,
-                      message: "Shift name must be at least 3 characters.",
+                      message: "Leave type must be at least 3 characters.",
                     },
                   })}
                 />
                 {errors.leave_type && (
-                  <small className="text-danger">{errors.leave_type.message}</small>
+                  <small className="text-danger">
+                    {errors.leave_type.message}
+                  </small>
                 )}
               </div>
-              {/* <div className="row col-12">
-              <div className="mb-3 col-lg-6">
-                <label className="col-form-label">
-                  Start Time <span className="text-danger">*</span>
-                </label>
-                <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-clock-hour-10" />
-                    </span>
-                    <Controller
-                      name="start_time"
-                      control={control}
-                      render={({ field }) => (
-                        <TimePicker
-                          {...field}
-                          placeholder="Select Time"
-                          className="form-control"
-                          value={
-                            field.value ? dayjs(field.value, "HH:mm:ss") : null
-                          }
-                          selected={field.value}
-                          onChange={field.onChange}
-                          dateFormat="HH:mm:ss"
-                        />
-                      )}
-                    />
-                  </div>
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
-              </div>
-              <div className="mb-3 col-lg-6">
-                <label className="col-form-label">
-                  End Time <span className="text-danger">*</span>
-                </label>
-                <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-clock-hour-10" />
-                    </span>
-                    <Controller
-                      name="end_time"
-                      control={control}
-                      render={({ field }) => (
-                        <TimePicker
-                          {...field}
-                          placeholder="Select Time"
-                          className="form-control"
-                          value={
-                            field.value ? dayjs(field.value, "HH:mm:ss") : null
-                          }
-                          selected={field.value}
-                          onChange={field.onChange}
-                          dateFormat="HH:mm:ss"
-                        />
-                      )}
-                    />
-                  </div>
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
-              </div>
-              </div> */}
 
-              {/* Status */}
-              <div className="mb-0">
-                <label className="col-form-label">isCarryForword</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value={true}
-                      {...register("carry_forward", {
-                        required: "Carry forword status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">True</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value={false}
-                      {...register("carry_forward")}
-                    />
-                    <label htmlFor="inactive">False</label>
-                  </div>
-                </div>
-                {errors.carry_forward && (
-                  <small className="text-danger">{errors.carry_forward.message}</small>
-                )}
+              <div className="d-flex gap-2">
+                <label className="col-form-label">Carry Forward</label>
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  {...register("carry_forward")}
+                />
               </div>
             </div>
 

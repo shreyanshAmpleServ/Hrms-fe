@@ -7,14 +7,16 @@ export const fetchLeaveType = createAsyncThunk(
   "leaveType/fetchLeaveType",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/leave-type?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`);
+      const response = await apiClient.get(
+        `/v1/leave-type?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`
+      );
       return response.data; // Returns a list of leave type
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch leave type",
+        error.response?.data || "Failed to fetch leave type"
       );
     }
-  },
+  }
 );
 
 // Add a leave type
@@ -26,20 +28,20 @@ export const addLeaveType = createAsyncThunk(
         apiClient.post("/v1/leave-type", reqData),
         {
           loading: "Leave type adding...",
-          success: (res) => res.data.message || "Leave type added successfully!",
+          success: (res) =>
+            res.data.message || "Leave type added successfully!",
           error: "Failed to add leave type",
         }
       );
-      // const response = await apiClient.post("/v1/leave-type", reqData);
-      // toast.success(response.data.message || "Leave type created successfully");
+
       return response.data; // Returns the newly added leave type
     } catch (error) {
       toast.error(error.response?.data || "Failed to add leave type");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add leave type",
+        error.response?.data || "Failed to add leave type"
       );
     }
-  },
+  }
 );
 
 // Update a leave type
@@ -51,12 +53,11 @@ export const updateLeaveType = createAsyncThunk(
         apiClient.put(`/v1/leave-type/${id}`, reqData),
         {
           loading: "Leave type updating...",
-          success: (res) => res.data.message || "Leave type updated successfully!",
+          success: (res) =>
+            res.data.message || "Leave type updated successfully!",
           error: "Failed to update leave type",
         }
       );
-      // const response = await apiClient.put(`/v1/leaveType/${id}`, reqData);
-      // toast.success(response.data.message || "Leave type updated successfully");
       return response.data; // Returns the updated leave type
     } catch (error) {
       if (error.response?.status === 404) {
@@ -68,10 +69,10 @@ export const updateLeaveType = createAsyncThunk(
       }
       toast.error(error.response?.data || "Failed to update leave type");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update leave type",
+        error.response?.data || "Failed to update leave type"
       );
     }
-  },
+  }
 );
 
 // Delete a leave type
@@ -79,19 +80,26 @@ export const deleteLeaveType = createAsyncThunk(
   "leaveType/deleteLeaveType",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/leave-type/${id}`);
-      toast.success(response.data.message || "Leave type deleted successfully");
+      const response = await toast.promise(
+        apiClient.delete(`/v1/leave-type/${id}`),
+        {
+          loading: "Leave type deleting...",
+          success: (res) =>
+            res.data.message || "Leave type deleted successfully",
+          error: "Failed to delete leave type",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "Leave type deleted successfully",
       };
     } catch (error) {
-      toast.error( error.response?.data || "Failed to delete leave type");
+      toast.error(error.response?.data || "Failed to delete leave type");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete leave type",
+        error.response?.data || "Failed to delete leave type"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single leave type by ID
@@ -103,10 +111,10 @@ export const fetchLeaveTypeById = createAsyncThunk(
       return response.data; // Returns the leave type details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch leave type",
+        error.response?.data || "Failed to fetch leave type"
       );
     }
-  },
+  }
 );
 
 const leaveTypeSlice = createSlice({
@@ -144,7 +152,10 @@ const leaveTypeSlice = createSlice({
       })
       .addCase(addLeaveType.fulfilled, (state, action) => {
         state.loading = false;
-        state.leaveType ={...state.leaveType,data: [action.payload.data, ...state.leaveType.data]};
+        state.leaveType = {
+          ...state.leaveType,
+          data: [action.payload.data, ...state.leaveType.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addLeaveType.rejected, (state, action) => {
@@ -158,12 +169,15 @@ const leaveTypeSlice = createSlice({
       .addCase(updateLeaveType.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.leaveType.data?.findIndex(
-          (user) => user.id === action.payload.data.id,
+          (user) => user.id === action.payload.data.id
         );
         if (index !== -1) {
           state.leaveType.data[index] = action.payload.data;
         } else {
-          state.leaveType ={...state.leaveType , data: [action.payload.data, ...state.leaveType.data]};
+          state.leaveType = {
+            ...state.leaveType,
+            data: [action.payload.data, ...state.leaveType.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -178,9 +192,9 @@ const leaveTypeSlice = createSlice({
       .addCase(deleteLeaveType.fulfilled, (state, action) => {
         state.loading = false;
         let filteredData = state.leaveType.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.leaveType = {...state.leaveType,data:filteredData}
+        state.leaveType = { ...state.leaveType, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteLeaveType.rejected, (state, action) => {

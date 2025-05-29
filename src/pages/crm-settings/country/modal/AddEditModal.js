@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCountry, updateCountry } from "../../../../redux/country"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state);
 
   const {
@@ -16,7 +16,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -27,7 +26,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     } else {
       reset({
         name: "",
-        code:"",
+        code: "",
         is_active: "Y",
       });
     }
@@ -35,33 +34,35 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_lost_reason_modal",
+      "close_btn_add_edit_lost_reason_modal"
     );
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addCountry({
           name: data.name,
           code: data.code,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateCountry({
           id: initialData.id,
-          countryData: { name: data.name,code: data.code, is_active: data.is_active },
-        }),
+          countryData: {
+            name: data.name,
+            code: data.code,
+            is_active: data.is_active,
+          },
+        })
       );
     }
-    reset(); // Clear the form
+    reset();
+    setSelected(null);
     closeButton.click();
   };
 
   return (
-    <div className="modal fade" id="add_edit_country_modal"
-      role="dialog">
+    <div className="modal fade" id="add_edit_country_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
@@ -79,7 +80,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Lost Reason Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Country Code <span className="text-danger">*</span>
@@ -87,6 +87,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <input
                   type="text"
                   className={`form-control ${errors.code ? "is-invalid" : ""}`}
+                  placeholder="Enter Country Code"
                   {...register("code", {
                     required: "Country Code is required.",
                     minLength: {
@@ -99,22 +100,23 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     },
                   })}
                 />
-                {errors.reason && (
+                {errors.code && (
                   <small className="text-danger">{errors.code.message}</small>
                 )}
               </div>
               <div className="mb-3">
                 <label className="col-form-label">
-                  Country  <span className="text-danger">*</span>
+                  Country <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  placeholder="Enter Country Name"
                   {...register("name", {
-                    required: "Lost reason is required.",
+                    required: "Country Name is required.",
                     minLength: {
                       value: 3,
-                      message: "Lost reason must be at least 3 characters.",
+                      message: "Country Name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -151,7 +153,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>

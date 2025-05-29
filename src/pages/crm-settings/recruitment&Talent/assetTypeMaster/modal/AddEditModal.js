@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addassets_type, updateassets_type } from "../../../../../redux/assetType";
+import {
+  addassets_type,
+  updateassets_type,
+} from "../../../../../redux/assetType";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.assetTypeMaster);
   const dispatch = useDispatch();
 
@@ -15,7 +18,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -43,6 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     reset();
+    setSelected(null);
     closeButton?.click();
   };
 
@@ -52,7 +55,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Asset" : "Edit Asset"}
+              {mode === "add" ? "Add New Asset Type" : "Edit Asset Type"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -65,28 +68,29 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Asset Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Asset Name <span className="text-danger">*</span>
+                  Asset Type Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.asset_type_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Asset Type Name"
                   {...register("asset_type_name", {
-                    required: "Asset name is required.",
+                    required: "Asset type name is required.",
                     minLength: {
                       value: 3,
-                      message: "Asset name must be at least 3 characters.",
+                      message: "Asset type name must be at least 3 characters.",
                     },
                   })}
                 />
                 {errors.asset_type_name && (
-                  <small className="text-danger">{errors.asset_type_name.message}</small>
+                  <small className="text-danger">
+                    {errors.asset_type_name.message}
+                  </small>
                 )}
               </div>
 
-              {/* Depreciation Rate */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Depreciation Rate (%) <span className="text-danger">*</span>
@@ -97,6 +101,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   max={100}
                   step="0.01"
                   className={`form-control ${errors.depreciation_rate ? "is-invalid" : ""}`}
+                  placeholder="Enter Depreciation Rate"
                   {...register("depreciation_rate", {
                     required: "Depreciation rate is required.",
                     max: {
@@ -110,12 +115,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.depreciation_rate && (
-                  <small className="text-danger">{errors.depreciation_rate.message}</small>
+                  <small className="text-danger">
+                    {errors.depreciation_rate.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

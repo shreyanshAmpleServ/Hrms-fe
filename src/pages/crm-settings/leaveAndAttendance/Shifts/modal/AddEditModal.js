@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { TimePicker } from "antd";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.shift);
   dayjs.extend(customParseFormat);
   const {
@@ -20,48 +20,48 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         shift_name: initialData.shift_name || "",
         start_time: dayjs(initialData.start_time) || "",
-        end_time: dayjs(initialData.end_time) ||"",
+        end_time: dayjs(initialData.end_time) || "",
       });
     } else {
       reset({
-        name: "",
-        is_active: "Y",
+        shift_name: "",
+        start_time: "",
+        end_time: "",
       });
     }
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_shift_modal",
+      "close_btn_add_edit_shift_modal"
     );
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addShift({
           shift_name: data.shift_name,
           start_time: data.start_time,
           end_time: data.end_time,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateShift({
           id: initialData.id,
-          ShiftData: { 
+          ShiftData: {
             shift_name: data.shift_name,
-          start_time: data.start_time,
-          end_time: data.end_time, },
-        }),
+            start_time: data.start_time,
+            end_time: data.end_time,
+          },
+        })
       );
     }
-    reset(); // Clear the form
+    reset();
+    setSelected(null);
     closeButton.click();
   };
 
@@ -91,7 +91,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.shift_name ? "is-invalid" : ""}`}
+                  placeholder="Enter Shift Name"
                   {...register("shift_name", {
                     required: "Shift name is required.",
                     minLength: {
@@ -101,16 +102,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.shift_name && (
-                  <small className="text-danger">{errors.shift_name.message}</small>
+                  <small className="text-danger">
+                    {errors.shift_name.message}
+                  </small>
                 )}
               </div>
               <div className="row col-12">
-              {/* Start time */}
-              <div className="mb-3 col-lg-6">
-                <label className="col-form-label">
-                  Start Time <span className="text-danger">*</span>
-                </label>
-                <div className="mb-3 icon-form">
+                {/* Start time */}
+                <div className="mb-3 col-lg-6">
+                  <label className="col-form-label">
+                    Start Time <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-clock-hour-10" />
                     </span>
@@ -120,7 +123,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       render={({ field }) => (
                         <TimePicker
                           {...field}
-                          placeholder="Select Time"
+                          placeholder="Select Start Time"
                           className="form-control"
                           value={
                             field.value ? dayjs(field.value, "HH:mm:ss") : null
@@ -132,16 +135,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       )}
                     />
                   </div>
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
-              </div>
-              {/* End time */}
-              <div className="mb-3 col-lg-6">
-                <label className="col-form-label">
-                  End Time <span className="text-danger">*</span>
-                </label>
-                <div className="mb-3 icon-form">
+                  {errors.start_time && (
+                    <small className="text-danger">
+                      {errors.start_time.message}
+                    </small>
+                  )}
+                </div>
+                {/* End time */}
+                <div className="mb-3 col-lg-6">
+                  <label className="col-form-label">
+                    End Time <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-clock-hour-10" />
                     </span>
@@ -151,7 +156,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       render={({ field }) => (
                         <TimePicker
                           {...field}
-                          placeholder="Select Time"
+                          placeholder="Select End Time"
                           className="form-control"
                           value={
                             field.value ? dayjs(field.value, "HH:mm:ss") : null
@@ -163,10 +168,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       )}
                     />
                   </div>
-                {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
-                )}
-              </div>
+                  {errors.name && (
+                    <small className="text-danger">{errors.name.message}</small>
+                  )}
+                </div>
               </div>
 
               {/* Status */}

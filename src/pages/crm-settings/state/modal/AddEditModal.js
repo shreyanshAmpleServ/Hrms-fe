@@ -6,9 +6,12 @@ import Select from "react-select";
 import { fetchCountries } from "../../../../redux/country";
 import { addState, updateState } from "../../../../redux/state";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({
+  mode = "add",
+  initialData = null,
+  setSelectedState,
+}) => {
   const { loading } = useSelector((state) => state.states);
-
   const {
     register,
     control,
@@ -21,17 +24,15 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(fetchCountries()); // Changed to fetchCountries
+    dispatch(fetchCountries());
   }, [dispatch]);
 
-  const { countries } = useSelector(
-    (state) => state.countries // Changed to 'countries'
-  );
+  const { countries } = useSelector((state) => state.countries);
   const CountriesList = countries.map((emnt) => ({
     value: emnt.id,
     label: "(" + emnt.code + ") " + emnt.name,
   }));
-  // Prefill form in edit mode
+
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -50,27 +51,30 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_state_modal",
+      "close_btn_add_edit_state_modal"
     );
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addState({
           name: data.name,
           country_code: data.country_code,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateState({
           id: initialData.id,
-          stateData: { name: data.name, country_code: data.country_code, is_active: data.is_active },
-        }),
+          stateData: {
+            name: data.name,
+            country_code: data.country_code,
+            is_active: data.is_active,
+          },
+        })
       );
     }
-    reset(); // Clear the form
+    reset();
+    setSelectedState(null);
     closeButton.click();
   };
 
@@ -93,31 +97,30 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-
-              {/* Country  */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Country  <span className="text-danger">*</span>
+                  Country <span className="text-danger">*</span>
                 </label>
                 <Controller
                   name="country_code"
                   control={control}
-                  rules={{ required: "Country is required" }} // Validation rule
+                  rules={{ required: "Country is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}
                       options={CountriesList}
-                      placeholder="Choose"
-                      isDisabled={!CountriesList.length} // Disable if no stages are available
+                      placeholder="Choose Country"
+                      isDisabled={!CountriesList.length}
                       classNamePrefix="react-select"
                       className="select2"
                       onChange={(selectedOption) =>
                         field.onChange(selectedOption?.value || null)
-                      } // Send only value
-                      value={CountriesList?.find(
-                        (option) =>
-                          option.value === watch("country_code"),
-                      ) || ""}
+                      }
+                      value={
+                        CountriesList?.find(
+                          (option) => option.value === watch("country_code")
+                        ) || ""
+                      }
                     />
                   )}
                 />
@@ -136,50 +139,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  placeholder="Enter State Name"
                   {...register("name", {
-                    required: " state is required.",
+                    required: "State name is required.",
                     minLength: {
                       value: 3,
-                      message: " must be at least 3 characters.",
+                      message: "State name must be at least 3 characters.",
                     },
                   })}
                 />
-                {errors.reason && (
+                {errors.name && (
                   <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
-
-              {/* Status */}
-              {/* <div className="mb-0">
-                <label className="col-form-label">Status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
-                </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div> */}
             </div>
 
             {/* Footer */}

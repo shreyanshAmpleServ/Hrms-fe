@@ -1,32 +1,30 @@
+import Select from "react-select";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
-
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../components/common/modals/FlashMessage";
-import { clearMessages } from "../../../redux/state"; // Redux actions and reducers for states
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Select } from "antd";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 import { fetchCountries } from "../../../redux/country";
 import { deleteState, fetchStates } from "../../../redux/state";
-import { Helmet } from "react-helmet-async";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
+import { label } from "yet-another-react-lightbox";
 
 const StatesList = () => {
   const [mode, setMode] = useState("add");
   const [countryId, setCountryId] = useState();
   const [paginationData, setPaginationData] = useState();
   const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = useState("ascending");
+  const [selectedState, setSelectedState] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
@@ -43,49 +41,24 @@ const StatesList = () => {
     {
       title: "State Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <div>{text}</div>
-
-        // <Link to={`/states/${record.id}`}>{record.name}</Link>
-      ),
+      render: (text) => <div>{text}</div>,
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
     {
       title: "Country",
-      dataIndex: "country_code",
-      render: (text, record) => (
-        <div>{text?.code + text?.name}</div>
-        // <Link to={`/states/${record.id}`}>{record.name}</Link>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      dataIndex: "country_details",
+      render: (text) => text.name,
+      sorter: (a, b) =>
+        (a.country_details?.name || "").localeCompare(
+          b.country_details?.name || ""
+        ),
     },
-
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
-    // {
-    //     title: "Status",
-    //     dataIndex: "is_active",
-    //     render: (text) => (
-    //         <div>
-    //             {text === "Y" ? (
-    //                 <span className="badge badge-pill badge-status bg-success">
-    //                     Active
-    //                 </span>
-    //             ) : (
-    //                 <span className="badge badge-pill badge-status bg-danger">
-    //                     Inactive
-    //                 </span>
-    //             )}
-    //         </div>
-    //     ),
-    //     sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
@@ -131,16 +104,14 @@ const StatesList = () => {
       : []),
   ];
 
-  const { states, loading, error, success } = useSelector(
-    (state) => state.states
-  );
+  const { states, loading } = useSelector((state) => state.states);
 
   React.useEffect(() => {
-    dispatch(fetchCountries()); // Changed to fetchCountries
+    dispatch(fetchCountries());
   }, [dispatch]);
 
   React.useEffect(() => {
-    dispatch(fetchStates({ search: searchText, country_code: countryId }));
+    dispatch(fetchStates({ search: searchText, country_id: countryId?.value }));
   }, [dispatch, countryId, searchText]);
   React.useEffect(() => {
     setPaginationData({
@@ -160,17 +131,19 @@ const StatesList = () => {
     dispatch(
       fetchStates({
         search: searchText,
-        country_code: countryId,
+        country_id: countryId?.value,
         page: currentPage,
         size: pageSize,
       })
     );
   };
 
-  const { countries } = useSelector(
-    (state) => state.countries // Changed to 'countries'
-  );
-  const countryList = [{ name: "All", value: "" }, ...countries];
+  const { countries } = useSelector((state) => state.countries);
+
+  const countryList = [
+    { label: "All", value: "" },
+    ...countries?.map((i) => ({ label: i?.name, value: i?.id })),
+  ];
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -178,35 +151,22 @@ const StatesList = () => {
 
   const filteredData = useMemo(() => {
     let data = states?.data || [];
-    // if (searchText) {
-    //     data = data.filter((item) =>
-    //         columns.some((col) =>
-    //             item[col.dataIndex]
-    //                 ?.toString()
-    //                 .toLowerCase()
-    //                 .includes(searchText.toLowerCase())
-    //         )
-    //     );
-    // }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
-  }, [searchText, states, columns, sortOrder]);
+  }, [searchText, states, sortOrder]);
 
   const handleDeleteState = (state) => {
     setSelectedState(state);
     setShowDeleteModal(true);
   };
-
-  const [selectedState, setSelectedState] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const deleteData = () => {
     if (selectedState) {
@@ -215,6 +175,8 @@ const StatesList = () => {
     }
   };
 
+  console.log("countryId", countryId);
+
   return (
     <div className="page-wrapper">
       <Helmet>
@@ -222,21 +184,6 @@ const StatesList = () => {
         <meta name="States" content="This is States page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -285,34 +232,13 @@ const StatesList = () => {
                   </div>
                   <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2">
                     <Select
-                      showSearch
-                      optionFilterProp="label"
-                      allowClear
-                      className="select shadow-md "
-                      style={{ minWidth: "8rem", height: "2.5rem" }}
+                      className="select"
                       placeholder="Select Country"
-                      options={countryList?.map((i) => ({
-                        label: i?.name,
-                        value: i?.id,
-                      }))}
+                      options={countryList}
+                      value={countryId}
                       classNamePrefix="react-select"
-                      // value={
-                      //   selectedDeal
-                      //     ? {
-                      //         label: selectedDeal.label,
-                      //         value: selectedDeal.value,
-                      //       }
-                      //     : null
-                      // }
-
-                      onChange={(value) => {
-                        console.log("onChange of country : ", value);
-                        setCountryId(value);
-                      }} // Store only value
+                      onChange={(value) => setCountryId(value)}
                     />
-                    {/* );
-                      }}
-                    /> */}
                   </div>
                 </div>
 
@@ -332,7 +258,11 @@ const StatesList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedState} />
+      <AddEditModal
+        mode={mode}
+        initialData={selectedState}
+        setSelectedState={setSelectedState}
+      />
       <DeleteAlert
         label="State"
         showModal={showDeleteModal}

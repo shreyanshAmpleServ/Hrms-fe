@@ -1,29 +1,25 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTable/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deleteShift,
-  fetchShift,
-} from "../../../../redux/Shift";
+import { deleteShift, fetchShift } from "../../../../redux/Shift";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const ShiftList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
-
+  const [selected, setSelected] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const [paginationData, setPaginationData] = useState();
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
     (i) => i?.module_name === "Shift"
@@ -39,54 +35,33 @@ const ShiftList = () => {
     {
       title: "Shift Name",
       dataIndex: "shift_name",
-      render: (text, record) => <div>{text}</div>,
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text) => <div>{text}</div>,
+      sorter: (a, b) => a.shift_name.localeCompare(b.shift_name),
     },
     {
       title: "Start Time",
       dataIndex: "start_time",
-      render: (text, record) => <div>{moment(text).format("hh:mm A")}</div>,
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text) => <div>{moment(text).format("hh:mm A")}</div>,
+      sorter: (a, b) => a.start_time.localeCompare(b.start_time),
     },
     {
       title: "End Time",
       dataIndex: "end_time",
-      render: (text, record) => <div>{moment(text).format("hh:mm A")}</div>,
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text) => <div>{moment(text).format("hh:mm A")}</div>,
+      sorter: (a, b) => a.end_time.localeCompare(b.end_time),
     },
-
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "is_active",
-    //   render: (text) => (
-    //     <div>
-    //       {text === "Y" ? (
-    //         <span className="badge badge-pill badge-status bg-success">
-    //           Active
-    //         </span>
-    //       ) : (
-    //         <span className="badge badge-pill badge-status bg-danger">
-    //           Inactive
-    //         </span>
-    //       )}
-    //     </div>
-    //   ),
-    //   sorter: (a, b) => a.is_active.localeCompare(b.is_active),
-    // },
     ...(isUpdate || isDelete
       ? [
           {
             title: "Actions",
             dataIndex: "actions",
-            render: (text, record) => (
+            render: (_, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -104,7 +79,7 @@ const ShiftList = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#add_edit_shift_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -128,15 +103,7 @@ const ShiftList = () => {
       : []),
   ];
 
-  const navigate = useNavigate();
-  const { shift, loading, error, success } = useSelector(
-    (state) => state.shift
-  );
-
-  console.log("Shift", shift);
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
-  const [paginationData, setPaginationData] = useState();
+  const { shift, loading } = useSelector((state) => state.shift);
 
   React.useEffect(() => {
     dispatch(fetchShift({ search: searchText }));
@@ -168,38 +135,27 @@ const ShiftList = () => {
 
   const filteredData = useMemo(() => {
     let data = shift?.data || [];
-    // if (searchText) {
-    //   data = data.filter((item) =>
-    //     columns.some((col) =>
-    //       item[col.dataIndex]
-    //         ?.toString()
-    //         .toLowerCase()
-    //         .includes(searchText.toLowerCase())
-    //     )
-    //   );
-    // }
-    // if (sortOrder === "ascending") {
-    //   data = [...data].sort((a, b) =>
-    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-    //   );
-    // } else if (sortOrder === "descending") {
-    //   data = [...data].sort((a, b) =>
-    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-    //   );
-    // }
+
+    if (sortOrder === "ascending") {
+      data = [...data].sort((a, b) =>
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
+      );
+    } else if (sortOrder === "descending") {
+      data = [...data].sort((a, b) =>
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
+      );
+    }
     return data;
-  }, [searchText, shift, columns, sortOrder]);
+  }, [shift, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteShift(selectedIndustry.id));
+    if (selected) {
+      dispatch(deleteShift(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -211,21 +167,6 @@ const ShiftList = () => {
         <meta name="Shift" content="This is Shift page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -290,12 +231,15 @@ const ShiftList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setSelected={setSelected}
+      />
       <DeleteAlert
-        label="Leave Type"
+        label="Shift"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>
