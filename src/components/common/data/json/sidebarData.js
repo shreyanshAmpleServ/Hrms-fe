@@ -232,7 +232,7 @@ export const SidebarData = [
         ],
       },
       {
-        label: "Travel & Asset Management",
+        label: "Travel & Asset Manage...",
         link: route.callStatus,
         icon: "ti ti-briefcase",
         showSubRoute: false,
@@ -247,6 +247,46 @@ export const SidebarData = [
           {
             label: "Asset Assignment & Recovery",
             link: route.assetAssignment,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
+      },
+      {
+        label: "Surveys & Engagement",
+        icon: "ti ti-briefcase",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Survey Response",
+            link: route.surveyResponse,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Employee Suggestion",
+            link: route.employeeSuggestion,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
+      },
+      {
+        label: "Helpdesk & Notifications",
+        icon: "ti ti-briefcase",
+        showSubRoute: false,
+        submenu: true,
+        submenuItems: [
+          {
+            label: "Helpdesk Ticket",
+            link: route.helpdeskTicket,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Notifications",
+            link: route.notifications,
             showSubRoute: false,
             submenu: false,
           },

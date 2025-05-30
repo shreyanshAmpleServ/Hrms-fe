@@ -6,12 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
 import {
-  createAssetAssignment,
-  updateAssetAssignment,
-} from "../../../redux/AssetAssignment";
-import { fetchassets_type } from "../../../redux/assetType";
-
-const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
+  createSurveyResponse,
+  updateSurveyResponse,
+} from "../../../redux/SurveyResponse";
+import { fetchsurvey } from "../../../redux/surveyMaster";
+const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -21,23 +20,41 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     formState: { errors },
   } = useForm();
 
-  const { loading } = useSelector((state) => state.assetAssignment || {});
+  const { loading } = useSelector((state) => state.surveyResponse || {});
 
   React.useEffect(() => {
-    reset({
-      employee_id: assetAssignment?.asset_assignment_employee?.id || "",
-      asset_type_id: assetAssignment?.asset_assignment_type?.id || "",
-      asset_name: assetAssignment?.asset_name || "",
-      serial_number: assetAssignment?.serial_number || "",
-      issued_on: assetAssignment?.issued_on || new Date().toISOString(),
-      returned_on: assetAssignment?.returned_on || "",
-      status: assetAssignment?.status || "",
-    });
-  }, [assetAssignment, reset]);
+    if (surveyResponse) {
+      reset({
+        employee_id: surveyResponse.survey_employee?.id || "",
+        survey_id: surveyResponse.survey_id || "",
+        submitted_on: surveyResponse.submitted_on || "",
+        response_text: surveyResponse.response_text || "",
+      });
+    } else {
+      reset({
+        employee_id: "",
+        survey_id: "",
+        submitted_on: new Date().toISOString(),
+        response_text: "",
+      });
+    }
+  }, [surveyResponse, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
   }, [dispatch, searchValue]);
+
+  React.useEffect(() => {
+    dispatch(fetchsurvey());
+  }, [dispatch]);
+
+  const { survey, loading: surveyLoading } = useSelector(
+    (state) => state.surveyMaster
+  );
+  const surveyTypes = survey?.data?.map((i) => ({
+    label: i?.survey_title,
+    value: i?.id,
+  }));
 
   const { employee, loading: employeeLoading } = useSelector(
     (state) => state.employee || {}
@@ -47,44 +64,21 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     label: i?.full_name,
     value: i?.id,
   }));
-  const assetStatusOptions = [
-    { value: "available", label: "Available" },
-    { value: "assigned", label: "Assigned" },
-    { value: "in_use", label: "In Use" },
-    { value: "under_maintenance", label: "Under Maintenance" },
-    { value: "damaged", label: "Damaged" },
-    { value: "lost", label: "Lost" },
-    { value: "disposed", label: "Disposed" },
-    { value: "returned", label: "Returned" },
-  ];
-
-  React.useEffect(() => {
-    dispatch(fetchassets_type());
-  }, [dispatch]);
-
-  const { assets_type, loading: assetTypeLoading } = useSelector(
-    (state) => state.assetTypeMaster
-  );
-
-  const assetTypes = assets_type?.data?.map((i) => ({
-    label: i?.asset_type_name,
-    value: i?.id,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      assetAssignment
+      surveyResponse
         ? await dispatch(
-            updateAssetAssignment({
-              id: assetAssignment.id,
-              assetAssignmentData: { ...data },
+            updateSurveyResponse({
+              id: surveyResponse.id,
+              surveyResponseData: { ...data },
             })
           ).unwrap()
-        : await dispatch(createAssetAssignment({ ...data })).unwrap();
+        : await dispatch(createSurveyResponse({ ...data })).unwrap();
       closeButton.click();
       reset();
-      setAssetAssignment(null);
+      setSurveyResponse(null);
     } catch (error) {
       closeButton.click();
     }
@@ -94,7 +88,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setAssetAssignment(null);
+        setSurveyResponse(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -107,7 +101,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
         );
       };
     }
-  }, [setAssetAssignment]);
+  }, [setSurveyResponse]);
   return (
     <>
       <div
@@ -116,14 +110,14 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{assetAssignment ? "Update " : "Add New "} Relieving Letter</h4>
+          <h4>{surveyResponse ? "Update " : "Add New "} Survey Response</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setAssetAssignment(null);
+              setSurveyResponse(null);
               reset();
             }}
           >
@@ -183,25 +177,25 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Asset Type
+                      Survey Type
                       <span className="text-danger">*</span>
                     </label>
                     <Controller
-                      name="asset_type_id"
+                      name="survey_id"
                       control={control}
-                      rules={{ required: "Asset type is required" }}
+                      rules={{ required: "Survey type is required" }}
                       render={({ field }) => {
-                        const selectedDeal = assetTypes?.find(
-                          (assetType) => assetType.value === field.value
+                        const selectedDeal = surveyTypes?.find(
+                          (surveyType) => surveyType.value === field.value
                         );
                         return (
                           <Select
                             {...field}
                             className="select"
-                            options={assetTypes}
-                            placeholder="Select Asset Type"
+                            options={surveyTypes}
+                            placeholder="Select Survey Type"
                             classNamePrefix="react-select"
-                            isLoading={assetTypeLoading}
+                            isLoading={surveyLoading}
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
                             }
@@ -219,129 +213,29 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                         );
                       }}
                     />
-                    {errors.asset_type_id && (
+                    {errors.survey_id && (
                       <small className="text-danger">
-                        {errors.asset_type_id.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      Status
-                      <span className="text-danger">*</span>
-                    </label>
-                    <Controller
-                      name="status"
-                      control={control}
-                      rules={{ required: "Status is required" }}
-                      render={({ field }) => {
-                        const selectedDeal = assetStatusOptions?.find(
-                          (assetStatus) => assetStatus.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={assetStatusOptions}
-                            placeholder="Select Status"
-                            classNamePrefix="react-select"
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
-                    />
-                    {errors.status && (
-                      <small className="text-danger">
-                        {errors.status.message}
+                        {errors.survey_id.message}
                       </small>
                     )}
                   </div>
                 </div>
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Asset Name<span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="asset_name"
-                      control={control}
-                      rules={{ required: "Asset name is required!" }}
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          type="text"
-                          className={`form-control ${errors.asset_name ? "is-invalid" : ""}`}
-                          placeholder="Enter Asset Name"
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      )}
-                    />
-                    {errors.asset_name && (
-                      <small className="text-danger">
-                        {errors.asset_name.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Serial Number<span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="serial_number"
-                      control={control}
-                      rules={{ required: "Serial number is required!" }}
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          type="text"
-                          className={`form-control ${errors.serial_number ? "is-invalid" : ""}`}
-                          placeholder="Enter Serial Number"
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      )}
-                    />
-                    {errors.serial_number && (
-                      <small className="text-danger">
-                        {errors.serial_number.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Issued Date<span className="text-danger">*</span>
+                    Submitted On<span className="text-danger">*</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
                     </span>
                     <Controller
-                      name="issued_on"
+                      name="submitted_on"
                       control={control}
-                      rules={{ required: "Issued on is required!" }}
+                      rules={{ required: "Submitted on is required!" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
-                          placeholderText="Select Issued Date"
                           selected={field.value}
                           value={
                             field.value
@@ -354,37 +248,38 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                       )}
                     />
                   </div>
-                  {errors.issued_on && (
+                  {errors.submitted_on && (
                     <small className="text-danger">
-                      {errors.issued_on.message}
+                      {errors.submitted_on.message}
                     </small>
                   )}
                 </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">Returned Date</label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
+                <div className="col-md-12">
+                  <label className="col-form-label">
+                    Response Text<span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
                     <Controller
-                      name="returned_on"
+                      name="response_text"
                       control={control}
+                      rules={{ required: "Response text is required!" }}
                       render={({ field }) => (
-                        <DatePicker
+                        <textarea
+                          rows={3}
                           {...field}
-                          className="form-control"
-                          placeholderText="Select Returned Date"
-                          selected={field.value}
-                          value={
-                            field.value
-                              ? moment(field.value).format("DD-MM-YYYY")
-                              : null
-                          }
+                          type="text"
+                          className={`form-control ${errors.response_text ? "is-invalid" : ""}`}
+                          placeholder="Enter Response Text"
+                          value={field.value}
                           onChange={field.onChange}
-                          dateFormat="DD-MM-YYYY"
                         />
                       )}
                     />
+                    {errors.response_text && (
+                      <small className="text-danger">
+                        {errors.response_text.message}
+                      </small>
+                    )}
                   </div>
                 </div>
               </div>
@@ -398,7 +293,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {assetAssignment
+                {surveyResponse
                   ? loading
                     ? "Updating..."
                     : "Update"
@@ -426,4 +321,4 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
   );
 };
 
-export default ManageAssetAssignment;
+export default ManageSurveyResponse;

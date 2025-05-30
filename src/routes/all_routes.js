@@ -112,6 +112,21 @@ export const all_routes = {
   // Relieving Letter
   relievingLetter: "/relieving-letter",
 
+  // Asset Assignment
+  assetAssignment: "/asset-assignment",
+
+  // Survey Response
+  surveyResponse: "/survey-response",
+
+  // Employee Suggestion
+  employeeSuggestion: "/employee-suggestion",
+
+  // Helpdesk Ticket
+  helpdeskTicket: "/helpdesk-ticket",
+
+  // Notifications
+  notifications: "/notifications",
+
   // currency: "/currency",
   // core-hr //
 

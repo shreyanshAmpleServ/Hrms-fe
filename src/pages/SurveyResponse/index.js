@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchAssetAssignment } from "../../redux/AssetAssignment/index.js";
+import { fetchSurveyResponse } from "../../redux/SurveyResponse/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageAssetAssignment from "./ManageAssetAssignment/index.js";
+import ManageSurveyResponse from "./ManageSurveyResponse/index.js";
 
-const AssetAssignment = () => {
+const SurveyResponse = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedAssetAssignment, setSelectedAssetAssignment] = useState(null);
+  const [selectedSurveyResponse, setSelectedSurveyResponse] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,13 +22,13 @@ const AssetAssignment = () => {
   });
   const dispatch = useDispatch();
 
-  const { assetAssignment, loading } = useSelector(
-    (state) => state.assetAssignment || {}
+  const { surveyResponse, loading } = useSelector(
+    (state) => state.surveyResponse || {}
   );
 
   React.useEffect(() => {
     dispatch(
-      fetchAssetAssignment({
+      fetchSurveyResponse({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -37,12 +37,12 @@ const AssetAssignment = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: assetAssignment?.currentPage,
-      totalPage: assetAssignment?.totalPages,
-      totalCount: assetAssignment?.totalCount,
-      pageSize: assetAssignment?.size,
+      currentPage: surveyResponse?.currentPage,
+      totalPage: surveyResponse?.totalPages,
+      totalCount: surveyResponse?.totalCount,
+      pageSize: surveyResponse?.size,
     });
-  }, [assetAssignment]);
+  }, [surveyResponse]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -51,7 +51,7 @@ const AssetAssignment = () => {
       pageSize,
     }));
     dispatch(
-      fetchAssetAssignment({
+      fetchSurveyResponse({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -60,11 +60,11 @@ const AssetAssignment = () => {
     );
   };
 
-  const data = assetAssignment?.data;
+  const data = surveyResponse?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Asset Assignment"
+    (i) => i?.module_name === "Survey Response"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -75,43 +75,24 @@ const AssetAssignment = () => {
   const columns = [
     {
       title: "Employee Name",
-      dataIndex: "asset_assignment_employee",
+      dataIndex: "survey_employee",
       render: (text) => text?.full_name || "-",
     },
+
     {
-      title: "Asset Type",
-      render: (text) => text?.asset_assignment_type?.asset_type_name || "-",
+      title: "Survey Type",
+      dataIndex: "survey_type",
+      render: (text) => text?.survey_title || "-",
     },
     {
-      title: "Asset Name",
-      dataIndex: "asset_name",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Serial Number",
-      dataIndex: "serial_number",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => (
-        <p
-          className={`text-capitalize ${text === "available" ? "text-success" : text === "assigned" ? "text-primary" : text === "in_use" ? "text-warning" : text === "under_maintenance" ? "text-info" : text === "damaged" ? "text-danger" : text === "lost" ? "text-danger" : text === "disposed" ? "text-danger" : text === "returned" ? "text-success" : ""}`}
-        >
-          {text}
-        </p>
-      ),
-    },
-    {
-      title: "Issued On",
-      dataIndex: "issued_on",
+      title: "Submitted On",
+      dataIndex: "submitted_on",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
-      title: "Returned On",
-      dataIndex: "returned_on",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      title: "Response Text",
+      dataIndex: "response_text",
+      render: (text) => text || "-",
     },
     ...(isDelete || isUpdate
       ? [
@@ -121,7 +102,7 @@ const AssetAssignment = () => {
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
@@ -134,7 +115,7 @@ const AssetAssignment = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedAssetAssignment(a)}
+                      onClick={() => setSelectedSurveyResponse(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -144,7 +125,7 @@ const AssetAssignment = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteAssetAssignment(a)}
+                      onClick={() => handleDeleteSurveyResponse(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -157,18 +138,18 @@ const AssetAssignment = () => {
       : []),
   ];
 
-  const handleDeleteAssetAssignment = (assetAssignment) => {
-    setSelectedAssetAssignment(assetAssignment);
+  const handleDeleteSurveyResponse = (surveyResponse) => {
+    setSelectedSurveyResponse(surveyResponse);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Asset Assignment</title>
+        <title>DCC HRMS - Survey Response</title>
         <meta
-          name="asset-assignment"
-          content="This is asset assignment page of DCC HRMS."
+          name="survey-response"
+          content="This is survey response page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -181,9 +162,9 @@ const AssetAssignment = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Asset Assignment
+                      Survey Response
                       <span className="count-title">
-                        {assetAssignment?.totalCount}
+                        {surveyResponse?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -207,7 +188,7 @@ const AssetAssignment = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Asset Assignment"
+                          placeholder="Search Survey Response"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -222,7 +203,7 @@ const AssetAssignment = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Asset Assignment
+                            Add New Survey Response
                           </Link>
                         </div>
                       </div>
@@ -236,7 +217,7 @@ const AssetAssignment = () => {
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Asset Assignment</h4>
+                          <h4 className="mb-0 me-3">All Survey Response</h4>
                         </div>
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -276,18 +257,18 @@ const AssetAssignment = () => {
             </div>
           </div>
         </div>
-        <ManageAssetAssignment
-          setAssetAssignment={setSelectedAssetAssignment}
-          assetAssignment={selectedAssetAssignment}
+        <ManageSurveyResponse
+          setSurveyResponse={setSelectedSurveyResponse}
+          surveyResponse={selectedSurveyResponse}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        assetAssignmentId={selectedAssetAssignment?.id}
+        surveyResponseId={selectedSurveyResponse?.id}
       />
     </>
   );
 };
 
-export default AssetAssignment;
+export default SurveyResponse;

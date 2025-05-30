@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Rate, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,14 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchAssetAssignment } from "../../redux/AssetAssignment/index.js";
+import { fetchEmployeeSuggestion } from "../../redux/EmployeeSuggestion/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageAssetAssignment from "./ManageAssetAssignment/index.js";
+import ManageEmployeeSuggestion from "./ManageEmployeeSuggestion/index.js";
 
-const AssetAssignment = () => {
+const EmployeeSuggestion = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedAssetAssignment, setSelectedAssetAssignment] = useState(null);
+  const [selectedEmployeeSuggestion, setSelectedEmployeeSuggestion] =
+    useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,13 +23,13 @@ const AssetAssignment = () => {
   });
   const dispatch = useDispatch();
 
-  const { assetAssignment, loading } = useSelector(
-    (state) => state.assetAssignment || {}
+  const { employeeSuggestion, loading } = useSelector(
+    (state) => state.employeeSuggestion || {}
   );
 
   React.useEffect(() => {
     dispatch(
-      fetchAssetAssignment({
+      fetchEmployeeSuggestion({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -37,12 +38,12 @@ const AssetAssignment = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: assetAssignment?.currentPage,
-      totalPage: assetAssignment?.totalPages,
-      totalCount: assetAssignment?.totalCount,
-      pageSize: assetAssignment?.size,
+      currentPage: employeeSuggestion?.currentPage,
+      totalPage: employeeSuggestion?.totalPages,
+      totalCount: employeeSuggestion?.totalCount,
+      pageSize: employeeSuggestion?.size,
     });
-  }, [assetAssignment]);
+  }, [employeeSuggestion]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -51,7 +52,7 @@ const AssetAssignment = () => {
       pageSize,
     }));
     dispatch(
-      fetchAssetAssignment({
+      fetchEmployeeSuggestion({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -60,11 +61,11 @@ const AssetAssignment = () => {
     );
   };
 
-  const data = assetAssignment?.data;
+  const data = employeeSuggestion?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Asset Assignment"
+    (i) => i?.module_name === "Employee Suggestion"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -75,44 +76,25 @@ const AssetAssignment = () => {
   const columns = [
     {
       title: "Employee Name",
-      dataIndex: "asset_assignment_employee",
+      dataIndex: "suggestion_box_employee",
       render: (text) => text?.full_name || "-",
     },
     {
-      title: "Asset Type",
-      render: (text) => text?.asset_assignment_type?.asset_type_name || "-",
-    },
-    {
-      title: "Asset Name",
-      dataIndex: "asset_name",
+      title: "Suggestions",
+      dataIndex: "suggestion_text",
       render: (text) => text || "-",
     },
     {
-      title: "Serial Number",
-      dataIndex: "serial_number",
-      render: (text) => text || "-",
+      title: "Votes",
+      dataIndex: "votes",
+      render: (text) => <Rate disabled value={text} /> || "-",
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => (
-        <p
-          className={`text-capitalize ${text === "available" ? "text-success" : text === "assigned" ? "text-primary" : text === "in_use" ? "text-warning" : text === "under_maintenance" ? "text-info" : text === "damaged" ? "text-danger" : text === "lost" ? "text-danger" : text === "disposed" ? "text-danger" : text === "returned" ? "text-success" : ""}`}
-        >
-          {text}
-        </p>
-      ),
-    },
-    {
-      title: "Issued On",
-      dataIndex: "issued_on",
+      title: "Submitted On",
+      dataIndex: "submitted_on",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
-    {
-      title: "Returned On",
-      dataIndex: "returned_on",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-    },
+
     ...(isDelete || isUpdate
       ? [
           {
@@ -134,7 +116,7 @@ const AssetAssignment = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedAssetAssignment(a)}
+                      onClick={() => setSelectedEmployeeSuggestion(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -144,7 +126,7 @@ const AssetAssignment = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteAssetAssignment(a)}
+                      onClick={() => handleDeleteEmployeeSuggestion(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -157,18 +139,18 @@ const AssetAssignment = () => {
       : []),
   ];
 
-  const handleDeleteAssetAssignment = (assetAssignment) => {
-    setSelectedAssetAssignment(assetAssignment);
+  const handleDeleteEmployeeSuggestion = (employeeSuggestion) => {
+    setSelectedEmployeeSuggestion(employeeSuggestion);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Asset Assignment</title>
+        <title>DCC HRMS - Employee Suggestion</title>
         <meta
-          name="asset-assignment"
-          content="This is asset assignment page of DCC HRMS."
+          name="employee-suggestion"
+          content="This is employee suggestion page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -181,9 +163,9 @@ const AssetAssignment = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Asset Assignment
+                      Employee Suggestion
                       <span className="count-title">
-                        {assetAssignment?.totalCount}
+                        {employeeSuggestion?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -207,7 +189,7 @@ const AssetAssignment = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Asset Assignment"
+                          placeholder="Search Employee Suggestion"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -222,7 +204,7 @@ const AssetAssignment = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Asset Assignment
+                            Add New Employee Suggestion
                           </Link>
                         </div>
                       </div>
@@ -236,7 +218,7 @@ const AssetAssignment = () => {
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Asset Assignment</h4>
+                          <h4 className="mb-0 me-3">All Employee Suggestion</h4>
                         </div>
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -276,18 +258,18 @@ const AssetAssignment = () => {
             </div>
           </div>
         </div>
-        <ManageAssetAssignment
-          setAssetAssignment={setSelectedAssetAssignment}
-          assetAssignment={selectedAssetAssignment}
+        <ManageEmployeeSuggestion
+          setEmployeeSuggestion={setSelectedEmployeeSuggestion}
+          employeeSuggestion={selectedEmployeeSuggestion}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        assetAssignmentId={selectedAssetAssignment?.id}
+        assetAssignmentId={selectedEmployeeSuggestion?.id}
       />
     </>
   );
 };
 
-export default AssetAssignment;
+export default EmployeeSuggestion;

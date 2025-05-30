@@ -99,6 +99,9 @@ import exitInterviewReducer from "./ExitInterview";
 import exitClearanceReducer from "./ExitClearance";
 import relievingLetterReducer from "./RelievingLetter";
 import assetAssignmentReducer from "./AssetAssignment";
+import surveyResponseReducer from "./SurveyResponse";
+import employeeSuggestionReducer from "./EmployeeSuggestion";
+import helpdeskTicketReducer from "./HelpdeskTicket";
 
 const store = configureStore({
   reducer: {
@@ -202,6 +205,9 @@ const store = configureStore({
     exitClearance: exitClearanceReducer,
     relievingLetter: relievingLetterReducer,
     assetAssignment: assetAssignmentReducer,
+    surveyResponse: surveyResponseReducer,
+    employeeSuggestion: employeeSuggestionReducer,
+    helpdeskTicket: helpdeskTicketReducer,
   },
 });
 

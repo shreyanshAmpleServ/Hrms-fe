@@ -6,12 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
 import {
-  createAssetAssignment,
-  updateAssetAssignment,
-} from "../../../redux/AssetAssignment";
-import { fetchassets_type } from "../../../redux/assetType";
+  createHelpdeskTicket,
+  updateHelpdeskTicket,
+} from "../../../redux/HelpdeskTicket";
 
-const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
+const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -21,19 +20,44 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     formState: { errors },
   } = useForm();
 
-  const { loading } = useSelector((state) => state.assetAssignment || {});
+  const { loading } = useSelector((state) => state.helpdeskTicket || {});
+
+  const statusOptions = [
+    { value: "open", label: "Open" },
+    { value: "in_progress", label: "In Progress" },
+    { value: "resolved", label: "Resolved" },
+    { value: "closed", label: "Closed" },
+    { value: "pending", label: "Pending" },
+  ];
+
+  const priorityOptions = [
+    { value: "low", label: "Low" },
+    { value: "medium", label: "Medium" },
+    { value: "high", label: "High" },
+    { value: "urgent", label: "Urgent" },
+    { value: "critical", label: "Critical" },
+  ];
+
+  const ticketTypeOptions = [
+    { value: "technical", label: "Technical" },
+    { value: "hr", label: "HR" },
+    { value: "it", label: "IT" },
+    { value: "facilities", label: "Facilities" },
+    { value: "other", label: "Other" },
+  ];
 
   React.useEffect(() => {
     reset({
-      employee_id: assetAssignment?.asset_assignment_employee?.id || "",
-      asset_type_id: assetAssignment?.asset_assignment_type?.id || "",
-      asset_name: assetAssignment?.asset_name || "",
-      serial_number: assetAssignment?.serial_number || "",
-      issued_on: assetAssignment?.issued_on || new Date().toISOString(),
-      returned_on: assetAssignment?.returned_on || "",
-      status: assetAssignment?.status || "",
+      employee_id: helpdeskTicket?.employee_id || "",
+      ticket_subject: helpdeskTicket?.ticket_subject || "",
+      ticket_type: helpdeskTicket?.ticket_type || "",
+      status: helpdeskTicket?.status || "",
+      priority: helpdeskTicket?.priority || "",
+      assigned_to: helpdeskTicket?.assigned_to || "",
+      description: helpdeskTicket?.description || "",
+      submitted_on: helpdeskTicket?.submitted_on || new Date().toISOString(),
     });
-  }, [assetAssignment, reset]);
+  }, [helpdeskTicket, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -47,44 +71,21 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     label: i?.full_name,
     value: i?.id,
   }));
-  const assetStatusOptions = [
-    { value: "available", label: "Available" },
-    { value: "assigned", label: "Assigned" },
-    { value: "in_use", label: "In Use" },
-    { value: "under_maintenance", label: "Under Maintenance" },
-    { value: "damaged", label: "Damaged" },
-    { value: "lost", label: "Lost" },
-    { value: "disposed", label: "Disposed" },
-    { value: "returned", label: "Returned" },
-  ];
-
-  React.useEffect(() => {
-    dispatch(fetchassets_type());
-  }, [dispatch]);
-
-  const { assets_type, loading: assetTypeLoading } = useSelector(
-    (state) => state.assetTypeMaster
-  );
-
-  const assetTypes = assets_type?.data?.map((i) => ({
-    label: i?.asset_type_name,
-    value: i?.id,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      assetAssignment
+      helpdeskTicket
         ? await dispatch(
-            updateAssetAssignment({
-              id: assetAssignment.id,
-              assetAssignmentData: { ...data },
+            updateHelpdeskTicket({
+              id: helpdeskTicket.id,
+              helpdeskTicketData: { ...data },
             })
           ).unwrap()
-        : await dispatch(createAssetAssignment({ ...data })).unwrap();
+        : await dispatch(createHelpdeskTicket({ ...data })).unwrap();
       closeButton.click();
       reset();
-      setAssetAssignment(null);
+      setHelpdeskTicket(null);
     } catch (error) {
       closeButton.click();
     }
@@ -94,7 +95,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setAssetAssignment(null);
+        setHelpdeskTicket(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -107,7 +108,8 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
         );
       };
     }
-  }, [setAssetAssignment]);
+  }, [setHelpdeskTicket]);
+
   return (
     <>
       <div
@@ -116,14 +118,14 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{assetAssignment ? "Update " : "Add New "} Relieving Letter</h4>
+          <h4>{helpdeskTicket ? "Update " : "Add New "} Helpdesk Ticket</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setAssetAssignment(null);
+              setHelpdeskTicket(null);
               reset();
             }}
           >
@@ -145,7 +147,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
+                        const selectedEmployee = employees?.find(
                           (employee) => employee.value === field.value
                         );
                         return (
@@ -159,7 +161,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
                             }
-                            value={selectedDeal || null}
+                            value={selectedEmployee || null}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)
                             }
@@ -180,89 +182,29 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                     )}
                   </div>
                 </div>
+
                 <div className="col-md-6">
+                  <label className="col-form-label">
+                    Status <span className="text-danger">*</span>
+                  </label>
                   <div className="mb-3">
-                    <label className="col-form-label">
-                      Asset Type
-                      <span className="text-danger">*</span>
-                    </label>
-                    <Controller
-                      name="asset_type_id"
-                      control={control}
-                      rules={{ required: "Asset type is required" }}
-                      render={({ field }) => {
-                        const selectedDeal = assetTypes?.find(
-                          (assetType) => assetType.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={assetTypes}
-                            placeholder="Select Asset Type"
-                            classNamePrefix="react-select"
-                            isLoading={assetTypeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
-                    />
-                    {errors.asset_type_id && (
-                      <small className="text-danger">
-                        {errors.asset_type_id.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      Status
-                      <span className="text-danger">*</span>
-                    </label>
                     <Controller
                       name="status"
                       control={control}
-                      rules={{ required: "Status is required" }}
-                      render={({ field }) => {
-                        const selectedDeal = assetStatusOptions?.find(
-                          (assetStatus) => assetStatus.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={assetStatusOptions}
-                            placeholder="Select Status"
-                            classNamePrefix="react-select"
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
+                      rules={{ required: "Status is required!" }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={statusOptions}
+                          placeholder="Select Status"
+                          classNamePrefix="react-select"
+                          value={statusOptions.find(
+                            (x) => x.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option.value)}
+                        />
+                      )}
                     />
                     {errors.status && (
                       <small className="text-danger">
@@ -271,120 +213,198 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                     )}
                   </div>
                 </div>
+
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Asset Name<span className="text-danger">*</span>
+                    Priority <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="asset_name"
+                      name="priority"
                       control={control}
-                      rules={{ required: "Asset name is required!" }}
+                      rules={{ required: "Priority is required!" }}
                       render={({ field }) => (
-                        <input
+                        <Select
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.asset_name ? "is-invalid" : ""}`}
-                          placeholder="Enter Asset Name"
-                          value={field.value}
-                          onChange={field.onChange}
+                          className="select"
+                          options={priorityOptions}
+                          placeholder="Select Priority"
+                          classNamePrefix="react-select"
+                          value={priorityOptions.find(
+                            (x) => x.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option.value)}
                         />
                       )}
                     />
-                    {errors.asset_name && (
+                    {errors.priority && (
                       <small className="text-danger">
-                        {errors.asset_name.message}
+                        {errors.priority.message}
                       </small>
                     )}
                   </div>
                 </div>
+
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Serial Number<span className="text-danger">*</span>
+                    Ticket Type <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="serial_number"
+                      name="ticket_type"
                       control={control}
-                      rules={{ required: "Serial number is required!" }}
+                      rules={{ required: "Ticket type is required!" }}
                       render={({ field }) => (
-                        <input
+                        <Select
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.serial_number ? "is-invalid" : ""}`}
-                          placeholder="Enter Serial Number"
-                          value={field.value}
-                          onChange={field.onChange}
+                          className="select"
+                          options={ticketTypeOptions}
+                          placeholder="Select Ticket Type"
+                          classNamePrefix="react-select"
+                          value={ticketTypeOptions.find(
+                            (x) => x.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option.value)}
                         />
                       )}
                     />
-                    {errors.serial_number && (
+                    {errors.ticket_type && (
                       <small className="text-danger">
-                        {errors.serial_number.message}
+                        {errors.ticket_type.message}
                       </small>
                     )}
                   </div>
                 </div>
+
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Issued Date<span className="text-danger">*</span>
+                    Ticket Subject <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="ticket_subject"
+                      control={control}
+                      rules={{ required: "Ticket subject is required!" }}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          className={`form-control ${errors.ticket_subject ? "is-invalid" : ""}`}
+                          placeholder="Enter Ticket Subject"
+                        />
+                      )}
+                    />
+                    {errors.ticket_subject && (
+                      <small className="text-danger">
+                        {errors.ticket_subject.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Submitted Date<span className="text-danger">*</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
                     </span>
                     <Controller
-                      name="issued_on"
+                      name="submitted_on"
                       control={control}
-                      rules={{ required: "Issued on is required!" }}
+                      rules={{ required: "Submitted date is required!" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
-                          placeholderText="Select Issued Date"
+                          placeholderText="Select Submitted Date"
                           selected={field.value}
                           value={
                             field.value
                               ? moment(field.value).format("DD-MM-YYYY")
                               : null
                           }
-                          onChange={field.onChange}
+                          onChange={(date) => field.onChange(date)}
                           dateFormat="DD-MM-YYYY"
                         />
                       )}
                     />
                   </div>
-                  {errors.issued_on && (
+                  {errors.submitted_on && (
                     <small className="text-danger">
-                      {errors.issued_on.message}
+                      {errors.submitted_on.message}
                     </small>
                   )}
                 </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">Returned Date</label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
+
+                <div className="col-md-12">
+                  <label className="col-form-label">
+                    Description<span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
                     <Controller
-                      name="returned_on"
+                      name="description"
                       control={control}
+                      rules={{ required: "Description is required!" }}
                       render={({ field }) => (
-                        <DatePicker
+                        <textarea
+                          rows={3}
                           {...field}
-                          className="form-control"
-                          placeholderText="Select Returned Date"
-                          selected={field.value}
-                          value={
-                            field.value
-                              ? moment(field.value).format("DD-MM-YYYY")
-                              : null
-                          }
-                          onChange={field.onChange}
-                          dateFormat="DD-MM-YYYY"
+                          className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                          placeholder="Enter Description"
                         />
                       )}
                     />
+                    {errors.description && (
+                      <small className="text-danger">
+                        {errors.description.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Assigned To
+                      <span className="text-danger">*</span>
+                    </label>
+                    <Controller
+                      name="assigned_to"
+                      control={control}
+                      rules={{ required: "Assigned to is required" }}
+                      render={({ field }) => {
+                        const selectedAssignee = employees?.find(
+                          (employee) => employee.value === field.value
+                        );
+                        return (
+                          <Select
+                            {...field}
+                            className="select"
+                            options={employees}
+                            placeholder="Select Assignee"
+                            classNamePrefix="react-select"
+                            isLoading={employeeLoading}
+                            value={selectedAssignee || null}
+                            onChange={(selectedOption) =>
+                              field.onChange(selectedOption.value)
+                            }
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    {errors.assigned_to && (
+                      <small className="text-danger">
+                        {errors.assigned_to.message}
+                      </small>
+                    )}
                   </div>
                 </div>
               </div>
@@ -398,7 +418,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {assetAssignment
+                {helpdeskTicket
                   ? loading
                     ? "Updating..."
                     : "Update"
@@ -426,4 +446,4 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
   );
 };
 
-export default ManageAssetAssignment;
+export default ManageHelpdeskTicket;

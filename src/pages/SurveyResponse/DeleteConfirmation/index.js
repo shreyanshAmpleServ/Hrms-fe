@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deleteAssetAssignment } from "../../../redux/AssetAssignment";
+import { deleteSurveyResponse } from "../../../redux/SurveyResponse";
 
-const DeleteConfirmation = ({ showModal, setShowModal, assetAssignmentId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, surveyResponseId }) => {
   const dispatch = useDispatch();
-  const handleDeleteAssetAssignment = () => {
-    if (assetAssignmentId) {
-      dispatch(deleteAssetAssignment(assetAssignmentId));
+  const handleDeleteSurveyResponse = () => {
+    if (surveyResponseId) {
+      dispatch(deleteSurveyResponse(surveyResponseId));
       setShowModal(false);
     }
   };
@@ -15,7 +15,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, assetAssignmentId }) => {
       {showModal && (
         <div
           className="modal fade show"
-          id="delete_asset_assignment"
+          id="delete_survey_response"
           role="dialog"
           style={{ display: "block" }}
         >
@@ -26,9 +26,9 @@ const DeleteConfirmation = ({ showModal, setShowModal, assetAssignmentId }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove Asset Assignment?</h4>
+                  <h4 className="mb-2">Remove Survey Response?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the asset assignment
+                    Are you sure you want to remove <br /> the survey response
                     you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
@@ -40,7 +40,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, assetAssignmentId }) => {
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={handleDeleteAssetAssignment}
+                      onClick={handleDeleteSurveyResponse}
                     >
                       Yes, Delete it
                     </button>
