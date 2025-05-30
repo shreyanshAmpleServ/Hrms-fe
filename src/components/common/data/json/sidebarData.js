@@ -217,6 +217,18 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "Exit Clearance Checklist",
+            link: route.exitClearance,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Relieving Letter Generation",
+            link: route.relievingLetter,
+            showSubRoute: false,
+            submenu: false,
+          },
         ],
       },
 

@@ -96,6 +96,10 @@ import TrainingFeedbackReducer from "./trainingFeedbackEntry";
 import probationReviewReducer from "./ProbationReview";
 import successionPlanningEntryReducer from "./successionPlanningEntry";
 import exitInterviewReducer from "./ExitInterview";
+import exitClearanceReducer from "./ExitClearance";
+import relievingLetterReducer from "./RelievingLetter";
+import assetAssignmentReducer from "./AssetAssignment";
+
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -195,6 +199,9 @@ const store = configureStore({
     probationReview: probationReviewReducer,
     successionPlanning: successionPlanningEntryReducer,
     exitInterview: exitInterviewReducer,
+    exitClearance: exitClearanceReducer,
+    relievingLetter: relievingLetterReducer,
+    assetAssignment: assetAssignmentReducer,
   },
 });
 
