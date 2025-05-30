@@ -224,7 +224,7 @@ const GrievanceSubmission = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Grievance Submission
+                                                        Add Grievance Submission
                                                     </Link>
                                                 </div>
                                             </div>

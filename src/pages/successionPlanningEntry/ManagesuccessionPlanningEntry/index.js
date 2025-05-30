@@ -1,12 +1,9 @@
-// imports remain unchanged
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
-import { fetchtrainingSession } from "../../../redux/trainingSessionSchedule";
 import { createsuccessionPlanning, updatesuccessionPlanning } from "../../../redux/successionPlanningEntry";
 
 const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning }) => {
@@ -20,38 +17,41 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
     formState: { errors },
   } = useForm({
     defaultValues: {
-      employee_id: "",
-      training_id: "",
-      feedback_text: "",
-      rating: null,
+      current_holder_id: "",
+      potential_successor_id: "",
+      critical_position: false,
+      readiness_level: "",
+      plan_date: "",
     },
   });
 
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
-    dispatch(fetchtrainingSession());
   }, [dispatch, searchValue]);
 
   useEffect(() => {
     if (successionPlanning) {
       reset({
-        employee_id: successionPlanning.employee_id || "",
-        training_id: successionPlanning.training_id || "",
-        feedback_text: successionPlanning.feedback_text || "",
-        rating: successionPlanning.rating || null,
+        current_holder_id: successionPlanning.current_holder_id || "",
+        potential_successor_id: successionPlanning.potential_successor_id || "",
+        critical_position: successionPlanning.critical_position || false,
+        readiness_level: successionPlanning.readiness_level || "",
+        plan_date: successionPlanning.plan_date
+          ? moment(successionPlanning.plan_date).format("YYYY-MM-DD")
+          : "",
       });
     } else {
       reset({
-        employee_id: "",
-        training_id: "",
-        feedback_text: "",
-        rating: null,
+        current_holder_id: "",
+        potential_successor_id: "",
+        critical_position: false,
+        readiness_level: "",
+        plan_date: "",
       });
     }
   }, [successionPlanning, reset]);
 
   const { employee } = useSelector((state) => state.employee || {});
-  const { trainingSession } = useSelector((state) => state.trainingSession || {});
   const { loading } = useSelector((state) => state.successionPlanning || {});
 
   const employeeOptions = employee?.data?.map((emp) => ({
@@ -59,15 +59,11 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
     value: emp.id,
   }));
 
-  const trainingOptions = trainingSession?.data?.map((t) => ({
-    label: t.training_title,
-    value: t.id,
-  }));
-
-  const ratingOptions = [1, 2, 3, 4, 5].map((num) => ({
-    label: `${num} Star${num > 1 ? "s" : ""}`,
-    value: num,
-  }));
+  const readinessOptions = [
+    { label: "Ready Now", value: "Ready Now" },
+    { label: "Ready in 1 Year", value: "Ready in 1 Year" },
+    { label: "Ready in 2+ Years", value: "Ready in 2+ Years" },
+  ];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -92,7 +88,7 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
   return (
     <div className="offcanvas offcanvas-end offcanvas-large" tabIndex={-1} id="offcanvas_add">
       <div className="offcanvas-header border-bottom">
-        <h4>{successionPlanning ? "Update" : "Add New"} Training Feedback</h4>
+        <h4>{successionPlanning ? "Update" : "Add New"} Succession Planning</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1"
@@ -106,15 +102,16 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-            {/* Employee */}
+
+            {/* Current Holder */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Employee<span className="text-danger">*</span></label>
+              <label className="col-form-label">Current Holder <span className="text-danger">*</span></label>
               <Controller
-                name="employee_id"
+                name="current_holder_id"
                 control={control}
-                rules={{ required: "Employee is required" }}
+                rules={{ required: "Current holder is required" }}
                 render={({ field }) => {
-                  const selected = (employeeOptions || []).find(opt => opt.value === field.value);
+                  const selected = employeeOptions?.find(opt => opt.value === field.value);
                   return (
                     <Select
                       {...field}
@@ -128,24 +125,68 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
                   );
                 }}
               />
-              {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+              {errors.current_holder_id && <small className="text-danger">{errors.current_holder_id.message}</small>}
             </div>
 
-
-            {/* Training */}
+            {/* Potential Successor */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Training Session<span className="text-danger">*</span></label>
+              <label className="col-form-label">Potential Successor <span className="text-danger">*</span></label>
               <Controller
-                name="training_id"
+                name="potential_successor_id"
                 control={control}
-                rules={{ required: "Training is required" }}
+                rules={{ required: "Potential successor is required" }}
                 render={({ field }) => {
-                  const selected = (trainingOptions || []).find(opt => opt.value === field.value);
+                  const selected = employeeOptions?.find(opt => opt.value === field.value);
                   return (
                     <Select
                       {...field}
-                      options={trainingOptions}
-                      placeholder="Select Training"
+                      options={employeeOptions}
+                      placeholder="Select Successor"
+                      value={selected || null}
+                      onInputChange={setSearchValue}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  );
+                }}
+              />
+              {errors.potential_successor_id && <small className="text-danger">{errors.potential_successor_id.message}</small>}
+            </div>
+
+            {/* Critical Position */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label d-block">Is Critical Position?</label>
+              <Controller
+                name="critical_position"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-check form-switch">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="critical_position"
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                    />
+                  </div>
+                )}
+              />
+            </div>
+
+            {/* Readiness Level */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Readiness Level <span className="text-danger">*</span></label>
+              <Controller
+                name="readiness_level"
+                control={control}
+                rules={{ required: "Readiness level is required" }}
+                render={({ field }) => {
+                  const selected = readinessOptions.find(opt => opt.value === field.value);
+                  return (
+                    <Select
+                      {...field}
+                      options={readinessOptions}
+                      placeholder="Select Readiness Level"
                       value={selected || null}
                       onChange={(opt) => field.onChange(opt?.value)}
                       classNamePrefix="react-select"
@@ -153,65 +194,32 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
                   );
                 }}
               />
-              {errors.training_id && <small className="text-danger">{errors.training_id.message}</small>}
+              {errors.readiness_level && <small className="text-danger">{errors.readiness_level.message}</small>}
             </div>
 
-            <div className="col-md-6">
-              <label className="col-form-label">
-                Rating<span className="text-danger"> *</span>
-              </label>
-              <div className="mb-3">
-                <Controller
-                  name="rating"
-                  control={control}
-                  rules={{
-                    required: "Rating is required!",
-                    min: {
-                      value: 1,
-                      message: "Rating must be at least 1",
-                    },
-                    max: {
-                      value: 5,
-                      message: "Rating cannot exceed 5",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      type="number"
-                      min={1}
-                      max={5}
-                      className="form-control"
-                      placeholder="Enter Rating (1-5)"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-              </div>
-              {errors.rating && (
-                <small className="text-danger">
-                  {errors.rating.message}
-                </small>
-              )}
-            </div>
-            {/* Feedback */}
-            <div className="col-12 mb-3">
-              <label className="col-form-label">Feedback</label>
+            {/* Plan Date */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Plan Date<span className="text-danger"> *</span></label>
               <Controller
-                name="feedback_text"
+                name="plan_date"
                 control={control}
+                rules={{ required: "Plan date is required" }}
                 render={({ field }) => (
-                  <DefaultEditor value={field.value} onChange={field.onChange} />
+                  <input
+                    {...field}
+                    type="date"
+                    className="form-control"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 )}
               />
+              {errors.plan_date && <small className="text-danger">{errors.plan_date.message}</small>}
             </div>
-
-            {/* Rating */}
 
           </div>
 
-          {/* Submit/Cancel Buttons */}
+          {/* Submit Buttons */}
           <div className="d-flex justify-content-end">
             <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
               Cancel

@@ -243,8 +243,13 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                     render={({ field }) => (
                       <DatePicker
                         {...field}
+                        value={
+                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                        }
+
                         selected={field.value ? new Date(field.value) : null}
                         onChange={field.onChange}
+
                         className="form-control"
                         dateFormat="dd-MM-yyyy"
                       />
@@ -264,6 +269,9 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                     render={({ field }) => (
                       <DatePicker
                         {...field}
+                        value={
+                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                        }
                         selected={field.value ? new Date(field.value) : null}
                         onChange={field.onChange}
                         className="form-control"

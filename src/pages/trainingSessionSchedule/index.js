@@ -206,7 +206,7 @@ const TrainingSessionSchedule = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Training Session Schedule
+                                                        Add Training Session Schedule
                                                     </Link>
                                                 </div>
                                             </div>

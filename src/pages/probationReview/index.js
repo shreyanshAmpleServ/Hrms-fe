@@ -73,7 +73,7 @@ const ProbationReview = () => {
     const columns = [
         {
             title: "Employee Name",
-            render: (record) => record?.employee_code?.full_name || "-",
+            render: (record) => record?.probation_review_employee?.full_name || "-",
         },
         {
             title: "Probation End Date",
@@ -207,7 +207,7 @@ const ProbationReview = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Probation Review
+                                                        Add  Probation Review
                                                     </Link>
                                                 </div>
                                             </div>

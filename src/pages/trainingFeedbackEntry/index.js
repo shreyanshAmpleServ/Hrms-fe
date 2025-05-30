@@ -146,7 +146,7 @@ const TrainingFeedbackEntry = () => {
     return (
         <>
             <Helmet>
-                <title>DCC HRMS -Training Session Schedule</title>
+                <title>DCC HRMS -Training Feedback Entry</title>
                 <meta
                     name="time-sheet"
                     content="This is time sheet page of DCC HRMS."
@@ -162,7 +162,7 @@ const TrainingFeedbackEntry = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Training Session Schedule
+                                            Training Feedback Entry
                                             <span className="count-title">
                                                 {trainingFeedback?.totalCount}
                                             </span>
@@ -188,7 +188,7 @@ const TrainingFeedbackEntry = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Training Session Schedule"
+                                                    placeholder="Search Training Feedback Entry"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -203,7 +203,7 @@ const TrainingFeedbackEntry = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Training Session Schedule
+                                                        Add Training Feedback Entry
                                                     </Link>
                                                 </div>
                                             </div>

@@ -1,9 +1,11 @@
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { createtrainingSession, updatetrainingSession } from "../../../redux/trainingSessionSchedule";
+import { fetchEmployee } from "../../../redux/Employee";
+import Select from 'react-select'; // Or correct path
 
 const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
   const dispatch = useDispatch();
@@ -17,20 +19,21 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
     defaultValues: {
       training_title: "",
       trainer_name: "",
-      training_date: "",
+      training_date: new Date().toISOString(),
       location: "",
       training_type: "",
     },
   });
 
   const { loading } = useSelector((state) => state.trainingSession || {});
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     if (trainingSession) {
       reset({
         training_title: trainingSession.training_title || "",
         trainer_name: trainingSession.trainer_name || "",
-        training_date: trainingSession.training_date || "",
+        training_date: trainingSession.training_date || new Date().toISOString(),
         location: trainingSession.location || "",
         training_type: trainingSession.training_type || "",
       });
@@ -38,6 +41,25 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
       reset();
     }
   }, [trainingSession, reset]);
+
+  useEffect(() => {
+    dispatch(fetchEmployee({ searchValue }));
+  }, [dispatch, searchValue]);
+
+  useEffect(() => {
+    dispatch(fetchEmployee({ searchValue }));
+  }, [dispatch, searchValue]);
+
+  // ✅ Get employee state from Redux
+  const { employee, loading: employeeLoading } = useSelector(
+    (state) => state.employee || {}
+  );
+
+  // ✅ Format for react-select
+  const employees = employee?.data?.map((i) => ({
+    label: i?.full_name,
+    value: i?.id,
+  })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -65,14 +87,16 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
     if (offcanvasElement) {
       const handleModalClose = () => {
         settrainingSession(null);
+        reset()
       };
       offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
       return () => {
         offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
       };
     }
-  }, [settrainingSession]);
+  }, []);
 
+  console.log("trainingSession", trainingSession)
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -104,24 +128,48 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 control={control}
                 rules={{ required: "Title is required" }}
                 render={({ field }) => (
-                  <input {...field} className="form-control" placeholder="Enter training title" />
+
+                  <input {...field} value={field?.value} className="form-control" placeholder="Enter Training Litle" />
                 )}
               />
               {errors.training_title && <small className="text-danger">{errors.training_title.message}</small>}
             </div>
 
+
+
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Trainer Name <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Trainer Name <span className="text-danger">*</span>
+              </label>
               <Controller
-                name="trainer_name"
+                name="employee_id"
                 control={control}
-                rules={{ required: "Trainer name is required" }}
-                render={({ field }) => (
-                  <input {...field} className="form-control" placeholder="Enter trainer name" />
-                )}
+                rules={{ required: "Employee is required" }}
+                render={({ field }) => {
+                  const selectedEmployee = employees.find(
+                    (emp) => emp.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      className="select"
+                      options={employees}
+                      placeholder="Select Employee"
+                      isLoading={employeeLoading}
+                      classNamePrefix="react-select"
+                      value={selectedEmployee || ""}
+                      onInputChange={(inputValue) => setSearchValue(inputValue)}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      styles={{ menu: (provided) => ({ ...provided, zIndex: 9999 }) }}
+                    />
+                  );
+                }}
               />
-              {errors.trainer_name && <small className="text-danger">{errors.trainer_name.message}</small>}
+              {errors.employee_id && (
+                <small className="text-danger">{errors.employee_id.message}</small>
+              )}
             </div>
+
 
             <div className="col-md-6 mb-3">
               <label className="col-form-label">Training Date <span className="text-danger">*</span></label>
@@ -132,11 +180,12 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 render={({ field }) => (
                   <DatePicker
                     {...field}
+                    value={
+                      field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                    }
                     selected={field.value ? new Date(field.value) : null}
                     onChange={(date) => {
-                      // remove time by setting time to midnight and converting to ISO date only
-                      const dateOnly = date ? new Date(date.setHours(0, 0, 0, 0)) : null;
-                      field.onChange(dateOnly?.toISOString().split("T")[0]); // "yyyy-mm-dd"
+                      field.onChange(date)
                     }}
                     className="form-control"
                     dateFormat="dd-MM-yyyy"
@@ -156,7 +205,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 name="location"
                 control={control}
                 render={({ field }) => (
-                  <input {...field} className="form-control" placeholder="Enter location" />
+                  <input {...field} className="form-control" placeholder="Enter Location" />
                 )}
               />
             </div>
