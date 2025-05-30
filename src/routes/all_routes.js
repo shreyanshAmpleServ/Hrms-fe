@@ -106,6 +106,12 @@ export const all_routes = {
   // Exit Interview
   exitInterview: "/exit-interview",
 
+  // Exit Clearance
+  exitClearance: "/exit-clearance",
+
+  // Relieving Letter
+  relievingLetter: "/relieving-letter",
+
   // currency: "/currency",
   // core-hr //
 

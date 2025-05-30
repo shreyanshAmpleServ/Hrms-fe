@@ -134,6 +134,8 @@ import TrainingFeedbackEntry from "../pages/trainingFeedbackEntry";
 import ProbationReview from "../pages/probationReview";
 import SuccessionPlanningEntry from "../pages/successionPlanningEntry";
 import ExitInterview from "../pages/ExitInterview";
+import ExitClearance from "../pages/ExitClearance";
+import RelievingLetter from "../pages/RelievingLetter";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -954,6 +956,18 @@ export const privateRoutes = [
     element: <ExitInterview />,
     route: Route,
     title: "Exit Interview",
+  },
+  {
+    path: route.exitClearance,
+    element: <ExitClearance />,
+    route: Route,
+    title: "Exit Clearance",
+  },
+  {
+    path: route.relievingLetter,
+    element: <RelievingLetter />,
+    route: Route,
+    title: "Relieving Letter",
   },
 ];
 

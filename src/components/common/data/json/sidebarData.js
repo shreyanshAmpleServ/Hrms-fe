@@ -217,6 +217,18 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "Exit Clearance Checklist",
+            link: route.exitClearance,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Relieving Letter Generation",
+            link: route.relievingLetter,
+            showSubRoute: false,
+            submenu: false,
+          },
         ],
       },
       {
@@ -226,14 +238,19 @@ export const SidebarData = [
         showSubRoute: false,
         submenu: true,
         submenuItems: [
-
           {
             label: "Travel & Reimbursement Claims",
             link: route.travelReimbursementClaims,
             showSubRoute: false,
             submenu: false,
           },
-        ]
+          {
+            label: "Asset Assignment & Recovery",
+            link: route.assetAssignment,
+            showSubRoute: false,
+            submenu: false,
+          },
+        ],
       },
 
       // {
