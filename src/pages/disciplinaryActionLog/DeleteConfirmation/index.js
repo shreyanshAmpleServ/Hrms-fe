@@ -3,7 +3,7 @@ import { deletedisciplinryAction } from "../../../redux/disciplinaryActionLog";
 
 const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) => {
   const dispatch = useDispatch();
-  const handleDeleteTimeSheet = () => {
+  const handleDeletedisciplinryAction = () => {
     if (disciplinryActionId) {
       dispatch(deletedisciplinryAction(disciplinryActionId));
       setShowModal(false);
@@ -40,7 +40,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) =>
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={handleDeleteTimeSheet}
+                      onClick={handleDeletedisciplinryAction}
                     >
                       Yes, Delete it
                     </button>

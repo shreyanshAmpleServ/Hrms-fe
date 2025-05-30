@@ -93,6 +93,7 @@ import trainingSessionReducer from "./trainingSessionSchedule";
 import TrainingFeedbackReducer from "./trainingFeedbackEntry";
 import probationReviewReducer from "./ProbationReview";
 import successionPlanningEntryReducer from "./successionPlanningEntry";
+
 const store = configureStore({
   reducer: {
     auth: authReducer,

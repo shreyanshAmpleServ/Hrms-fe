@@ -67,8 +67,8 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
     (state) => state.employee || {}
   );
 
-  const { disciplinary } = useSelector((state) => state.disciplinary_penalty || {});
-
+  const { disciplinary_penalty, loading: diciplinaryloading } = useSelector(
+    (state) => state.disciplinary_penalty || {});
 
 
   const employees = employee?.data?.map((i) => ({
@@ -76,12 +76,14 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
     value: i?.id,
   }));
 
-  const penaltyOptions = disciplinary?.data.map((p) => ({
+  const penaltyOptions = disciplinary_penalty?.data?.map((p) => ({
     label: p?.description,
     value: p?.id,
   }));
 
-  ;
+
+  console.log(disciplinary_penalty);
+
 
 
   const onSubmit = async (data) => {
@@ -146,7 +148,7 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Employee <span className="text-danger">*</span></label>
                   <Controller
-                    name="description"
+                    name="employee_id"
                     control={control}
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
@@ -187,6 +189,7 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                           {...field}
                           options={penaltyOptions}
                           placeholder="Select Training"
+                          isLoading={diciplinaryloading}
                           value={selected || null}
                           onChange={(opt) => field.onChange(opt?.value)}
                           classNamePrefix="react-select"
@@ -207,14 +210,21 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                     render={({ field }) => (
                       <DatePicker
                         {...field}
+                        value={
+                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                        }
                         selected={field.value ? new Date(field.value) : null}
-                        onChange={field.onChange}
+                        onChange={(date) => {
+                          field.onChange(date)
+                        }}
                         className="form-control"
                         dateFormat="dd-MM-yyyy"
+                        placeholderText="Select Date"
                       />
                     )}
                   />
                 </div>
+
 
 
 
@@ -239,10 +249,16 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                     render={({ field }) => (
                       <DatePicker
                         {...field}
+                        value={
+                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                        }
                         selected={field.value ? new Date(field.value) : null}
-                        onChange={field.onChange}
+                        onChange={(date) => {
+                          field.onChange(date)
+                        }}
                         className="form-control"
                         dateFormat="dd-MM-yyyy"
+                        placeholderText="Select Date"
                       />
                     )}
                   />

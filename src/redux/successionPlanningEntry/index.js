@@ -16,7 +16,7 @@ export const fetchsuccessionPlanning = createAsyncThunk(
                 startDate: datas?.startDate?.toISOString() || "",
                 endDate: datas?.endDate?.toISOString() || "",
             };
-            const response = await apiClient.get("/v1/succession-planning", {
+            const response = await apiClient.get("/v1/succession-plan", {
                 params,
             });
             return response.data; // Returns list of  succession Planning 
@@ -36,7 +36,7 @@ export const createsuccessionPlanning = createAsyncThunk(
     async (successionPlanningData, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.post("/v1/succession-planning", successionPlanningData),
+                apiClient.post("/v1/succession-plan", successionPlanningData),
                 {
                     loading: "Creating  succession Planning ...",
                     success: (res) =>
@@ -62,7 +62,7 @@ export const updatesuccessionPlanning = createAsyncThunk(
     async ({ id, successionPlanningData }, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.put(`/v1/succession-planning/${id}`, successionPlanningData),
+                apiClient.put(`/v1/succession-plan/${id}`, successionPlanningData),
                 {
                     loading: "Updating  succession Planning ...",
                     success: (res) =>
@@ -93,7 +93,7 @@ export const deletesuccessionPlanning = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.delete(`/v1/succession-planning/${id}`),
+                apiClient.delete(`/v1/succession-plan/${id}`),
                 {
                     loading: "Deleting  succession Planning ...",
                     success: (res) =>
@@ -121,7 +121,7 @@ export const fetchsuccessionPlanningById = createAsyncThunk(
     "successionPlanning/fetchsuccessionPlanningById",
     async (id, thunkAPI) => {
         try {
-            const response = await apiClient.get(`/v1/succession-planning/${id}`);
+            const response = await apiClient.get(`/v1/succession-plan/${id}`);
             return response.data; // Returns  succession Planning  details
         } catch (error) {
             return thunkAPI.rejectWithValue(

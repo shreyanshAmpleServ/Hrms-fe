@@ -17,7 +17,7 @@ export const fetchprobationReview = createAsyncThunk(
                 startDate: datas?.startDate?.toISOString() || "",
                 endDate: datas?.endDate?.toISOString() || "",
             };
-            const response = await apiClient.get("/v1/probation-Review", {
+            const response = await apiClient.get("/v1/probation-review", {
                 params,
             });
             return response.data; // Returns list of  probation Review
@@ -37,7 +37,7 @@ export const createprobationReview = createAsyncThunk(
     async (probationReviewData, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.post("/v1/probation-Review", probationReviewData),
+                apiClient.post("/v1/probation-review", probationReviewData),
                 {
                     loading: "Creating  probation Review...",
                     success: (res) =>
@@ -63,7 +63,7 @@ export const updateprobationReview = createAsyncThunk(
     async ({ id, probationReviewData }, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.put(`/v1/probation-Review/${id}`, probationReviewData),
+                apiClient.put(`/v1/probation-review/${id}`, probationReviewData),
                 {
                     loading: "Updating  probation Review...",
                     success: (res) =>
@@ -94,7 +94,7 @@ export const deleteprobationReview = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.delete(`/v1/probation-Review/${id}`),
+                apiClient.delete(`/v1/probation-review/${id}`),
                 {
                     loading: "Deleting  probation Review...",
                     success: (res) =>
@@ -122,7 +122,7 @@ export const fetchprobationReviewById = createAsyncThunk(
     "probationReview/fetchprobationReviewById",
     async (id, thunkAPI) => {
         try {
-            const response = await apiClient.get(`/v1/probation-Review/${id}`);
+            const response = await apiClient.get(`/v1/probation-review/${id}`);
             return response.data; // Returns  probation Review details
         } catch (error) {
             return thunkAPI.rejectWithValue(

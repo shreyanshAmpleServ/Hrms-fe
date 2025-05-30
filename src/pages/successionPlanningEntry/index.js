@@ -73,11 +73,11 @@ const SuccessionPlanningEntry = () => {
     const columns = [
         {
             title: "Current Holder",
-            render: (record) => record?.current_holder?.full_name || "-",
+            render: (record) => record?.succession_currentHolder?.full_name || "-",
         },
         {
             title: "Potential Successor",
-            render: (record) => record?.potential_successor?.full_name || "-",
+            render: (record) => record?.succession_potentialSuccessor?.full_name || "-",
         },
         {
             title: "Critical Position",
@@ -149,7 +149,7 @@ const SuccessionPlanningEntry = () => {
     return (
         <>
             <Helmet>
-                <title>DCC HRMS -Training Session Schedule</title>
+                <title>DCC HRMS - Succession Planning Entry</title>
                 <meta
                     name="time-sheet"
                     content="This is time sheet page of DCC HRMS."
@@ -165,7 +165,7 @@ const SuccessionPlanningEntry = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Training Session Schedule
+                                            Succession Planning Entry
                                             <span className="count-title">
                                                 {successionPlanning?.totalCount}
                                             </span>
@@ -191,7 +191,7 @@ const SuccessionPlanningEntry = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Training Session Schedule"
+                                                    placeholder="Search Succession Planning Entry"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -206,7 +206,7 @@ const SuccessionPlanningEntry = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Training Session Schedule
+                                                        Add Succession Planning Entry
                                                     </Link>
                                                 </div>
                                             </div>
@@ -220,7 +220,7 @@ const SuccessionPlanningEntry = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Training Session Schedule</h4>
+                                                    <h4 className="mb-0 me-3">All Succession Planning Entry</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">

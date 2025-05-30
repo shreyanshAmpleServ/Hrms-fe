@@ -26,7 +26,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, probationReviewId }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove probation ReviewId?</h4>
+                  <h4 className="mb-2">Remove Probation Review?</h4>
                   <p className="mb-0">
                     Are you sure you want to remove <br /> the probation Review
                     you selected?

@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deleteTimeSheet } from "../../../redux/TimeSheet";
+import { deletegrievanceSubmission } from "../../../redux/grievanceSubmission";
 
-const DeleteConfirmation = ({ showModal, setShowModal, timeSheetId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, grievanceSubmissionId }) => {
   const dispatch = useDispatch();
-  const handleDeleteTimeSheet = () => {
-    if (timeSheetId) {
-      dispatch(deleteTimeSheet(timeSheetId));
+  const handleDeletegrievanceSubmission = () => {
+    if (grievanceSubmissionId) {
+      dispatch(deletegrievanceSubmission(grievanceSubmissionId));
       setShowModal(false);
     }
   };
@@ -26,9 +26,9 @@ const DeleteConfirmation = ({ showModal, setShowModal, timeSheetId }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove Time Sheet Entry?</h4>
+                  <h4 className="mb-2">Remove Grievance Submission?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the time sheet entry
+                    Are you sure you want to remove <br /> the Grievance Submission
                     you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
@@ -40,7 +40,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, timeSheetId }) => {
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={handleDeleteTimeSheet}
+                      onClick={handleDeletegrievanceSubmission}
                     >
                       Yes, Delete it
                     </button>
