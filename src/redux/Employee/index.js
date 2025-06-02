@@ -111,6 +111,22 @@ export const fetchEmployeeById = createAsyncThunk(
   }
 );
 
+export const updateEmployeeExperience = createAsyncThunk(
+  "employee/updateEmployeeExperience",
+  async (employeeData, thunkAPI) => {
+    try {
+      const response = await apiClient.post(
+        `/v1/employee-experience`,
+        employeeData
+      );
+      return response.data; // Returns the updated employee
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to update employee experience"
+      );
+    }
+  }
+);
 const employeesSlice = createSlice({
   name: "employee",
   initialState: {
@@ -216,6 +232,19 @@ const employeesSlice = createSlice({
         state.employeeDetail = action.payload.data;
       })
       .addCase(fetchEmployeeById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(updateEmployeeExperience.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEmployeeExperience.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.message;
+        state.employeeDetail = action.payload.data;
+      })
+      .addCase(updateEmployeeExperience.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

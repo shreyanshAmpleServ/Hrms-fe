@@ -212,7 +212,7 @@ const EmployeeDetail = () => {
                               ? moment(employeeDetail?.join_date).format(
                                   "DD-MM-YYYY"
                                 )
-                              : " - - "}
+                              : "N/A"}
                           </span>
                         </p>
                       </div>
@@ -242,7 +242,7 @@ const EmployeeDetail = () => {
                             ? moment(employeeDetail?.date_of_birth).format(
                                 "DD-MM-YYYY"
                               )
-                            : " - - "}
+                            : "N/A"}
                         </p>
                       </div>
                       <div className="d-flex flex-column gap-1">
@@ -250,16 +250,14 @@ const EmployeeDetail = () => {
                           <strong> Address:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.address || " - - "}
+                          {employeeDetail?.address || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex flex-column gap-1">
                         <p className="m-0">
                           <strong>Gender:</strong>
                         </p>
-                        <p className="m-0">
-                          {employeeDetail?.gender || " - - "}
-                        </p>
+                        <p className="m-0">{employeeDetail?.gender || "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -288,7 +286,7 @@ const EmployeeDetail = () => {
                             <strong>Name:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.primary_contact_name || " - - "}
+                            {employeeDetail?.primary_contact_name || "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -296,8 +294,7 @@ const EmployeeDetail = () => {
                             <strong>Relationship:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.primary_contact_relation ||
-                              " - - "}
+                            {employeeDetail?.primary_contact_relation || "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -305,7 +302,7 @@ const EmployeeDetail = () => {
                             <strong>Phone:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.primary_contact_number || " - - "}
+                            {employeeDetail?.primary_contact_number || "N/A"}
                           </p>
                         </div>
                       </div>
@@ -318,7 +315,7 @@ const EmployeeDetail = () => {
                             <strong>Name:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.secondary_contact_name || " - - "}
+                            {employeeDetail?.secondary_contact_name || "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -327,7 +324,7 @@ const EmployeeDetail = () => {
                           </p>
                           <p className="m-0">
                             {employeeDetail?.secondary_contact_relation ||
-                              " - - "}
+                              "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -335,8 +332,7 @@ const EmployeeDetail = () => {
                             <strong>Phone:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.secondary_contact_mumber ||
-                              " - - "}
+                            {employeeDetail?.secondary_contact_mumber || "N/A"}
                           </p>
                         </div>
                       </div>
@@ -464,7 +460,7 @@ const EmployeeDetail = () => {
                           <strong>Account Holder Name:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.account_holder_name || " - - "}
+                          {employeeDetail?.account_holder_name || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -472,7 +468,7 @@ const EmployeeDetail = () => {
                           <strong>Account Number:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.account_number || " - - "}
+                          {employeeDetail?.account_number || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -481,14 +477,14 @@ const EmployeeDetail = () => {
                         </p>
                         <p className="m-0">
                           {employeeDetail?.hrms_employee_bank?.bank_name ||
-                            " - - "}
+                            "N/A"}
                         </p>
                       </div>
                       <div className="d-flex mb-2 justify-content-between">
                         <p className="m-0">
                           <strong>IFSC Code:</strong>
                         </p>
-                        <p className="m-0">{employeeDetail?.ifsc || " - - "}</p>
+                        <p className="m-0">{employeeDetail?.ifsc || "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -513,7 +509,7 @@ const EmployeeDetail = () => {
                           <strong>Passport Number:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.passport_number || " - - "}
+                          {employeeDetail?.passport_number || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -521,7 +517,7 @@ const EmployeeDetail = () => {
                           <strong>Nationality:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.nationality || " - - "}
+                          {employeeDetail?.nationality || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -533,7 +529,7 @@ const EmployeeDetail = () => {
                             ? moment(
                                 employeeDetail?.passport_issue_date
                               ).format("DD-MM-YYYY")
-                            : " - - "}
+                            : "N/A"}
                         </p>
                       </div>
                       <div className="d-flex mb-2 justify-content-between">
@@ -545,7 +541,7 @@ const EmployeeDetail = () => {
                             ? moment(
                                 employeeDetail?.passport_expiry_date
                               ).format("DD-MM-YYYY")
-                            : " - - "}
+                            : "N/A"}
                         </p>
                       </div>
                     </div>
@@ -577,7 +573,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.linkedin || " - - "}
+                            {employeeDetail?.social_medias?.linkedin || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -591,7 +587,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.twitter || " - - "}
+                            {employeeDetail?.social_medias?.twitter || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -605,7 +601,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.facebook || " - - "}
+                            {employeeDetail?.social_medias?.facebook || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -619,8 +615,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.instagram ||
-                              " - - "}
+                            {employeeDetail?.social_medias?.instagram || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -639,40 +634,6 @@ const EmployeeDetail = () => {
         <UpdateEducations employeeDetail={employeeDetail} />
         <UpdateExperience employeeDetail={employeeDetail} />
       </div>
-      <style jsx>{`
-        .avatar-uploader .avatar-uploader-trigger {
-          position: relative;
-          display: inline-block;
-        }
-
-        .avatar-uploader .avatar-uploader-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.3s;
-          border-radius: 50%;
-        }
-
-        .avatar-uploader:hover .avatar-uploader-overlay {
-          opacity: 1;
-        }
-
-        .ant-upload-select {
-          border: none !important;
-          background: none !important;
-          margin: 0 !important;
-          padding: 0 !important;
-          width: auto !important;
-          height: auto !important;
-        }
-      `}</style>
     </>
   );
 };

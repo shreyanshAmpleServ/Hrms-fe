@@ -98,7 +98,7 @@ const GoalCategoryMaster = () => {
       : []),
   ];
 
-  const { goal_category, loading, error, success } = useSelector(
+  const { goal_category, loading } = useSelector(
     (state) => state.goalCategoryMaster
   );
 
@@ -201,7 +201,7 @@ const GoalCategoryMaster = () => {
                     <div className="col-sm-8">
                       <AddButton
                         label="Add Goal Category"
-                        id="add_edit_Goal_Category_modal"
+                        id="add_edit_goal_category_modal"
                         setMode={() => setMode("add")}
                       />
                     </div>

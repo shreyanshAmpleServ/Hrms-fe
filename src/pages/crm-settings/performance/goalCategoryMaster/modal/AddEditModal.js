@@ -65,17 +65,18 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               {/* Category Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Category Name <span className="text-danger">*</span>
+                  Goal Category Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.category_name ? "is-invalid" : ""}`}
-                  placeholder="Enter Category Name"
+                  placeholder="Enter Goal Category Name"
                   {...register("category_name", {
-                    required: "Category name is required.",
+                    required: "Goal Category name is required.",
                     minLength: {
                       value: 3,
-                      message: "Category name must be at least 3 characters.",
+                      message:
+                        "Goal Category name must be at least 3 characters.",
                     },
                   })}
                 />

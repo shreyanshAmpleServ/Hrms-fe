@@ -1,45 +1,25 @@
-import React, { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import {
-//   setEmployeeDataTogglePopup,
-//   setEmployeeDataTogglePopupTwo,
-// } from "../../core/data/redux/commonSlice";
 import { Table } from "antd";
 import moment from "moment";
-import CollapseHeader from "../../components/common/collapse-header.js";
-import {
-  fetchActivities,
-  fetchActivityTypes,
-} from "../../redux/Activities/index.js";
-import { all_routes } from "../../routes/all_routes.js";
-import ActivitiesModal from "./modal/old.js";
-import ViewIconsToggle from "../../components/datatable/ViewIconsToggle.js";
-// import ActivitiesGrid from "./ActivitiesGrid.js";
-import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
-import { StatusOptions } from "../../components/common/selectoption/selectoption.js";
-// import ActivitiesKanban from "./ActivitiessKanban.js";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import CollapseHeader from "../../components/common/collapse-header.js";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchCampaign } from "../../redux/campaign/index.js";
-import DeleteAlert from "./alert/DeleteAlert.js";
-import AddEmployee from "./AddEmployee.js";
-import { Navigate } from "react-router";
-import ManageEmpModal from "./modal/manageEmpModal.js";
+import ViewIconsToggle from "../../components/datatable/ViewIconsToggle.js";
 import { deleteEmployee, fetchEmployee } from "../../redux/Employee/index.js";
+import DeleteAlert from "./alert/DeleteAlert.js";
 import EmployeeGrid from "./gridEmployee.js";
+import ManageEmpModal from "./modal/manageEmpModal.js";
 
 const EmployeeList = () => {
-  // const data = activities_data;
-  const { name } = useParams();
   const [view, setView] = useState("list");
   const [filter, setFilter] = useState("");
-  const [newFilter, setNewFilter] = useState(name);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [employeeData, setEmployeeData] = useState();
-  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [employeeID, setEmployeeID] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState();
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -48,9 +28,7 @@ const EmployeeList = () => {
   });
   const dispatch = useDispatch();
 
-  const { employee, loading, error, success } = useSelector(
-    (state) => state.employee || {}
-  );
+  const { employee, loading } = useSelector((state) => state.employee || {});
 
   React.useEffect(() => {
     dispatch(
@@ -58,10 +36,9 @@ const EmployeeList = () => {
         search: searchValue,
         ...selectedDateRange,
         filter: filter,
-        filter2: newFilter,
       })
     );
-  }, [dispatch, searchValue, selectedDateRange, filter, newFilter]);
+  }, [dispatch, searchValue, selectedDateRange, filter]);
 
   React.useEffect(() => {
     setPaginationData({
@@ -83,7 +60,6 @@ const EmployeeList = () => {
         search: searchValue,
         ...selectedDateRange,
         filter: filter,
-        filter2: newFilter,
         page: currentPage,
         size: pageSize,
       })
@@ -126,11 +102,7 @@ const EmployeeList = () => {
       dataIndex: "phone_number",
       sorter: (a, b) => a.phone_number.length - b.phone_number.length,
     },
-    // {
-    //     title: "Start Date",
-    //     dataIndex: "start_date",
-    //     sorter: (a, b) => a.start_date.length - b.start_date.length,
-    // },
+
     {
       title: "Department",
       dataIndex: "hrms_employee_department",
@@ -147,32 +119,12 @@ const EmployeeList = () => {
         a.hrms_employee_designation?.designation_name -
         b?.hrms_employee_designation?.designation_name,
     },
-    {
-      title: "Emp Category",
-      dataIndex: "employee_category",
-      // render: (text) => <div>{text.full_name}</div>,
-      sorter: (a, b) => a.employee_category.length - b.employee_category.length,
-    },
-    {
-      title: "Employment Type",
-      dataIndex: "employment_type",
-      // render: (text, record, a) => (
-      //   <>
-      //     {text?.id ? (
-      //       <span
-      //         className={`badge activity-badge ${text?.name === "Calls" ? "bg-success" : text?.name === "Emails" ? "bg-purple" : text?.name === "Task" ? "bg-blue" : text?.name === "Task" ? "bg-red" : "bg-warning"}`}
-      //       >
-      //         {/* <i className={record?.icon} /> */}
 
-      //         {text?.name || " "}
-      //       </span>
-      //     ) : (
-      //       " -- "
-      //     )}
-      //   </>
-      // ),
-      sorter: (a, b) => a.employment_type.length - b.employment_type.length,
-    },
+    // {
+    //   title: "Employment Type",
+    //   dataIndex: "employment_type",
+    //   sorter: (a, b) => a.employment_type.length - b.employment_type.length,
+    // },
     {
       title: "Status",
       dataIndex: "status",
@@ -192,7 +144,7 @@ const EmployeeList = () => {
                       ? "red"
                       : text === "On Hold" || "Notice Period"
                         ? "orange"
-                        : "black", // Use color property from options
+                        : "black",
               display: "inline-block",
             }}
           />
@@ -211,7 +163,7 @@ const EmployeeList = () => {
       ? [
           {
             title: "Action",
-            render: (text, a) => (
+            render: (_, a) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -238,7 +190,7 @@ const EmployeeList = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteCampaign(a.id)}
+                      onClick={() => handleDeleteEmployee(a.id)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -250,14 +202,14 @@ const EmployeeList = () => {
         ]
       : []),
   ];
-  const handleDeleteCampaign = (id) => {
-    setSelectedCampaign(id);
+  const handleDeleteEmployee = (id) => {
+    setEmployeeID(id);
     setShowDeleteModal(true);
   };
-  const deleteData = () => {
-    if (selectedCampaign) {
-      dispatch(deleteEmployee(selectedCampaign)); // Dispatch the delete action
-      setShowDeleteModal(false); // Close the modal
+  const handleDelete = () => {
+    if (employeeID) {
+      dispatch(deleteEmployee(employeeID));
+      setShowDeleteModal(false);
     }
   };
   return (
@@ -508,8 +460,7 @@ const EmployeeList = () => {
       <DeleteAlert
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedCampaign={selectedCampaign}
-        onDelete={deleteData}
+        onDelete={handleDelete}
         label={"Employee"}
       />
       {/* /Page Wrapper */}

@@ -3,9 +3,12 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { createtrainingSession, updatetrainingSession } from "../../../redux/trainingSessionSchedule";
+import {
+  createtrainingSession,
+  updatetrainingSession,
+} from "../../../redux/trainingSessionSchedule";
 import { fetchEmployee } from "../../../redux/Employee";
-import Select from 'react-select'; // Or correct path
+import Select from "react-select";
 
 const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
   const dispatch = useDispatch();
@@ -33,7 +36,8 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
       reset({
         training_title: trainingSession.training_title || "",
         trainer_name: trainingSession.trainer_name || "",
-        training_date: trainingSession.training_date || new Date().toISOString(),
+        training_date:
+          trainingSession.training_date || new Date().toISOString(),
         location: trainingSession.location || "",
         training_type: trainingSession.training_type || "",
       });
@@ -56,10 +60,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
   );
 
   // ✅ Format for react-select
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  })) || [];
+  const employees =
+    employee?.data?.map((i) => ({
+      label: i?.full_name,
+      value: i?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -87,16 +92,22 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
     if (offcanvasElement) {
       const handleModalClose = () => {
         settrainingSession(null);
-        reset()
+        reset();
       };
-      offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
       return () => {
-        offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
       };
     }
   }, []);
 
-  console.log("trainingSession", trainingSession)
+  console.log("trainingSession", trainingSession);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -122,20 +133,28 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Training Title <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Training Title <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="training_title"
                 control={control}
                 rules={{ required: "Title is required" }}
                 render={({ field }) => (
-
-                  <input {...field} value={field?.value} className="form-control" placeholder="Enter Training Litle" />
+                  <input
+                    {...field}
+                    value={field?.value}
+                    className="form-control"
+                    placeholder="Enter Training Litle"
+                  />
                 )}
               />
-              {errors.training_title && <small className="text-danger">{errors.training_title.message}</small>}
+              {errors.training_title && (
+                <small className="text-danger">
+                  {errors.training_title.message}
+                </small>
+              )}
             </div>
-
-
 
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
@@ -160,19 +179,24 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                       value={selectedEmployee || ""}
                       onInputChange={(inputValue) => setSearchValue(inputValue)}
                       onChange={(opt) => field.onChange(opt?.value)}
-                      styles={{ menu: (provided) => ({ ...provided, zIndex: 9999 }) }}
+                      styles={{
+                        menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                      }}
                     />
                   );
                 }}
               />
               {errors.employee_id && (
-                <small className="text-danger">{errors.employee_id.message}</small>
+                <small className="text-danger">
+                  {errors.employee_id.message}
+                </small>
               )}
             </div>
 
-
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Training Date <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Training Date <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="training_date"
                 control={control}
@@ -181,11 +205,13 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                   <DatePicker
                     {...field}
                     value={
-                      field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : ""
                     }
                     selected={field.value ? new Date(field.value) : null}
                     onChange={(date) => {
-                      field.onChange(date)
+                      field.onChange(date);
                     }}
                     className="form-control"
                     dateFormat="dd-MM-yyyy"
@@ -194,10 +220,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 )}
               />
               {errors.training_date && (
-                <small className="text-danger">{errors.training_date.message}</small>
+                <small className="text-danger">
+                  {errors.training_date.message}
+                </small>
               )}
             </div>
-
 
             <div className="col-md-6 mb-3">
               <label className="col-form-label">Location</label>
@@ -205,7 +232,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 name="location"
                 control={control}
                 render={({ field }) => (
-                  <input {...field} className="form-control" placeholder="Enter Location" />
+                  <input
+                    {...field}
+                    className="form-control"
+                    placeholder="Enter Location"
+                  />
                 )}
               />
             </div>
