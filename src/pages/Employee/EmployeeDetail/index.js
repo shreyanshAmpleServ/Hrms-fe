@@ -1,5 +1,5 @@
-import { EditFilled, CameraFilled } from "@ant-design/icons";
-import { Avatar, Button, Skeleton, Tooltip, Upload, message } from "antd";
+import { CameraFilled, EditFilled } from "@ant-design/icons";
+import { Avatar, Button, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,8 +18,6 @@ import UpdateSocialInfo from "./UpdateSocialInfo";
 const EmployeeDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const [imageUrl, setImageUrl] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchEmployeeById(id));
@@ -41,7 +39,7 @@ const EmployeeDetail = () => {
   const uploadButton = (
     <div className="avatar-uploader-trigger">
       <Avatar
-        src={imageUrl || employeeDetail?.profile_pic}
+        src={employeeDetail?.profile_pic}
         alt={employeeDetail?.full_name}
         size={120}
         className="fs-1"
