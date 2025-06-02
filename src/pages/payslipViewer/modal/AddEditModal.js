@@ -6,7 +6,8 @@ import { fetchEmployee } from "../../../redux/Employee";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 import React, { useEffect, useMemo } from "react";
-
+import moment from "moment";
+import DatePicker from "react-datepicker";
 // import { Modal, Button } from 'react-bootstrap';
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
@@ -231,12 +232,25 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Uploaded On */}
               <div className="mb-3">
                 <label className="col-form-label">Uploaded On</label>
-                <input
-                  type="date"
-                  className={`form-control ${errors.uploaded_on ? "is-invalid" : ""}`}
-                  {...register("uploaded_on", {
-                    required: "Upload date is required.",
-                  })}
+                <Controller
+                  name="uploaded_on"
+                  control={control}
+                  rules={{ required: "Date is required" }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      value={
+                        field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                      }
+                      selected={field.value ? new Date(field.value) : null}
+                      onChange={(date) => {
+                        field.onChange(date)
+                      }}
+                      className="form-control"
+                      dateFormat="dd-MM-yyyy"
+                      placeholderText="Select Uploaded Date"
+                    />
+                  )}
                 />
                 {errors.uploaded_on && (
                   <small className="text-danger">{errors.uploaded_on.message}</small>

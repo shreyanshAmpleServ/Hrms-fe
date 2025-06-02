@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
 import { createsuccessionPlanning, updatesuccessionPlanning } from "../../../redux/successionPlanningEntry";
+import DatePicker from "react-datepicker";
 
 const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -203,14 +204,20 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
               <Controller
                 name="plan_date"
                 control={control}
-                rules={{ required: "Plan date is required" }}
+                rules={{ required: "Date is required" }}
                 render={({ field }) => (
-                  <input
+                  <DatePicker
                     {...field}
-                    type="date"
+                    value={
+                      field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                    }
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) => {
+                      field.onChange(date)
+                    }}
                     className="form-control"
-                    value={field.value}
-                    onChange={field.onChange}
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="Select Offer Date"
                   />
                 )}
               />

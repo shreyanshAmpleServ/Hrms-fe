@@ -5,6 +5,8 @@ import Select from "react-select";
 import { addjob_posting, updatejob_posting } from "../../../redux/JobPosting";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
+import moment from "moment";
+import DatePicker from "react-datepicker";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.job_posting);
@@ -148,7 +150,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <Select
                   {...field}
                   options={DepartmentList}
-                  placeholder="Choose"
+                  placeholder="Choose Department"
                   classNamePrefix="react-select"
                   className="select2"
                   isDisabled={!DepartmentList.length}
@@ -173,7 +175,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 <Select
                   {...field}
                   options={DesignationList}
-                  placeholder="Choose"
+                  placeholder="Choose Designation"
                   classNamePrefix="react-select"
                   className="select2"
                   isDisabled={!DesignationList.length}
@@ -188,21 +190,26 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
 
           {/* Job Title */}
-          <div className="col-md-6 mb-3">
+          <div className="col-md-6 mb-3 mt-2">
             <label className="form-label">Job Title</label>
             <input
+              placeholder="Job Title"
+
               type="text"
               className="form-control"
               {...register("job_title", { required: "Job title is required" })}
+
             />
             {errors.job_title && <small className="text-danger">{errors.job_title.message}</small>}
           </div>
 
           {/* Required Experience */}
-          <div className="col-md-6 mb-3">
+          <div className="col-md-6 mb-3 mt-2">
             <label className="form-label">Required Experience</label>
             <input
               type="text"
+              placeholder="Required Experience"
+
               className="form-control"
               {...register("required_experience", { required: "Experience is required" })}
             />
@@ -212,10 +219,25 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           {/* Posting Date */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Posting Date</label>
-            <input
-              type="date"
-              className="form-control"
-              {...register("posting_date", { required: "Posting date is required" })}
+            <Controller
+              name="posting_data"
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  value={
+                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(date)
+                  }}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select Posting Date"
+                />
+              )}
             />
             {errors.posting_date && <small className="text-danger">{errors.posting_date.message}</small>}
           </div>
@@ -223,13 +245,30 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           {/* Closing Date */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Closing Date</label>
-            <input
-              type="date"
-              className="form-control"
-              {...register("closing_date", { required: "Closing date is required" })}
+            <Controller
+              name="colsing_data"
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  value={
+                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(date)
+                  }}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select Closing Date"
+                />
+              )}
             />
             {errors.closing_date && <small className="text-danger">{errors.closing_date.message}</small>}
           </div>
+
+
 
           {/* Is Internal */}
           <div className="col-md-6 mb-3">
@@ -250,6 +289,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <label className="form-label">Description</label>
             <textarea
               className="form-control"
+              placeholder="Description"
+
               rows={3}
               {...register("description", { required: "Description is required" })}
             ></textarea>

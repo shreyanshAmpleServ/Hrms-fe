@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchmonthlyPayroll } from "../../redux/monthlyPayrollProcessing/index.js";
+import { fetchrecognitionAwards } from "../../redux/RecognitionAwards";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagemonthlyPayroll from "./Managepayroll/index.js";
+import ManageRecognitionAwards from "./ManageRecognitionAwards";
 
-const MonthlyPayrollProcessing = () => {
+const RecognitionAwards = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [selectedmonthlyPayroll, setSelectedmonthlyPayroll] = useState(null);
+    const [selectedrecognitionAwards, setSelectedrecognitionAwards] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState({});
     const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,11 +22,11 @@ const MonthlyPayrollProcessing = () => {
     });
     const dispatch = useDispatch();
 
-    const { monthlyPayroll, loading } = useSelector((state) => state.monthlyPayroll || {});
+    const { recognitionAwards, loading } = useSelector((state) => state.recognitionAwards || {});
 
     React.useEffect(() => {
         dispatch(
-            fetchmonthlyPayroll({
+            fetchrecognitionAwards({
                 search: searchValue,
                 ...selectedDateRange,
             })
@@ -35,12 +35,12 @@ const MonthlyPayrollProcessing = () => {
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: monthlyPayroll?.currentPage,
-            totalPage: monthlyPayroll?.totalPages,
-            totalCount: monthlyPayroll?.totalCount,
-            pageSize: monthlyPayroll?.size,
+            currentPage: recognitionAwards?.currentPage,
+            totalPage: recognitionAwards?.totalPages,
+            totalCount: recognitionAwards?.totalCount,
+            pageSize: recognitionAwards?.size,
         });
-    }, [monthlyPayroll]);
+    }, [recognitionAwards]);
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -49,7 +49,7 @@ const MonthlyPayrollProcessing = () => {
             pageSize,
         }));
         dispatch(
-            fetchmonthlyPayroll({
+            fetchrecognitionAwards({
                 search: searchValue,
                 ...selectedDateRange,
                 page: currentPage,
@@ -58,7 +58,7 @@ const MonthlyPayrollProcessing = () => {
         );
     };
 
-    const data = monthlyPayroll?.data;
+    const data = recognitionAwards?.data;
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"));
     const allPermissions = permissions?.filter(
@@ -73,11 +73,12 @@ const MonthlyPayrollProcessing = () => {
     const columns = [
         {
             title: "Employee Name",
-            render: (text) => text?.employee?.full_name || "-", // assuming relation
+            dataIndex: "recognition_award_employee", // assuming this is a relation object
+            render: (text) => text?.full_name || "-",
         },
         {
-            title: "Grievance Type",
-            dataIndex: "grievance_type",
+            title: "Award Title",
+            dataIndex: "award_title",
             render: (text) => text || "-",
         },
         {
@@ -86,35 +87,16 @@ const MonthlyPayrollProcessing = () => {
             render: (text) => text || "-",
         },
         {
-            title: "Anonymous",
-            dataIndex: "anonymous",
-            render: (val) => (val ? "Yes" : "No"),
+            title: "Award Date",
+            dataIndex: "award_date",
+            render: (text) => text ? moment(text).format("DD MMM YYYY") : "-",
         },
         {
-            title: "Submitted On",
-            dataIndex: "submitted_on",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY HH:mm") : "-"),
-            sorter: (a, b) => new Date(a.submitted_on) - new Date(b.submitted_on),
+            title: "Nominated By",
+            dataIndex: "recognition_award_nominated", // assuming this is a relation object
+            render: (text) => text?.full_name || "-",
         },
-        {
-            title: "Status",
-            dataIndex: "status",
-            render: (text) => text || "-",
-        },
-        {
-            title: "Assigned To",
-            render: (text) => text?.assigned_to_user?.full_name || "-", // assuming relation
-        },
-        {
-            title: "Resolution Notes",
-            dataIndex: "resolution_notes",
-            render: (text) => text || "-",
-        },
-        {
-            title: "Resolved On",
-            dataIndex: "resolved_on",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-        },
+
         ...(isDelete || isUpdate
             ? [
                 {
@@ -136,7 +118,7 @@ const MonthlyPayrollProcessing = () => {
                                         to="#"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvas_add"
-                                        onClick={() => setSelectedmonthlyPayroll(a)}
+                                        onClick={() => setSelectedrecognitionAwards(a)}
                                     >
                                         <i className="ti ti-edit text-blue" /> Edit
                                     </Link>
@@ -146,7 +128,7 @@ const MonthlyPayrollProcessing = () => {
                                     <Link
                                         className="dropdown-item"
                                         to="#"
-                                        onClick={() => handleDeletemonthlyPayroll(a)}
+                                        onClick={() => handleDeleterecognitionAwards(a)}
                                     >
                                         <i className="ti ti-trash text-danger" /> Delete
                                     </Link>
@@ -159,15 +141,15 @@ const MonthlyPayrollProcessing = () => {
             : []),
     ];
 
-    const handleDeletemonthlyPayroll = (monthlyPayroll) => {
-        setSelectedmonthlyPayroll(monthlyPayroll);
+    const handleDeleterecognitionAwards = (recognitionAwards) => {
+        setSelectedrecognitionAwards(recognitionAwards);
         setShowDeleteModal(true);
     };
 
     return (
         <>
             <Helmet>
-                <title>DCC HRMS -Monthly Payroll Processing</title>
+                <title>DCC HRMS -Recognition Awards</title>
                 <meta
                     name="time-sheet"
                     content="This is time sheet page of DCC HRMS."
@@ -183,9 +165,9 @@ const MonthlyPayrollProcessing = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Monthly Payroll Processing
+                                            Recognition Awards
                                             <span className="count-title">
-                                                {monthlyPayroll?.totalCount}
+                                                {recognitionAwards?.totalCount}
                                             </span>
                                         </h4>
                                     </div>
@@ -209,7 +191,7 @@ const MonthlyPayrollProcessing = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Grievance Submission"
+                                                    placeholder="Search Recognition Awards"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -224,7 +206,7 @@ const MonthlyPayrollProcessing = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Add Monthly Payroll Processing
+                                                        Add Recognition Awards
                                                     </Link>
                                                 </div>
                                             </div>
@@ -238,7 +220,7 @@ const MonthlyPayrollProcessing = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Monthly Payroll Processing</h4>
+                                                    <h4 className="mb-0 me-3">All Recognition Awards</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -278,18 +260,18 @@ const MonthlyPayrollProcessing = () => {
                         </div>
                     </div>
                 </div>
-                <ManagemonthlyPayroll
-                    setmonthlyPayroll={setSelectedmonthlyPayroll}
-                    monthlyPayroll={selectedmonthlyPayroll}
+                <ManageRecognitionAwards
+                    setrecognitionAwards={setSelectedrecognitionAwards}
+                    recognitionAwards={selectedrecognitionAwards}
                 />
             </div>
             <DeleteConfirmation
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
-                monthlyPayrollId={selectedmonthlyPayroll?.id}
+                recognitionAwardsId={selectedrecognitionAwards?.id}
             />
         </>
     );
 };
 
-export default MonthlyPayrollProcessing;
+export default RecognitionAwards;

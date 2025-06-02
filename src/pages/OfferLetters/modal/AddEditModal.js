@@ -5,6 +5,8 @@ import Select from "react-select";
 import { addloan_requests, updateloan_requests } from "../../../redux/loanRequests";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchEmployee } from "../../../redux/Employee";
+import moment from "moment";
+import DatePicker from "react-datepicker";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.loan_requests);
@@ -33,7 +35,11 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       })) || [],
     [employee]
   );
-
+  const Status = [
+    { label: "Pending", value: "pending" },
+    { label: "Approved", value: "approved" },
+    { label: "Rejected", value: "rejected" },
+  ];;
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -160,10 +166,25 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           {/* Offer Date */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Offer Date</label>
-            <input
-              type="date"
-              className="form-control"
-              {...register("offer_date", { required: "Offer date is required" })}
+            <Controller
+              name="offer_date"
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  value={
+                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(date)
+                  }}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select Offer Date"
+                />
+              )}
             />
             {errors.offer_date && (
               <small className="text-danger">{errors.offer_date.message}</small>
@@ -175,6 +196,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             <label className="form-label">Position</label>
             <input
               type="text"
+              placeholder="Position"
               className="form-control"
               {...register("position", { required: "Position is required" })}
             />
@@ -188,6 +210,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             <label className="form-label">Offered Salary</label>
             <input
               type="number"
+              placeholder="Offered Salary"
               className="form-control"
               {...register("offered_salary", { required: "Offered salary is required" })}
             />
@@ -199,10 +222,25 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           {/* Valid Until */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Valid Until</label>
-            <input
-              type="date"
-              className="form-control"
-              {...register("valid_until", { required: "Valid until date is required" })}
+            <Controller
+              name="valid_until"
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  value={
+                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(date)
+                  }}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select  Date"
+                />
+              )}
             />
             {errors.valid_until && (
               <small className="text-danger">{errors.valid_until.message}</small>
@@ -212,16 +250,35 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           {/* Status */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Status</label>
-            <select
-              className="form-select"
-              {...register("status", { required: "Status is required" })}
-              defaultValue=""
-            >
-              <option value="">Select</option>
-              <option value="pending">Pending</option>
-              <option value="accepted">Accepted</option>
-              <option value="rejected">Rejected</option>
-            </select>
+            <Controller
+              name="status"
+              control={control}
+              rules={{ required: "Approved Status is required" }}
+              render={({ field }) => {
+                const selectedDeal = Status?.find(
+                  (employee) => employee.value === field.value
+                );
+                return (
+                  <Select
+                    {...field}
+                    className="select"
+                    options={Status}
+                    placeholder="Select  Status"
+                    value={selectedDeal || null}
+                    classNamePrefix="react-select"
+                    onChange={(selectedOption) =>
+                      field.onChange(selectedOption.value)
+                    }
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 9999,
+                      }),
+                    }}
+                  />
+                );
+              }}
+            />
             {errors.status && (
               <small className="text-danger">{errors.status.message}</small>
             )}

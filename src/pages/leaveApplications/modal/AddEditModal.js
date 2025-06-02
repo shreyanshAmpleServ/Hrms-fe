@@ -5,6 +5,8 @@ import Select from "react-select";
 import { addleave_application, updateleave_application } from "../../../redux/leaveApplication";
 import { fetchLeaveType } from "../../../redux/LeaveType";
 import { fetchEmployee } from "../../../redux/Employee";
+import moment from "moment";
+import DatePicker from "react-datepicker";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.leave_Applications);
@@ -48,6 +50,12 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       })) || [],
     [leaveType]
   );
+
+  const Status = [
+    { label: "Pending", value: "pending" },
+    { label: "Approved", value: "approved" },
+    { label: "Rejected", value: "rejected" },
+  ];;
 
   // Reset values on edit or add
   useEffect(() => {
@@ -192,12 +200,27 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           </div>
 
           {/* Start Date */}
-          <div className="col-md-6 mb-3">
+          <div className="col-md-6 mb-3 mt-2">
             <label className="form-label">Start Date</label>
-            <input
-              type="date"
-              className="form-control"
-              {...register("start_date", { required: "Start date is required" })}
+            <Controller
+              name="start_data"
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  value={
+                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(date)
+                  }}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select Start Date"
+                />
+              )}
             />
             {errors.start_date && (
               <small className="text-danger">{errors.start_date.message}</small>
@@ -205,12 +228,27 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           </div>
 
           {/* End Date */}
-          <div className="col-md-6 mb-3">
+          <div className="col-md-6 mb-3 mt-2">
             <label className="form-label">End Date</label>
-            <input
-              type="date"
-              className="form-control"
-              {...register("end_date", { required: "End date is required" })}
+            <Controller
+              name="end_date"
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  value={
+                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(date)
+                  }}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select  End Date"
+                />
+              )}
             />
             {errors.end_date && (
               <small className="text-danger">{errors.end_date.message}</small>
@@ -233,16 +271,35 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           {/* Status */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Status</label>
-            <select
-              className="form-select"
-              {...register("status", { required: "Status is required" })}
-              defaultValue=""
-            >
-              <option value="">Select</option>
-              <option value="Pending">Pending</option>
-              <option value="Approved">Approved</option>
-              <option value="Rejected">Rejected</option>
-            </select>
+            <Controller
+              name="status"
+              control={control}
+              rules={{ required: "Approved Status is required" }}
+              render={({ field }) => {
+                const selectedDeal = Status?.find(
+                  (employee) => employee.value === field.value
+                );
+                return (
+                  <Select
+                    {...field}
+                    className="select"
+                    options={Status}
+                    placeholder="Select  Status"
+                    value={selectedDeal || null}
+                    classNamePrefix="react-select"
+                    onChange={(selectedOption) =>
+                      field.onChange(selectedOption.value)
+                    }
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 9999,
+                      }),
+                    }}
+                  />
+                );
+              }}
+            />
             {errors.status && (
               <small className="text-danger">{errors.status.message}</small>
             )}

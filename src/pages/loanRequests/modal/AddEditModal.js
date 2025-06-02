@@ -5,6 +5,8 @@ import Select from "react-select";
 import { addloan_requests, updateloan_requests } from "../../../redux/loanRequests";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchloan_type } from "../../../redux/loneType"; // assume you have fetchloan_type redux
+import moment from "moment";
+import DatePicker from "react-datepicker";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.loan_requests);
@@ -45,6 +47,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       })) || [],
     [loan_type]
   );
+  const Status = [
+    { label: "Pending", value: "pending" },
+    { label: "Approved", value: "approved" },
+    { label: "Rejected", value: "rejected" },
+  ];;
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -180,6 +187,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             </label>
             <input
               type="number"
+              placeholder="Amount"
               className="form-control"
               {...register("amount", { required: "Amount is required", min: 1 })}
             />
@@ -193,6 +201,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             </label>
             <input
               type="number"
+              placeholder="EMI Months"
               className="form-control"
               {...register("emi_months", { required: "EMI months is required", min: 1 })}
             />
@@ -206,10 +215,26 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <label className="form-label">
               Request Date <span className="text-danger">*</span>
             </label>
-            <input
-              type="date"
-              className="form-control"
-              {...register("request_date", { required: "Request date is required" })}
+            <Controller
+              name="request_date"
+
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  value={
+                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                  }
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => {
+                    field.onChange(date)
+                  }}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select Request Date"
+                />
+              )}
             />
             {errors.request_date && (
               <small className="text-danger">{errors.request_date.message}</small>
@@ -219,15 +244,35 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           {/* Status */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Status</label>
-            <select
-              className="form-select"
-              {...register("status")}
-              defaultValue="pending"
-            >
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
+            <Controller
+              name="status"
+              control={control}
+              rules={{ required: "Approved Status is required" }}
+              render={({ field }) => {
+                const selectedDeal = Status?.find(
+                  (employee) => employee.value === field.value
+                );
+                return (
+                  <Select
+                    {...field}
+                    className="select"
+                    options={Status}
+                    placeholder="Select  Status"
+                    value={selectedDeal || null}
+                    classNamePrefix="react-select"
+                    onChange={(selectedOption) =>
+                      field.onChange(selectedOption.value)
+                    }
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 9999,
+                      }),
+                    }}
+                  />
+                );
+              }}
+            />
           </div>
 
           <div className="col-md-12 text-end">

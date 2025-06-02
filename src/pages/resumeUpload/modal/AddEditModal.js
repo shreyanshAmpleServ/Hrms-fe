@@ -6,7 +6,8 @@ import { fetchEmployee } from "../../../redux/Employee";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 import React, { useEffect, useMemo } from "react";
-
+import moment from "moment";
+import DatePicker from "react-datepicker";
 // import { Modal, Button } from 'react-bootstrap';
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
@@ -163,28 +164,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 )}
               </div>
 
-              {/* <div className="mb-3">
-                <label className="col-form-label">Profile Image (JPG/PNG)</label>
-                <input
-                  type="file"
-                  className={`form-control ${errors.profile_image ? "is-invalid" : ""}`}
-                  accept="image/jpeg,image/png"
-                  {...register("profile_image", {
-                    required: "Profile image is required.",
-                    validate: {
-                      isImage: (files) => {
-                        const type = files[0]?.type;
-                        return (
-                          type === "image/jpeg" || type === "image/png" || "Only JPG or PNG images are allowed."
-                        );
-                      },
-                    },
-                  })}
-                />
-                {errors.profile_image && (
-                  <small className="text-danger">{errors.profile_image.message}</small>
-                )}
-              </div> */}
 
 
 
@@ -192,12 +171,25 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Uploaded On */}
               <div className="mb-3">
                 <label className="col-form-label">Uploaded On</label>
-                <input
-                  type="date"
-                  className={`form-control ${errors.uploaded_on ? "is-invalid" : ""}`}
-                  {...register("uploaded_on", {
-                    required: "Upload date is required.",
-                  })}
+                <Controller
+                  name="offer_date"
+                  control={control}
+                  rules={{ required: "Date is required" }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      value={
+                        field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                      }
+                      selected={field.value ? new Date(field.value) : null}
+                      onChange={(date) => {
+                        field.onChange(date)
+                      }}
+                      className="form-control"
+                      dateFormat="dd-MM-yyyy"
+                      placeholderText="Select Offer Date"
+                    />
+                  )}
                 />
                 {errors.uploaded_on && (
                   <small className="text-danger">{errors.uploaded_on.message}</small>

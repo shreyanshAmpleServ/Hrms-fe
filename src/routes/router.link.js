@@ -134,6 +134,9 @@ import TrainingFeedbackEntry from "../pages/trainingFeedbackEntry";
 import ProbationReview from "../pages/probationReview";
 import SuccessionPlanningEntry from "../pages/successionPlanningEntry";
 import ExitInterview from "../pages/ExitInterview";
+import TravelReimbursement from "../pages/TravelReimbursement";
+import RecognitionAwards from "../pages/RecognitionAwards";
+
 // // Export components individually
 
 export { Dashboard, Login };
@@ -955,6 +958,20 @@ export const privateRoutes = [
     route: Route,
     title: "Exit Interview",
   },
+  {
+    path: route.travelReimbursementClaims,
+    element: <TravelReimbursement />,
+    route: Route,
+    title: "Exit Travel Reimbursement Claims",
+  },
+
+  {
+    path: route.recognitionAwards,
+    element: <RecognitionAwards />,
+    route: Route,
+    title: "Exit Travel Reimbursement Claims",
+  },
+
 ];
 
 export const publicRoutes = [

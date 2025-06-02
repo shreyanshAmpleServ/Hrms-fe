@@ -96,6 +96,8 @@ import TrainingFeedbackReducer from "./trainingFeedbackEntry";
 import probationReviewReducer from "./ProbationReview";
 import successionPlanningEntryReducer from "./successionPlanningEntry";
 import exitInterviewReducer from "./ExitInterview";
+import TravelReimbursementReducer from "./TravelReimbursement";
+import RecognitionAwardReducer from "./RecognitionAwards";
 
 const store = configureStore({
   reducer: {
@@ -196,6 +198,8 @@ const store = configureStore({
     probationReview: probationReviewReducer,
     successionPlanning: successionPlanningEntryReducer,
     exitInterview: exitInterviewReducer,
+    travelReimbursement: TravelReimbursementReducer,
+    recognitionAwards: RecognitionAwardReducer,
   },
 });
 

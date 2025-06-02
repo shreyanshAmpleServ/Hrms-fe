@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchmonthlyPayroll } from "../../redux/monthlyPayrollProcessing/index.js";
+import { fetchtravelReimbursement } from "../../redux/TravelReimbursement";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagemonthlyPayroll from "./Managepayroll/index.js";
+import ManageTravelReimbursement from "./ManageTravelReimbursement";
 
-const MonthlyPayrollProcessing = () => {
+const TravelReimbursement = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [selectedmonthlyPayroll, setSelectedmonthlyPayroll] = useState(null);
+    const [selectedtravelReimbursement, setSelectedtravelReimbursement] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState({});
     const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,11 +22,11 @@ const MonthlyPayrollProcessing = () => {
     });
     const dispatch = useDispatch();
 
-    const { monthlyPayroll, loading } = useSelector((state) => state.monthlyPayroll || {});
+    const { travelReimbursement, loading } = useSelector((state) => state.travelReimbursement || {});
 
     React.useEffect(() => {
         dispatch(
-            fetchmonthlyPayroll({
+            fetchtravelReimbursement({
                 search: searchValue,
                 ...selectedDateRange,
             })
@@ -35,12 +35,12 @@ const MonthlyPayrollProcessing = () => {
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: monthlyPayroll?.currentPage,
-            totalPage: monthlyPayroll?.totalPages,
-            totalCount: monthlyPayroll?.totalCount,
-            pageSize: monthlyPayroll?.size,
+            currentPage: travelReimbursement?.currentPage,
+            totalPage: travelReimbursement?.totalPages,
+            totalCount: travelReimbursement?.totalCount,
+            pageSize: travelReimbursement?.size,
         });
-    }, [monthlyPayroll]);
+    }, [travelReimbursement]);
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -49,7 +49,7 @@ const MonthlyPayrollProcessing = () => {
             pageSize,
         }));
         dispatch(
-            fetchmonthlyPayroll({
+            fetchtravelReimbursement({
                 search: searchValue,
                 ...selectedDateRange,
                 page: currentPage,
@@ -58,7 +58,7 @@ const MonthlyPayrollProcessing = () => {
         );
     };
 
-    const data = monthlyPayroll?.data;
+    const data = travelReimbursement?.data;
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"));
     const allPermissions = permissions?.filter(
@@ -73,47 +73,43 @@ const MonthlyPayrollProcessing = () => {
     const columns = [
         {
             title: "Employee Name",
-            render: (text) => text?.employee?.full_name || "-", // assuming relation
+            dataIndex: "travel_expense_employee",
+            render: (text, record) => record?.travel_expense_employee?.full_name || "-",
         },
         {
-            title: "Grievance Type",
-            dataIndex: "grievance_type",
+            title: "Travel Purpose",
+            dataIndex: "travel_purpose",
             render: (text) => text || "-",
         },
         {
-            title: "Description",
-            dataIndex: "description",
+            title: "Start Date",
+            dataIndex: "start_date",
+            render: (text) => text ? moment(text).format("DD MMM YYYY") : "-",
+        },
+        {
+            title: "End Date",
+            dataIndex: "end_date",
+            render: (text) => text ? moment(text).format("DD MMM YYYY") : "-",
+        },
+        {
+            title: "Destination",
+            dataIndex: "destination",
             render: (text) => text || "-",
         },
         {
-            title: "Anonymous",
-            dataIndex: "anonymous",
-            render: (val) => (val ? "Yes" : "No"),
+            title: "Total Amount",
+            dataIndex: "total_amount",
+            render: (text) => text ? `₹${text}` : "-",
         },
         {
-            title: "Submitted On",
-            dataIndex: "submitted_on",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY HH:mm") : "-"),
-            sorter: (a, b) => new Date(a.submitted_on) - new Date(b.submitted_on),
+            title: "Approved By",
+            dattIndex: "approved_by_user",
+            render: (record) => record?.approved_by_user?.full_name || "-", // assuming relation
         },
         {
-            title: "Status",
-            dataIndex: "status",
+            title: "Approval Status",
+            dataIndex: "approval_status",
             render: (text) => text || "-",
-        },
-        {
-            title: "Assigned To",
-            render: (text) => text?.assigned_to_user?.full_name || "-", // assuming relation
-        },
-        {
-            title: "Resolution Notes",
-            dataIndex: "resolution_notes",
-            render: (text) => text || "-",
-        },
-        {
-            title: "Resolved On",
-            dataIndex: "resolved_on",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
         },
         ...(isDelete || isUpdate
             ? [
@@ -136,7 +132,7 @@ const MonthlyPayrollProcessing = () => {
                                         to="#"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvas_add"
-                                        onClick={() => setSelectedmonthlyPayroll(a)}
+                                        onClick={() => setSelectedtravelReimbursement(a)}
                                     >
                                         <i className="ti ti-edit text-blue" /> Edit
                                     </Link>
@@ -146,7 +142,7 @@ const MonthlyPayrollProcessing = () => {
                                     <Link
                                         className="dropdown-item"
                                         to="#"
-                                        onClick={() => handleDeletemonthlyPayroll(a)}
+                                        onClick={() => handleDeletetravelReimbursement(a)}
                                     >
                                         <i className="ti ti-trash text-danger" /> Delete
                                     </Link>
@@ -159,15 +155,15 @@ const MonthlyPayrollProcessing = () => {
             : []),
     ];
 
-    const handleDeletemonthlyPayroll = (monthlyPayroll) => {
-        setSelectedmonthlyPayroll(monthlyPayroll);
+    const handleDeletetravelReimbursement = (travelReimbursement) => {
+        setSelectedtravelReimbursement(travelReimbursement);
         setShowDeleteModal(true);
     };
 
     return (
         <>
             <Helmet>
-                <title>DCC HRMS -Monthly Payroll Processing</title>
+                <title>DCC HRMS -Travel Reimbursement</title>
                 <meta
                     name="time-sheet"
                     content="This is time sheet page of DCC HRMS."
@@ -183,9 +179,9 @@ const MonthlyPayrollProcessing = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Monthly Payroll Processing
+                                            Travel Reimbursement
                                             <span className="count-title">
-                                                {monthlyPayroll?.totalCount}
+                                                {travelReimbursement?.totalCount}
                                             </span>
                                         </h4>
                                     </div>
@@ -209,7 +205,7 @@ const MonthlyPayrollProcessing = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Grievance Submission"
+                                                    placeholder="Search Travel Reimbursement"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -224,7 +220,7 @@ const MonthlyPayrollProcessing = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Add Monthly Payroll Processing
+                                                        Add TravelReimbursement
                                                     </Link>
                                                 </div>
                                             </div>
@@ -238,7 +234,7 @@ const MonthlyPayrollProcessing = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Monthly Payroll Processing</h4>
+                                                    <h4 className="mb-0 me-3">All TravelReimbursement</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -278,18 +274,18 @@ const MonthlyPayrollProcessing = () => {
                         </div>
                     </div>
                 </div>
-                <ManagemonthlyPayroll
-                    setmonthlyPayroll={setSelectedmonthlyPayroll}
-                    monthlyPayroll={selectedmonthlyPayroll}
+                <ManageTravelReimbursement
+                    settravelReimbursement={setSelectedtravelReimbursement}
+                    travelReimbursement={selectedtravelReimbursement}
                 />
             </div>
             <DeleteConfirmation
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
-                monthlyPayrollId={selectedmonthlyPayroll?.id}
+                travelReimbursementId={selectedtravelReimbursement?.id}
             />
         </>
     );
 };
 
-export default MonthlyPayrollProcessing;
+export default TravelReimbursement;

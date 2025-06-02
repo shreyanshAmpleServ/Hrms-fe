@@ -97,15 +97,6 @@ export const all_routes = {
   // WPS File Generator
   wpsFileGenerator: "/wps-file-generator",
 
-  // Work Life Event Log
-  workLifeEventLog: "/work-life-event-log",
-
-  // Competency Tracking
-  competencyTracking: "/competency-tracking",
-
-  // Exit Interview
-  exitInterview: "/exit-interview",
-
   // currency: "/currency",
   // core-hr //
 
@@ -167,7 +158,8 @@ export const all_routes = {
   trainingFeedbackEntry: "/training-feedback-entry",
   probationReview: "/probation-review",
   successionPlanningEntry: "/succession-planning-entry",
-
+  travelReimbursementClaims: "/travel-Reimbursement-Claims",
+  recognitionAwards: "/Recognition-Awards",
   /* USER MANAGEMENT */
   manageusers: "/manage-users",
   manageusersDetails: "/manage-users/:id",
