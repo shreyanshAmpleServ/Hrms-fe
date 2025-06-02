@@ -270,6 +270,12 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "Recognition Awards",
+            link: route.recognitionAwards,
+            showSubRoute: false,
+            submenu: false,
+          },
         ],
       },
       {
@@ -293,22 +299,6 @@ export const SidebarData = [
         ],
       },
 
-      {
-        label: "Surveys & Engagement",
-        link: route.callStatus,
-        icon: "ti ti-briefcase",
-        showSubRoute: false,
-        submenu: true,
-        submenuItems: [
-          {
-            label: "Recognition Awards",
-            link: route.recognitionAwards,
-            showSubRoute: false,
-            submenu: false,
-          },
-
-        ]
-      },
       // {
       //   label: "Leads",
       //   link: route.leads,
