@@ -1,7 +1,7 @@
 import { CameraFilled, EditFilled } from "@ant-design/icons";
 import { Avatar, Button, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
