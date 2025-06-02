@@ -26,10 +26,9 @@ const ManageAddress = ({
     country_id && dispatch(fetchStates({ country_id, search: searchState }));
   }, [dispatch, manageAddress]);
 
-  const stateApiCall = ()=>{
+  const stateApiCall = () => {
     country_id && dispatch(fetchStates({ country_id, search: searchState }));
-
-  }
+  };
   React.useEffect(() => {
     searchCountry && dispatch(fetchCountries({ search: searchCountry }));
   }, [dispatch, searchCountry]);
@@ -69,7 +68,6 @@ const ManageAddress = ({
         return newOptions;
       });
   }, [states]);
-  console.log("stateOptions", stateOptions);
   return (
     <div className="col-md-12 mt-3 address-section">
       <div className="mb-2 d-flex justify-content-between align-items-center">
@@ -85,21 +83,11 @@ const ManageAddress = ({
       </div>
 
       {manageAddress?.map((item, index) => (
-        <div
-          key={index}
-          className="border rounded position-relative bg-body-secondary p-3 mb-3"
-        >
+        <div key={index} className="border rounded position-relative p-3 mb-3">
           {manageAddress?.length > 1 && (
-            // <button
-            //   onClick={() => deleteRow(index)}
-            //   type="button"
-            //   className="btn btn-danger btn-sm mb-3"
-            // >
-            //   <i className="ti ti-trash" style={{ fontSize: "15px" }} /> <Close />
-            // </button>
             <div
               onClick={() => deleteRow(index)}
-              className="position-absolute end-0 top-0 m-2 "
+              className="position-absolute end-0 top-0 m-2"
             >
               <IoMdCloseCircleOutline
                 style={{ fontSize: "25px" }}
@@ -134,10 +122,10 @@ const ManageAddress = ({
                         <Select
                           {...field}
                           options={stateOptions[index]}
-                          placeholder="Choose"
+                          placeholder={`Choose State`}
                           classNamePrefix="react-select"
                           isLoading={loadingState}
-                           onFocus={() =>stateApiCall()}
+                          onFocus={() => stateApiCall()}
                           onInputChange={(value) => {
                             setSearchState(value);
                           }}
@@ -168,7 +156,7 @@ const ManageAddress = ({
                         <Select
                           {...field}
                           options={countryList}
-                          placeholder="Choose"
+                          placeholder={`Choose Country`}
                           classNamePrefix="react-select"
                           isLoading={loadingCountry}
                           onInputChange={(value) => {
@@ -195,6 +183,12 @@ const ManageAddress = ({
                 ) : (
                   <input
                     className="form-control"
+                    placeholder={`Enter ${fieldKey
+                      .split("_")
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(" ")}`}
                     value={item[fieldKey]}
                     onChange={(e) =>
                       updateItem(index, fieldKey, e.target.value)

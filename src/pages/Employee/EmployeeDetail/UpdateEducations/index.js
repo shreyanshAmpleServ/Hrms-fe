@@ -1,19 +1,19 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React from "react";
-import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { updateEmployeeEducation } from "../../../../redux/Employee";
 
 const UpdateEducations = ({ employeeDetail }) => {
   const { loading } = useSelector((state) => state.employee);
   const [educations, setEducations] = React.useState([
     {
-      institute: "",
+      institute_name: "",
       specialization: "",
       degree: "",
-      from: "",
-      to: "",
+      start_from: "",
+      end_to: "",
     },
   ]);
   const dispatch = useDispatch();
@@ -26,13 +26,29 @@ const UpdateEducations = ({ employeeDetail }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const closeButton = document.getElementById(
-      "close_btn_update_education_modal"
-    );
-    console.log(educations);
+    dispatch(updateEmployeeEducation({ id: employeeDetail.id, educations }));
+    const closeButton = document.getElementById("close_btn_update_edu_modal");
     closeButton.click();
   };
 
+  React.useEffect(() => {
+    if (
+      employeeDetail?.eduction_of_employee &&
+      employeeDetail?.eduction_of_employee?.length > 0
+    ) {
+      setEducations(employeeDetail?.eduction_of_employee);
+    } else {
+      setEducations([
+        {
+          institute_name: "",
+          degree: "",
+          specialization: "",
+          start_from: "",
+          end_to: "",
+        },
+      ]);
+    }
+  }, [employeeDetail]);
   return (
     <div className="modal fade" id="update_education_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered modal-lg">
@@ -57,24 +73,22 @@ const UpdateEducations = ({ employeeDetail }) => {
                 <div key={index}>
                   <div className="d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-2">Education {index + 1}</h5>
-                    <Button
-                      type="button"
-                      size="small"
-                      variant="filled"
-                      shape="circle"
-                      color="danger"
-                      onClick={() =>
-                        index === 0
-                          ? toast.error(
-                              "You cannot remove the first qualification"
-                            )
-                          : setEducations(
-                              educations.filter((_, i) => i !== index)
-                            )
-                      }
-                    >
-                      <CloseOutlined />
-                    </Button>
+                    {index !== 0 && (
+                      <Button
+                        type="button"
+                        size="small"
+                        variant="filled"
+                        shape="circle"
+                        color="danger"
+                        onClick={() =>
+                          setEducations(
+                            educations.filter((_, i) => i !== index)
+                          )
+                        }
+                      >
+                        <CloseOutlined />
+                      </Button>
+                    )}
                   </div>
                   <div className="row">
                     <div className="col-md-6">
@@ -87,11 +101,11 @@ const UpdateEducations = ({ employeeDetail }) => {
                           type="text"
                           className="form-control"
                           placeholder="Enter Institute"
-                          value={education.institute}
+                          value={education.institute_name}
                           onChange={(e) =>
                             handleChangeQualification(
                               index,
-                              "institute",
+                              "institute_name",
                               e.target.value
                             )
                           }
@@ -154,11 +168,11 @@ const UpdateEducations = ({ employeeDetail }) => {
                           type="text"
                           className="form-control"
                           placeholder="Enter From"
-                          value={education.from}
+                          value={education.start_from}
                           onChange={(e) =>
                             handleChangeQualification(
                               index,
-                              "from",
+                              "start_from",
                               e.target.value
                             )
                           }
@@ -175,11 +189,11 @@ const UpdateEducations = ({ employeeDetail }) => {
                           type="text"
                           className="form-control"
                           placeholder="Enter To"
-                          value={education.to}
+                          value={education.end_to}
                           onChange={(e) =>
                             handleChangeQualification(
                               index,
-                              "to",
+                              "end_to",
                               e.target.value
                             )
                           }
@@ -197,7 +211,13 @@ const UpdateEducations = ({ employeeDetail }) => {
                     onClick={() =>
                       setEducations([
                         ...educations,
-                        { institute: "", degree: "", from: "", to: "" },
+                        {
+                          institute_name: "",
+                          degree: "",
+                          specialization: "",
+                          start_from: "",
+                          end_to: "",
+                        },
                       ])
                     }
                   >

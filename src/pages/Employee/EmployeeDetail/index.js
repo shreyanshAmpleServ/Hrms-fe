@@ -121,6 +121,8 @@ const EmployeeDetail = () => {
       </div>
     );
   }
+  const experiance_of_employee = employeeDetail?.experiance_of_employee;
+  const eduction_of_employee = employeeDetail?.eduction_of_employee;
 
   return (
     <>
@@ -357,36 +359,33 @@ const EmployeeDetail = () => {
                           />
                         </Tooltip>
                       </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            International College of Arts and Science (UG)
-                          </p>
-                          <p className="m-0">MSc In Computer Science</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            International College of Arts and Science (UG)
-                          </p>
-                          <p className="m-0">BSc In Computer Science</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            International College of Arts and Science (UG)
-                          </p>
-                          <p className="m-0">MSc In Computer Science</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
+                      {eduction_of_employee?.length > 0 ? (
+                        eduction_of_employee?.map((education) => (
+                          <div className="d-flex align-items-start mt-3 gap-2">
+                            <i className="ti ti-point-filled text-primary fs-4"></i>
+                            <div className="d-flex flex-column gap-1">
+                              <p className="m-0 fw-bold text-black">
+                                {education?.institute_name}
+                              </p>
+                              <p className="m-0">
+                                {education?.degree} ({education?.specialization}
+                                )
+                              </p>
+                              <p className="m-0">
+                                {moment(education?.start_from).format(
+                                  "DD-MM-YYYY"
+                                )}{" "}
+                                -{" "}
+                                {moment(education?.end_to).format("DD-MM-YYYY")}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="m-0 text-muted text-center py-3">
+                          No education details found
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -405,36 +404,32 @@ const EmployeeDetail = () => {
                           />
                         </Tooltip>
                       </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            Envato Inc, Melbourne
-                          </p>
-                          <p className="m-0">Head Of Review Team</p>
-                          <p className="m-0">2020 - Present</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            CodeCanyon Sydney
-                          </p>
-                          <p className="m-0">Software Developer</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            Facebook Inc, California
-                          </p>
-                          <p className="m-0">Junior Software Developer</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
+                      {experiance_of_employee?.length > 0 ? (
+                        experiance_of_employee?.map((experience) => (
+                          <div className="d-flex align-items-start mt-3 gap-2">
+                            <i className="ti ti-point-filled text-primary fs-4"></i>
+                            <div className="d-flex flex-column gap-1">
+                              <p className="m-0 fw-bold text-black">
+                                {experience?.company_name}
+                              </p>
+                              <p className="m-0">{experience?.position}</p>
+                              <p className="m-0">
+                                {moment(experience?.start_from).format(
+                                  "DD-MM-YYYY"
+                                )}{" "}
+                                -{" "}
+                                {moment(experience?.end_to).format(
+                                  "DD-MM-YYYY"
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="m-0 text-muted text-center py-3">
+                          No experience details found
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
