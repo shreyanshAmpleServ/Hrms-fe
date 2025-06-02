@@ -1,11 +1,11 @@
-import { EditFilled } from "@ant-design/icons";
-import { Avatar, Button, Skeleton, Tooltip } from "antd";
+import { CameraFilled, EditFilled } from "@ant-design/icons";
+import { Avatar, Button, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
-import { fetchEmployeeById } from "../../../redux/Employee";
+import { fetchEmployeeById, updateEmployee } from "../../../redux/Employee";
 import { all_routes } from "../../../routes/all_routes";
 import UpdateBankInfo from "./UpdateBankInfo";
 import UpdateBasicInfo from "./UpdateBasicInfo";
@@ -23,11 +23,36 @@ const EmployeeDetail = () => {
     dispatch(fetchEmployeeById(id));
   }, [id, dispatch]);
 
-  const { employeeDetail, loading } = useSelector((state) => state.employee);
+  const { employeeDetail, loading: employeeLoading } = useSelector(
+    (state) => state.employee
+  );
 
   const route = all_routes;
 
-  if (loading) {
+  const handleImageUpload = async (info) => {
+    const formData = new FormData();
+    formData.append("profile_pic", info.file);
+    formData.append("id", id);
+    dispatch(updateEmployee(formData));
+  };
+
+  const uploadButton = (
+    <div className="avatar-uploader-trigger">
+      <Avatar
+        src={employeeDetail?.profile_pic}
+        alt={employeeDetail?.full_name}
+        size={120}
+        className="fs-1"
+      >
+        {employeeDetail?.full_name?.charAt(0)}
+      </Avatar>
+      <div className="avatar-uploader-overlay">
+        <CameraFilled style={{ fontSize: "24px", color: "#fff" }} />
+      </div>
+    </div>
+  );
+
+  if (employeeLoading) {
     return (
       <div className="page-wrapper position-relative">
         <div className="content">
@@ -150,14 +175,16 @@ const EmployeeDetail = () => {
                   </div>
                   <div className="d-flex justify-content-between px-3 flex-wrap">
                     <div className="d-flex w-50 gap-5">
-                      <Avatar
-                        src={employeeDetail?.profile_pic}
-                        alt={employeeDetail?.full_name}
-                        size={120}
-                        className="fs-1"
+                      <Upload
+                        name="avatar"
+                        listType="picture-card"
+                        className="avatar-uploader"
+                        showUploadList={false}
+                        customRequest={handleImageUpload}
+                        accept="image/*"
                       >
-                        {employeeDetail?.full_name?.charAt(0)}
-                      </Avatar>
+                        {uploadButton}
+                      </Upload>
                       <div className="d-flex flex-column gap-2">
                         <h3>{employeeDetail?.full_name}</h3>
                         <h5>
@@ -612,6 +639,40 @@ const EmployeeDetail = () => {
         <UpdateEducations employeeDetail={employeeDetail} />
         <UpdateExperience employeeDetail={employeeDetail} />
       </div>
+      <style jsx>{`
+        .avatar-uploader .avatar-uploader-trigger {
+          position: relative;
+          display: inline-block;
+        }
+
+        .avatar-uploader .avatar-uploader-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s;
+          border-radius: 50%;
+        }
+
+        .avatar-uploader:hover .avatar-uploader-overlay {
+          opacity: 1;
+        }
+
+        .ant-upload-select {
+          border: none !important;
+          background: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          width: auto !important;
+          height: auto !important;
+        }
+      `}</style>
     </>
   );
 };
