@@ -97,6 +97,36 @@ export const all_routes = {
   // WPS File Generator
   wpsFileGenerator: "/wps-file-generator",
 
+  // Work Life Event Log
+  workLifeEventLog: "/work-life-event-log",
+
+  // Competency Tracking
+  competencyTracking: "/competency-tracking",
+
+  // Exit Interview
+  exitInterview: "/exit-interview",
+
+  // Exit Clearance
+  exitClearance: "/exit-clearance",
+
+  // Relieving Letter
+  relievingLetter: "/relieving-letter",
+
+  // Asset Assignment
+  assetAssignment: "/asset-assignment",
+
+  // Survey Response
+  surveyResponse: "/survey-response",
+
+  // Employee Suggestion
+  employeeSuggestion: "/employee-suggestion",
+
+  // Helpdesk Ticket
+  helpdeskTicket: "/helpdesk-ticket",
+
+  // Notifications
+  notifications: "/notifications",
+
   // currency: "/currency",
   // core-hr //
 

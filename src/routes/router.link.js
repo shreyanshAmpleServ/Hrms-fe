@@ -137,6 +137,12 @@ import ExitInterview from "../pages/ExitInterview";
 import TravelReimbursement from "../pages/TravelReimbursement";
 import RecognitionAwards from "../pages/RecognitionAwards";
 
+import ExitClearance from "../pages/ExitClearance";
+import RelievingLetter from "../pages/RelievingLetter";
+import AssetAssignment from "../pages/AssetAssignment";
+import SurveyResponse from "../pages/SurveyResponse";
+import EmployeeSuggestion from "../pages/EmployeeSuggestion";
+import HelpdeskTicket from "../pages/HelpdeskTicket";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -971,7 +977,42 @@ export const privateRoutes = [
     route: Route,
     title: "Exit Travel Reimbursement Claims",
   },
-
+  {
+    path: route.exitClearance,
+    element: <ExitClearance />,
+    route: Route,
+    title: "Exit Clearance",
+  },
+  {
+    path: route.relievingLetter,
+    element: <RelievingLetter />,
+    route: Route,
+    title: "Relieving Letter",
+  },
+  {
+    path: route.assetAssignment,
+    element: <AssetAssignment />,
+    route: Route,
+    title: "Asset Assignment",
+  },
+  {
+    path: route.surveyResponse,
+    element: <SurveyResponse />,
+    route: Route,
+    title: "Survey Response",
+  },
+  {
+    path: route.employeeSuggestion,
+    element: <EmployeeSuggestion />,
+    route: Route,
+    title: "Employee Suggestion",
+  },
+  {
+    path: route.helpdeskTicket,
+    element: <HelpdeskTicket />,
+    route: Route,
+    title: "Helpdesk Ticket",
+  },
 ];
 
 export const publicRoutes = [

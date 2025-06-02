@@ -98,6 +98,12 @@ import successionPlanningEntryReducer from "./successionPlanningEntry";
 import exitInterviewReducer from "./ExitInterview";
 import TravelReimbursementReducer from "./TravelReimbursement";
 import RecognitionAwardReducer from "./RecognitionAwards";
+import exitClearanceReducer from "./ExitClearance";
+import relievingLetterReducer from "./RelievingLetter";
+import assetAssignmentReducer from "./AssetAssignment";
+import surveyResponseReducer from "./SurveyResponse";
+import employeeSuggestionReducer from "./EmployeeSuggestion";
+import helpdeskTicketReducer from "./HelpdeskTicket";
 
 const store = configureStore({
   reducer: {
@@ -200,6 +206,12 @@ const store = configureStore({
     exitInterview: exitInterviewReducer,
     travelReimbursement: TravelReimbursementReducer,
     recognitionAwards: RecognitionAwardReducer,
+    exitClearance: exitClearanceReducer,
+    relievingLetter: relievingLetterReducer,
+    assetAssignment: assetAssignmentReducer,
+    surveyResponse: surveyResponseReducer,
+    employeeSuggestion: employeeSuggestionReducer,
+    helpdeskTicket: helpdeskTicketReducer,
   },
 });
 
