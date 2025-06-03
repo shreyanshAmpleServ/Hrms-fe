@@ -140,8 +140,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
           {/* Department */}
+          {/* Department */}
           <div className="col-md-6">
-            <label className="col-form-label">Department <span className="text-danger">*</span></label>
+            <label className="col-form-label">
+              Department <span className="text-danger">*</span>
+            </label>
             <Controller
               name="department_id"
               control={control}
@@ -155,18 +158,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   className="select2"
                   isDisabled={!DepartmentList.length}
                   onChange={(option) => field.onChange(option?.value || "")}
-                  value={DepartmentList.find((d) => d.value === watch("department_id"))}
+                  value={DepartmentList.find((d) => d.value === field.value)}
                 />
               )}
             />
-            {errors.department_id && (
-              <small className="text-danger">{errors.department_id.message}</small>
-            )}
+            {errors.department_id && <small className="text-danger">{errors.department_id.message}</small>}
           </div>
 
           {/* Designation */}
           <div className="col-md-6">
-            <label className="col-form-label">Designation <span className="text-danger">*</span></label>
+            <label className="col-form-label">
+              Designation <span className="text-danger">*</span>
+            </label>
             <Controller
               name="designation_id"
               control={control}
@@ -180,13 +183,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   className="select2"
                   isDisabled={!DesignationList.length}
                   onChange={(option) => field.onChange(option?.value || "")}
-                  value={DesignationList.find((d) => d.value === watch("designation_id"))}
+                  value={DesignationList.find((d) => d.value === field.value)}
                 />
               )}
             />
-            {errors.designation_id && (
-              <small className="text-danger">{errors.designation_id.message}</small>
-            )}
+            {errors.designation_id && <small className="text-danger">{errors.designation_id.message}</small>}
           </div>
 
           {/* Job Title */}
@@ -194,11 +195,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <label className="form-label">Job Title</label>
             <input
               placeholder="Job Title"
-
               type="text"
               className="form-control"
               {...register("job_title", { required: "Job title is required" })}
-
             />
             {errors.job_title && <small className="text-danger">{errors.job_title.message}</small>}
           </div>
@@ -209,7 +208,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <input
               type="text"
               placeholder="Required Experience"
-
               className="form-control"
               {...register("required_experience", { required: "Experience is required" })}
             />
@@ -220,19 +218,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           <div className="col-md-6 mb-3">
             <label className="form-label">Posting Date</label>
             <Controller
-              name="posting_data"
+              name="posting_date"
               control={control}
               rules={{ required: "Date is required" }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
-                  value={
-                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
-                  }
                   selected={field.value ? new Date(field.value) : null}
-                  onChange={(date) => {
-                    field.onChange(date)
-                  }}
+                  onChange={(date) => field.onChange(date)}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
                   placeholderText="Select Posting Date"
@@ -246,19 +239,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           <div className="col-md-6 mb-3">
             <label className="form-label">Closing Date</label>
             <Controller
-              name="colsing_data"
+              name="closing_date"
               control={control}
               rules={{ required: "Date is required" }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
-                  value={
-                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
-                  }
                   selected={field.value ? new Date(field.value) : null}
-                  onChange={(date) => {
-                    field.onChange(date)
-                  }}
+                  onChange={(date) => field.onChange(date)}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
                   placeholderText="Select Closing Date"
@@ -267,8 +255,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             />
             {errors.closing_date && <small className="text-danger">{errors.closing_date.message}</small>}
           </div>
-
-
 
           {/* Is Internal */}
           <div className="col-md-6 mb-3">
@@ -290,7 +276,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <textarea
               className="form-control"
               placeholder="Description"
-
               rows={3}
               {...register("description", { required: "Description is required" })}
             ></textarea>

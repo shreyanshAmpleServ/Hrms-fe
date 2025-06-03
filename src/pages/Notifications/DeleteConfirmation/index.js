@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deletedisciplinryAction } from "../../../redux/disciplinaryActionLog";
+import { deleteNotifications } from "../../../redux/Notifications";
 
-const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, NotificationsId }) => {
   const dispatch = useDispatch();
-  const handleDeletedisciplinryAction = () => {
-    if (disciplinryActionId) {
-      dispatch(deletedisciplinryAction(disciplinryActionId));
+  const handleDeleteNotifications = () => {
+    if (NotificationsId) {
+      dispatch(deleteNotifications(NotificationsId));
       setShowModal(false);
     }
   };
@@ -15,7 +15,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) =>
       {showModal && (
         <div
           className="modal fade show"
-          id="delete_time_sheet"
+          id="delete_helpdesk_ticket"
           role="dialog"
           style={{ display: "block" }}
         >
@@ -26,9 +26,9 @@ const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) =>
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove Disciplinry Action?</h4>
+                  <h4 className="mb-2">Remove Notifications?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the Disciplinry Action
+                    Are you sure you want to remove <br /> the Notifications
                     you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
@@ -40,7 +40,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) =>
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={handleDeletedisciplinryAction}
+                      onClick={handleDeleteNotifications}
                     >
                       Yes, Delete it
                     </button>

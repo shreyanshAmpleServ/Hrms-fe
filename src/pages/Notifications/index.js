@@ -1,4 +1,4 @@
-import { Rate, Table } from "antd";
+import { Rate, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchtrainingFeedback } from "../../redux/trainingFeedbackEntry";
+import { fetchNotifications } from "../../redux/Notifications";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import Managetrainingfeedback from "./Managetriningfeedback";
+import ManageNotifications from "./ManageNotifications/index.js";
 
-const TrainingFeedbackEntry = () => {
+const NotificationsLog = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [selectedtrainingFeedback, setSelectedtrainingFeedback] = useState(null);
+    const [selectedNotifications, setSelectedNotifications] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState({});
     const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,11 +22,13 @@ const TrainingFeedbackEntry = () => {
     });
     const dispatch = useDispatch();
 
-    const { trainingFeedback, loading } = useSelector((state) => state.trainingFeedback || {});
+    const { Notifications, loading } = useSelector(
+        (state) => state.Notifications || {}
+    );
 
     React.useEffect(() => {
         dispatch(
-            fetchtrainingFeedback({
+            fetchNotifications({
                 search: searchValue,
                 ...selectedDateRange,
             })
@@ -35,12 +37,12 @@ const TrainingFeedbackEntry = () => {
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: trainingFeedback?.currentPage,
-            totalPage: trainingFeedback?.totalPages,
-            totalCount: trainingFeedback?.totalCount,
-            pageSize: trainingFeedback?.size,
+            currentPage: Notifications?.currentPage,
+            totalPage: Notifications?.totalPages,
+            totalCount: Notifications?.totalCount,
+            pageSize: Notifications?.size,
         });
-    }, [trainingFeedback]);
+    }, [Notifications]);
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -49,7 +51,7 @@ const TrainingFeedbackEntry = () => {
             pageSize,
         }));
         dispatch(
-            fetchtrainingFeedback({
+            fetchNotifications({
                 search: searchValue,
                 ...selectedDateRange,
                 page: currentPage,
@@ -58,11 +60,11 @@ const TrainingFeedbackEntry = () => {
         );
     };
 
-    const data = trainingFeedback?.data;
+    const data = Notifications?.data;
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"));
     const allPermissions = permissions?.filter(
-        (i) => i?.module_name === "Time Sheet Entry"
+        (i) => i?.module_name === "Helpdesk Ticket"
     )?.[0]?.permissions;
     const isAdmin = localStorage.getItem("role")?.includes("admin");
     const isView = isAdmin || allPermissions?.view;
@@ -71,26 +73,38 @@ const TrainingFeedbackEntry = () => {
     const isDelete = isAdmin || allPermissions?.delete;
 
     const columns = [
+
         {
             title: "Employee Name",
-            render: (record) => record?.training_employee?.full_name || "-", // Assuming employee relation
+            dataIndex: "notification_log_employee",
+            render: (text) => text?.full_name || "-",
         },
         {
-            title: "Training Title",
-            render: (record) => record?.training_details?.training_title || "-", // Assuming employee relation
+            title: "Message Title",
+            dataIndex: "message_title",
+            render: (text) => <p className="text-capitalize">{text}</p> || "-",
+        },
+        {
+            title: "Message Body",
+            dataIndex: "message_body",
+            render: (text) => <p>{text}</p> || "-",
+        },
+        {
+            title: "Channel",
+            dataIndex: "channel",
+            render: (text) => <p className="text-capitalize">{text}</p> || "-",
+        },
+        {
+            title: "Sent On",
+            dataIndex: "sent_on",
+            render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            render: (text) => <p className="text-capitalize">{text}</p> || "-",
+        },
 
-        },
-
-        {
-            title: "Feedback",
-            dataIndex: "feedback_text",
-            render: (text) => text || "-",
-        },
-        {
-            title: "Rating",
-            dataIndex: "rating",
-            render: (text) => <Rate allowHalf disabled defaultValue={text} /> || "-",
-        },
 
 
 
@@ -115,7 +129,7 @@ const TrainingFeedbackEntry = () => {
                                         to="#"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvas_add"
-                                        onClick={() => setSelectedtrainingFeedback(a)}
+                                        onClick={() => setSelectedNotifications(a)}
                                     >
                                         <i className="ti ti-edit text-blue" /> Edit
                                     </Link>
@@ -125,7 +139,7 @@ const TrainingFeedbackEntry = () => {
                                     <Link
                                         className="dropdown-item"
                                         to="#"
-                                        onClick={() => handleDeletetrainingFeedback(a)}
+                                        onClick={() => handleDeleteNotifications(a)}
                                     >
                                         <i className="ti ti-trash text-danger" /> Delete
                                     </Link>
@@ -138,18 +152,18 @@ const TrainingFeedbackEntry = () => {
             : []),
     ];
 
-    const handleDeletetrainingFeedback = (trainingFeedback) => {
-        setSelectedtrainingFeedback(trainingFeedback);
+    const handleDeleteNotifications = (Notifications) => {
+        setSelectedNotifications(Notifications);
         setShowDeleteModal(true);
     };
 
     return (
         <>
             <Helmet>
-                <title>DCC HRMS -Training Feedback Entry</title>
+                <title>DCC HRMS - Notifications</title>
                 <meta
-                    name="time-sheet"
-                    content="This is time sheet page of DCC HRMS."
+                    name="helpdesk-ticket"
+                    content="This is helpdesk ticket page of DCC HRMS."
                 />
             </Helmet>
             {/* Page Wrapper */}
@@ -162,9 +176,9 @@ const TrainingFeedbackEntry = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Training Feedback Entry
+                                            Notifications
                                             <span className="count-title">
-                                                {trainingFeedback?.totalCount}
+                                                {Notifications?.totalCount}
                                             </span>
                                         </h4>
                                     </div>
@@ -188,7 +202,7 @@ const TrainingFeedbackEntry = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Training Feedback Entry"
+                                                    placeholder="Search Notifications"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -203,7 +217,7 @@ const TrainingFeedbackEntry = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Add Training Feedback Entry
+                                                        Add Notifications
                                                     </Link>
                                                 </div>
                                             </div>
@@ -217,7 +231,7 @@ const TrainingFeedbackEntry = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Feedback Entry</h4>
+                                                    <h4 className="mb-0 me-3">All Notifications</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -257,18 +271,18 @@ const TrainingFeedbackEntry = () => {
                         </div>
                     </div>
                 </div>
-                <Managetrainingfeedback
-                    settrainingFeedback={setSelectedtrainingFeedback}
-                    trainingFeedback={selectedtrainingFeedback}
+                <ManageNotifications
+                    setNotifications={setSelectedNotifications}
+                    Notifications={selectedNotifications}
                 />
             </div>
             <DeleteConfirmation
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
-                trainingFeedbackId={selectedtrainingFeedback?.id}
+                NotificationsId={selectedNotifications?.id}
             />
         </>
     );
 };
 
-export default TrainingFeedbackEntry;
+export default NotificationsLog;

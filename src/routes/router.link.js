@@ -136,13 +136,13 @@ import SuccessionPlanningEntry from "../pages/successionPlanningEntry";
 import ExitInterview from "../pages/ExitInterview";
 import TravelReimbursement from "../pages/TravelReimbursement";
 import RecognitionAwards from "../pages/RecognitionAwards";
-
 import ExitClearance from "../pages/ExitClearance";
 import RelievingLetter from "../pages/RelievingLetter";
 import AssetAssignment from "../pages/AssetAssignment";
 import SurveyResponse from "../pages/SurveyResponse";
 import EmployeeSuggestion from "../pages/EmployeeSuggestion";
 import HelpdeskTicket from "../pages/HelpdeskTicket";
+import NotificationsLog from "../pages/Notifications";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -1013,6 +1013,14 @@ export const privateRoutes = [
     route: Route,
     title: "Helpdesk Ticket",
   },
+  {
+    path: route.notificationsLog,
+    element: <NotificationsLog />,
+    route: Route,
+    title: "Notifications",
+  },
+
+
 ];
 
 export const publicRoutes = [

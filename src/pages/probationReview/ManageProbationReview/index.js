@@ -141,7 +141,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                     selected={field.value ? new Date(field.value) : null}
                     onChange={(date) => field.onChange(date)}
                     dateFormat="yyyy-MM-dd"
-                    placeholderText="Select end date"
+                    placeholderText="Select End Date"
                   />
                 )}
               />
@@ -184,7 +184,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                     selected={field.value ? new Date(field.value) : null}
                     onChange={(date) => field.onChange(date)}
                     dateFormat="yyyy-MM-dd"
-                    placeholderText="Select confirmation date"
+                    placeholderText="Select Confirmation Date"
                   />
                 )}
               />

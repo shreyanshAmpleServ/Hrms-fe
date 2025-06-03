@@ -80,6 +80,7 @@ const TrainingSessionSchedule = () => {
             title: "Trainer Name",
             dataIndex: "trainer_name",
             render: (text) => text || "-",
+
         },
         {
             title: "Training Date",
