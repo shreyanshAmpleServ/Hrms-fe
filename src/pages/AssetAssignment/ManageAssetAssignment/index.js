@@ -76,11 +76,11 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     try {
       assetAssignment
         ? await dispatch(
-            updateAssetAssignment({
-              id: assetAssignment.id,
-              assetAssignmentData: { ...data },
-            })
-          ).unwrap()
+          updateAssetAssignment({
+            id: assetAssignment.id,
+            assetAssignmentData: { ...data },
+          })
+        ).unwrap()
         : await dispatch(createAssetAssignment({ ...data })).unwrap();
       closeButton.click();
       reset();
@@ -116,7 +116,8 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{assetAssignment ? "Update " : "Add New "} Relieving Letter</h4>
+          <h4>{assetAssignment ? "Update " : "Add New "} Asset Assignment
+          </h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"

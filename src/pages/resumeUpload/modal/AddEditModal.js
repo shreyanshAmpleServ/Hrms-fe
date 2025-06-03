@@ -145,7 +145,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
 
               {/* Resume Path */}
-              <div className="mb-3">
+              <div className="mb-3 mt-2">
                 <label className="col-form-label">Resume File (PDF Only)</label>
                 <input
                   type="file"

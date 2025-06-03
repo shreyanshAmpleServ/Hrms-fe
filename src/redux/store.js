@@ -104,6 +104,7 @@ import assetAssignmentReducer from "./AssetAssignment";
 import surveyResponseReducer from "./SurveyResponse";
 import employeeSuggestionReducer from "./EmployeeSuggestion";
 import helpdeskTicketReducer from "./HelpdeskTicket";
+import NotificationsLogReducer from "./Notifications";
 
 const store = configureStore({
   reducer: {
@@ -212,6 +213,7 @@ const store = configureStore({
     surveyResponse: surveyResponseReducer,
     employeeSuggestion: employeeSuggestionReducer,
     helpdeskTicket: helpdeskTicketReducer,
+    Notifications: NotificationsLogReducer,
   },
 });
 

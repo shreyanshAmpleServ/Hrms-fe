@@ -86,7 +86,7 @@ const WPSFileGenerator = () => {
           rel="noopener noreferrer"
           download
           className="d-inline-flex align-items-center gap-2 text-decoration-none"
-          title="Download Payslip"
+          title="Download File"
         >
           <i className="ti ti-file-invoice fs-5"></i>
           <span>Download</span>

@@ -265,6 +265,12 @@ export const SidebarData = [
             submenu: false,
           },
           {
+            label: "Recognition Awards",
+            link: route.recognitionAwards,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
             label: "Employee Suggestion",
             link: route.employeeSuggestion,
             showSubRoute: false,
@@ -291,8 +297,8 @@ export const SidebarData = [
             submenu: false,
           },
           {
-            label: "Notifications",
-            link: route.notifications,
+            label: "NotificationsLog",
+            link: route.notificationsLog,
             showSubRoute: false,
             submenu: false,
           },

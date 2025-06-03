@@ -98,7 +98,8 @@ const DisciplinaryActionLog = () => {
         },
         {
             title: "Penalty Type",
-            render: (text) => text?.disciplinary_penalty?.description || "-",
+            render: (text) => text?.disciplinary_penalty
+                ?.penalty_type ?? "-",
         },
         {
             title: "Effective From",

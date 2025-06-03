@@ -103,8 +103,8 @@ const TravelReimbursement = () => {
         },
         {
             title: "Approved By",
-            dattIndex: "approved_by_user",
-            render: (record) => record?.approved_by_user?.full_name || "-", // assuming relation
+            dattIndex: "travel_expense_approver",
+            render: (record) => record?.travel_expense_approver?.full_name || "-", // assuming relation
         },
         {
             title: "Approval Status",
@@ -179,7 +179,7 @@ const TravelReimbursement = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Travel Reimbursement
+                                            Travel Reimbursement Claims
                                             <span className="count-title">
                                                 {travelReimbursement?.totalCount}
                                             </span>
@@ -220,7 +220,7 @@ const TravelReimbursement = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Add TravelReimbursement
+                                                        Add Travel Reimbursement
                                                     </Link>
                                                 </div>
                                             </div>
@@ -234,7 +234,7 @@ const TravelReimbursement = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All TravelReimbursement</h4>
+                                                    <h4 className="mb-0 me-3">All Travel Reimbursement Claims</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">

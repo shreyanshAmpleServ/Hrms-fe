@@ -20,6 +20,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      trainer_id: "",
       training_title: "",
       trainer_name: "",
       training_date: new Date().toISOString(),
@@ -46,6 +47,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
     }
   }, [trainingSession, reset]);
 
+  const trainingOptions = [
+    { value: "Online", label: "Online" },
+    { value: "Offline", label: "Offline" },
+    { value: "Hybrid", label: "Hybrid" },
+  ];
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
   }, [dispatch, searchValue]);
@@ -161,7 +167,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 Trainer Name <span className="text-danger">*</span>
               </label>
               <Controller
-                name="employee_id"
+                name="trainer_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
@@ -186,9 +192,9 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                   );
                 }}
               />
-              {errors.employee_id && (
+              {errors.trainer_id && (
                 <small className="text-danger">
-                  {errors.employee_id.message}
+                  {errors.trainer_id.message}
                 </small>
               )}
             </div>
@@ -246,15 +252,24 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
               <Controller
                 name="training_type"
                 control={control}
+                rules={{ required: "training_type is required" }}
                 render={({ field }) => (
-                  <select {...field} className="form-select">
-                    <option value="">Select type</option>
-                    <option value="Online">Online</option>
-                    <option value="Offline">Offline</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
+                  <Select
+                    {...field}
+                    className="select"
+                    options={trainingOptions}
+                    placeholder="Select Training Type "
+                    classNamePrefix="react-select"
+                    value={trainingOptions.find((x) => x.value === field.value)}
+                    onChange={(option) => field.onChange(option.value)}
+                  />
                 )}
               />
+              {errors.training_type && (
+                <small className="text-danger">
+                  {errors.training_type.message}
+                </small>
+              )}
             </div>
           </div>
 
