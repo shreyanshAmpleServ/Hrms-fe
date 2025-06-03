@@ -543,7 +543,7 @@ const Header = () => {
             >
               <i className="ti ti-password-fingerprint" /> Change Password
             </Link>
-            <Link className="dropdown-item" to={route.login}>
+            <Link className="dropdown-item" onClick={handleLogout}>
               <i className="ti ti-lock" /> Logout
             </Link>
           </div>
