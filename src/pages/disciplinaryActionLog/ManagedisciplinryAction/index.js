@@ -76,13 +76,12 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
     value: i?.id,
   }));
 
-  const penaltyOptions = disciplinary_penalty?.data?.map((p) => ({
+  const penaltyOptions = (disciplinary_penalty?.data || []).map((p) => ({
     label: p?.description,
     value: p?.id,
   }));
 
 
-  console.log(disciplinary_penalty);
 
 
 
@@ -172,14 +171,10 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                   {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
                 </div>
 
-
-
-
-
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label"> Penalty Type<span className="text-danger">*</span></label>
                   <Controller
-                    name="penalty_id"
+                    name="penalty_type"
                     control={control}
                     rules={{ required: "disciplinary penalty is required" }}
                     render={({ field }) => {
@@ -197,7 +192,7 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                       );
                     }}
                   />
-                  {errors.penalty_id && <small className="text-danger">{errors.penalty_id.message}</small>}
+                  {errors.penalty_type && <small className="text-danger">{errors.penalty_type.message}</small>}
                 </div>
 
 

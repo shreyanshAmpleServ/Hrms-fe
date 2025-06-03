@@ -190,6 +190,7 @@ export const all_routes = {
   successionPlanningEntry: "/succession-planning-entry",
   travelReimbursementClaims: "/travel-Reimbursement-Claims",
   recognitionAwards: "/Recognition-Awards",
+  notificationsLog: "/notifications-log",
   /* USER MANAGEMENT */
   manageusers: "/manage-users",
   manageusersDetails: "/manage-users/:id",

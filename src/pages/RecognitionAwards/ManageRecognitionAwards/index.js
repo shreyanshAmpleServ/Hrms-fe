@@ -8,6 +8,9 @@ import {
   updaterecognitionAwards,
 } from "../../../redux/RecognitionAwards";
 
+import DatePicker from "react-datepicker";
+
+
 const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
@@ -37,7 +40,7 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
         employee_id: recognitionAwards.employee_id || "",
         award_title: recognitionAwards.award_title || "",
         description: recognitionAwards.description || "",
-        award_date: recognitionAwards.award_date || "",
+        award_date: recognitionAwards.award_date ? new Date(recognitionAwards.sent_on) : new Date(),
         nominated_by: recognitionAwards.nominated_by || "",
       });
     } else {
@@ -116,10 +119,11 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
 
             {/* Nominated By */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Nominated By</label>
+              <label className="col-form-label">Nominated By<span className="text-danger">*</span></label>
               <Controller
                 name="nominated_by"
                 control={control}
+                rules={{ required: "Message  nominated by is required" }}
                 render={({ field }) => {
                   const selected = employeeOptions?.find(opt => opt.value === field.value);
                   return (
@@ -139,26 +143,42 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
 
             {/* Award Title */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Award Title</label>
+              <label className="col-form-label">Award Title <span className="text-danger">*</span></label>
               <Controller
                 name="award_title"
                 control={control}
+                rules={{ required: "Message award title is required" }}
                 render={({ field }) => (
-                  <input type="text" className="form-control" placeholder="Enter award title" {...field} />
+                  <input
+                    {...field}
+                    className={`form-control ${errors.award_title ? "is-invalid" : ""}`}
+                    placeholder="Enter Title"
+                  />
                 )}
               />
+              {errors.award_title && <small className="text-danger">{errors.award_title.message}</small>}
             </div>
+
 
             {/* Award Date */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">Award Date</label>
               <Controller
-                name="award_date"
+                name="award_data"
                 control={control}
+                rules={{ required: "Sent date is required" }}
                 render={({ field }) => (
-                  <input type="date" className="form-control" {...field} />
+                  <DatePicker
+                    {...field}
+                    className="form-control"
+                    selected={field.value}
+                    placeholderText="Select Sent Date"
+                    onChange={(date) => field.onChange(date)}
+                    dateFormat="dd-MM-yyyy"
+                  />
                 )}
               />
+              {errors.sent_on && <small className="text-danger">{errors.award_data.message}</small>}
             </div>
 
             {/* Description */}
@@ -168,7 +188,7 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
                 name="description"
                 control={control}
                 render={({ field }) => (
-                  <textarea className="form-control" rows={4} placeholder="Enter description" {...field} />
+                  <textarea className="form-control" rows={4} placeholder="Enter Description" {...field} />
                 )}
               />
             </div>

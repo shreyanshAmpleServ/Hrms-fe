@@ -112,10 +112,11 @@ const ManagetravelReimbursement = ({ settravelReimbursement, travelReimbursement
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-
             {/* Employee */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Employee<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Employee<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="employee_id"
                 control={control}
@@ -140,10 +141,11 @@ const ManagetravelReimbursement = ({ settravelReimbursement, travelReimbursement
 
             {/* Approved By */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Approved By</label>
+              <label className="col-form-label">Approved By<span className="text-danger">*</span></label>
               <Controller
                 name="approved_by"
                 control={control}
+                rules={{ required: "Approver is required" }}
                 render={({ field }) => {
                   const selected = (userOptions || []).find(opt => opt.value === field.value);
                   return (
@@ -162,99 +164,100 @@ const ManagetravelReimbursement = ({ settravelReimbursement, travelReimbursement
               {errors.approved_by && <small className="text-danger">{errors.approved_by.message}</small>}
             </div>
 
-
             {/* Travel Purpose */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Travel Purpose</label>
+              <label className="col-form-label">Travel Purpose<span className="text-danger">*</span></label>
               <Controller
                 name="travel_purpose"
                 control={control}
+                rules={{ required: "Purpose is required" }}
                 render={({ field }) => (
-                  <input type="text" className="form-control" placeholder="Enter purpose" {...field} />
+                  <input type="text" className="form-control" placeholder="Enter Purpose" {...field} />
                 )}
               />
+              {errors.travel_purpose && <small className="text-danger">{errors.travel_purpose.message}</small>}
             </div>
 
             {/* Destination */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Destination</label>
+              <label className="col-form-label">Destination<span className="text-danger">*</span></label>
               <Controller
                 name="destination"
                 control={control}
+                rules={{ required: "Destination is required" }}
                 render={({ field }) => (
-                  <input type="text" className="form-control" placeholder="Enter destination" {...field} />
+                  <input type="text" className="form-control" placeholder="Enter Destination" {...field} />
                 )}
               />
+              {errors.destination && <small className="text-danger">{errors.destination.message}</small>}
             </div>
 
             {/* Start Date */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Start Date</label>
+              <label className="col-form-label">Start Date<span className="text-danger">*</span></label>
               <Controller
                 name="start_date"
                 control={control}
-                rules={{ required: "Date is required" }}
+                rules={{ required: "Start date is required" }}
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    value={
-                      field.value ? moment(field.value).format("DD-MM-YYYY") : ""
-                    }
                     selected={field.value ? new Date(field.value) : null}
-                    onChange={(date) => {
-                      field.onChange(date)
-                    }}
+                    onChange={(date) => field.onChange(date)}
                     className="form-control"
                     dateFormat="dd-MM-yyyy"
                     placeholderText="Select Start Date"
                   />
                 )}
               />
+              {errors.start_date && <small className="text-danger">{errors.start_date.message}</small>}
             </div>
 
             {/* End Date */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">End Date</label>
+              <label className="col-form-label">End Date<span className="text-danger">*</span></label>
               <Controller
                 name="end_date"
                 control={control}
-                rules={{ required: "Date is required" }}
+                rules={{ required: "End date is required" }}
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    value={
-                      field.value ? moment(field.value).format("DD-MM-YYYY") : ""
-                    }
                     selected={field.value ? new Date(field.value) : null}
-                    onChange={(date) => {
-                      field.onChange(date)
-                    }}
+                    onChange={(date) => field.onChange(date)}
                     className="form-control"
                     dateFormat="dd-MM-yyyy"
                     placeholderText="Select End Date"
                   />
                 )}
               />
+              {errors.end_date && <small className="text-danger">{errors.end_date.message}</small>}
             </div>
 
             {/* Total Amount */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Total Amount</label>
+              <label className="col-form-label">Total Amount<span className="text-danger">*</span></label>
               <Controller
                 name="total_amount"
                 control={control}
+                rules={{
+                  required: "Amount is required",
+                  min: { value: 0, message: "Amount must be greater than or equal to 0" }
+                }}
                 render={({ field }) => (
-                  <input type="number" className="form-control" placeholder="Enter amount" {...field} />
+                  <input type="number" className="form-control" placeholder="Enter Amount" {...field} />
                 )}
               />
+              {errors.total_amount && <small className="text-danger">{errors.total_amount.message}</small>}
             </div>
 
             {/* Approval Status */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Approval Status</label>
+              <label className="col-form-label">Approval Status<span className="text-danger">*</span></label>
               <Controller
                 name="approval_status"
                 control={control}
+                rules={{ required: "Status is required" }}
                 render={({ field }) => {
                   const selected = statusOptions.find(opt => opt.value === field.value);
                   return (
@@ -269,6 +272,7 @@ const ManagetravelReimbursement = ({ settravelReimbursement, travelReimbursement
                   );
                 }}
               />
+              {errors.approval_status && <small className="text-danger">{errors.approval_status.message}</small>}
             </div>
           </div>
 

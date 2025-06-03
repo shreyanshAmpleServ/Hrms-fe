@@ -45,7 +45,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
         status: grievanceSubmission.status || "Pending",
         assigned_to: grievanceSubmission.assigned_to || "",
         resolution_notes: grievanceSubmission.resolution_notes || "",
-        resolved_on: grievanceSubmission.resolved_on || "",
+        resolved_on: grievanceSubmission.resolved_on || new Date().toISOString(),
       });
     } else {
       reset({
@@ -57,7 +57,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
         status: "Pending",
         assigned_to: "",
         resolution_notes: "",
-        resolved_on: "",
+        resolved_on: new Date().toISOString(),
       });
     }
   }, [grievanceSubmission, reset]);
@@ -246,10 +246,8 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                         value={
                           field.value ? moment(field.value).format("DD-MM-YYYY") : ""
                         }
-
                         selected={field.value ? new Date(field.value) : null}
                         onChange={field.onChange}
-
                         className="form-control"
                         dateFormat="dd-MM-yyyy"
                       />
@@ -321,7 +319,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
 
                   />
 
-                  <label className="col-form-label">Anonymous?</label>
+                  <label className="col-form-label ms-2">Anonymous?</label>
 
                 </div>
 
