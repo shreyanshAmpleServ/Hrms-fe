@@ -1,19 +1,27 @@
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
-import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchAppointments } from "../../redux/AppointmentLetters";
+import { fetchEmployeeAttachment } from "../../redux/EmployeeAttachment";
 import DeleteConfirmation from "./DeleteConfirmation";
-import ManageAppointments from "./ManageAppointments";
+import ManageEmployeeAttachment from "./ManageEmployeeAttachment";
+import {
+  FileExcelFilled,
+  FileFilled,
+  FileImageFilled,
+  FilePdfFilled,
+  FileWordFilled,
+} from "@ant-design/icons";
 
-const AppointmentLetters = () => {
+const EmployeeAttachment = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedEmployeeAttachment, setSelectedEmployeeAttachment] =
+    useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,13 +30,13 @@ const AppointmentLetters = () => {
   });
   const dispatch = useDispatch();
 
-  const { appointment, loading } = useSelector(
-    (state) => state.appointment || {}
+  const { employeeAttachment, loading } = useSelector(
+    (state) => state.employeeAttachment || {}
   );
 
   React.useEffect(() => {
     dispatch(
-      fetchAppointments({
+      fetchEmployeeAttachment({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -37,12 +45,12 @@ const AppointmentLetters = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: appointment?.currentPage,
-      totalPage: appointment?.totalPages,
-      totalCount: appointment?.totalCount,
-      pageSize: appointment?.size,
+      currentPage: employeeAttachment?.currentPage,
+      totalPage: employeeAttachment?.totalPages,
+      totalCount: employeeAttachment?.totalCount,
+      pageSize: employeeAttachment?.size,
     });
-  }, [appointment]);
+  }, [employeeAttachment]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -51,7 +59,7 @@ const AppointmentLetters = () => {
       pageSize,
     }));
     dispatch(
-      fetchAppointments({
+      fetchEmployeeAttachment({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -60,11 +68,11 @@ const AppointmentLetters = () => {
     );
   };
 
-  const data = appointment?.data;
+  const data = employeeAttachment?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Appointment Letters"
+    (i) => i?.module_name === "Employee Attachment"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -74,31 +82,63 @@ const AppointmentLetters = () => {
 
   const columns = [
     {
-      title: "Issue Date",
-      dataIndex: "issue_date",
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : ""),
-      sorter: (a, b) => a.issue_date.length - b.issue_date.length,
-    },
-    {
       title: "Employee Name",
-      dataIndex: "appointment_employee",
-      render: (text) => text.full_name || "-",
+      dataIndex: "document_upload_employee",
+      render: (text) => text?.full_name || "-",
+      sorter: (a, b) =>
+        a.document_upload_employee.full_name.localeCompare(
+          b.document_upload_employee.full_name
+        ),
     },
     {
-      title: "Designation",
-      dataIndex: "appointment_designation",
-      render: (text) => text.designation_name || "-",
+      title: "Attachment",
+      dataIndex: "document_path",
+      render: (text) => (
+        <a
+          href={text}
+          target="_blank"
+          rel="noreferrer"
+          className="d-flex align-items-center gap-2"
+        >
+          {text.split(".").pop()?.toLowerCase() === "pdf" ? (
+            <Button className="rounded-circle bg-danger p-2">
+              <FilePdfFilled />
+            </Button>
+          ) : text.split(".").pop()?.toLowerCase() === "jpg" ||
+            text.split(".").pop()?.toLowerCase() === "jpeg" ||
+            text.split(".").pop()?.toLowerCase() === "png" ? (
+            <Button className="rounded-circle bg-primary p-2">
+              <FileImageFilled />
+            </Button>
+          ) : text.split(".").pop()?.toLowerCase() === "doc" ||
+            text.split(".").pop()?.toLowerCase() === "docx" ? (
+            <Button className="rounded-circle bg-success p-2">
+              <FileWordFilled />
+            </Button>
+          ) : text.split(".").pop()?.toLowerCase() === "xls" ||
+            text.split(".").pop()?.toLowerCase() === "xlsx" ? (
+            <Button className="rounded-circle bg-success p-2">
+              <FileExcelFilled />
+            </Button>
+          ) : (
+            <Button className="rounded-circle bg-primary p-2">
+              <FileFilled />
+            </Button>
+          )}
+          {text.split("/").pop().split("-").pop()}
+        </a>
+      ),
     },
     {
-      title: "Terms Summary",
-      dataIndex: "terms_summary",
-      render: (text) => text || "---",
+      title: "Attachment Type",
+      dataIndex: "document_type",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Created Date",
+      title: "Uploaded On",
       dataIndex: "createdate",
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : ""),
-      sorter: (a, b) => a.createdate.length - b.createdate.length,
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) => moment(a.createdate).diff(moment(b.createdate)),
     },
     ...(isDelete || isUpdate
       ? [
@@ -121,7 +161,7 @@ const AppointmentLetters = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedAppointment(a)}
+                      onClick={() => setSelectedEmployeeAttachment(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -131,7 +171,7 @@ const AppointmentLetters = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteAppointment(a)}
+                      onClick={() => handleDeleteEmployeeAttachment(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -144,18 +184,18 @@ const AppointmentLetters = () => {
       : []),
   ];
 
-  const handleDeleteAppointment = (appointment) => {
-    setSelectedAppointment(appointment);
+  const handleDeleteEmployeeAttachment = (employeeAttachment) => {
+    setSelectedEmployeeAttachment(employeeAttachment);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Appointment Letters</title>
+        <title>DCC HRMS - Employee Attachments</title>
         <meta
-          name="appointment"
-          content="This is appointment page of DCC HRMS."
+          name="employee-attachments"
+          content="This is employee attachments page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -168,9 +208,9 @@ const AppointmentLetters = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Appointment Letters
+                      Employee Attachments
                       <span className="count-title">
-                        {appointment?.totalCount}
+                        {employeeAttachment?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -194,7 +234,7 @@ const AppointmentLetters = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Appointment Letters"
+                          placeholder="Search Employee Attachments"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -209,7 +249,7 @@ const AppointmentLetters = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Appointment Letters
+                            Add New Employee Attachment
                           </Link>
                         </div>
                       </div>
@@ -223,7 +263,9 @@ const AppointmentLetters = () => {
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Appointment Letters</h4>
+                          <h4 className="mb-0 me-3">
+                            All Employee Attachments
+                          </h4>
                         </div>
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -263,18 +305,18 @@ const AppointmentLetters = () => {
             </div>
           </div>
         </div>
-        <ManageAppointments
-          setAppointment={setSelectedAppointment}
-          appointment={selectedAppointment}
+        <ManageEmployeeAttachment
+          setEmployeeAttachment={setSelectedEmployeeAttachment}
+          employeeAttachment={selectedEmployeeAttachment}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        appointmentId={selectedAppointment?.id}
+        employeeAttachmentId={selectedEmployeeAttachment?.id}
       />
     </>
   );
 };
 
-export default AppointmentLetters;
+export default EmployeeAttachment;

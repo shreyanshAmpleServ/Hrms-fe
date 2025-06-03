@@ -117,7 +117,7 @@ export const updateEmployeeExperience = createAsyncThunk(
     try {
       const response = await toast.promise(
         apiClient.put(`/v1/employee-experience/${id}`, {
-          empExpData: experiences,
+          experiences: experiences,
         }),
         {
           loading: "Employee experience updating...",
@@ -141,7 +141,7 @@ export const updateEmployeeEducation = createAsyncThunk(
     try {
       const response = await toast.promise(
         apiClient.put(`/v1/employee-education/${id}`, {
-          empEduData: educations,
+          educations,
         }),
         {
           loading: "Employee education updating...",

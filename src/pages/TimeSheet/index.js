@@ -74,22 +74,28 @@ const TimeSheet = () => {
     {
       title: "Employee Name",
       render: (text) => text?.time_sheet_employee?.full_name || "-",
+      sorter: (a, b) =>
+        a.time_sheet_employee.full_name.localeCompare(
+          b.time_sheet_employee.full_name
+        ),
     },
     {
       title: "Project Name",
       dataIndex: "project_name",
       render: (text) => text || "-",
+      sorter: (a, b) => a.project_name.localeCompare(b.project_name),
     },
     {
       title: "Date",
       dataIndex: "work_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : ""),
-      sorter: (a, b) => a.work_date.length - b.work_date.length,
+      sorter: (a, b) => moment(a.work_date).unix() - moment(b.work_date).unix(),
     },
     {
       title: "Hours Worked",
       dataIndex: "hours_worked",
       render: (text) => text || "-",
+      sorter: (a, b) => a.hours_worked - b.hours_worked,
     },
 
     {

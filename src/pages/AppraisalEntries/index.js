@@ -76,16 +76,22 @@ const AppraisalEntries = () => {
     {
       title: "Employee Name",
       render: (text) => text?.appraisal_employee?.full_name || "-",
+      sorter: (a, b) =>
+        a.appraisal_employee.full_name.localeCompare(
+          b.appraisal_employee.full_name
+        ),
     },
     {
       title: "Review Period",
       dataIndex: "review_period",
       render: (text) => text || "-",
+      sorter: (a, b) => a.review_period.localeCompare(b.review_period),
     },
     {
       title: "Rating",
       dataIndex: "rating",
-      render: (text) => <Rate allowHalf disabled defaultValue={text} /> || "-",
+      render: (text) => <Rate allowHalf disabled value={text} /> || "-",
+      sorter: (a, b) => a.rating - b.rating,
     },
     {
       title: "Reviewer Comments",

@@ -247,6 +247,7 @@ const ManageCompetencyTracking = ({
                           }
                           onChange={field.onChange}
                           dateFormat="DD-MM-YYYY"
+                          minDate={new Date()}
                         />
                       )}
                     />

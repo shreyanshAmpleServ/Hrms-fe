@@ -10,6 +10,7 @@ import {
   updateWorkLifeEventLog,
 } from "../../../redux/WorkLifeEventLog";
 import { fetchwork_life } from "../../../redux/workLifeEventTypeMaster";
+import { Checkbox } from "antd";
 
 const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -138,7 +139,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Employee
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
                       name="employee_id"
@@ -183,8 +184,8 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Work Life Event Type
-                      <span className="text-danger">*</span>
+                      Event Type
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
                       name="event_type"
@@ -199,7 +200,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                           <Select
                             {...field}
                             className="select"
-                            placeholder="Select Work Life Event Type"
+                            placeholder="Select Event Type"
                             options={workLifeEventTypes}
                             isLoading={workLifeEventTypeLoading}
                             value={selectedDeal || null}
@@ -227,7 +228,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Event Date<span className="text-danger">*</span>
+                    Event Date<span className="text-danger"> *</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
@@ -249,6 +250,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                           }
                           onChange={field.onChange}
                           dateFormat="DD-MM-YYYY"
+                          minDate={new Date()}
                         />
                       )}
                     />
@@ -259,23 +261,21 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                     </small>
                   )}
                 </div>
-                <div className="col-md-6 d-flex align-items-center gap-2">
-                  <label className="col-form-label">Requires Follow Up</label>
+                <div className="col-md-6 mt-3 d-flex align-items-center gap-2">
                   <div className="mb-1">
                     <Controller
                       name="requires_followup"
                       control={control}
                       render={({ field }) => (
-                        <input
+                        <Checkbox
                           {...field}
-                          type="checkbox"
-                          className="form-check-input"
                           checked={field.value}
                           onChange={(e) => field.onChange(e.target.checked)}
                         />
                       )}
                     />
                   </div>
+                  <label className="col-form-label">Requires Follow Up</label>
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">Notes</label>

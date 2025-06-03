@@ -1,16 +1,19 @@
+import moment from "moment";
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import DefaultEditor from "react-simple-wysiwyg";
 import {
-  createAppraisalEntries,
-  updateAppraisalEntries,
-} from "../../../redux/AppraisalsEntries";
+  createContract,
+  updateContract,
+} from "../../../redux/EmployementContracts";
 import { fetchEmployee } from "../../../redux/Employee";
 
-const ManageAppraisalEntries = ({ setSelected, selected }) => {
+const ManageContracts = ({ setContract, contract }) => {
   const [searchValue, setSearchValue] = useState("");
+  const [documentPath, setDocumentPath] = useState(null);
   const dispatch = useDispatch();
   const {
     control,
@@ -20,31 +23,39 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
   } = useForm({
     defaultValues: {
       employee_id: "",
-      review_period: "",
-      rating: "",
-      reviewer_comments: "",
+      contract_start_date: new Date().toISOString(),
+      contract_end_date: new Date().toISOString(),
+      contract_type: "",
+      document_path: "",
+      description: "",
     },
   });
 
-  const { loading } = useSelector((state) => state.appraisalEntries || {});
+  const { loading } = useSelector((state) => state.contracts || {});
 
   React.useEffect(() => {
-    if (selected) {
+    if (contract) {
       reset({
-        employee_id: selected.employee_id || "",
-        review_period: selected.review_period || "",
-        rating: selected.rating || "",
-        reviewer_comments: selected.reviewer_comments || "",
+        employee_id: contract.employee_id || "",
+        contract_start_date:
+          contract.contract_start_date || new Date().toISOString(),
+        contract_end_date:
+          contract.contract_end_date || new Date().toISOString(),
+        contract_type: contract.contract_type || "",
+        document_path: "",
+        description: contract.description || "",
       });
     } else {
       reset({
         employee_id: "",
-        review_period: "",
-        rating: "",
-        reviewer_comments: "",
+        contract_start_date: new Date().toISOString(),
+        contract_end_date: new Date().toISOString(),
+        contract_type: "",
+        document_path: "",
+        description: "",
       });
     }
-  }, [selected, reset]);
+  }, [contract, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -59,25 +70,32 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
     value: i?.id,
   }));
 
+  const contractTypes = [
+    { label: "Full Time", value: "full_time" },
+    { label: "Part Time", value: "part_time" },
+    { label: "Temporary", value: "temporary" },
+    { label: "Seasonal", value: "seasonal" },
+    { label: "Intern", value: "intern" },
+    { label: "Volunteer", value: "volunteer" },
+    { label: "Other", value: "other" },
+  ];
+
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      selected
+      contract
         ? await dispatch(
-            updateAppraisalEntries({
-              id: selected.id,
-              appraisalEntriesData: { ...data, rating: Number(data.rating) },
+            updateContract({
+              id: contract.id,
+              contractData: { ...data, document_path: documentPath },
             })
           ).unwrap()
         : await dispatch(
-            createAppraisalEntries({
-              ...data,
-              rating: Number(data.rating),
-            })
+            createContract({ ...data, document_path: documentPath })
           ).unwrap();
       closeButton.click();
       reset();
-      setSelected(null);
+      setContract(null);
     } catch (error) {
       closeButton.click();
     }
@@ -87,7 +105,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setSelected(null);
+        setContract(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -100,7 +118,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
         );
       };
     }
-  }, [setSelected]);
+  }, [setContract]);
   return (
     <>
       {/* Add New appointment */}
@@ -110,14 +128,14 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{selected ? "Update " : "Add New "} Appraisal Entries</h4>
+          <h4>{contract ? "Update " : "Add New "} Employment Contracts</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setSelected(null);
+              setContract(null);
               reset();
             }}
           >
@@ -132,7 +150,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Employee
-                      <span className="text-danger"> *</span>
+                      <span className="text-danger">*</span>
                     </label>
                     <Controller
                       name="employee_id"
@@ -147,8 +165,8 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                             {...field}
                             className="select"
                             options={employees}
-                            placeholder="Select Employee"
                             classNamePrefix="react-select"
+                            placeholder="Select Employee"
                             isLoading={employeeLoading}
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
@@ -177,28 +195,41 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Review Period
-                      <span className="text-danger"> *</span>
+                      Contract Type
+                      <span className="text-danger">*</span>
                     </label>
                     <Controller
-                      name="review_period"
+                      name="contract_type"
                       control={control}
-                      rules={{ required: "Review period is required" }}
+                      rules={{ required: "Contract type is required" }}
                       render={({ field }) => {
+                        const selectedDeal = contractTypes?.find(
+                          (employee) => employee.value === field.value
+                        );
                         return (
-                          <input
+                          <Select
                             {...field}
-                            className="form-control"
-                            placeholder="Enter Review Period"
-                            value={field.value}
-                            onChange={field.onChange}
+                            className="select"
+                            options={contractTypes}
+                            classNamePrefix="react-select"
+                            placeholder="Select Contract Type"
+                            value={selectedDeal || null}
+                            onChange={(selectedOption) =>
+                              field.onChange(selectedOption.value)
+                            }
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
+                            }}
                           />
                         );
                       }}
                     />
-                    {errors.review_period && (
+                    {errors.contract_type && (
                       <small className="text-danger">
-                        {errors.review_period.message}
+                        {errors.contract_type.message}
                       </small>
                     )}
                   </div>
@@ -206,53 +237,96 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Rating<span className="text-danger"> *</span>
+                    Contract Start Date<span className="text-danger">*</span>
                   </label>
-                  <div className="mb-3">
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
                     <Controller
-                      name="rating"
+                      name="contract_start_date"
                       control={control}
-                      rules={{
-                        required: "Rating is required!",
-                        min: {
-                          value: 1,
-                          message: "Rating must be at least 1",
-                        },
-                        max: {
-                          value: 5,
-                          message: "Rating cannot exceed 5",
-                        },
-                      }}
+                      rules={{ required: "Contract start date is required!" }}
                       render={({ field }) => (
-                        <input
+                        <DatePicker
                           {...field}
-                          type="number"
-                          min={1}
-                          max={5}
                           className="form-control"
-                          placeholder="Enter Rating (1-5)"
-                          value={field.value}
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
                           onChange={field.onChange}
+                          dateFormat="DD-MM-YYYY"
                         />
                       )}
                     />
                   </div>
-                  {errors.rating && (
+                  {errors.contract_start_date && (
                     <small className="text-danger">
-                      {errors.rating.message}
+                      {errors.contract_start_date.message}
                     </small>
                   )}
                 </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Contract End Date<span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
+                    <Controller
+                      name="contract_end_date"
+                      control={control}
+                      rules={{ required: "Contract end date is required!" }}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={field.onChange}
+                          dateFormat="DD-MM-YYYY"
+                        />
+                      )}
+                    />
+                  </div>
+                  {errors.contract_end_date && (
+                    <small className="text-danger">
+                      {errors.contract_end_date.message}
+                    </small>
+                  )}
+                </div>
+                <div className="col-md-12 mb-3">
+                  <label className="col-form-label">Attachment</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    name="document_path"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setDocumentPath(file);
+                      }
+                    }}
+                  />
+                </div>
 
                 <div className="mb-3">
-                  <label className="col-form-label">Reviewer Comments</label>
+                  <label className="col-form-label">Description</label>
                   <Controller
-                    name="reviewer_comments"
+                    name="description"
                     control={control}
                     render={({ field }) => (
                       <DefaultEditor
                         className="summernote"
-                        placeholder="Write Comments"
+                        placeholder="Write Description"
                         {...field}
                         value={field.value || ""}
                         onChange={(content) => field.onChange(content)}
@@ -271,7 +345,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {selected
+                {contract
                   ? loading
                     ? " Updating..."
                     : "Update"
@@ -299,4 +373,4 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
   );
 };
 
-export default ManageAppraisalEntries;
+export default ManageContracts;

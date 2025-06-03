@@ -22,6 +22,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Employee Attachments",
+        link: route.employeeAttachment,
+        icon: "ti ti-id-badge",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Onboarding & Hiring",
         icon: "ti ti-id-badge",
         showSubRoute: false,
@@ -106,6 +113,12 @@ export const SidebarData = [
           {
             label: "Loan Requests",
             link: route.loanRequests,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Advance Payment Entry",
+            link: route.advancePaymentEntry,
             showSubRoute: false,
             submenu: false,
           },

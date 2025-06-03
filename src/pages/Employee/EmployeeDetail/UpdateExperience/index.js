@@ -86,7 +86,7 @@ const UpdateExperience = ({ employeeDetail }) => {
       setExperiences(
         employeeDetail.experiance_of_employee.map((exp) => ({
           ...exp,
-          is_current: false,
+          is_current: exp?.end_to ? false : true,
         }))
       );
     } else {

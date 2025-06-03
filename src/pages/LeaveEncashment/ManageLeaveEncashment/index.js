@@ -291,6 +291,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                           }
                           onChange={field.onChange}
                           dateFormat="DD-MM-YYYY"
+                          minDate={new Date()}
                         />
                       )}
                     />
@@ -334,13 +335,13 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Approved Status
+                      Approval Status
                       <span className="text-danger">*</span>
                     </label>
                     <Controller
                       name="approval_status"
                       control={control}
-                      rules={{ required: "Approved Status is required" }}
+                      rules={{ required: "Approval Status is required" }}
                       render={({ field }) => {
                         const selectedDeal = approvedStatus?.find(
                           (employee) => employee.value === field.value
@@ -350,7 +351,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                             {...field}
                             className="select"
                             options={approvedStatus}
-                            placeholder="Select Approved Status"
+                            placeholder="Select Approval Status"
                             value={selectedDeal || null}
                             classNamePrefix="react-select"
                             onChange={(selectedOption) =>

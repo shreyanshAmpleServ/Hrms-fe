@@ -4,58 +4,60 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
 import {
-  createContract,
-  updateContract,
-} from "../../../redux/EmployementContracts";
+  createAdvancePayment,
+  updateAdvancePayment,
+} from "../../../redux/AdvancePayment";
 import { fetchEmployee } from "../../../redux/Employee";
 
-const ManageContracts = ({ setContract, contract }) => {
+const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [documentPath, setDocumentPath] = useState(null);
   const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      employee_id: "",
-      contract_start_date: new Date().toISOString(),
-      contract_end_date: new Date().toISOString(),
-      contract_type: "",
-      document_path: "",
-      description: "",
-    },
-  });
+  } = useForm();
 
-  const { loading } = useSelector((state) => state.contracts || {});
+  const { loading } = useSelector((state) => state.advancePayment || {});
+
+  const statusOptions = [
+    { value: "pending", label: "Pending" },
+    { value: "approved", label: "Approved" },
+    { value: "rejected", label: "Rejected" },
+  ];
 
   React.useEffect(() => {
-    if (contract) {
+    if (advancePayment) {
       reset({
-        employee_id: contract.employee_id || "",
-        contract_start_date:
-          contract.contract_start_date || new Date().toISOString(),
-        contract_end_date:
-          contract.contract_end_date || new Date().toISOString(),
-        contract_type: contract.contract_type || "",
-        document_path: "",
-        description: contract.description || "",
+        employee_id: advancePayment?.employee_id,
+        request_date: advancePayment?.request_date || moment().toISOString(),
+        amount_requested: advancePayment?.amount_requested,
+        amount_approved: advancePayment?.amount_approved,
+        approval_status: advancePayment?.approval_status || "pending",
+        reason: advancePayment?.reason,
+        approval_date:
+          advancePayment?.approval_status === "approved"
+            ? advancePayment?.approval_date || moment().toISOString()
+            : null,
+        repayment_schedule:
+          advancePayment?.repayment_schedule ||
+          moment().add(1, "month").toISOString(),
       });
     } else {
       reset({
+        request_date: moment().toISOString(),
+        repayment_schedule: moment().add(1, "month").toISOString(),
+        approval_status: "pending",
+        amount_requested: "",
+        amount_approved: "",
+        reason: "",
+        approval_date: null,
         employee_id: "",
-        contract_start_date: new Date().toISOString(),
-        contract_end_date: new Date().toISOString(),
-        contract_type: "",
-        document_path: "",
-        description: "",
       });
     }
-  }, [contract, reset]);
+  }, [advancePayment, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -70,32 +72,20 @@ const ManageContracts = ({ setContract, contract }) => {
     value: i?.id,
   }));
 
-  const contractTypes = [
-    { label: "Full Time", value: "full_time" },
-    { label: "Part Time", value: "part_time" },
-    { label: "Temporary", value: "temporary" },
-    { label: "Seasonal", value: "seasonal" },
-    { label: "Intern", value: "intern" },
-    { label: "Volunteer", value: "volunteer" },
-    { label: "Other", value: "other" },
-  ];
-
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      contract
+      advancePayment
         ? await dispatch(
-            updateContract({
-              id: contract.id,
-              contractData: { ...data, document_path: documentPath },
+            updateAdvancePayment({
+              id: advancePayment.id,
+              advancePaymentData: { ...data },
             })
           ).unwrap()
-        : await dispatch(
-            createContract({ ...data, document_path: documentPath })
-          ).unwrap();
+        : await dispatch(createAdvancePayment({ ...data })).unwrap();
       closeButton.click();
       reset();
-      setContract(null);
+      setAdvancePayment(null);
     } catch (error) {
       closeButton.click();
     }
@@ -105,7 +95,7 @@ const ManageContracts = ({ setContract, contract }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setContract(null);
+        setAdvancePayment(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -118,24 +108,24 @@ const ManageContracts = ({ setContract, contract }) => {
         );
       };
     }
-  }, [setContract]);
+  }, [setAdvancePayment]);
+
   return (
     <>
-      {/* Add New appointment */}
       <div
         className="offcanvas offcanvas-end offcanvas-large"
         tabIndex={-1}
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{contract ? "Update " : "Add New "} Employment Contracts</h4>
+          <h4>{advancePayment ? "Update " : "Add New "} Advance Payment</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setContract(null);
+              setAdvancePayment(null);
               reset();
             }}
           >
@@ -157,7 +147,7 @@ const ManageContracts = ({ setContract, contract }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
+                        const selectedEmployee = employees?.find(
                           (employee) => employee.value === field.value
                         );
                         return (
@@ -165,12 +155,13 @@ const ManageContracts = ({ setContract, contract }) => {
                             {...field}
                             className="select"
                             options={employees}
+                            placeholder="Select Employee"
                             classNamePrefix="react-select"
                             isLoading={employeeLoading}
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
                             }
-                            value={selectedDeal || null}
+                            value={selectedEmployee || null}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)
                             }
@@ -191,43 +182,33 @@ const ManageContracts = ({ setContract, contract }) => {
                     )}
                   </div>
                 </div>
+
                 <div className="col-md-6">
+                  <label className="col-form-label">
+                    Approval Status <span className="text-danger">*</span>
+                  </label>
                   <div className="mb-3">
-                    <label className="col-form-label">
-                      Contract Type
-                      <span className="text-danger">*</span>
-                    </label>
                     <Controller
-                      name="contract_type"
+                      name="approval_status"
                       control={control}
-                      rules={{ required: "Contract type is required" }}
-                      render={({ field }) => {
-                        const selectedDeal = contractTypes?.find(
-                          (employee) => employee.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={contractTypes}
-                            classNamePrefix="react-select"
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
+                      rules={{ required: "Approval Status is required!" }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={statusOptions}
+                          placeholder="Select Approval Status"
+                          classNamePrefix="react-select"
+                          value={statusOptions.find(
+                            (x) => x.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option.value)}
+                        />
+                      )}
                     />
-                    {errors.contract_type && (
+                    {errors.approval_status && (
                       <small className="text-danger">
-                        {errors.contract_type.message}
+                        {errors.approval_status.message}
                       </small>
                     )}
                   </div>
@@ -235,101 +216,145 @@ const ManageContracts = ({ setContract, contract }) => {
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Contract Start Date<span className="text-danger">*</span>
+                    Amount Requested <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="amount_requested"
+                      control={control}
+                      rules={{ required: "Amount Requested is required!" }}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="number"
+                          className={`form-control ${errors.amount_requested ? "is-invalid" : ""}`}
+                          placeholder="Enter Amount Requested"
+                        />
+                      )}
+                    />
+                    {errors.amount_requested && (
+                      <small className="text-danger">
+                        {errors.amount_requested.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Amount Approved <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="amount_approved"
+                      control={control}
+                      rules={{ required: "Amount Approved is required!" }}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="number"
+                          className={`form-control ${errors.amount_approved ? "is-invalid" : ""}`}
+                          placeholder="Enter Amount Approved"
+                        />
+                      )}
+                    />
+                    {errors.amount_approved && (
+                      <small className="text-danger">
+                        {errors.amount_approved.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Request Date<span className="text-danger">*</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
                     </span>
                     <Controller
-                      name="contract_start_date"
+                      name="request_date"
                       control={control}
-                      rules={{ required: "Contract start date is required!" }}
+                      rules={{ required: "Request date is required!" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
+                          placeholderText="Select Request Date"
                           selected={field.value}
                           value={
                             field.value
                               ? moment(field.value).format("DD-MM-YYYY")
                               : null
                           }
-                          onChange={field.onChange}
+                          onChange={(date) => field.onChange(date)}
                           dateFormat="DD-MM-YYYY"
                         />
                       )}
                     />
                   </div>
-                  {errors.contract_start_date && (
+                  {errors.request_date && (
                     <small className="text-danger">
-                      {errors.contract_start_date.message}
+                      {errors.request_date.message}
                     </small>
                   )}
                 </div>
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Contract End Date<span className="text-danger">*</span>
+                    Due Date
+                    <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
                     </span>
                     <Controller
-                      name="contract_end_date"
+                      name="repayment_schedule"
                       control={control}
-                      rules={{ required: "Contract end date is required!" }}
+                      rules={{ required: "Due Date is required!" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
+                          placeholderText="Select Due Date"
                           selected={field.value}
                           value={
                             field.value
                               ? moment(field.value).format("DD-MM-YYYY")
                               : null
                           }
-                          onChange={field.onChange}
+                          onChange={(date) => field.onChange(date)}
                           dateFormat="DD-MM-YYYY"
                         />
                       )}
                     />
                   </div>
-                  {errors.contract_end_date && (
+                  {errors.repayment_schedule && (
                     <small className="text-danger">
-                      {errors.contract_end_date.message}
+                      {errors.repayment_schedule.message}
                     </small>
                   )}
                 </div>
-                <div className="col-md-12 mb-3">
-                  <label className="col-form-label">Document Path</label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    name="document_path"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        setDocumentPath(file);
-                      }
-                    }}
-                  />
-                </div>
 
-                <div className="mb-3">
-                  <label className="col-form-label">Description</label>
-                  <Controller
-                    name="description"
-                    control={control}
-                    render={({ field }) => (
-                      <DefaultEditor
-                        className="summernote"
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(content) => field.onChange(content)}
-                      />
-                    )}
-                  />
+                <div className="col-md-12">
+                  <label className="col-form-label">
+                    Reason<span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="reason"
+                      control={control}
+                      render={({ field }) => (
+                        <textarea
+                          rows={4}
+                          {...field}
+                          className={`form-control ${errors.reason ? "is-invalid" : ""}`}
+                          placeholder="Enter Reason"
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -342,9 +367,9 @@ const ManageContracts = ({ setContract, contract }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {contract
+                {advancePayment
                   ? loading
-                    ? " Updating..."
+                    ? "Updating..."
                     : "Update"
                   : loading
                     ? "Creating..."
@@ -370,4 +395,4 @@ const ManageContracts = ({ setContract, contract }) => {
   );
 };
 
-export default ManageContracts;
+export default ManageAdvancePayment;

@@ -127,6 +127,12 @@ export const all_routes = {
   // Notifications
   notifications: "/notifications",
 
+  // Employee Attachments
+  employeeAttachment: "/employee-attachments",
+
+  // Advance Payment Entry
+  advancePaymentEntry: "/advance-payment-entry",
+
   // currency: "/currency",
   // core-hr //
 

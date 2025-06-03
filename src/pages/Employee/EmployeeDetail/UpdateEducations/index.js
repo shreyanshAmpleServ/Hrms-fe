@@ -4,6 +4,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { updateEmployeeEducation } from "../../../../redux/Employee";
+import ReactDatePicker from "react-datepicker";
+import moment from "moment";
 
 const UpdateEducations = ({ employeeDetail }) => {
   const { loading } = useSelector((state) => state.employee);
@@ -19,8 +21,12 @@ const UpdateEducations = ({ employeeDetail }) => {
   const dispatch = useDispatch();
 
   const handleChangeQualification = (index, field, value) => {
-    const newQualifications = [...educations];
-    newQualifications[index][field] = value;
+    const newQualifications = educations.map((education, i) => {
+      if (i === index) {
+        return { ...education, [field]: value };
+      }
+      return education;
+    });
     setEducations(newQualifications);
   };
 
@@ -36,7 +42,9 @@ const UpdateEducations = ({ employeeDetail }) => {
       employeeDetail?.eduction_of_employee &&
       employeeDetail?.eduction_of_employee?.length > 0
     ) {
-      setEducations(employeeDetail?.eduction_of_employee);
+      setEducations(
+        employeeDetail?.eduction_of_employee.map((edu) => ({ ...edu }))
+      );
     } else {
       setEducations([
         {
@@ -49,6 +57,7 @@ const UpdateEducations = ({ employeeDetail }) => {
       ]);
     }
   }, [employeeDetail]);
+
   return (
     <div className="modal fade" id="update_education_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered modal-lg">
@@ -164,17 +173,38 @@ const UpdateEducations = ({ employeeDetail }) => {
                         <label className="col-form-label">
                           From <span className="text-danger"> *</span>
                         </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Enter From"
-                          value={education.start_from}
-                          onChange={(e) =>
+                        <ReactDatePicker
+                          selected={
+                            education.start_from
+                              ? new Date(education.start_from)
+                              : null
+                          }
+                          value={
+                            education.start_from
+                              ? moment(education.start_from).format(
+                                  "DD/MM/YYYY"
+                                )
+                              : null
+                          }
+                          onChange={(date) => {
                             handleChangeQualification(
                               index,
                               "start_from",
-                              e.target.value
-                            )
+                              date
+                            );
+
+                            if (
+                              education.end_to &&
+                              date > new Date(education.end_to)
+                            ) {
+                              handleChangeQualification(index, "end_to", null);
+                            }
+                          }}
+                          className="form-control"
+                          placeholderText="Select Start Date"
+                          dateFormat="DD/MM/YYYY"
+                          maxDate={
+                            education.end_to ? new Date(education.end_to) : null
                           }
                         />
                       </div>
@@ -185,17 +215,25 @@ const UpdateEducations = ({ employeeDetail }) => {
                         <label className="col-form-label">
                           To <span className="text-danger">*</span>
                         </label>
-                        <input
-                          type="text"
+                        <ReactDatePicker
+                          selected={
+                            education.end_to ? new Date(education.end_to) : null
+                          }
+                          value={
+                            education.end_to
+                              ? moment(education.end_to).format("DD/MM/YYYY")
+                              : null
+                          }
+                          onChange={(date) =>
+                            handleChangeQualification(index, "end_to", date)
+                          }
                           className="form-control"
-                          placeholder="Enter To"
-                          value={education.end_to}
-                          onChange={(e) =>
-                            handleChangeQualification(
-                              index,
-                              "end_to",
-                              e.target.value
-                            )
+                          placeholderText="Select End Date"
+                          dateFormat="DD/MM/YYYY"
+                          minDate={
+                            education.start_from
+                              ? new Date(education.start_from)
+                              : null
                           }
                         />
                       </div>

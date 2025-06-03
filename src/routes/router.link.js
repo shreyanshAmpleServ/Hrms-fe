@@ -143,6 +143,8 @@ import SurveyResponse from "../pages/SurveyResponse";
 import EmployeeSuggestion from "../pages/EmployeeSuggestion";
 import HelpdeskTicket from "../pages/HelpdeskTicket";
 import NotificationsLog from "../pages/Notifications";
+import EmployeeAttachment from "../pages/EmployeeAttachment";
+import AdvancePayment from "../pages/AdvancePayment";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -1019,8 +1021,18 @@ export const privateRoutes = [
     route: Route,
     title: "Notifications",
   },
-
-
+  {
+    path: route.employeeAttachment,
+    element: <EmployeeAttachment />,
+    route: Route,
+    title: "Employee Attachment",
+  },
+  {
+    path: route.advancePaymentEntry,
+    element: <AdvancePayment />,
+    route: Route,
+    title: "Advance Payment Entry",
+  },
 ];
 
 export const publicRoutes = [

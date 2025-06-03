@@ -105,7 +105,8 @@ import surveyResponseReducer from "./SurveyResponse";
 import employeeSuggestionReducer from "./EmployeeSuggestion";
 import helpdeskTicketReducer from "./HelpdeskTicket";
 import NotificationsLogReducer from "./Notifications";
-
+import EmployeeAttachmentReducer from "./EmployeeAttachment";
+import AdvancePaymentReducer from "./AdvancePayment";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -214,6 +215,8 @@ const store = configureStore({
     employeeSuggestion: employeeSuggestionReducer,
     helpdeskTicket: helpdeskTicketReducer,
     Notifications: NotificationsLogReducer,
+    employeeAttachment: EmployeeAttachmentReducer,
+    advancePayment: AdvancePaymentReducer,
   },
 });
 

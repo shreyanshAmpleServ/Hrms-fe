@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
-import {
-  createAppraisalEntries,
-  updateAppraisalEntries,
-} from "../../../redux/AppraisalsEntries";
 import { fetchEmployee } from "../../../redux/Employee";
+import {
+  createEmployeeAttachment,
+  updateEmployeeAttachment,
+} from "../../../redux/EmployeeAttachment";
 
-const ManageAppraisalEntries = ({ setSelected, selected }) => {
+const ManageEmployeeAttachment = ({
+  setEmployeeAttachment,
+  employeeAttachment,
+}) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -17,34 +19,17 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      employee_id: "",
-      review_period: "",
-      rating: "",
-      reviewer_comments: "",
-    },
-  });
+  } = useForm();
 
-  const { loading } = useSelector((state) => state.appraisalEntries || {});
+  const { loading } = useSelector((state) => state.employeeAttachment || {});
 
   React.useEffect(() => {
-    if (selected) {
-      reset({
-        employee_id: selected.employee_id || "",
-        review_period: selected.review_period || "",
-        rating: selected.rating || "",
-        reviewer_comments: selected.reviewer_comments || "",
-      });
-    } else {
-      reset({
-        employee_id: "",
-        review_period: "",
-        rating: "",
-        reviewer_comments: "",
-      });
-    }
-  }, [selected, reset]);
+    reset({
+      employee_id: employeeAttachment?.employee_id || "",
+      document_type: employeeAttachment?.document_type || "",
+      document_path: "",
+    });
+  }, [employeeAttachment, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -59,25 +44,36 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
     value: i?.id,
   }));
 
+  const employeeAttachmentTypes = [
+    { value: "Resume", label: "Resume" },
+    { value: "Offer Letter", label: "Offer Letter" },
+    { value: "Joining Letter", label: "Joining Letter" },
+    { value: "ID Proof", label: "ID Proof" },
+    { value: "Address Proof", label: "Address Proof" },
+    { value: "Experience Letter", label: "Experience Letter" },
+    { value: "Educational Certificates", label: "Educational Certificates" },
+    { value: "Salary Slips", label: "Salary Slips" },
+    { value: "Relieving Letter", label: "Relieving Letter" },
+    { value: "Promotion Letter", label: "Promotion Letter" },
+    { value: "Other", label: "Other" },
+  ];
+
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    const formData = new FormData();
+    formData.append("employee_id", data.employee_id);
+    formData.append("document_type", data.document_type);
+    formData.append("document_path", data.document_path);
+    if (employeeAttachment) {
+      formData.append("id", employeeAttachment?.id);
+    }
     try {
-      selected
-        ? await dispatch(
-            updateAppraisalEntries({
-              id: selected.id,
-              appraisalEntriesData: { ...data, rating: Number(data.rating) },
-            })
-          ).unwrap()
-        : await dispatch(
-            createAppraisalEntries({
-              ...data,
-              rating: Number(data.rating),
-            })
-          ).unwrap();
+      employeeAttachment
+        ? await dispatch(updateEmployeeAttachment(formData)).unwrap()
+        : await dispatch(createEmployeeAttachment(formData)).unwrap();
       closeButton.click();
       reset();
-      setSelected(null);
+      setEmployeeAttachment(null);
     } catch (error) {
       closeButton.click();
     }
@@ -87,7 +83,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setSelected(null);
+        setEmployeeAttachment(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -100,24 +96,26 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
         );
       };
     }
-  }, [setSelected]);
+  }, [setEmployeeAttachment]);
+
   return (
     <>
-      {/* Add New appointment */}
       <div
         className="offcanvas offcanvas-end offcanvas-large"
         tabIndex={-1}
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{selected ? "Update " : "Add New "} Appraisal Entries</h4>
+          <h4>
+            {employeeAttachment ? "Update " : "Add New "} Employee Attachment
+          </h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setSelected(null);
+              setEmployeeAttachment(null);
               reset();
             }}
           >
@@ -132,14 +130,14 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Employee
-                      <span className="text-danger"> *</span>
+                      <span className="text-danger">*</span>
                     </label>
                     <Controller
                       name="employee_id"
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
+                        const selectedEmployee = employees?.find(
                           (employee) => employee.value === field.value
                         );
                         return (
@@ -153,7 +151,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
                             }
-                            value={selectedDeal || null}
+                            value={selectedEmployee || null}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)
                             }
@@ -174,91 +172,63 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                     )}
                   </div>
                 </div>
+
                 <div className="col-md-6">
+                  <label className="col-form-label">
+                    Attachment Type <span className="text-danger">*</span>
+                  </label>
                   <div className="mb-3">
-                    <label className="col-form-label">
-                      Review Period
-                      <span className="text-danger"> *</span>
-                    </label>
                     <Controller
-                      name="review_period"
+                      name="document_type"
                       control={control}
-                      rules={{ required: "Review period is required" }}
-                      render={({ field }) => {
-                        return (
-                          <input
-                            {...field}
-                            className="form-control"
-                            placeholder="Enter Review Period"
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        );
-                      }}
+                      rules={{ required: "Attachment type is required!" }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={employeeAttachmentTypes}
+                          placeholder="Select Attachment Type"
+                          classNamePrefix="react-select"
+                          value={employeeAttachmentTypes.find(
+                            (x) => x.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option.value)}
+                        />
+                      )}
                     />
-                    {errors.review_period && (
+                    {errors.status && (
                       <small className="text-danger">
-                        {errors.review_period.message}
+                        {errors.status.message}
                       </small>
                     )}
                   </div>
                 </div>
 
-                <div className="col-md-6">
+                <div className="col-md-12">
                   <label className="col-form-label">
-                    Rating<span className="text-danger"> *</span>
+                    Attachment <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="rating"
+                      name="document_path"
                       control={control}
-                      rules={{
-                        required: "Rating is required!",
-                        min: {
-                          value: 1,
-                          message: "Rating must be at least 1",
-                        },
-                        max: {
-                          value: 5,
-                          message: "Rating cannot exceed 5",
-                        },
-                      }}
-                      render={({ field }) => (
+                      rules={{ required: "Attachment is required!" }}
+                      render={({ field: { onChange, value, ...field } }) => (
                         <input
                           {...field}
-                          type="number"
-                          min={1}
-                          max={5}
+                          type="file"
+                          accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                           className="form-control"
-                          placeholder="Enter Rating (1-5)"
-                          value={field.value}
-                          onChange={field.onChange}
+                          onChange={(e) => onChange(e.target.files[0])}
                         />
                       )}
                     />
-                  </div>
-                  {errors.rating && (
-                    <small className="text-danger">
-                      {errors.rating.message}
-                    </small>
-                  )}
-                </div>
-
-                <div className="mb-3">
-                  <label className="col-form-label">Reviewer Comments</label>
-                  <Controller
-                    name="reviewer_comments"
-                    control={control}
-                    render={({ field }) => (
-                      <DefaultEditor
-                        className="summernote"
-                        placeholder="Write Comments"
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(content) => field.onChange(content)}
-                      />
+                    {errors.document_path && (
+                      <small className="text-danger">
+                        {errors.document_path.message}
+                      </small>
                     )}
-                  />
+                  </div>
                 </div>
               </div>
             </div>
@@ -271,13 +241,13 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {selected
+                {employeeAttachment
                   ? loading
-                    ? " Updating..."
+                    ? "Updating..."
                     : "Update"
                   : loading
-                    ? "Creating..."
-                    : "Create"}
+                    ? "Uploading..."
+                    : "Upload"}
                 {loading && (
                   <div
                     style={{
@@ -299,4 +269,4 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
   );
 };
 
-export default ManageAppraisalEntries;
+export default ManageEmployeeAttachment;

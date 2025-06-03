@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Rate, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchAppointments } from "../../redux/AppointmentLetters";
-import DeleteConfirmation from "./DeleteConfirmation";
-import ManageAppointments from "./ManageAppointments";
+import { fetchAdvancePayment } from "../../redux/AdvancePayment/index.js";
+import DeleteConfirmation from "./DeleteConfirmation/index.js";
+import ManageAdvancePayment from "./ManageAdvancePayment/index.js";
 
-const AppointmentLetters = () => {
+const AdvancePayment = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedAdvancePayment, setSelectedAdvancePayment] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,13 +22,13 @@ const AppointmentLetters = () => {
   });
   const dispatch = useDispatch();
 
-  const { appointment, loading } = useSelector(
-    (state) => state.appointment || {}
+  const { advancePayment, loading } = useSelector(
+    (state) => state.advancePayment || {}
   );
 
   React.useEffect(() => {
     dispatch(
-      fetchAppointments({
+      fetchAdvancePayment({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -37,12 +37,12 @@ const AppointmentLetters = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: appointment?.currentPage,
-      totalPage: appointment?.totalPages,
-      totalCount: appointment?.totalCount,
-      pageSize: appointment?.size,
+      currentPage: advancePayment?.currentPage,
+      totalPage: advancePayment?.totalPages,
+      totalCount: advancePayment?.totalCount,
+      pageSize: advancePayment?.size,
     });
-  }, [appointment]);
+  }, [advancePayment]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -51,7 +51,7 @@ const AppointmentLetters = () => {
       pageSize,
     }));
     dispatch(
-      fetchAppointments({
+      fetchAdvancePayment({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -60,11 +60,11 @@ const AppointmentLetters = () => {
     );
   };
 
-  const data = appointment?.data;
+  const data = advancePayment?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Appointment Letters"
+    (i) => i?.module_name === "Advance Payment"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -74,32 +74,41 @@ const AppointmentLetters = () => {
 
   const columns = [
     {
-      title: "Issue Date",
-      dataIndex: "issue_date",
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : ""),
-      sorter: (a, b) => a.issue_date.length - b.issue_date.length,
+      title: "Employee",
+      dataIndex: "hrms_advance_payement_entry_employee",
+      render: (text) => text?.full_name || "-",
     },
     {
-      title: "Employee Name",
-      dataIndex: "appointment_employee",
-      render: (text) => text.full_name || "-",
+      title: "Amount Requested",
+      dataIndex: "amount_requested",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Designation",
-      dataIndex: "appointment_designation",
-      render: (text) => text.designation_name || "-",
+      title: "Amount Approved",
+      dataIndex: "amount_approved",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Terms Summary",
-      dataIndex: "terms_summary",
-      render: (text) => text || "---",
+      title: "Due Date",
+      dataIndex: "repayment_schedule",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
-      title: "Created Date",
-      dataIndex: "createdate",
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : ""),
-      sorter: (a, b) => a.createdate.length - b.createdate.length,
+      title: "Request Date",
+      dataIndex: "request_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
+    {
+      title: "Status",
+      dataIndex: "approval_status",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
+    },
+    {
+      title: "Approval Date",
+      dataIndex: "approval_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+
     ...(isDelete || isUpdate
       ? [
           {
@@ -121,7 +130,7 @@ const AppointmentLetters = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedAppointment(a)}
+                      onClick={() => setSelectedAdvancePayment(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -131,7 +140,7 @@ const AppointmentLetters = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteAppointment(a)}
+                      onClick={() => handleDeleteAdvancePayment(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -144,18 +153,18 @@ const AppointmentLetters = () => {
       : []),
   ];
 
-  const handleDeleteAppointment = (appointment) => {
-    setSelectedAppointment(appointment);
+  const handleDeleteAdvancePayment = (advancePayment) => {
+    setSelectedAdvancePayment(advancePayment);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Appointment Letters</title>
+        <title>DCC HRMS - Advance Payment</title>
         <meta
-          name="appointment"
-          content="This is appointment page of DCC HRMS."
+          name="advance-payment"
+          content="This is advance payment page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -168,9 +177,9 @@ const AppointmentLetters = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Appointment Letters
+                      Advance Payment
                       <span className="count-title">
-                        {appointment?.totalCount}
+                        {advancePayment?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -194,7 +203,7 @@ const AppointmentLetters = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Appointment Letters"
+                          placeholder="Search Advance Payment"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -209,7 +218,7 @@ const AppointmentLetters = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Appointment Letters
+                            Add New Advance Payment
                           </Link>
                         </div>
                       </div>
@@ -223,7 +232,7 @@ const AppointmentLetters = () => {
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Appointment Letters</h4>
+                          <h4 className="mb-0 me-3">All Advance Payment</h4>
                         </div>
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -263,18 +272,18 @@ const AppointmentLetters = () => {
             </div>
           </div>
         </div>
-        <ManageAppointments
-          setAppointment={setSelectedAppointment}
-          appointment={selectedAppointment}
+        <ManageAdvancePayment
+          setAdvancePayment={setSelectedAdvancePayment}
+          advancePayment={selectedAdvancePayment}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        appointmentId={selectedAppointment?.id}
+        advancePaymentId={selectedAdvancePayment?.id}
       />
     </>
   );
 };
 
-export default AppointmentLetters;
+export default AdvancePayment;

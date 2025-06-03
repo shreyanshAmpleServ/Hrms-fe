@@ -418,9 +418,11 @@ const EmployeeDetail = () => {
                                   "DD-MM-YYYY"
                                 )}{" "}
                                 -{" "}
-                                {moment(experience?.end_to).format(
-                                  "DD-MM-YYYY"
-                                )}
+                                {experience?.end_to
+                                  ? moment(experience?.end_to).format(
+                                      "DD-MM-YYYY"
+                                    )
+                                  : "Present"}
                               </p>
                             </div>
                           </div>

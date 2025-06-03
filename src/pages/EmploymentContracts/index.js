@@ -9,7 +9,7 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js"
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchContracts } from "../../redux/EmployementContracts";
 import DeleteConfirmation from "./DeleteConfirmation";
-import ManageAppointments from "./ManageContacts";
+import ManageAppointments from "./ManageContracts/index.js";
 
 const EmploymentContracts = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -75,6 +75,10 @@ const EmploymentContracts = () => {
       title: "Contracted Employee",
       dataIndex: "contracted_employee",
       render: (text) => text.full_name || "-",
+      sorter: (a, b) =>
+        a.contracted_employee.full_name.localeCompare(
+          b.contracted_employee.full_name
+        ),
     },
     {
       title: "Contract Type",
@@ -85,17 +89,22 @@ const EmploymentContracts = () => {
               .replaceAll("_", " ")
               .replace(/\b\w/g, (char) => char.toUpperCase())
           : "-",
+      sorter: (a, b) => a.contract_type.localeCompare(b.contract_type),
     },
     {
       title: "Contract Start Date",
       dataIndex: "contract_start_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        moment(a.contract_start_date).unix() -
+        moment(b.contract_start_date).unix(),
     },
     {
       title: "Contract End Date",
       dataIndex: "contract_end_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : ""),
-      sorter: (a, b) => a.contract_end_date.length - b.contract_end_date.length,
+      sorter: (a, b) =>
+        moment(a.contract_end_date).unix() - moment(b.contract_end_date).unix(),
     },
     {
       title: "Attachment",
