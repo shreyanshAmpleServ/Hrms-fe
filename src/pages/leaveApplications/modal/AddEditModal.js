@@ -203,7 +203,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           <div className="col-md-6 mb-3 mt-2">
             <label className="form-label">Start Date</label>
             <Controller
-              name="start_data"
+              name="start_date"
               control={control}
               rules={{ required: "Date is required" }}
               render={({ field }) => (

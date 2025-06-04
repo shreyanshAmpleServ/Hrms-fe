@@ -73,11 +73,12 @@ const TrainingFeedbackEntry = () => {
     const columns = [
         {
             title: "Employee Name",
-            render: (record) => record?.training_employee?.full_name || "-", // Assuming employee relation
+            render: (record) => record?.training_employee?.full_name || "-",
+
         },
         {
             title: "Training Title",
-            render: (record) => record?.training_details?.training_title || "-", // Assuming employee relation
+            render: (record) => record?.training_details?.training_title || "-",
 
         },
 
@@ -217,7 +218,7 @@ const TrainingFeedbackEntry = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Feedback Entry</h4>
+                                                    <h4 className="mb-0 me-3">All Training Feedback Entry</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">

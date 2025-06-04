@@ -105,7 +105,8 @@ import surveyResponseReducer from "./SurveyResponse";
 import employeeSuggestionReducer from "./EmployeeSuggestion";
 import helpdeskTicketReducer from "./HelpdeskTicket";
 import NotificationsLogReducer from "./Notifications";
-
+import DailyAttendanceReducer from "./dailyAttendance";
+import GoalSheetReducer from "./GoalSheetAssignment";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -181,7 +182,7 @@ const store = configureStore({
     leaveType: leaveTypeReducer,
     holidayCalender: holidayCalenderReducer,
     WorkScheduleTemp: WorkScheduleTempReducer,
-    job_posting: JobPostingReducer,
+    JobPosting: JobPostingReducer,
     appointment: AppointmentLetters,
     contracts: EmploymentContracts,
     leaveEncashment: LeaveEncashmentReducer,
@@ -214,6 +215,8 @@ const store = configureStore({
     employeeSuggestion: employeeSuggestionReducer,
     helpdeskTicket: helpdeskTicketReducer,
     Notifications: NotificationsLogReducer,
+    dailyAttendance: DailyAttendanceReducer,
+    goalSheet: GoalSheetReducer,
   },
 });
 

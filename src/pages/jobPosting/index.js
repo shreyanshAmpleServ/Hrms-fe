@@ -1,173 +1,48 @@
-import "bootstrap-daterangepicker/daterangepicker.css";
-
-import React, { useCallback, useMemo } from "react";
+import { Rate, Table, Tag } from "antd";
+import moment from "moment";
+import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CollapseHeader from "../../components/common/collapse-header";
-import Table from "../../components/common/dataTableNew/index";
-import FlashMessage from "../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
-import AddButton from "../../components/datatable/AddButton";
-import SearchBar from "../../components/datatable/SearchBar";
-import SortDropdown from "../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deletejob_posting,
-  fetchjob_posting,
-} from "../../redux/JobPosting";
+import CollapseHeader from "../../components/common/collapse-header.js";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
+import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
+import { fetchJobPosting } from "../../redux/JobPosting";
+import DeleteConfirmation from "./DeleteConfirmation/index.js";
+import ManageJobPosting from "./ManageJobPosting/index.js";
 
 const JobPosting = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
-  const [paginationData, setPaginationData] = React.useState();
-  const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
-
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedJobPosting, setSelectedJobPosting] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [paginationData, setPaginationData] = useState({});
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    startDate: moment().subtract(30, "days"),
+    endDate: moment(),
+  });
   const dispatch = useDispatch();
 
-  const columns = [
-    {
-      title: "Job Title",
-      dataIndex: "job_title",
-      sorter: (a, b) => a.job_title - b.job_title,
-    },
-    {
-      title: "Department",
-      dataIndex: "hrms_job_department",
-      render: (value) => <div>{value?.department_name}</div>,
-      sorter: (a, b) =>
-        (a.hrms_job_department?.department_name || "").localeCompare(
-          b.hrms_job_department?.department_name || ""
-        ),
-    },
-    {
-      title: "Designation",
-      dataIndex: "hrms_job_designation",
-      render: (value) => <div>{value?.designation_name}</div>,
-      sorter: (a, b) =>
-        (a.hrms_job_designation?.designation_name || "").localeCompare(
-          b.hrms_job_designation?.designation_name || ""
-        ),
-    },
-
-    {
-      title: "Required Experience",
-      dataIndex: "required_experience",
-      // render: (value) => value ? `${value} years` : "—",
-      sorter: (a, b) => a.required_experience - b.required_experience,
-    },
-
-    {
-      title: "Posting Date",
-      dataIndex: "posting_date",
-      render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-      sorter: (a, b) => new Date(a.posting_date) - new Date(b.posting_date),
-    },
-    {
-      title: "Closing Date",
-      dataIndex: "closing_date",
-      render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-
-      sorter: (a, b) => new Date(a.closing_date) - new Date(b.closing_date),
-    },
-
-    {
-      title: "Description",
-      dataIndex: "description",
-      sorter: (a, b) => a.description - b.description,
-    },
-    {
-      title: "Is Internal",
-      dataIndex: "is_internal",
-      render: (value) => <div>{value ? "Yes" : "NO"}</div>,
-      sorter: (a, b) => {
-        const valA = a.is_internal === "Yes" || a.is_internal === true;
-        const valB = b.is_internal === "Yes" || b.is_internal === true;
-        return valA - valB;
-      },
-    },
-    {
-      title: "Created At",
-      dataIndex: "created_date",
-      render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-      sorter: (a, b) => a.created_date.length - b.created_date.length,
-    },
-    ...(isUpdate || isDelete
-      ? [
-          {
-            title: "Actions",
-            dataIndex: "actions",
-            render: (_text, record) => (
-              <div className="dropdown table-action">
-                <Link
-                  to="#"
-                  className="action-icon"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="true"
-                >
-                  <i className="fa fa-ellipsis-v"></i>
-                </Link>
-                <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
-                    <Link
-                      className="dropdown-item edit-popup"
-                      to="#"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_job_posting_modal"
-                      onClick={() => {
-                        setSelectedIndustry(record);
-                        setMode("edit");
-                      }}
-                    >
-                      <i className="ti ti-edit text-blue"></i> Edit
-                    </Link>
-                  )}
-                  {isDelete && (
-                    <Link
-                      className="dropdown-item"
-                      to="#"
-                      onClick={() => handleDeleteIndustry(record)}
-                    >
-                      <i className="ti ti-trash text-danger"></i> Delete
-                    </Link>
-                  )}
-                </div>
-              </div>
-            ),
-          },
-        ]
-      : []),
-  ];
-
-  const { job_posting, loading, error, success } = useSelector(
-    (state) => state.job_posting
+  const { JobPosting, loading } = useSelector(
+    (state) => state.JobPosting || {}
   );
 
   React.useEffect(() => {
-    dispatch(fetchjob_posting({ search: searchText }));
-  }, [dispatch, searchText]);
+    dispatch(
+      fetchJobPosting({
+        search: searchValue,
+        ...selectedDateRange,
+      })
+    );
+  }, [dispatch, searchValue, selectedDateRange]);
+
   React.useEffect(() => {
     setPaginationData({
-      currentPage: job_posting?.currentPage,
-      totalPage: job_posting?.totalPages,
-      totalCount: job_posting?.totalCount,
-      pageSize: job_posting?.size,
+      currentPage: JobPosting?.currentPage,
+      totalPage: JobPosting?.totalPages,
+      totalCount: JobPosting?.totalCount,
+      pageSize: JobPosting?.size,
     });
-  }, [job_posting]);
+  }, [JobPosting]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -176,156 +51,244 @@ const JobPosting = () => {
       pageSize,
     }));
     dispatch(
-      fetchjob_posting({
-        search: searchText,
+      fetchJobPosting({
+        search: searchValue,
+        ...selectedDateRange,
         page: currentPage,
         size: pageSize,
       })
     );
   };
 
-  const handleSearch = useCallback((e) => {
-    setSearchText(e.target.value);
-  }, []);
+  const data = JobPosting?.data;
 
-  const filteredData = useMemo(() => {
-    let data = job_posting?.data || [];
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Helpdesk Ticket"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-      );
-    }
-    return data;
-  }, [searchText, job_posting, columns, sortOrder]);
+  const columns = [
+    {
+      title: "Department",
+      dataIndex: "hrms_job_department", // assuming it’s populated as an object
+      render: (text) => text?.department_name || "-",
+    },
+    {
+      title: "Designation",
+      dataIndex: "hrms_job_designation", // assuming it’s populated as an object
+      render: (text) => text?.designation_name || "-",
+    },
+    {
+      title: "Job Title",
+      dataIndex: "job_title",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      render: (text) => <p>{text}</p> || "-",
+    },
+    {
+      title: "Experience",
+      dataIndex: "required_experience",
+      render: (text) => <p>{text}</p> || "-",
+    },
+    {
+      title: "Posting Date",
+      dataIndex: "posting_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+    {
+      title: "Closing Date",
+      dataIndex: "closing_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+    {
+      title: "Internal Job",
+      dataIndex: "is_internal",
+      render: (value) => (value ? "Yes" : "No"),
+    },
 
-  const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+
+    ...(isDelete || isUpdate
+      ? [
+        {
+          title: "Action",
+          render: (text, a) => (
+            <div className="dropdown table-action">
+              <Link
+                to="#"
+                className="action-icon "
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="fa fa-ellipsis-v"></i>
+              </Link>
+              <div className="dropdown-menu dropdown-menu-right">
+                {isUpdate && (
+                  <Link
+                    className="dropdown-item"
+                    to="#"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas_add"
+                    onClick={() => setSelectedJobPosting(a)}
+                  >
+                    <i className="ti ti-edit text-blue" /> Edit
+                  </Link>
+                )}
+
+                {isDelete && (
+                  <Link
+                    className="dropdown-item"
+                    to="#"
+                    onClick={() => handleDeleteJobPosting(a)}
+                  >
+                    <i className="ti ti-trash text-danger" /> Delete
+                  </Link>
+                )}
+              </div>
+            </div>
+          ),
+        },
+      ]
+      : []),
+  ];
+
+  const handleDeleteJobPosting = (JobPosting) => {
+    setSelectedJobPosting(JobPosting);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deletejob_posting(selectedIndustry.id));
-      // navigate(`/job_posting`);
-      setShowDeleteModal(false);
-    }
-  };
-
   return (
-    <div className="page-wrapper">
+    <>
       <Helmet>
         <title>DCC HRMS - Job Posting</title>
         <meta
-          name="DepanrtmentList"
-          content="This is job_posting page of DCC HRMS."
+          name="helpdesk-ticket"
+          content="This is helpdesk ticket page of DCC HRMS."
         />
       </Helmet>
-      <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
-        <div className="row">
-          <div className="col-md-12">
-            <div className="page-header">
-              <div className="row align-items-center">
-                <div className="col-8">
-                  <h4 className="page-title">
-                    Job Posting
-                    <span className="count-title">
-                      {job_posting?.totalCount || 0}
-                    </span>
-                  </h4>
-                </div>
-                <div className="col-4 text-end">
-                  <div className="head-icons">
-                    <CollapseHeader />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="card ">
-              <div className="card-header">
+      {/* Page Wrapper */}
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="row">
+            <div className="col-md-12">
+              {/* Page Header */}
+              <div className="page-header">
                 <div className="row align-items-center">
-                  <div className="col-sm-8">
-                    <div className="icon-form mb-3 mb-sm-6">
-                      <SearchBar
-                        searchText={searchText}
-                        handleSearch={handleSearch}
-                        label="Search Offer Letters"
-                      />
+                  <div className="col-4">
+                    <h4 className="page-title">
+                      Job Posting
+                      <span className="count-title">
+                        {JobPosting?.totalCount}
+                      </span>
+                    </h4>
+                  </div>
+                  <div className="col-8 text-end">
+                    <div className="head-icons">
+                      <CollapseHeader />
                     </div>
                   </div>
-
-                  {/* Add Offer Letter button aligned to the right at the end */}
-                  <div className="col-sm-2 ms-auto">
-                    <Link
-                      to=""
-                      className="btn btn-primary"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_job_posting_modal"
-                      onClick={() => setMode("add")}
-                    >
-                      <i className="ti ti-square-rounded-plus me-2" />
-                      Add Job Position
-                    </Link>
-                  </div>
                 </div>
               </div>
-
-              <div className="card-body">
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
-                  <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    <SortDropdown
-                      sortOrder={sortOrder}
-                      setSortOrder={setSortOrder}
-                    />
+              {/* /Page Header */}
+              <div className="card">
+                <div className="card-header">
+                  {/* Search */}
+                  <div className="row align-items-center">
+                    <div className="col-sm-4">
+                      <div className="icon-form mb-3 mb-sm-0">
+                        <span className="form-icon">
+                          <i className="ti ti-search" />
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Search Job Posting"
+                          onChange={(e) => setSearchValue(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    {isCreate && (
+                      <div className="col-sm-8">
+                        <div className="text-sm-end">
+                          <Link
+                            to="#"
+                            className="btn btn-primary"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvas_add"
+                          >
+                            <i className="ti ti-square-rounded-plus me-2" />
+                            Add Job Posting
+                          </Link>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="table-responsive custom-table">
-                  <Table
-                    dataSource={filteredData}
-                    columns={columns}
-                    loading={loading}
-                    isView={isView}
-                    paginationData={paginationData}
-                    onPageChange={handlePageChange}
-                  />
+                <div className="card-body">
+                  <>
+                    {/* Filter */}
+                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
+                      <div className="d-flex align-items-center flex-wrap row-gap-2">
+                        <div className="d-flex align-items-center flex-wrap row-gap-2">
+                          <h4 className="mb-0 me-3">All Job Posting</h4>
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-center flex-wrap row-gap-2">
+                        <div className="mx-2">
+                          <DateRangePickerComponent
+                            selectedDateRange={selectedDateRange}
+                            setSelectedDateRange={setSelectedDateRange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      <Table
+                        columns={columns}
+                        dataSource={data}
+                        loading={loading}
+                        paginationData={paginationData}
+                        onPageChange={handlePageChange}
+                      />
+                    </div>
+                  ) : (
+                    <UnauthorizedImage />
+                  )}
+                  <div className="row align-items-center">
+                    <div className="col-md-6">
+                      <div className="datatable-length" />
+                    </div>
+                    <div className="col-md-6">
+                      <div className="datatable-paginate" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <ManageJobPosting
+          setJobPosting={setSelectedJobPosting}
+          JobPosting={selectedJobPosting}
+        />
       </div>
-
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
-      <DeleteAlert
-        label="Industry"
+      <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
-        onDelete={deleteData}
+        JobPostingId={selectedJobPosting?.id}
       />
-    </div>
+    </>
   );
 };
 

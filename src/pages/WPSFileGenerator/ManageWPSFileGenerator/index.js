@@ -13,6 +13,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
   const dispatch = useDispatch();
   const {
     control,
+    register,
     handleSubmit,
     reset,
     formState: { errors },
@@ -60,11 +61,13 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     }
   }, [selected, reset]);
 
+
+
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     const formData = new FormData();
     formData.append("payroll_month", data.payroll_month);
-    formData.append("file_path", data.file_path);
+    formData.append("file_path", data.file_path[0]); // get the actual file
     formData.append("generated_on", data.generated_on);
     formData.append("submitted_to_bank", data.submitted_to_bank);
     try {
@@ -176,37 +179,28 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                     )}
                   </div>
                 </div>
+
                 <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      File Path
-                      <span className="text-danger"> *</span>
-                    </label>
-                    <Controller
-                      name="file_path"
-                      control={control}
-                      rules={{ required: "File path is required" }}
-                      render={({ field }) => {
-                        return (
-                          <input
-                            {...field}
-                            type="file"
-                            className="form-control"
-                            placeholder="Enter File Path"
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        );
-                      }}
+
+                  <div className="mb-3 ">
+                    <label className="col-form-label">File Path</label>
+                    <input
+                      type="file"
+                      className={`form-control ${errors.file_path ? "is-invalid" : ""}`}
+                      accept=".pdf"
+                      {...register("file_path", {
+                        required: "File Path is required.",
+                        validate: {
+                          isPdf: (files) =>
+                            files[0]?.type === "application/pdf" || "Only PDF files are allowed.",
+                        },
+                      })}
                     />
                     {errors.file_path && (
-                      <small className="text-danger">
-                        {errors.file_path.message}
-                      </small>
+                      <small className="text-danger">{errors.file_path.message}</small>
                     )}
                   </div>
                 </div>
-
                 <div className="col-md-6">
                   <label className="col-form-label">
                     Generated On<span className="text-danger"> *</span>

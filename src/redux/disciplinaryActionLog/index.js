@@ -16,7 +16,7 @@ export const fetchdisciplinryAction = createAsyncThunk(
                 startDate: datas?.startDate?.toISOString() || "",
                 endDate: datas?.endDate?.toISOString() || "",
             };
-            const response = await apiClient.get("/v1/diciplinary-action", {
+            const response = await apiClient.get("/v1/disciplinary-action", {
                 params,
             });
             return response.data; // Returns list of disciplinary action
@@ -36,7 +36,7 @@ export const createdisciplinryAction = createAsyncThunk(
     async (disciplinryActionData, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.post("/v1/diciplinary-action", disciplinryActionData),
+                apiClient.post("/v1/disciplinary-action", disciplinryActionData),
                 {
                     loading: "Creating disciplinary action...",
                     success: (res) =>
@@ -61,7 +61,7 @@ export const updatedisciplinryAction = createAsyncThunk(
     async ({ id, disciplinryActionData }, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.put(`/v1/diciplinary-action/${id}`, disciplinryActionData),
+                apiClient.put(`/v1/disciplinary-action/${id}`, disciplinryActionData),
                 {
                     loading: "Updating disciplinary action...",
                     success: (res) =>
@@ -92,7 +92,7 @@ export const deletedisciplinryAction = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.delete(`/v1/diciplinary-action/${id}`),
+                apiClient.delete(`/v1/disciplinary-action/${id}`),
                 {
                     loading: "Deleting disciplinary action...",
                     success: (res) =>
@@ -120,7 +120,7 @@ export const fetchdisciplinryActionById = createAsyncThunk(
     "disciplinryAction/fetchdisciplinryActionById",
     async (id, thunkAPI) => {
         try {
-            const response = await apiClient.get(`/v1/diciplinary-action/${id}`);
+            const response = await apiClient.get(`/v1/disciplinary-action/${id}`);
             return response.data; // Returns disciplinary action details
         } catch (error) {
             return thunkAPI.rejectWithValue(

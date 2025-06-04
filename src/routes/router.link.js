@@ -143,6 +143,8 @@ import SurveyResponse from "../pages/SurveyResponse";
 import EmployeeSuggestion from "../pages/EmployeeSuggestion";
 import HelpdeskTicket from "../pages/HelpdeskTicket";
 import NotificationsLog from "../pages/Notifications";
+import DailyAttendance from "../pages/dailyAttendance";
+import GoalSheetAssignment from "../pages/goalSheetAssignment";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -1020,7 +1022,19 @@ export const privateRoutes = [
     title: "Notifications",
   },
 
+  {
+    path: route.dailyAttendanceEntry,
+    element: <DailyAttendance />,
+    route: Route,
+    title: "daily Attendance Entry",
+  },
 
+  {
+    path: route.goalSheetAssignment,
+    element: <GoalSheetAssignment />,
+    route: Route,
+    title: "daily Attendance Entry",
+  },
 ];
 
 export const publicRoutes = [

@@ -9,7 +9,7 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js"
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchdisciplinryAction } from "../../redux/disciplinaryActionLog/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagedisciplinryAction from "./ManagedisciplinryAction";
+import ManagedisciplinryAction from "./ManagedisciplinryAction/index.js";
 
 const DisciplinaryActionLog = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -99,7 +99,7 @@ const DisciplinaryActionLog = () => {
         {
             title: "Penalty Type",
             render: (text) => text?.disciplinary_penalty
-                ?.penalty_type ?? "-",
+                ?.description ?? "-",
         },
         {
             title: "Effective From",
@@ -113,11 +113,7 @@ const DisciplinaryActionLog = () => {
             dataIndex: "status",
             render: (text) => text || "-",
         },
-        {
-            title: "Created On",
-            dataIndex: "createdate",
-            render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-        },
+
 
         ...(isDelete || isUpdate
             ? [

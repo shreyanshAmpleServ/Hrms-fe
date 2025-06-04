@@ -174,7 +174,7 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label"> Penalty Type<span className="text-danger">*</span></label>
                   <Controller
-                    name="penalty_type"
+                    name="id"
                     control={control}
                     rules={{ required: "disciplinary penalty is required" }}
                     render={({ field }) => {
@@ -192,7 +192,7 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                       );
                     }}
                   />
-                  {errors.penalty_type && <small className="text-danger">{errors.penalty_type.message}</small>}
+                  {errors.id && <small className="text-danger">{errors.id.message}</small>}
                 </div>
 
 

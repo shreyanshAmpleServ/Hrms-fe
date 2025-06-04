@@ -2,14 +2,14 @@ import React, { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { addloan_requests, updateloan_requests } from "../../../redux/loanRequests";
+import { addoffer_letter, updateoffer_letter } from "../../../redux/offerLetters";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchEmployee } from "../../../redux/Employee";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.loan_requests);
+  const { loading } = useSelector((state) => state.offer_letter);
   const dispatch = useDispatch();
 
   const {
@@ -31,7 +31,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     () =>
       employee?.data?.map((item) => ({
         value: item.id,
-        label: item.first_name, // or item.full_name or item.employee_name, depending on your API
+        label: item.full_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
     [employee]
   );
@@ -87,12 +87,12 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
 
     if (mode === "add") {
-      dispatch(addloan_requests(formattedData));
+      dispatch(addoffer_letter(formattedData));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateloan_requests({
+        updateoffer_letter({
           id: initialData.id,
-          loan_requestsData: formattedData,
+          offer_letterData: formattedData,
         })
       );
     }
@@ -283,6 +283,8 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               <small className="text-danger">{errors.status.message}</small>
             )}
           </div>
+
+
 
 
           <div className="col-md-12 text-end">

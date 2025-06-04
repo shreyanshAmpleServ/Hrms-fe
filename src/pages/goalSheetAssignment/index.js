@@ -1,4 +1,4 @@
-import { Rate, Table } from "antd";
+import { Rate, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchtravelReimbursement } from "../../redux/TravelReimbursement";
+import { fetchgoalSheet } from "../../redux/GoalSheetAssignment";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageTravelReimbursement from "./ManageTravelReimbursement";
+import ManageGoalSheetAssignment from "./ManageGoalSheetAssignment/index.js";
 
-const TravelReimbursement = () => {
+const GoalSheetAssignment = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [selectedtravelReimbursement, setSelectedtravelReimbursement] = useState(null);
+    const [selectedgoalSheet, setSelectedgoalSheet] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState({});
     const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,11 +22,13 @@ const TravelReimbursement = () => {
     });
     const dispatch = useDispatch();
 
-    const { travelReimbursement, loading } = useSelector((state) => state.travelReimbursement || {});
+    const { goalSheet, loading } = useSelector(
+        (state) => state.goalSheet || {}
+    );
 
     React.useEffect(() => {
         dispatch(
-            fetchtravelReimbursement({
+            fetchgoalSheet({
                 search: searchValue,
                 ...selectedDateRange,
             })
@@ -35,12 +37,12 @@ const TravelReimbursement = () => {
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: travelReimbursement?.currentPage,
-            totalPage: travelReimbursement?.totalPages,
-            totalCount: travelReimbursement?.totalCount,
-            pageSize: travelReimbursement?.size,
+            currentPage: goalSheet?.currentPage,
+            totalPage: goalSheet?.totalPages,
+            totalCount: goalSheet?.totalCount,
+            pageSize: goalSheet?.size,
         });
-    }, [travelReimbursement]);
+    }, [goalSheet]);
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -49,7 +51,7 @@ const TravelReimbursement = () => {
             pageSize,
         }));
         dispatch(
-            fetchtravelReimbursement({
+            fetchgoalSheet({
                 search: searchValue,
                 ...selectedDateRange,
                 page: currentPage,
@@ -58,11 +60,11 @@ const TravelReimbursement = () => {
         );
     };
 
-    const data = travelReimbursement?.data;
+    const data = goalSheet?.data;
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"));
     const allPermissions = permissions?.filter(
-        (i) => i?.module_name === "Time Sheet Entry"
+        (i) => i?.module_name === "Helpdesk Ticket"
     )?.[0]?.permissions;
     const isAdmin = localStorage.getItem("role")?.includes("admin");
     const isView = isAdmin || allPermissions?.view;
@@ -73,72 +75,52 @@ const TravelReimbursement = () => {
     const columns = [
 
         {
-
             title: "Employee Name",
-            dataIndex: "travel_expense_employee",
-            render: (text, record) => record?.travel_expense_employee?.full_name || "-",
-
+            dataIndex: "goal_sheet_assignment_employee", // make sure relation is populated
+            render: (text) => text?.full_name || "-",
         },
-
         {
-
-            title: "Travel Purpose",
-
-            dataIndex: "travel_purpose",
-
-            render: (text) => text || "-",
-
+            title: "Appraisal Cycle",
+            dataIndex: "goal_sheet_assignment_appraisal",
+            render: (text) => text?.review_period || "-", // assuming name exists
         },
-
         {
-
-            title: "Start Date",
-
-            dataIndex: "start_date",
-
-            render: (text) => text ? moment(text).format("DD MMM YYYY") : "-",
-
+            title: "Goal Category",
+            dataIndex: "goal_sheet_assignment_goalCategory",
+            render: (text) => text?.category_name || "-", // optional field
         },
-
         {
-
-            title: "End Date",
-            dataIndex: "end_date",
-            render: (text) => text ? moment(text).format("DD MMM YYYY") : "-",
-
+            title: "Goal Description",
+            dataIndex: "goal_description",
+            render: (text) => <p>{text}</p> || "-",
         },
-
         {
-
-            title: "Destination",
-            dataIndex: "destination",
-            render: (text) => text || "-",
-
+            title: "Weightage",
+            dataIndex: "weightage",
+            render: (text) => <span>{text}%</span> || "-",
         },
-
         {
-
-            title: "Total Amount",
-            dataIndex: "total_amount",
-            render: (text) => text ? `₹${text}` : "-",
-
+            title: "Target Value",
+            dataIndex: "target_value",
+            render: (text) => <p>{text}</p> || "-",
         },
-
         {
-
-            title: "Approved By",
-            dattIndex: "travel_expense_approver",
-            render: (record) => record?.travel_expense_approver?.full_name || "-", // assuming relation
-
+            title: "Measurement Criteria",
+            dataIndex: "measurement_criteria",
+            render: (text) => <p>{text}</p> || "-",
         },
-
         {
-
-            title: "Approval Status",
-            dataIndex: "approval_status",
-            render: (text) => text || "-",
-
+            title: "Due Date",
+            dataIndex: "due_date",
+            render: (text) => text ? moment(text).format("DD-MM-YYYY") : "-",
         },
+        {
+            title: "Status",
+            dataIndex: "status",
+            render: (text) => <span className="text-capitalize">{text}</span> || "-",
+        },
+
+
 
         ...(isDelete || isUpdate
             ? [
@@ -161,7 +143,7 @@ const TravelReimbursement = () => {
                                         to="#"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvas_add"
-                                        onClick={() => setSelectedtravelReimbursement(a)}
+                                        onClick={() => setSelectedgoalSheet(a)}
                                     >
                                         <i className="ti ti-edit text-blue" /> Edit
                                     </Link>
@@ -171,7 +153,7 @@ const TravelReimbursement = () => {
                                     <Link
                                         className="dropdown-item"
                                         to="#"
-                                        onClick={() => handleDeletetravelReimbursement(a)}
+                                        onClick={() => handleDeletegoalSheet(a)}
                                     >
                                         <i className="ti ti-trash text-danger" /> Delete
                                     </Link>
@@ -184,18 +166,18 @@ const TravelReimbursement = () => {
             : []),
     ];
 
-    const handleDeletetravelReimbursement = (travelReimbursement) => {
-        setSelectedtravelReimbursement(travelReimbursement);
+    const handleDeletegoalSheet = (goalSheet) => {
+        setSelectedgoalSheet(goalSheet);
         setShowDeleteModal(true);
     };
 
     return (
         <>
             <Helmet>
-                <title>DCC HRMS -Travel Reimbursement Claims</title>
+                <title>DCC HRMS - Goal Sheet Assignment</title>
                 <meta
-                    name="time-sheet"
-                    content="This is time sheet page of DCC HRMS."
+                    name="helpdesk-ticket"
+                    content="This is helpdesk ticket page of DCC HRMS."
                 />
             </Helmet>
             {/* Page Wrapper */}
@@ -208,9 +190,9 @@ const TravelReimbursement = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Travel Reimbursement Claims
+                                            Goal Sheet Assignment
                                             <span className="count-title">
-                                                {travelReimbursement?.totalCount}
+                                                {goalSheet?.totalCount}
                                             </span>
                                         </h4>
                                     </div>
@@ -234,7 +216,7 @@ const TravelReimbursement = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Travel Reimbursement Claims"
+                                                    placeholder="Search Goal Sheet "
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -249,7 +231,7 @@ const TravelReimbursement = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Add Travel Reimbursement Claims
+                                                        Add Goal Sheet Assignment
                                                     </Link>
                                                 </div>
                                             </div>
@@ -263,7 +245,6 @@ const TravelReimbursement = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Travel Reimbursement Claims</h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -303,18 +284,18 @@ const TravelReimbursement = () => {
                         </div>
                     </div>
                 </div>
-                <ManageTravelReimbursement
-                    settravelReimbursement={setSelectedtravelReimbursement}
-                    travelReimbursement={selectedtravelReimbursement}
+                <ManageGoalSheetAssignment
+                    setgoalSheet={setSelectedgoalSheet}
+                    goalSheet={selectedgoalSheet}
                 />
             </div>
             <DeleteConfirmation
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
-                travelReimbursementId={selectedtravelReimbursement?.id}
+                goalSheet Id={selectedgoalSheet?.id}
             />
         </>
     );
 };
 
-export default TravelReimbursement;
+export default GoalSheetAssignment;

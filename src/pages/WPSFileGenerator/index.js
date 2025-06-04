@@ -76,20 +76,23 @@ const WPSFileGenerator = () => {
       dataIndex: "payroll_month",
       render: (text) => text || "-",
     },
+
+
+
     {
       title: "File",
       dataIndex: "file_path",
       render: (_text, record) => (
         <a
-          href={record.pdf_path}
+          href={record.file_path}
           target="_blank"
           rel="noopener noreferrer"
           download
           className="d-inline-flex align-items-center gap-2 text-decoration-none"
-          title="Download File"
+          title="View or Download PDF"
         >
-          <i className="ti ti-file-invoice fs-5"></i>
-          <span>Download</span>
+          <i className="ti ti-file-type-pdf fs-5"></i>
+          <span>View</span>
         </a>
       ),
     },

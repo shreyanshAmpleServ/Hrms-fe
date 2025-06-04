@@ -40,7 +40,9 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
         employee_id: recognitionAwards.employee_id || "",
         award_title: recognitionAwards.award_title || "",
         description: recognitionAwards.description || "",
-        award_date: recognitionAwards.award_date ? new Date(recognitionAwards.sent_on) : new Date(),
+        award_date: recognitionAwards?.award_date
+          ? new Date(recognitionAwards.award_date)
+          : new Date(),
         nominated_by: recognitionAwards.nominated_by || "",
       });
     } else {
@@ -130,7 +132,7 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
                     <Select
                       {...field}
                       options={employeeOptions}
-                      placeholder="Select Nominator"
+                      placeholder="Select Nominated By"
                       value={selected || null}
                       onInputChange={setSearchValue}
                       onChange={(opt) => field.onChange(opt?.value)}
@@ -143,28 +145,37 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
 
             {/* Award Title */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Award Title <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Award Date <span className="text-danger">*</span>
+              </label>
               <Controller
-                name="award_title"
+                name="award_date"
                 control={control}
-                rules={{ required: "Message award title is required" }}
+                rules={{ required: "Award date is required" }}
                 render={({ field }) => (
-                  <input
+                  <DatePicker
                     {...field}
-                    className={`form-control ${errors.award_title ? "is-invalid" : ""}`}
-                    placeholder="Enter Title"
+                    selected={field.value}
+                    onChange={(date) => field.onChange(date)}
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="Select Award Date"
+                    className="form-control"
+                    autoComplete="off"
                   />
                 )}
               />
-              {errors.award_title && <small className="text-danger">{errors.award_title.message}</small>}
+              {errors.award_date && (
+                <small className="text-danger">{errors.award_date.message}</small>
+              )}
             </div>
+
 
 
             {/* Award Date */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Award Date</label>
+              <label className="col-form-label">Award Date <span className="text-danger"> *</span></label>
               <Controller
-                name="award_data"
+                name="award_date"
                 control={control}
                 rules={{ required: "Sent date is required" }}
                 render={({ field }) => (
@@ -178,7 +189,9 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
                   />
                 )}
               />
-              {errors.sent_on && <small className="text-danger">{errors.award_data.message}</small>}
+
+
+              {errors.award_date && <small className="text-danger">{errors.award_date.message}</small>}
             </div>
 
             {/* Description */}

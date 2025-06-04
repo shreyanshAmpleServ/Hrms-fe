@@ -4,16 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
 import Table from "../../components/common/dataTableNew/index";
-import FlashMessage from "../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 import moment from "moment";
 import { Helmet } from "react-helmet-async";
-import AddButton from "../../components/datatable/AddButton";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {
-  clearMessages,
+
   deleteoffer_letter,
   fetchoffer_letter,
 } from "../../redux/offerLetters";
@@ -93,52 +91,52 @@ const OfferLetters = () => {
     },
     ...(isUpdate || isDelete
       ? [
-          {
-            title: "Actions",
-            dataIndex: "actions",
-            render: (_text, record) => (
-              <div className="dropdown table-action">
-                <Link
-                  to="#"
-                  className="action-icon"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="true"
-                >
-                  <i className="fa fa-ellipsis-v"></i>
-                </Link>
-                <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
-                    <Link
-                      className="dropdown-item edit-popup"
-                      to="#"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_offer_letter_modal"
-                      onClick={() => {
-                        setSelectedIndustry(record);
-                        setMode("edit");
-                      }}
-                    >
-                      <i className="ti ti-edit text-blue"></i> Edit
-                    </Link>
-                  )}
-                  {isDelete && (
-                    <Link
-                      className="dropdown-item"
-                      to="#"
-                      onClick={() => handleDeleteIndustry(record)}
-                    >
-                      <i className="ti ti-trash text-danger"></i> Delete
-                    </Link>
-                  )}
-                </div>
+        {
+          title: "Actions",
+          dataIndex: "actions",
+          render: (_text, record) => (
+            <div className="dropdown table-action">
+              <Link
+                to="#"
+                className="action-icon"
+                data-bs-toggle="dropdown"
+                aria-expanded="true"
+              >
+                <i className="fa fa-ellipsis-v"></i>
+              </Link>
+              <div className="dropdown-menu dropdown-menu-right">
+                {isUpdate && (
+                  <Link
+                    className="dropdown-item edit-popup"
+                    to="#"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#add_edit_offer_letter_modal"
+                    onClick={() => {
+                      setSelectedIndustry(record);
+                      setMode("edit");
+                    }}
+                  >
+                    <i className="ti ti-edit text-blue"></i> Edit
+                  </Link>
+                )}
+                {isDelete && (
+                  <Link
+                    className="dropdown-item"
+                    to="#"
+                    onClick={() => handleDeleteIndustry(record)}
+                  >
+                    <i className="ti ti-trash text-danger"></i> Delete
+                  </Link>
+                )}
               </div>
-            ),
-          },
-        ]
+            </div>
+          ),
+        },
+      ]
       : []),
   ];
 
-  const { offer_letter, loading, error, success } = useSelector(
+  const { offer_letter, loading, } = useSelector(
     (state) => state.offer_letter
   );
 
@@ -213,20 +211,7 @@ const OfferLetters = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
+
 
         <div className="row">
           <div className="col-md-12">

@@ -16,7 +16,7 @@ export const fetchmonthlyPayroll = createAsyncThunk(
                 startDate: datas?.startDate?.toISOString() || "",
                 endDate: datas?.endDate?.toISOString() || "",
             };
-            const response = await apiClient.get("/v1/disciplinary-action", {
+            const response = await apiClient.get("/v1/monthly-Payroll", {
                 params,
             });
             return response.data; // Returns list of  monthly Payroll
@@ -36,7 +36,7 @@ export const createmonthlyPayroll = createAsyncThunk(
     async (monthlyPayrollData, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.post("/v1/disciplinary-action", monthlyPayrollData),
+                apiClient.post("/v1/monthly-Payroll", monthlyPayrollData),
                 {
                     loading: "Creating  monthly Payroll...",
                     success: (res) =>
@@ -61,7 +61,7 @@ export const updatemonthlyPayroll = createAsyncThunk(
     async ({ id, monthlyPayrollData }, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.put(`/v1/disciplinary-action/${id}`, monthlyPayrollData),
+                apiClient.put(`/v1/monthly-Payroll/${id}`, monthlyPayrollData),
                 {
                     loading: "Updating  monthly Payroll...",
                     success: (res) =>
@@ -92,7 +92,7 @@ export const deletemonthlyPayroll = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await toast.promise(
-                apiClient.delete(`/v1/disciplinary-action/${id}`),
+                apiClient.delete(`/v1/monthly-Payroll/${id}`),
                 {
                     loading: "Deleting  monthly Payroll...",
                     success: (res) =>
@@ -120,7 +120,7 @@ export const fetchmonthlyPayrollById = createAsyncThunk(
     "monthlyPayroll/fetchmonthlyPayrollById",
     async (id, thunkAPI) => {
         try {
-            const response = await apiClient.get(`/v1/disciplinary-action/${id}`);
+            const response = await apiClient.get(`/v1/monthly-Payroll/${id}`);
             return response.data; // Returns  monthly Payroll details
         } catch (error) {
             return thunkAPI.rejectWithValue(

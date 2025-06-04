@@ -1,4 +1,4 @@
-import { Rate, Table } from "antd";
+import { Rate, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchtravelReimbursement } from "../../redux/TravelReimbursement";
+import { fetchdailyAttendance } from "../../redux/dailyAttendance";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageTravelReimbursement from "./ManageTravelReimbursement";
+import ManagedailyAttendance from "./ManagedailyAttendance/index.js";
 
-const TravelReimbursement = () => {
+const DailyAttendance = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [selectedtravelReimbursement, setSelectedtravelReimbursement] = useState(null);
+    const [selecteddailyAttendance, setSelecteddailyAttendance] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [paginationData, setPaginationData] = useState({});
     const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,11 +22,13 @@ const TravelReimbursement = () => {
     });
     const dispatch = useDispatch();
 
-    const { travelReimbursement, loading } = useSelector((state) => state.travelReimbursement || {});
+    const { dailyAttendance, loading } = useSelector(
+        (state) => state.dailyAttendance || {}
+    );
 
     React.useEffect(() => {
         dispatch(
-            fetchtravelReimbursement({
+            fetchdailyAttendance({
                 search: searchValue,
                 ...selectedDateRange,
             })
@@ -35,12 +37,12 @@ const TravelReimbursement = () => {
 
     React.useEffect(() => {
         setPaginationData({
-            currentPage: travelReimbursement?.currentPage,
-            totalPage: travelReimbursement?.totalPages,
-            totalCount: travelReimbursement?.totalCount,
-            pageSize: travelReimbursement?.size,
+            currentPage: dailyAttendance?.currentPage,
+            totalPage: dailyAttendance?.totalPages,
+            totalCount: dailyAttendance?.totalCount,
+            pageSize: dailyAttendance?.size,
         });
-    }, [travelReimbursement]);
+    }, [dailyAttendance]);
 
     const handlePageChange = ({ currentPage, pageSize }) => {
         setPaginationData((prev) => ({
@@ -49,7 +51,7 @@ const TravelReimbursement = () => {
             pageSize,
         }));
         dispatch(
-            fetchtravelReimbursement({
+            fetchdailyAttendance({
                 search: searchValue,
                 ...selectedDateRange,
                 page: currentPage,
@@ -58,11 +60,11 @@ const TravelReimbursement = () => {
         );
     };
 
-    const data = travelReimbursement?.data;
+    const data = dailyAttendance?.data;
 
     const permissions = JSON?.parse(localStorage.getItem("permissions"));
     const allPermissions = permissions?.filter(
-        (i) => i?.module_name === "Time Sheet Entry"
+        (i) => i?.module_name === "Helpdesk Ticket"
     )?.[0]?.permissions;
     const isAdmin = localStorage.getItem("role")?.includes("admin");
     const isView = isAdmin || allPermissions?.view;
@@ -73,72 +75,42 @@ const TravelReimbursement = () => {
     const columns = [
 
         {
+            title: "Employee Code",
+            render: (_, record) => record?.hrms_daily_attendance_employee?.employee_code || "-",
 
+        },
+        {
             title: "Employee Name",
-            dataIndex: "travel_expense_employee",
-            render: (text, record) => record?.travel_expense_employee?.full_name || "-",
-
+            render: (_, record) => record?.hrms_daily_attendance_employee?.full_name || "-",
         },
-
         {
-
-            title: "Travel Purpose",
-
-            dataIndex: "travel_purpose",
-
+            title: "Attendance Date",
+            dataIndex: "attendance_date",
+            render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+            sorter: (a, b) => new Date(a.attendance_date) - new Date(b.attendance_date),
+        },
+        {
+            title: "Check-In Time",
+            dataIndex: "check_in_time",
+            render: (text) => (text ? moment(text).format("hh:mm A") : "-"),
+        },
+        {
+            title: "Check-Out Time",
+            dataIndex: "check_out_time",
+            render: (text) => (text ? moment(text).format("hh:mm A") : "-"),
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
             render: (text) => text || "-",
-
         },
-
         {
-
-            title: "Start Date",
-
-            dataIndex: "start_date",
-
-            render: (text) => text ? moment(text).format("DD MMM YYYY") : "-",
-
-        },
-
-        {
-
-            title: "End Date",
-            dataIndex: "end_date",
-            render: (text) => text ? moment(text).format("DD MMM YYYY") : "-",
-
-        },
-
-        {
-
-            title: "Destination",
-            dataIndex: "destination",
+            title: "Remarks",
+            dataIndex: "remarks",
             render: (text) => text || "-",
-
         },
 
-        {
 
-            title: "Total Amount",
-            dataIndex: "total_amount",
-            render: (text) => text ? `₹${text}` : "-",
-
-        },
-
-        {
-
-            title: "Approved By",
-            dattIndex: "travel_expense_approver",
-            render: (record) => record?.travel_expense_approver?.full_name || "-", // assuming relation
-
-        },
-
-        {
-
-            title: "Approval Status",
-            dataIndex: "approval_status",
-            render: (text) => text || "-",
-
-        },
 
         ...(isDelete || isUpdate
             ? [
@@ -161,7 +133,7 @@ const TravelReimbursement = () => {
                                         to="#"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvas_add"
-                                        onClick={() => setSelectedtravelReimbursement(a)}
+                                        onClick={() => setSelecteddailyAttendance(a)}
                                     >
                                         <i className="ti ti-edit text-blue" /> Edit
                                     </Link>
@@ -171,7 +143,7 @@ const TravelReimbursement = () => {
                                     <Link
                                         className="dropdown-item"
                                         to="#"
-                                        onClick={() => handleDeletetravelReimbursement(a)}
+                                        onClick={() => handleDeletedailyAttendance(a)}
                                     >
                                         <i className="ti ti-trash text-danger" /> Delete
                                     </Link>
@@ -184,18 +156,18 @@ const TravelReimbursement = () => {
             : []),
     ];
 
-    const handleDeletetravelReimbursement = (travelReimbursement) => {
-        setSelectedtravelReimbursement(travelReimbursement);
+    const handleDeletedailyAttendance = (dailyAttendance) => {
+        setSelecteddailyAttendance(dailyAttendance);
         setShowDeleteModal(true);
     };
 
     return (
         <>
             <Helmet>
-                <title>DCC HRMS -Travel Reimbursement Claims</title>
+                <title>DCC HRMS - Daily Attendance Entry</title>
                 <meta
-                    name="time-sheet"
-                    content="This is time sheet page of DCC HRMS."
+                    name="helpdesk-ticket"
+                    content="This is helpdesk ticket page of DCC HRMS."
                 />
             </Helmet>
             {/* Page Wrapper */}
@@ -208,9 +180,9 @@ const TravelReimbursement = () => {
                                 <div className="row align-items-center">
                                     <div className="col-4">
                                         <h4 className="page-title">
-                                            Travel Reimbursement Claims
+                                            Daily Attendance Entry
                                             <span className="count-title">
-                                                {travelReimbursement?.totalCount}
+                                                {dailyAttendance?.totalCount}
                                             </span>
                                         </h4>
                                     </div>
@@ -234,7 +206,7 @@ const TravelReimbursement = () => {
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    placeholder="Search Travel Reimbursement Claims"
+                                                    placeholder="Search Daily Attendance"
                                                     onChange={(e) => setSearchValue(e.target.value)}
                                                 />
                                             </div>
@@ -249,7 +221,7 @@ const TravelReimbursement = () => {
                                                         data-bs-target="#offcanvas_add"
                                                     >
                                                         <i className="ti ti-square-rounded-plus me-2" />
-                                                        Add Travel Reimbursement Claims
+                                                        Add Daily Attendance Entry
                                                     </Link>
                                                 </div>
                                             </div>
@@ -263,7 +235,7 @@ const TravelReimbursement = () => {
                                         <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
                                                 <div className="d-flex align-items-center flex-wrap row-gap-2">
-                                                    <h4 className="mb-0 me-3">All Travel Reimbursement Claims</h4>
+                                                    <h4 className="mb-0 me-3">All Daily Attendance Entry </h4>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -303,18 +275,18 @@ const TravelReimbursement = () => {
                         </div>
                     </div>
                 </div>
-                <ManageTravelReimbursement
-                    settravelReimbursement={setSelectedtravelReimbursement}
-                    travelReimbursement={selectedtravelReimbursement}
+                <ManagedailyAttendance
+                    setAttendance={setSelecteddailyAttendance}
+                    dailyAttendance={selecteddailyAttendance}
                 />
             </div>
             <DeleteConfirmation
                 showModal={showDeleteModal}
                 setShowModal={setShowDeleteModal}
-                travelReimbursementId={selectedtravelReimbursement?.id}
+                dailyAttendanceId={selecteddailyAttendance?.id}
             />
         </>
     );
 };
 
-export default TravelReimbursement;
+export default DailyAttendance;
