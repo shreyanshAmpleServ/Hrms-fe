@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import Scrollbars from "react-custom-scrollbars-2";
-import { SidebarData } from "../data/json/sidebarData";
-import ImageWithBasePath from "../imageWithBasePath";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import { setExpandMenu } from "../../../redux/common/commonSlice";
+import { SidebarData } from "../data/json/sidebarData";
 
 const Sidebar = () => {
   const Location = useLocation();
   const expandMenu = useSelector((state) => state.common?.expandMenu);
   const dispatch = useDispatch();
-  const isAdmin = localStorage.getItem("role")?.includes("admin") 
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
   const Permissions = localStorage.getItem("permissions")
     ? JSON?.parse(localStorage.getItem("permissions"))
     : [];
@@ -98,7 +97,9 @@ const Sidebar = () => {
 
                     <div className="user-names">
                       <h5>{`${user?.full_name}`}</h5>
-                      <h6>{`${user?.hrms_d_user_role[0]?.hrms_m_role?.["role_name"]}`}</h6>
+                      <h6 className="text-capitalize">
+                        {`${user?.hrms_d_user_role[0]?.hrms_m_role?.["role_name"]}`}
+                      </h6>
                     </div>
                   </Link>
                 </li>
@@ -122,136 +123,135 @@ const Sidebar = () => {
                           });
                         }
                         title.links = link_array;
-                    
-                  
-                          // **Filter items based on permissions**
-        const hasPermission = isAdmin ? true :   Permissions.some((permission) =>
-          permission.module_name?.trim()?.toLowerCase() === title.label?.trim()?.toLowerCase() &&
-          Object.values(permission.permissions).some((perm) => perm === true)
-        );
 
-        if (!hasPermission) return null; 
+                        // **Filter items based on permissions**
+                        const hasPermission = isAdmin
+                          ? true
+                          : Permissions.some(
+                              (permission) =>
+                                permission.module_name
+                                  ?.trim()
+                                  ?.toLowerCase() ===
+                                  title.label?.trim()?.toLowerCase() &&
+                                Object.values(permission.permissions).some(
+                                  (perm) => perm === true
+                                )
+                            );
 
-                          return (
-                              <li className="submenu" key={title?.label}>
-                                <Link
-                                  to={title?.submenu ? "#" : title?.link}
-                                  onClick={() => toggleSidebar(title?.label)}
-                                  className={`${
-                                    subOpen === title?.label ? "subdrop" : ""
-                                  } ${
-                                    title?.links?.includes(Location.pathname)
-                                      ? "active"
-                                      : ""
-                                  } ${
-                                    title?.submenuItems
-                                      ?.map((link) => link?.link)
-                                      .includes(Location.pathname) ||
-                                    title?.link === Location.pathname
+                        if (!hasPermission) return null;
+
+                        return (
+                          <li className="submenu" key={title?.label}>
+                            <Link
+                              to={title?.submenu ? "#" : title?.link}
+                              onClick={() => toggleSidebar(title?.label)}
+                              className={`${
+                                subOpen === title?.label ? "subdrop" : ""
+                              } ${
+                                title?.links?.includes(Location.pathname)
+                                  ? "active"
+                                  : ""
+                              } ${
+                                title?.submenuItems
+                                  ?.map((link) => link?.link)
+                                  .includes(Location.pathname) ||
+                                title?.link === Location.pathname
+                                  ? "active"
+                                  : "" ||
+                                      isMatch(
+                                        title?.subLink1,
+                                        Location.pathname
+                                      )
+                                    ? "active"
+                                    : "" ||
+                                        isMatch(
+                                          title?.subLink2,
+                                          Location.pathname
+                                        )
                                       ? "active"
                                       : "" ||
-                                          isMatch(
-                                            title?.subLink1,
-                                            Location.pathname
-                                          )
+                                          title?.subLink3 === Location.pathname
                                         ? "active"
                                         : "" ||
-                                            isMatch(
-                                              title?.subLink2,
+                                            title?.subLink4 ===
                                               Location.pathname
-                                            )
                                           ? "active"
-                                          : "" ||
-                                              title?.subLink3 ===
-                                                Location.pathname
-                                            ? "active"
-                                            : "" ||
-                                                title?.subLink4 ===
-                                                  Location.pathname
+                                          : ""
+                              }`}
+                            >
+                              <i className={title.icon}></i>
+                              <span>{title?.label}</span>
+                              <span
+                                className={title?.submenu ? "menu-arrow" : ""}
+                              />
+                            </Link>
+                            <ul
+                              style={{
+                                display:
+                                  subOpen === title?.label ? "block" : "none",
+                              }}
+                            >
+                              {title?.submenuItems?.map((item) => (
+                                <li
+                                  className="submenu submenu-two"
+                                  key={item.label}
+                                >
+                                  <Link
+                                    to={item?.link}
+                                    className={`${
+                                      item?.submenuItems
+                                        ?.map((link) => link?.link)
+                                        .includes(Location.pathname) ||
+                                      item?.link === Location.pathname
+                                        ? "active subdrop"
+                                        : ""
+                                    } `}
+                                    onClick={() => {
+                                      toggleSubsidebar(item?.label);
+                                    }}
+                                  >
+                                    {item?.label}
+                                    <span
+                                      className={
+                                        item?.submenu ? "menu-arrow" : ""
+                                      }
+                                    />
+                                  </Link>
+                                  <ul
+                                    style={{
+                                      display:
+                                        subsidebar === item?.label
+                                          ? "block"
+                                          : "none",
+                                    }}
+                                  >
+                                    {item?.submenuItems?.map((items) => (
+                                      <li key={items.label}>
+                                        <Link
+                                          to={items?.link}
+                                          className={`${
+                                            subsidebar === items?.label
+                                              ? "submenu-two subdrop"
+                                              : "submenu-two"
+                                          } ${
+                                            items?.submenuItems
+                                              ?.map((link) => link.link)
+                                              .includes(Location.pathname) ||
+                                            items?.link === Location.pathname
                                               ? "active"
                                               : ""
-                                  }`}
-                                >
-                                  <i className={title.icon}></i>
-                                  <span>{title?.label}</span>
-                                  <span
-                                    className={
-                                      title?.submenu ? "menu-arrow" : ""
-                                    }
-                                  />
-                                </Link>
-                                <ul
-                                  style={{
-                                    display:
-                                      subOpen === title?.label
-                                        ? "block"
-                                        : "none",
-                                  }}
-                                >
-                                  {title?.submenuItems?.map((item) => (
-                                    <li
-                                      className="submenu submenu-two"
-                                      key={item.label}
-                                    >
-                                      <Link
-                                        to={item?.link}
-                                        className={`${
-                                          item?.submenuItems
-                                            ?.map((link) => link?.link)
-                                            .includes(Location.pathname) ||
-                                          item?.link === Location.pathname
-                                            ? "active subdrop"
-                                            : ""
-                                        } `}
-                                        onClick={() => {
-                                          toggleSubsidebar(item?.label);
-                                        }}
-                                      >
-                                        {item?.label}
-                                        <span
-                                          className={
-                                            item?.submenu ? "menu-arrow" : ""
-                                          }
-                                        />
-                                      </Link>
-                                      <ul
-                                        style={{
-                                          display:
-                                            subsidebar === item?.label
-                                              ? "block"
-                                              : "none",
-                                        }}
-                                      >
-                                        {item?.submenuItems?.map((items) => (
-                                          <li key={items.label}>
-                                            <Link
-                                              to={items?.link}
-                                              className={`${
-                                                subsidebar === items?.label
-                                                  ? "submenu-two subdrop"
-                                                  : "submenu-two"
-                                              } ${
-                                                items?.submenuItems
-                                                  ?.map((link) => link.link)
-                                                  .includes(
-                                                    Location.pathname
-                                                  ) ||
-                                                items?.link ===
-                                                  Location.pathname
-                                                  ? "active"
-                                                  : ""
-                                              }`}
-                                            >
-                                              {items?.label}
-                                            </Link>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </li>
-                            )
+                                          }`}
+                                        >
+                                          {items?.label}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        );
                       })}
                     </ul>
                   </li>

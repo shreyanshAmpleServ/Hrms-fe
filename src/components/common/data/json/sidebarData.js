@@ -310,7 +310,7 @@ export const SidebarData = [
             submenu: false,
           },
           {
-            label: "NotificationsLog",
+            label: "Notification Center",
             link: route.notificationsLog,
             showSubRoute: false,
             submenu: false,

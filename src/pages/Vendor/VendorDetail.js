@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { all_routes } from "../../routes/all_routes";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ImageWithBasePath from "../../components/common/imageWithBasePath";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
-import { fetchUserById, deleteUser } from "../../redux/manage-user";
-import EditUserModal from "./modal/EditUserModal";
-import DeleteAlert from "./alert/DeleteAlert";
-import DateFormat from "../../utils/DateFormat";
-import UserActivities from "./modal/UserActvities";
-import { useNavigate } from "react-router-dom";
+import ImageWithBasePath from "../../components/common/imageWithBasePath";
+import { deleteUser } from "../../redux/manage-user";
 import { fetchVendorById } from "../../redux/vendor";
+import { all_routes } from "../../routes/all_routes";
+import DateFormat from "../../utils/DateFormat";
+import DeleteAlert from "./alert/DeleteAlert";
+import EditUserModal from "./modal/EditUserModal";
+import UserActivities from "./modal/UserActvities";
 
 const VendorDetail = () => {
   const { id } = useParams();
@@ -103,7 +101,6 @@ const VendorDetail = () => {
                       <ul>
                         <li>
                           <Link to={route.vendorDetails}>
-                     
                             <i className="ti ti-chevron-left" />
                           </Link>
                         </li>
@@ -139,11 +136,11 @@ const VendorDetail = () => {
                       <div>
                         <h5 className="mb-1">{vendorDetail?.name}</h5>
                         <div className="d-flex align-items-center mb-3">
-                      <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
-                        <i className="ti ti-map-pin" />
-                      </span>
-                      <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( "+ vendorDetail?.billing_zipcode+" )"}`}</p>
-                    </div>
+                          <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
+                            <i className="ti ti-map-pin" />
+                          </span>
+                          <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( " + vendorDetail?.billing_zipcode + " )"}`}</p>
+                        </div>
                       </div>
                     </div>
                     <div className="contacts-action">
@@ -190,7 +187,9 @@ const VendorDetail = () => {
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-mail" />
                       </span>
-                      <p style={{lineHeight:"1.2"}} className="text-break">{vendorDetail?.email}</p>
+                      <p style={{ lineHeight: "1.2" }} className="text-break">
+                        {vendorDetail?.email}
+                      </p>
                     </div>
                     <div className="d-flex align-items-center mb-3">
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
@@ -202,13 +201,13 @@ const VendorDetail = () => {
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-map-pin" />
                       </span>
-                      <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( "+ vendorDetail?.billing_zipcode+" )"}`}</p>
+                      <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( " + vendorDetail?.billing_zipcode + " )"}`}</p>
                     </div>
                     <div className="d-flex align-items-center mb-3">
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-calendar-exclamation" />
                       </span>
-                      <p>Created at  {DateFormat(vendorDetail?.createdate)}</p>
+                      <p>Created at {DateFormat(vendorDetail?.createdate)}</p>
                     </div>
                   </div>
                   <hr />
@@ -217,7 +216,7 @@ const VendorDetail = () => {
             </div>
             {/* /User Sidebar */}
             {/* User Activities */}
-            <UserActivities  vendor={vendorDetail?.name}/>
+            <UserActivities vendor={vendorDetail?.name} />
             {/* /User Activities */}
           </div>
         </div>

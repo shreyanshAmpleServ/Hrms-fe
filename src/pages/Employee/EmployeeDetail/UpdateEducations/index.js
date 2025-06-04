@@ -18,6 +18,7 @@ const UpdateEducations = ({ employeeDetail }) => {
       end_to: "",
     },
   ]);
+  const [errors, setErrors] = React.useState({});
   const dispatch = useDispatch();
 
   const handleChangeQualification = (index, field, value) => {
@@ -28,10 +29,53 @@ const UpdateEducations = ({ employeeDetail }) => {
       return education;
     });
     setEducations(newQualifications);
+
+    // Clear error for this field
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[`${index}-${field}`];
+      return newErrors;
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validate all fields
+    const newErrors = {};
+    educations.forEach((education, index) => {
+      if (!education.institute_name?.trim()) {
+        newErrors[`${index}-institute_name`] = "Institute name is required";
+      }
+      if (!education.degree?.trim()) {
+        newErrors[`${index}-degree`] = "Degree is required";
+      }
+      if (!education.specialization?.trim()) {
+        newErrors[`${index}-specialization`] = "Specialization is required";
+      }
+      if (!education.start_from) {
+        newErrors[`${index}-start_from`] = "Start date is required";
+      }
+      if (!education.end_to) {
+        newErrors[`${index}-end_to`] = "End date is required";
+      }
+
+      // Validate dates
+      if (education.start_from && education.end_to) {
+        const startDate = new Date(education.start_from);
+        const endDate = new Date(education.end_to);
+
+        if (startDate > endDate) {
+          newErrors[`${index}-end_to`] = "End date must be after start date";
+        }
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     dispatch(updateEmployeeEducation({ id: employeeDetail.id, educations }));
     const closeButton = document.getElementById("close_btn_update_edu_modal");
     closeButton.click();
@@ -108,7 +152,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-institute_name`] ? "is-invalid" : ""}`}
                           placeholder="Enter Institute"
                           value={education.institute_name}
                           onChange={(e) =>
@@ -119,6 +163,11 @@ const UpdateEducations = ({ employeeDetail }) => {
                             )
                           }
                         />
+                        {errors[`${index}-institute_name`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-institute_name`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -129,7 +178,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-degree`] ? "is-invalid" : ""}`}
                           placeholder="Enter Degree"
                           value={education.degree}
                           onChange={(e) =>
@@ -140,6 +189,11 @@ const UpdateEducations = ({ employeeDetail }) => {
                             )
                           }
                         />
+                        {errors[`${index}-degree`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-degree`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -152,7 +206,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-specialization`] ? "is-invalid" : ""}`}
                           placeholder="Enter Specialization"
                           value={education.specialization}
                           onChange={(e) =>
@@ -163,6 +217,11 @@ const UpdateEducations = ({ employeeDetail }) => {
                             )
                           }
                         />
+                        {errors[`${index}-specialization`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-specialization`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -200,13 +259,18 @@ const UpdateEducations = ({ employeeDetail }) => {
                               handleChangeQualification(index, "end_to", null);
                             }
                           }}
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-start_from`] ? "is-invalid" : ""}`}
                           placeholderText="Select Start Date"
                           dateFormat="DD/MM/YYYY"
                           maxDate={
                             education.end_to ? new Date(education.end_to) : null
                           }
                         />
+                        {errors[`${index}-start_from`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-start_from`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -227,7 +291,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                           onChange={(date) =>
                             handleChangeQualification(index, "end_to", date)
                           }
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-end_to`] ? "is-invalid" : ""}`}
                           placeholderText="Select End Date"
                           dateFormat="DD/MM/YYYY"
                           minDate={
@@ -236,6 +300,11 @@ const UpdateEducations = ({ employeeDetail }) => {
                               : null
                           }
                         />
+                        {errors[`${index}-end_to`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-end_to`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>

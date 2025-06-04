@@ -707,3 +707,23 @@ div.sidebar-themesettings
   width: auto !important;
   height: auto !important;
 }
+
+.page-header {
+  margin-bottom: 0 !important;
+}
+
+.page-wrapper .content {
+  padding: 8px 24px !important;
+}
+
+.card-body {
+  padding: 0.5rem !important;
+}
+
+.card-body > div:first-child {
+  margin-bottom: 8px !important;
+}
+
+.page-wrapper .content .row .col-md-12 .card .card-header {
+  padding: 0.5rem !important;
+}

@@ -129,7 +129,9 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Edit Personal Info</h5>
+            <h5 className="modal-title">
+              Edit Personal Info ({employeeDetail?.employee_code})
+            </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
@@ -141,7 +143,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div
-              style={{ height: "400px", overflowY: "auto" }}
+              style={{ height: "calc(100vh - 200px)", overflowY: "auto" }}
               className="modal-body"
             >
               <div className="row">

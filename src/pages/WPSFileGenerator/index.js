@@ -94,60 +94,58 @@ const WPSFileGenerator = () => {
       ),
     },
 
-
-
     {
       title: "Generated On",
       dataIndex: "generated_on",
-      render: (date) => date ? new Date(date).toLocaleDateString() : "-",
+      render: (date) => (date ? new Date(date).toLocaleDateString() : "-"),
     },
     {
       title: "Submitted to Bank",
       dataIndex: "submitted_to_bank",
-      render: (val) => val ? "Yes" : "No",
+      render: (val) => (val ? "Yes" : "No"),
     },
 
     ...(isDelete || isUpdate
       ? [
-        {
-          title: "Action",
-          render: (text, a) => (
-            <div className="dropdown table-action">
-              <Link
-                to="#"
-                className="action-icon "
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="fa fa-ellipsis-v"></i>
-              </Link>
-              <div className="dropdown-menu dropdown-menu-right">
-                {isUpdate && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvas_add"
-                    onClick={() => setSelected(a)}
-                  >
-                    <i className="ti ti-edit text-blue" /> Edit
-                  </Link>
-                )}
+          {
+            title: "Action",
+            render: (text, a) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon "
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add"
+                      onClick={() => setSelected(a)}
+                    >
+                      <i className="ti ti-edit text-blue" /> Edit
+                    </Link>
+                  )}
 
-                {isDelete && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    onClick={() => handleDeleteWPSFile(a)}
-                  >
-                    <i className="ti ti-trash text-danger" /> Delete
-                  </Link>
-                )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteWPSFile(a)}
+                    >
+                      <i className="ti ti-trash text-danger" /> Delete
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ),
-        },
-      ]
+            ),
+          },
+        ]
       : []),
   ];
 
@@ -227,12 +225,7 @@ const WPSFileGenerator = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All WPS File Generator</h4>
-                        </div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent

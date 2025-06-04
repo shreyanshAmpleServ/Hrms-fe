@@ -281,12 +281,12 @@ const EmployeeList = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
+                      {/* <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
                           <h4 className="mb-0 me-3">All Employee</h4>
                           <div className="active-list">
-                            {/* <ul className="mb-0">
+                            <ul className="mb-0">
                             {activityTypes?.map((item)=><>
                               {item?.name === "Calls" && <li>
                                 <Link
@@ -341,10 +341,10 @@ const EmployeeList = () => {
                                 </Link>
                               </li>}
                             </>)}
-                            </ul> */}
+                            </ul>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent

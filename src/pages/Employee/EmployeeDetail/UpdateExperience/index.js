@@ -4,7 +4,6 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { updateEmployeeExperience } from "../../../../redux/Employee";
-import toast from "react-hot-toast";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 
@@ -19,6 +18,7 @@ const UpdateExperience = ({ employeeDetail }) => {
       is_current: false,
     },
   ]);
+  const [errors, setErrors] = React.useState({});
   const dispatch = useDispatch();
 
   const handleChangeExperience = (index, field, value) => {
@@ -45,26 +45,48 @@ const UpdateExperience = ({ employeeDetail }) => {
       return exp;
     });
     setExperiences(newExperiences);
+
+    // Clear error for this field
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[`${index}-${field}`];
+      return newErrors;
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let isValid = true;
+    let newErrors = {};
+
     experiences.forEach((exp, index) => {
-      if (
-        !exp.company_name ||
-        !exp.position ||
-        !exp.start_from ||
-        (!exp.is_current && !exp.end_to)
-      ) {
-        isValid = false;
-        toast.error(
-          `Please fill all required fields for Experience ${index + 1}`
-        );
+      if (!exp.company_name) {
+        newErrors[`${index}-company_name`] = "Company name is required";
+      }
+      if (!exp.position) {
+        newErrors[`${index}-position`] = "Position is required";
+      }
+      if (!exp.start_from) {
+        newErrors[`${index}-start_from`] = "Start date is required";
+      }
+      if (!exp.is_current && !exp.end_to) {
+        newErrors[`${index}-end_to`] = "End date is required";
+      }
+
+      // Add date validation
+      if (exp.start_from && exp.end_to) {
+        const startDate = new Date(exp.start_from);
+        const endDate = new Date(exp.end_to);
+
+        if (startDate > endDate) {
+          newErrors[`${index}-end_to`] = "End date must be after start date";
+        }
       }
     });
 
-    if (!isValid) return;
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     dispatch(
       updateEmployeeExperience({
@@ -101,6 +123,8 @@ const UpdateExperience = ({ employeeDetail }) => {
       ]);
     }
   }, [employeeDetail]);
+
+  console.log(errors?.["0-end_to"]);
 
   return (
     <div className="modal fade" id="update_experience_modal" role="dialog">
@@ -151,7 +175,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-company_name`] ? "is-invalid" : ""}`}
                           placeholder="Enter Company"
                           value={experience?.company_name}
                           onChange={(e) =>
@@ -162,6 +186,11 @@ const UpdateExperience = ({ employeeDetail }) => {
                             )
                           }
                         />
+                        {errors[`${index}-company_name`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-company_name`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -171,7 +200,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-position`] ? "is-invalid" : ""}`}
                           placeholder="Enter Position"
                           value={experience?.position}
                           onChange={(e) =>
@@ -182,6 +211,11 @@ const UpdateExperience = ({ employeeDetail }) => {
                             )
                           }
                         />
+                        {errors[`${index}-position`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-position`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -211,10 +245,17 @@ const UpdateExperience = ({ employeeDetail }) => {
                                 )
                               : null
                           }
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-start_from`] ? "is-invalid" : ""}`}
                           placeholderText="Select Start Date"
                           dateFormat="DD-MM-YYYY"
+                          maxDate={new Date()}
                         />
+
+                        {errors[`${index}-start_from`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-start_from`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                     {!experience.is_current && (
@@ -244,7 +285,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                                 date?.toISOString()
                               )
                             }
-                            className="form-control"
+                            className={`form-control ${errors[`${index}-end_to`] ? "is-invalid" : ""}`}
                             placeholderText="Select End Date"
                             dateFormat="DD-MM-YYYY"
                             disabled={experience.is_current}
@@ -253,7 +294,13 @@ const UpdateExperience = ({ employeeDetail }) => {
                                 ? new Date(experience.start_from)
                                 : null
                             }
+                            maxDate={new Date()}
                           />
+                          {errors[`${index}-end_to`] && (
+                            <small className="text-danger">
+                              {errors[`${index}-end_to`]}
+                            </small>
+                          )}
                         </div>
                       </div>
                     )}

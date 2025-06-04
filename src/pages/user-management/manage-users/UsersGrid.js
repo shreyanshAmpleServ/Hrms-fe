@@ -41,7 +41,10 @@ const UsersGrid = ({ data }) => {
     <>
       <div className="d-flex flex-wrap ">
         {data.slice(0, visibleItems).map((user, index) => (
-          <div className="col-xxl-3 col-xl-4 p-2 col-md-6" key={user.id || index}>
+          <div
+            className="col-xxl-3 col-xl-4 p-2 col-md-6"
+            key={user.id || index}
+          >
             <div className="card border" style={{ height: "250px" }}>
               <div className="card-body">
                 {/* User Details Header */}
@@ -68,11 +71,17 @@ const UsersGrid = ({ data }) => {
                     {/* User Info */}
                     <div>
                       <h6>
-                        <Link to={`/manage-users/${user?.id}`} className="fw-medium">
+                        <Link
+                          to={`/manage-users/${user?.id}`}
+                          className="fw-medium"
+                        >
                           {user.full_name || "N/A"}
                         </Link>
                       </h6>
-                      <p className="text-default">{user.crms_d_user_role?.[0]?.crms_m_role?.role_name || "N/A"}</p>
+                      <p className="text-default text-capitalize">
+                        {user.hrms_d_user_role?.[0]?.hrms_m_role?.role_name ||
+                          "N/A"}
+                      </p>
                     </div>
                   </div>
                   {/* Actions Dropdown */}

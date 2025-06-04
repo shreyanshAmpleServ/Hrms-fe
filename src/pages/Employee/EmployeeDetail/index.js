@@ -1,7 +1,7 @@
 import { CameraFilled, EditFilled } from "@ant-design/icons";
 import { Avatar, Button, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
@@ -14,9 +14,11 @@ import UpdateEducations from "./UpdateEducations";
 import UpdateExperience from "./UpdateExperience";
 import UpdatePassportInfo from "./UpdatePassportInfo";
 import UpdateSocialInfo from "./UpdateSocialInfo";
+import UpdateProfilePicture from "./UploadProfile";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
+  const [image, setImage] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,11 +31,31 @@ const EmployeeDetail = () => {
 
   const route = all_routes;
 
-  const handleImageUpload = async (info) => {
+  const handleImageUploadOpen = async (file) => {
+    const createElement = document.createElement("button");
+    createElement.id = "update_profile_picture_modal";
+    createElement.type = "button";
+    createElement.style.display = "none";
+    createElement.setAttribute("data-bs-toggle", "modal");
+    createElement.setAttribute(
+      "data-bs-target",
+      "#update_profile_picture_modal"
+    );
+    document.body.appendChild(createElement);
+    setImage(file);
+    createElement.click();
+  };
+
+  const handleProfilePictureUpload = async () => {
     const formData = new FormData();
-    formData.append("profile_pic", info.file);
+    formData.append("profile_pic", image);
     formData.append("id", id);
     dispatch(updateEmployee(formData));
+    const closeModal = document.getElementById(
+      "close_btn_update_profile_picture_modal"
+    );
+    closeModal.click();
+    setImage(null);
   };
 
   const uploadButton = (
@@ -182,7 +204,9 @@ const EmployeeDetail = () => {
                         listType="picture-card"
                         className="avatar-uploader"
                         showUploadList={false}
-                        customRequest={handleImageUpload}
+                        customRequest={(info) =>
+                          handleImageUploadOpen(info.file)
+                        }
                         accept="image/*"
                       >
                         {uploadButton}
@@ -630,6 +654,13 @@ const EmployeeDetail = () => {
         <UpdateSocialInfo employeeDetail={employeeDetail} />
         <UpdateEducations employeeDetail={employeeDetail} />
         <UpdateExperience employeeDetail={employeeDetail} />
+        <UpdateProfilePicture
+          employeeDetail={employeeDetail}
+          onSubmit={handleProfilePictureUpload}
+          handleImageUploadOpen={handleImageUploadOpen}
+          image={image}
+          setImage={setImage}
+        />
       </div>
     </>
   );

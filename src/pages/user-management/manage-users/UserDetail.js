@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { all_routes } from "../../../routes/all_routes";
+import { Skeleton } from "antd";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ImageWithBasePath from "../../../components/common/imageWithBasePath";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
-import { fetchUserById, deleteUser } from "../../../redux/manage-user";
-import EditUserModal from "./modal/EditUserModal";
-import DeleteAlert from "./alert/DeleteAlert";
+import ImageWithBasePath from "../../../components/common/imageWithBasePath";
+import { deleteUser, fetchUserById } from "../../../redux/manage-user";
 import DateFormat from "../../../utils/DateFormat";
-import UserActivities from "./modal/UserActvities";
-import { useNavigate } from "react-router-dom";
+import DeleteAlert from "./alert/DeleteAlert";
+import EditUserModal from "./modal/EditUserModal";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -18,58 +15,114 @@ const UserDetail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the user details when the component mounts
     dispatch(fetchUserById(id));
   }, [id, dispatch]);
 
-  // Get the user details from Redux store
-  const { userDetail } = useSelector((state) => state.users);
-
-  const route = all_routes;
+  const { userDetail, loading } = useSelector((state) => state.users);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const handleDeleteUser = () => {
-    setShowDeleteModal(true);
-  };
+
+  const handleDeleteUser = () => setShowDeleteModal(true);
+
   const deleteData = () => {
     if (userDetail) {
-      dispatch(deleteUser(userDetail.id)); // Dispatch the delete action
-      navigate(`/users`); // Navigate to the specified route
-      setShowDeleteModal(false); // Close the modal
+      dispatch(deleteUser(userDetail.id));
+      navigate(`/users`);
+      setShowDeleteModal(false);
     }
   };
 
-  return (
-    <>
-      {/* Page Wrapper */}
+  if (loading) {
+    return (
       <div className="page-wrapper position-relative">
-        {/* {loading ? (
-          <div
-            style={{
-              zIndex: 9999,
-              paddingTop: "20%",
-              paddingLeft: "35%",
-              width: "100%",
-              marginLeft: "0%",
-              minHeight: "100vh",
-              marginTop:"59px",
-              backgroundColor: "rgba(255, 255, 255,.5)",
-            }}
-            className=" position-fixed  w-screen  top-0   bg-gray  "
-          >
-            <div
-              className="spinner-border position-absolute d-flex justify-content-center  text-primary"
-              role="status"
-            >
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        ) : */}
         <div className="content">
           <div className="row">
             <div className="col-md-12">
-              {/* Page Header */}
-              <div className="page-header">
+              <Skeleton.Input
+                active
+                block
+                style={{ height: 20, marginBottom: 10, width: "15%" }}
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <Skeleton.Input
+                active
+                block
+                style={{ height: 20, marginBottom: 10, width: "30%" }}
+              />
+              <div className="card">
+                <div className="card-body">
+                  <div className="d-flex align-items-center">
+                    <Skeleton.Avatar
+                      active
+                      size={100}
+                      style={{ marginRight: 20 }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <Skeleton.Input
+                        active
+                        block
+                        style={{
+                          width: 200,
+                          marginBottom: 10,
+                          height: 20,
+                        }}
+                      />
+                      <Skeleton.Input
+                        active
+                        block
+                        style={{ width: 150, height: 20 }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-12">
+              <div className="card">
+                <div className="card-body">
+                  <Skeleton.Input
+                    active
+                    block
+                    style={{ width: 200, marginBottom: 20, height: 20 }}
+                  />
+                  <div>
+                    {[1, 2, 3, 4].map((item) => (
+                      <div
+                        key={item}
+                        className="d-flex align-items-center mb-3"
+                      >
+                        <Skeleton.Avatar
+                          active
+                          size={24}
+                          style={{ marginRight: 10 }}
+                        />
+                        <Skeleton.Input
+                          active
+                          block
+                          style={{ width: "60%", height: 20 }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="page-wrapper position-relative">
+        <div className="content">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="page-header mb-0">
                 <div className="row align-items-center">
                   <div className="col-sm-4">
                     <h4 className="page-title">User</h4>
@@ -81,18 +134,16 @@ const UserDetail = () => {
                   </div>
                 </div>
               </div>
-              {/* /Page Header */}
             </div>
           </div>
           <div className="row">
             <div className="col-md-12">
-              {/* User Details */}
               <div className="contact-head">
                 <div className="row align-items-center">
                   <div className="col-sm-6">
                     <ul className="contact-breadcrumb">
-                      <li>
-                        <Link to={route.userGrid}>
+                      <li className="m-0">
+                        <Link to={-1}>
                           <i className="ti ti-arrow-narrow-left" />
                           User
                         </Link>
@@ -100,7 +151,7 @@ const UserDetail = () => {
                       <li>{userDetail?.full_name}</li>
                     </ul>
                   </div>
-                  <div className="col-sm-6 text-sm-end">
+                  {/* <div className="col-sm-6 text-sm-end">
                     <div className="contact-pagination">
                       <ul>
                         <li>
@@ -115,7 +166,7 @@ const UserDetail = () => {
                         </li>
                       </ul>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="card">
@@ -139,7 +190,9 @@ const UserDetail = () => {
                       </div>
                       <div>
                         <h5 className="mb-1">{userDetail?.full_name}</h5>
-                        <p className="mb-2">{userDetail?.role}</p>
+                        <p className="mb-2 text-muted text-capitalize">
+                          {userDetail?.role}
+                        </p>
                       </div>
                     </div>
                     <div className="contacts-action">
@@ -174,10 +227,8 @@ const UserDetail = () => {
                   </div>
                 </div>
               </div>
-              {/* /User Details */}
             </div>
-            {/* User Sidebar */}
-            <div className="col-xl-3 theiaStickySidebar">
+            <div className="col-xl-12">
               <div className="card">
                 <div className="card-body p-3">
                   <h6 className="mb-3 fw-semibold">Basic Information</h6>
@@ -211,16 +262,10 @@ const UserDetail = () => {
                 </div>
               </div>
             </div>
-            {/* /User Sidebar */}
-            {/* User Activities */}
-            <UserActivities user={userDetail?.full_name} />
-            {/* /User Activities */}
+            {/* <UserActivities user={userDetail?.full_name} /> */}
           </div>
         </div>
-        {/* // }  */}
       </div>
-      {/* /Page Wrapper */}
-      {/* Delete User */}
       <DeleteAlert
         label="User"
         showModal={showDeleteModal}
@@ -228,11 +273,8 @@ const UserDetail = () => {
         selectedUser={userDetail}
         onDelete={deleteData}
       />
-      {/* /Delete User */}
 
-      {/* Edit User */}
       <EditUserModal user={userDetail} />
-      {/* /Edit User */}
     </>
   );
 };

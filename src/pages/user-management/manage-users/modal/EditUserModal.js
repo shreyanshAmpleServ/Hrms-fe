@@ -33,7 +33,7 @@ const EditUserModal = ({ user }) => {
       full_name: user?.full_name || "",
       phone: user?.phone || "",
       address: user?.address || "",
-      role_id: user?.crms_d_user_role?.[0]?.crms_m_role?.id || null,
+      role_id: user?.role_id || null,
       is_active: user?.is_active || "Y",
     },
   });
@@ -65,7 +65,7 @@ const EditUserModal = ({ user }) => {
         full_name: user?.full_name || "",
         phone: user?.phone || "",
         address: user?.address || "",
-        role_id: user?.crms_d_user_role?.[0]?.crms_m_role?.id || null,
+        role_id: user?.role_id || null,
         is_active: user?.is_active || "Y",
       });
     }
