@@ -1,8 +1,10 @@
 import { Navigate, Route } from "react-router";
 import Activities from "../pages/Activities";
 import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
+import AdvancePayment from "../pages/AdvancePayment";
 import AppointmentLetters from "../pages/AppointmentLetters";
 import AppraisalEntries from "../pages/AppraisalEntries";
+import AssetAssignment from "../pages/AssetAssignment";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import Calls from "../pages/call";
@@ -10,6 +12,7 @@ import CampaignsList from "../pages/Campaign";
 import Cases from "../pages/Case";
 import Companies from "../pages/companies/";
 import CompanyDetail from "../pages/companies/CompanyDetail";
+import CompetencyTracking from "../pages/CompetencyTracking";
 import ContactDetail from "../pages/contacts/";
 import ContactList from "../pages/contacts/contactList";
 import BanksList from "../pages/crm-settings/bank";
@@ -62,11 +65,18 @@ import AdminDashboard from "../pages/dashboard/AdminDashboard";
 import DealList from "../pages/deals";
 import DealDetail from "../pages/deals/DealDetail";
 import DealsKanban from "../pages/deals/DealsKanban";
+import DisciplinaryActionLog from "../pages/disciplinaryActionLog";
 import Documents from "../pages/Documents";
 import EmployeeList from "../pages/Employee";
 import AddEmployee from "../pages/Employee/AddEmployee";
 import EmployeeDetail from "../pages/Employee/EmployeeDetail";
+import EmployeeAttachment from "../pages/EmployeeAttachment";
+import EmployeeSuggestion from "../pages/EmployeeSuggestion";
 import EmploymentContracts from "../pages/EmploymentContracts";
+import ExitClearance from "../pages/ExitClearance";
+import ExitInterview from "../pages/ExitInterview";
+import GrievanceSubmission from "../pages/grievanceSubmission";
+import HelpdeskTicket from "../pages/HelpdeskTicket";
 import JobPosting from "../pages/jobPosting";
 import LeadsList from "../pages/leads";
 import LeadsDetail from "../pages/leads/LeadsDetail";
@@ -80,18 +90,23 @@ import {
 } from "../pages/main-menu/deals-dashboard";
 import LeadsDashboard from "../pages/main-menu/leads-dashboard";
 import ProjectDashboard from "../pages/main-menu/project-dashboard";
+import MonthlyPayroll from "../pages/MonthlyPayroll";
+import NotificationsLog from "../pages/Notifications";
 import OfferLetters from "../pages/OfferLetters";
 import Orders from "../pages/Order";
 import PayslipViewer from "../pages/payslipViewer";
 import Pipelines from "../pages/pipelines/";
 import PipelineDetail from "../pages/pipelines/PipelineDetail";
 import PriceBook from "../pages/priceBooks";
+import ProbationReview from "../pages/probationReview";
 import Product from "../pages/Product";
 import Projects from "../pages/projects";
 import ProjectDetail from "../pages/projects/ProjectsDetail";
 import PurchaseInvoice from "../pages/purchaseInvoice";
 import PurchaseOrders from "../pages/purchaseOrder";
 import Quotation from "../pages/Quotation";
+import RecognitionAwards from "../pages/RecognitionAwards";
+import RelievingLetter from "../pages/RelievingLetter";
 import ResumeUpload from "../pages/resumeUpload";
 import SalesInvoice from "../pages/salesInvoice";
 import CustomFields from "../pages/settings/app-settings/CustomFields";
@@ -116,35 +131,21 @@ import Localization from "../pages/settings/website-settings/Localization";
 import Preference from "../pages/settings/website-settings/Preference";
 import Prefixes from "../pages/settings/website-settings/Prefixes";
 import Solutions from "../pages/Solutions";
+import SuccessionPlanningEntry from "../pages/successionPlanningEntry";
+import SurveyResponse from "../pages/SurveyResponse";
 import TimeSheet from "../pages/TimeSheet";
+import TrainingFeedbackEntry from "../pages/trainingFeedbackEntry";
+import TrainingSessionSchedule from "../pages/trainingSessionSchedule";
+import TravelReimbursement from "../pages/TravelReimbursement";
 import Manageusers from "../pages/user-management/manage-users";
 import UserDetail from "../pages/user-management/manage-users/UserDetail";
 import RolesPermissions from "../pages/user-management/roles";
 import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
+import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
-import DisciplinaryActionLog from "../pages/disciplinaryActionLog";
-import GrievanceSubmission from "../pages/grievanceSubmission";
-import WorkLifeEventLog from "../pages/WorkLifeEventLog";
-import CompetencyTracking from "../pages/CompetencyTracking";
-import MonthlyPayrollProcessing from "../pages/monthlyPayrollProcessing";
-import TrainingSessionSchedule from "../pages/trainingSessionSchedule";
-import TrainingFeedbackEntry from "../pages/trainingFeedbackEntry";
-import ProbationReview from "../pages/probationReview";
-import SuccessionPlanningEntry from "../pages/successionPlanningEntry";
-import ExitInterview from "../pages/ExitInterview";
-import TravelReimbursement from "../pages/TravelReimbursement";
-import RecognitionAwards from "../pages/RecognitionAwards";
-import ExitClearance from "../pages/ExitClearance";
-import RelievingLetter from "../pages/RelievingLetter";
-import AssetAssignment from "../pages/AssetAssignment";
-import SurveyResponse from "../pages/SurveyResponse";
-import EmployeeSuggestion from "../pages/EmployeeSuggestion";
-import HelpdeskTicket from "../pages/HelpdeskTicket";
-import NotificationsLog from "../pages/Notifications";
-import EmployeeAttachment from "../pages/EmployeeAttachment";
-import AdvancePayment from "../pages/AdvancePayment";
+import ArrearAdjustments from "../pages/ArrearAdjustments";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -930,8 +931,8 @@ export const privateRoutes = [
     title: "Competency Tracking",
   },
   {
-    path: route.monthlyPayrollProcessing,
-    element: <MonthlyPayrollProcessing />,
+    path: route.monthlyPayroll,
+    element: <MonthlyPayroll />,
     route: Route,
     title: "Monthly Payroll Processing",
   },
@@ -1032,6 +1033,12 @@ export const privateRoutes = [
     element: <AdvancePayment />,
     route: Route,
     title: "Advance Payment Entry",
+  },
+  {
+    path: route.arrearAdjustments,
+    element: <ArrearAdjustments />,
+    route: Route,
+    title: "Arrear Adjustments",
   },
 ];
 

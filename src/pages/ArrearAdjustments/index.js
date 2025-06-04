@@ -5,15 +5,15 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
-import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchWorkLifeEventLog } from "../../redux/WorkLifeEventLog/index.js";
-import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageWorkLifeEventLog from "./ManageWorkLifeEventLog/index.js";
+import { fetchArrearAdjustments } from "../../redux/ArrearAdjustments";
+import DeleteConfirmation from "./DeleteConfirmation";
+import ManageArrearAdjustments from "./ManageArrearAdjustments";
 
-const WorkLifeEventLog = () => {
+const ArrearAdjustments = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedWorkLifeEventLog, setSelectedWorkLifeEventLog] =
+  const [selectedArrearAdjustments, setSelectedArrearAdjustments] =
     useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
@@ -23,13 +23,13 @@ const WorkLifeEventLog = () => {
   });
   const dispatch = useDispatch();
 
-  const { workLifeEventLog, loading } = useSelector(
-    (state) => state.workLifeEventLog || {}
+  const { arrearAdjustments, loading } = useSelector(
+    (state) => state.arrearAdjustments || {}
   );
 
   React.useEffect(() => {
     dispatch(
-      fetchWorkLifeEventLog({
+      fetchArrearAdjustments({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -38,12 +38,12 @@ const WorkLifeEventLog = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: workLifeEventLog?.currentPage,
-      totalPage: workLifeEventLog?.totalPages,
-      totalCount: workLifeEventLog?.totalCount,
-      pageSize: workLifeEventLog?.size,
+      currentPage: arrearAdjustments?.currentPage,
+      totalPage: arrearAdjustments?.totalPages,
+      totalCount: arrearAdjustments?.totalCount,
+      pageSize: arrearAdjustments?.size,
     });
-  }, [workLifeEventLog]);
+  }, [arrearAdjustments]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -52,7 +52,7 @@ const WorkLifeEventLog = () => {
       pageSize,
     }));
     dispatch(
-      fetchWorkLifeEventLog({
+      fetchArrearAdjustments({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -61,11 +61,11 @@ const WorkLifeEventLog = () => {
     );
   };
 
-  const data = workLifeEventLog?.data;
+  const data = arrearAdjustments?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Work Life Event Log"
+    (i) => i?.module_name === "Arrear Adjustments"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -76,36 +76,32 @@ const WorkLifeEventLog = () => {
   const columns = [
     {
       title: "Employee",
-      render: (text) => text?.work_life_event_employee?.full_name || "-",
-      sorter: (a, b) =>
-        a.work_life_event_employee.full_name.localeCompare(
-          b.work_life_event_employee.full_name
-        ),
+      dataIndex: "hrms_arrear_adjustments_employee",
+      render: (text) => text?.full_name || "-",
     },
     {
-      title: "Event Type",
-      render: (text) => text?.work_life_event_type?.event_type_name || "-",
-      sorter: (a, b) =>
-        a.work_life_event_type.event_type_name.localeCompare(
-          b.work_life_event_type.event_type_name
-        ),
+      title: "Payroll Month",
+      dataIndex: "payroll_month",
+      render: (text) => moment(text).format("MMM YYYY") || "-",
     },
     {
-      title: "Event Date",
-      dataIndex: "event_date",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => {
-        return moment(a.event_date).unix() - moment(b.event_date).unix();
-      },
+      title: "Adjustment Type",
+      dataIndex: "adjustment_type",
+      render: (text) => text || "-",
     },
     {
-      title: "Requires Follow Up",
-      dataIndex: "requires_followup",
-      render: (text) => (text ? "Yes" : "No"),
+      title: "Arrear Amount",
+      dataIndex: "arrear_amount",
+      render: (text) => text || "-",
     },
     {
-      title: "Notes",
-      dataIndex: "notes",
+      title: "Arrear Reason",
+      dataIndex: "arrear_reason",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Remarks",
+      dataIndex: "remarks",
       render: (text) => text || "-",
     },
     ...(isDelete || isUpdate
@@ -129,7 +125,7 @@ const WorkLifeEventLog = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedWorkLifeEventLog(a)}
+                      onClick={() => setSelectedArrearAdjustments(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -139,7 +135,7 @@ const WorkLifeEventLog = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteWorkLifeEventLog(a)}
+                      onClick={() => handleDeleteArrearAdjustments(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -152,18 +148,18 @@ const WorkLifeEventLog = () => {
       : []),
   ];
 
-  const handleDeleteWorkLifeEventLog = (workLifeEventLog) => {
-    setSelectedWorkLifeEventLog(workLifeEventLog);
+  const handleDeleteArrearAdjustments = (arrearAdjustments) => {
+    setSelectedArrearAdjustments(arrearAdjustments);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Work Life Event Log</title>
+        <title>DCC HRMS - Arrear Adjustments</title>
         <meta
-          name="work-life-event-log"
-          content="This is work life event log page of DCC HRMS."
+          name="arrear-adjustments"
+          content="This is arrear adjustments page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -176,9 +172,9 @@ const WorkLifeEventLog = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Work Life Event Log
+                      Arrear Adjustments
                       <span className="count-title">
-                        {workLifeEventLog?.totalCount}
+                        {arrearAdjustments?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -202,7 +198,7 @@ const WorkLifeEventLog = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Work Life Event Log"
+                          placeholder="Search Arrear Adjustments"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -217,7 +213,7 @@ const WorkLifeEventLog = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Work Life Event Log
+                            Add New Arrear Adjustments
                           </Link>
                         </div>
                       </div>
@@ -231,7 +227,7 @@ const WorkLifeEventLog = () => {
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Work Life Event Log</h4>
+                          <h4 className="mb-0 me-3">All Arrear Adjustments</h4>
                         </div>
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -271,18 +267,18 @@ const WorkLifeEventLog = () => {
             </div>
           </div>
         </div>
-        <ManageWorkLifeEventLog
-          setWorkLifeEventLog={setSelectedWorkLifeEventLog}
-          workLifeEventLog={selectedWorkLifeEventLog}
+        <ManageArrearAdjustments
+          setArrearAdjustments={setSelectedArrearAdjustments}
+          arrearAdjustments={selectedArrearAdjustments}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        workLifeEventLogId={selectedWorkLifeEventLog?.id}
+        arrearAdjustmentsId={selectedArrearAdjustments?.id}
       />
     </>
   );
 };
 
-export default WorkLifeEventLog;
+export default ArrearAdjustments;

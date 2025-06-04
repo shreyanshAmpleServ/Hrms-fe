@@ -146,7 +146,7 @@ const GoalCategoryMaster = () => {
       );
     }
     return data;
-  }, [searchText, goal_category, columns, sortOrder]);
+  }, [goal_category, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelected(industry);

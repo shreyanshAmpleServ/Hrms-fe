@@ -1,11 +1,10 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { fetchStates } from "../../../redux/state";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchCountries } from "../../../redux/country";
-import { Controller, useForm } from "react-hook-form";
+import { fetchStates } from "../../../redux/state";
 
 const ManageAddress = ({
   manageAddress,
@@ -24,7 +23,7 @@ const ManageAddress = ({
 
   React.useEffect(() => {
     country_id && dispatch(fetchStates({ country_id, search: searchState }));
-  }, [dispatch, manageAddress]);
+  }, [dispatch, manageAddress, country_id, searchState]);
 
   const stateApiCall = () => {
     country_id && dispatch(fetchStates({ country_id, search: searchState }));
@@ -67,7 +66,7 @@ const ManageAddress = ({
         newOptions[countryIndex] = stateList;
         return newOptions;
       });
-  }, [states]);
+  }, [states, countryIndex, setStateOptions, stateList]);
   return (
     <div className="col-md-12 mt-3 address-section">
       <div className="mb-2 d-flex justify-content-between align-items-center">
@@ -132,7 +131,7 @@ const ManageAddress = ({
                           value={
                             (Array.isArray(stateOptions?.[index])
                               ? stateOptions[index].find(
-                                  (option) => option.value == item[fieldKey]
+                                  (option) => option.value === item[fieldKey]
                                 ) || ""
                               : "") || ""
                           }
@@ -164,7 +163,7 @@ const ManageAddress = ({
                           }}
                           value={
                             countryList?.find(
-                              (option) => option.value == item[fieldKey]
+                              (option) => option.value === item[fieldKey]
                             ) || ""
                           }
                           onChange={(selectedOption) => {

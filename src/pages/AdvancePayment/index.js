@@ -1,4 +1,4 @@
-import { Rate, Table, Tag } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";

@@ -89,7 +89,6 @@ import DisciplinryActionLogReducer from "./disciplinaryActionLog";
 import GrievanceSubmissionReducer from "./grievanceSubmission";
 import workLifeEventLogReducer from "./WorkLifeEventLog";
 import competencyTrackingReducer from "./CompetencyTracking";
-import MonthlyPayrollProcessingReducer from "./monthlyPayrollProcessing";
 import WpsFilesReducer from "./WPSFileGenerator";
 import trainingSessionReducer from "./trainingSessionSchedule";
 import TrainingFeedbackReducer from "./trainingFeedbackEntry";
@@ -107,6 +106,8 @@ import helpdeskTicketReducer from "./HelpdeskTicket";
 import NotificationsLogReducer from "./Notifications";
 import EmployeeAttachmentReducer from "./EmployeeAttachment";
 import AdvancePaymentReducer from "./AdvancePayment";
+import MonthlyPayrollReducer from "./MonthlyPayroll";
+import ArrearAdjustmentsReducer from "./ArrearAdjustments";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -199,7 +200,6 @@ const store = configureStore({
     grievanceSubmission: GrievanceSubmissionReducer,
     workLifeEventLog: workLifeEventLogReducer,
     competencyTracking: competencyTrackingReducer,
-    monthlyPayroll: MonthlyPayrollProcessingReducer,
     wpsFiles: WpsFilesReducer,
     trainingSession: trainingSessionReducer,
     trainingFeedback: TrainingFeedbackReducer,
@@ -217,6 +217,8 @@ const store = configureStore({
     Notifications: NotificationsLogReducer,
     employeeAttachment: EmployeeAttachmentReducer,
     advancePayment: AdvancePaymentReducer,
+    monthlyPayroll: MonthlyPayrollReducer,
+    arrearAdjustments: ArrearAdjustmentsReducer,
   },
 });
 

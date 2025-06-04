@@ -111,7 +111,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
         );
       };
     }
-  }, []);
+  }, [settrainingSession, reset]);
 
   console.log("trainingSession", trainingSession);
   return (

@@ -126,7 +126,7 @@ const ManageEmpModal = ({ employeeData }) => {
     } else {
       reset(initialEmpData);
     }
-  }, [employeeData]);
+  }, [employeeData, reset]);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -148,23 +148,17 @@ const ManageEmpModal = ({ employeeData }) => {
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ search: searchEmployee }));
-  }, [searchEmployee]);
+  }, [searchEmployee, dispatch]);
 
   const { employee, loading: loadingEmployee } = useSelector(
     (state) => state.employee
   );
 
-  const { bank, loading: loadingBank } = useSelector((state) => state.bank);
+  const { bank } = useSelector((state) => state.bank);
 
-  const { employmentType, loading: loadingEmp } = useSelector(
-    (state) => state.employmentType
-  );
-  const { designation, loading: loadingDesignaion } = useSelector(
-    (state) => state.designation
-  );
-  const { department, loading: loadingDept } = useSelector(
-    (state) => state.department
-  );
+  const { employmentType } = useSelector((state) => state.employmentType);
+  const { designation } = useSelector((state) => state.designation);
+  const { department } = useSelector((state) => state.department);
 
   const employmentOptions = employmentType?.data?.map((emnt) => ({
     value: emnt.id,
@@ -254,7 +248,7 @@ const ManageEmpModal = ({ employeeData }) => {
         );
       };
     }
-  }, []);
+  }, [reset]);
   const addNewColumn = () => {
     setManageAddress((prev) => [
       ...prev,

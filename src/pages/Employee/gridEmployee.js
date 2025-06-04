@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import ImageWithDatabase from "../../components/common/ImageFromDatabase";
-import { all_routes } from "../../routes/all_routes";
 import ManageEmpModal from "./modal/manageEmpModal";
 
 const EmployeeGrid = ({ data }) => {
   const [selectedContact, setSelectedContact] = useState();
-  const route = all_routes;
   return (
     <>
       <div className="row">

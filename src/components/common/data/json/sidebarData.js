@@ -105,8 +105,20 @@ export const SidebarData = [
         submenu: true,
         submenuItems: [
           {
+            label: "Monthly Payroll Processing",
+            link: route.monthlyPayroll,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
             label: "Payslip Viewer",
             link: route.payslipViewer,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Arrear Adjustments",
+            link: route.arrearAdjustments,
             showSubRoute: false,
             submenu: false,
           },
@@ -125,12 +137,6 @@ export const SidebarData = [
           {
             label: "WPS File Generator",
             link: route.wpsFileGenerator,
-            showSubRoute: false,
-            submenu: false,
-          },
-          {
-            label: "Monthly Payroll Processing",
-            link: route.monthlyPayrollProcessing,
             showSubRoute: false,
             submenu: false,
           },
