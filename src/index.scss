@@ -727,3 +727,15 @@ div.sidebar-themesettings
 .page-wrapper .content .row .col-md-12 .card .card-header {
   padding: 0.5rem !important;
 }
+
+.header .mobile-user-menu > a:first-child {
+  width: 40px;
+  height: 40px !important;
+  display: flex;
+  justify-content: center;
+}
+
+.header .mobile-user-menu {
+  top: 8px !important;
+  right: 10px !important;
+}
