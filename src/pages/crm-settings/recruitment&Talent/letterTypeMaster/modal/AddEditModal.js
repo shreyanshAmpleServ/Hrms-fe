@@ -34,14 +34,17 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById("close_latter_type_modal");
+    const formData = new FormData();
+    formData.append("letter_name", data.letter_name);
+    formData.append("template_path", data.template_path[0]);
     if (mode === "add") {
-      dispatch(addlatter_type(data));
+      dispatch(addlatter_type(formData));
     } else if (mode === "edit" && initialData) {
       dispatch(
         updatelatter_type({
           id: initialData.id,
-          latter_typeData: data,
-        }),
+          latter_typeData: formData,
+        })
       );
     }
     reset();
@@ -98,10 +101,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   className={`form-control ${errors.template_path ? "is-invalid" : ""}`}
                   {...register("template_path", {
                     required: "Template path is required.",
-                    minLength: {
-                      value: 3,
-                      message: "Template path must be at least 3 characters.",
-                    },
                   })}
                 />
                 {errors.template_path && (

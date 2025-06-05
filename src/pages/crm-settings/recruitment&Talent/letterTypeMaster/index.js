@@ -23,7 +23,7 @@ const LetterTypeMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Letter Type",
+    (i) => i?.module_name === "Letter Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -52,7 +52,8 @@ const LetterTypeMaster = () => {
       title: "Created Date",
       dataIndex: "createdate",
       render: (text) => moment(text).format("DD-MM-YYYY"),
-      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
+      sorter: (a, b) =>
+        moment(a.createdate).unix() - moment(b.createdate).unix(),
     },
     ...(isUpdate || isDelete
       ? [
@@ -102,7 +103,7 @@ const LetterTypeMaster = () => {
   ];
 
   const { latter_type, loading } = useSelector(
-    (state) => state.letterTypeMaster,
+    (state) => state.letterTypeMaster
   );
 
   React.useEffect(() => {
@@ -128,7 +129,7 @@ const LetterTypeMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -141,11 +142,11 @@ const LetterTypeMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

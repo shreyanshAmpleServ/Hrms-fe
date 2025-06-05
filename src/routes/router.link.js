@@ -149,6 +149,7 @@ import VendorDetail from "../pages/Vendor/VendorDetail";
 import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
+import WarningLetters from "../pages/WarningLetters";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -1061,6 +1062,12 @@ export const privateRoutes = [
     element: <GoalSheetAssignment />,
     route: Route,
     title: "daily Attendance Entry",
+  },
+  {
+    path: route.warningLetters,
+    element: <WarningLetters />,
+    route: Route,
+    title: "Warning Letters",
   },
 ];
 

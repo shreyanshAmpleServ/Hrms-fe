@@ -142,6 +142,9 @@ export const all_routes = {
   // KPI Progress
   kpiProgress: "/kpi-progress",
 
+  // Warning Letters
+  warningLetters: "/warning-letters",
+
   // currency: "/currency",
   // core-hr //
 

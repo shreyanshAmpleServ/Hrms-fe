@@ -1,18 +1,16 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
-import { fetchgoalSheet } from "../../../redux/GoalSheetAssignment";
 import {
-  createKPIProgress,
-  updateKPIProgress,
-} from "../../../redux/KPIProgress";
-import { Slider } from "antd";
+  createWarningLetters,
+  updateWarningLetters,
+} from "../../../redux/WarningLetters";
+import { fetchlatter_type } from "../../../redux/letterType";
 
-const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
+const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -22,41 +20,27 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
     formState: { errors },
   } = useForm();
 
-  const { loading } = useSelector((state) => state.kpiProgress || {});
-  const { goalSheet } = useSelector((state) => state.goalSheet || {});
+  const { loading } = useSelector((state) => state.warningLetters || {});
 
-  const goalSheetOptions = goalSheet?.data?.map((item) => ({
-    label: item?.goal_description,
-    value: item?.id,
-  }));
-
-  React.useEffect(() => {
-    dispatch(fetchgoalSheet());
-  }, [dispatch]);
+  const severityLevels = [
+    { value: "Low", label: "Low" },
+    { value: "Medium", label: "Medium" },
+    { value: "High", label: "High" },
+    { value: "Critical", label: "Critical" },
+  ];
 
   React.useEffect(() => {
-    if (kpiProgress) {
-      reset({
-        employee_id: kpiProgress.employee_id || "",
-        goal_id: kpiProgress.goal_id || "",
-        entry_date: kpiProgress.entry_date || moment().toISOString(),
-        progress_value: Number(kpiProgress.progress_value) || 0,
-        remarks: kpiProgress.remarks || "",
-        reviewed_by: kpiProgress.reviewed_by ? kpiProgress.reviewed_by : null,
-        reviewed_on: kpiProgress.reviewed_on || moment.toISOString(),
-      });
-    } else {
-      reset({
-        employee_id: "",
-        goal_id: "",
-        entry_date: moment().toISOString(),
-        progress_value: 0,
-        remarks: "",
-        reviewed_by: null,
-        reviewed_on: moment().toISOString(),
-      });
-    }
-  }, [kpiProgress, reset]);
+    reset({
+      employee_id: warningLetters?.employee_id,
+      letter_type: warningLetters?.letter_type || "",
+      reason: warningLetters?.reason || "",
+      issued_date: warningLetters?.issued_date || moment().toISOString(),
+      issued_by: warningLetters?.issued_by,
+      severity_level: warningLetters?.severity_level || "",
+      remarks: warningLetters?.remarks || "",
+      attachment_path: "",
+    });
+  }, [warningLetters, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -71,28 +55,45 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
     value: i?.id,
   }));
 
+  React.useEffect(() => {
+    dispatch(fetchlatter_type());
+  }, [dispatch]);
+
+  const { latter_type } = useSelector((state) => state.letterTypeMaster);
+
+  const letterTypes = latter_type?.data?.map((i) => ({
+    label: i?.letter_name,
+    value: i?.id,
+  }));
+
+  console.log(letterTypes);
+
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+
+    const file = data?.attachment_path;
+    const formData = new FormData();
+    formData.append("attachment_path", file);
+    formData.append("employee_id", data?.employee_id);
+    formData.append("issued_by", data?.issued_by);
+    formData.append("issued_date", data?.issued_date);
+    formData.append("letter_type", data?.letter_type);
+    formData.append("reason", data?.reason);
+    formData.append("remarks", data?.remarks);
+    formData.append("severity_level", data?.severity_level);
+
     try {
-      kpiProgress
+      warningLetters
         ? await dispatch(
-            updateKPIProgress({
-              id: kpiProgress.id,
-              kpiProgressData: {
-                ...data,
-                progress_value: String(data.progress_value),
-              },
+            updateWarningLetters({
+              id: warningLetters.id,
+              helpdeskTicketData: formData,
             })
           ).unwrap()
-        : await dispatch(
-            createKPIProgress({
-              ...data,
-              progress_value: String(data.progress_value),
-            })
-          ).unwrap();
+        : await dispatch(createWarningLetters(formData)).unwrap();
       closeButton.click();
       reset();
-      setKPIProgress(null);
+      setWarningLetters(null);
     } catch (error) {
       closeButton.click();
     }
@@ -102,7 +103,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setKPIProgress(null);
+        setWarningLetters(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -115,7 +116,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
         );
       };
     }
-  }, [setKPIProgress]);
+  }, [setWarningLetters]);
 
   return (
     <>
@@ -125,14 +126,14 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{kpiProgress ? "Update " : "Add New "} KPI Progress</h4>
+          <h4>{warningLetters ? "Update " : "Add "} Warning Letters</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setKPIProgress(null);
+              setWarningLetters(null);
               reset();
             }}
           >
@@ -192,59 +193,13 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Goal
+                      Issued By
                       <span className="text-danger"> *</span>
                     </label>
                     <Controller
-                      name="goal_id"
+                      name="issued_by"
                       control={control}
-                      rules={{ required: "Goal is required" }}
-                      render={({ field }) => {
-                        const selectedGoal = goalSheetOptions?.find(
-                          (goal) => goal.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={goalSheetOptions}
-                            placeholder="Select Goal"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedGoal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
-                    />
-                    {errors.goal_id && (
-                      <small className="text-danger">
-                        {errors.goal_id.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      Reviewed By
-                      <span className="text-danger"> *</span>
-                    </label>
-                    <Controller
-                      name="reviewed_by"
-                      control={control}
-                      rules={{ required: "Reviewed By is required" }}
+                      rules={{ required: "Issued by is required" }}
                       render={({ field }) => {
                         const selectedEmployee = employees?.find(
                           (employee) => employee.value === field.value
@@ -254,7 +209,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                             {...field}
                             className="select"
                             options={employees}
-                            placeholder="Select Reviewed By"
+                            placeholder="Select Employee"
                             classNamePrefix="react-select"
                             isLoading={employeeLoading}
                             onInputChange={(inputValue) =>
@@ -274,9 +229,9 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                         );
                       }}
                     />
-                    {errors.reviewed_by && (
+                    {errors.issued_by && (
                       <small className="text-danger">
-                        {errors.reviewed_by.message}
+                        {errors.issued_by.message}
                       </small>
                     )}
                   </div>
@@ -284,81 +239,129 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Reviewed On<span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <Controller
-                      name="reviewed_on"
-                      control={control}
-                      rules={{ required: "Reviewed On is required!" }}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          className="form-control"
-                          placeholderText="Select Reviewed On"
-                          selected={field.value}
-                          value={
-                            field.value
-                              ? moment(field.value).format("DD-MM-YYYY")
-                              : null
-                          }
-                          onChange={(date) => field.onChange(date)}
-                          dateFormat="DD-MM-YYYY"
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.reviewed_on && (
-                    <small className="text-danger">
-                      {errors.reviewed_on.message}
-                    </small>
-                  )}
-                </div>
-
-                <div className="col-md-12">
-                  <label className="col-form-label">
-                    Progress Value <span className="text-danger">*</span>
+                    Severity Level <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="progress_value"
+                      name="severity_level"
                       control={control}
-                      rules={{ required: "Progress Value is required!" }}
+                      rules={{ required: "Severity Level is required!" }}
                       render={({ field }) => (
-                        <Slider
+                        <Select
                           {...field}
-                          min={0}
-                          max={100}
-                          marks={{
-                            0: "0",
-                            10: "10",
-                            20: "20",
-                            30: "30",
-                            40: "40",
-                            50: "50",
-                            60: "60",
-                            70: "70",
-                            80: "80",
-                            90: "90",
-                            100: "100",
-                          }}
-                          onChange={(value) => field.onChange(value)}
+                          className="select"
+                          options={severityLevels}
+                          placeholder="Select Severity Level"
+                          classNamePrefix="react-select"
+                          value={severityLevels.find(
+                            (x) => x.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option.value)}
                         />
                       )}
                     />
-                    {errors.progress_value && (
+                    {errors.severity_level && (
                       <small className="text-danger">
-                        {errors.progress_value.message}
+                        {errors.severity_level.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Attachment <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="attachment_path"
+                      control={control}
+                      rules={{ required: "Attachment is required!" }}
+                      render={({ field: { value, onChange, ...field } }) => (
+                        <input
+                          {...field}
+                          type="file"
+                          className={`form-control ${errors.attachment_path ? "is-invalid" : ""}`}
+                          onChange={(option) =>
+                            onChange(option.target.files[0])
+                          }
+                        />
+                      )}
+                    />
+                    {errors.attachment_path && (
+                      <small className="text-danger">
+                        {errors.attachment_path.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Letter Type <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="letter_type"
+                      control={control}
+                      rules={{ required: "Ticket type is required!" }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={letterTypes}
+                          placeholder="Select Ticket Type"
+                          classNamePrefix="react-select"
+                          value={letterTypes?.find(
+                            (x) => x.value === field.value
+                          )}
+                          onChange={(option) => field.onChange(option.value)}
+                        />
+                      )}
+                    />
+                    {errors.letter_type && (
+                      <small className="text-danger">
+                        {errors.letter_type.message}
                       </small>
                     )}
                   </div>
                 </div>
 
                 <div className="col-md-12">
-                  <label className="col-form-label">Remarks</label>
+                  <label className="col-form-label">
+                    Reason <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="reason"
+                      control={control}
+                      rules={{
+                        required: "Reason is required!",
+                        maxLength: {
+                          value: 255,
+                          message: "Reason must be less than 255 characters",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <textarea
+                          rows={3}
+                          {...field}
+                          className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                          placeholder="Enter Reason"
+                        />
+                      )}
+                    />
+                    {errors.reason && (
+                      <small className="text-danger">
+                        {errors.reason.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-12">
+                  <label className="col-form-label">
+                    Remarks <span className="text-danger">*</span>
+                  </label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"
@@ -368,14 +371,13 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                           value: 255,
                           message: "Remarks must be less than 255 characters",
                         },
-                        required: "Remarks is required!",
                       }}
                       render={({ field }) => (
                         <textarea
-                          {...field}
-                          className="form-control"
-                          placeholder="Enter Remarks"
                           rows={3}
+                          {...field}
+                          className={`form-control ${errors.remarks ? "is-invalid" : ""}`}
+                          placeholder="Enter Remarks"
                         />
                       )}
                     />
@@ -397,7 +399,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {kpiProgress
+                {warningLetters
                   ? loading
                     ? "Updating..."
                     : "Update"
@@ -425,4 +427,4 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
   );
 };
 
-export default ManageKPIProgress;
+export default ManageWarningLetters;

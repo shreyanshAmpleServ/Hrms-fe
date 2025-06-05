@@ -1,4 +1,4 @@
-import { Progress, Table } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchKPIProgress } from "../../redux/KPIProgress/index.js";
+import { fetchWarningLetters } from "../../redux/WarningLetters/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageKPIProgress from "./ManageKPIProgress/index.js";
+import ManageWarningLetters from "./ManageWarningLetters/index.js";
 
-const KPIProgress = () => {
+const WarningLetters = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedKPIProgress, setSelectedKPIProgress] = useState(null);
+  const [selectedWarningLetters, setSelectedWarningLetters] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,13 +22,15 @@ const KPIProgress = () => {
   });
   const dispatch = useDispatch();
 
-  const { kpiProgress, loading } = useSelector(
-    (state) => state.kpiProgress || {}
+  const { warningLetters, loading } = useSelector(
+    (state) => state.warningLetters || {}
   );
+
+  console.log(warningLetters);
 
   React.useEffect(() => {
     dispatch(
-      fetchKPIProgress({
+      fetchWarningLetters({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -37,12 +39,12 @@ const KPIProgress = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: kpiProgress?.currentPage,
-      totalPage: kpiProgress?.totalPages,
-      totalCount: kpiProgress?.totalCount,
-      pageSize: kpiProgress?.size,
+      currentPage: warningLetters?.currentPage,
+      totalPage: warningLetters?.totalPages,
+      totalCount: warningLetters?.totalCount,
+      pageSize: warningLetters?.size,
     });
-  }, [kpiProgress]);
+  }, [warningLetters]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -51,7 +53,7 @@ const KPIProgress = () => {
       pageSize,
     }));
     dispatch(
-      fetchKPIProgress({
+      fetchWarningLetters({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -60,11 +62,11 @@ const KPIProgress = () => {
     );
   };
 
-  const data = kpiProgress?.data;
+  const data = warningLetters?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "KPI Progress"
+    (i) => i?.module_name === "Warning Letters"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -74,29 +76,34 @@ const KPIProgress = () => {
 
   const columns = [
     {
-      title: "Employee",
-      dataIndex: "kpi_progress_entry_employee",
+      title: "Employee Name",
+      dataIndex: "warning_letters_employee",
       render: (text) => text?.full_name || "-",
     },
     {
-      title: "Goal",
-      dataIndex: "kpi_progress_entry_goal",
-      render: (text) => text?.goal_description || "-",
+      title: "Warning Letter Type",
+      dataIndex: "letter_type",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Reviewed By",
-      dataIndex: "kpi_progress_entry_reviewedBy",
-      render: (text) => text?.full_name || "-",
+      title: "Severity Level",
+      dataIndex: "severity_level",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Progress Value",
-      dataIndex: "progress_value",
-      render: (text) => <Progress percent={text} />,
+      title: "Issued Date",
+      dataIndex: "issued_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
-      title: "Reviewed On",
-      dataIndex: "reviewed_on",
-      render: (text) => moment(text).format("DD-MM-YYYY") || "-",
+      title: "Issued By",
+      dataIndex: "warning_letters_issuedBy",
+      render: (text) => text.full_name || "-",
+    },
+    {
+      title: "Reason",
+      dataIndex: "reason",
+      render: (text) => text || "-",
     },
     {
       title: "Remarks",
@@ -124,7 +131,7 @@ const KPIProgress = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedKPIProgress(a)}
+                      onClick={() => setSelectedWarningLetters(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -134,7 +141,7 @@ const KPIProgress = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteKPIProgress(a)}
+                      onClick={() => handleDeleteWarningLetters(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -147,18 +154,18 @@ const KPIProgress = () => {
       : []),
   ];
 
-  const handleDeleteKPIProgress = (kpiProgress) => {
-    setSelectedKPIProgress(kpiProgress);
+  const handleDeleteWarningLetters = (warningLetters) => {
+    setSelectedWarningLetters(warningLetters);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - KPI Progress</title>
+        <title>DCC HRMS - Warning Letters</title>
         <meta
-          name="kpi-progress"
-          content="This is kpi progress page of DCC HRMS."
+          name="warning-letters"
+          content="This is warning letters page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -171,9 +178,9 @@ const KPIProgress = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      KPI Progress
+                      Warning Letters
                       <span className="count-title">
-                        {kpiProgress?.totalCount}
+                        {warningLetters?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -197,7 +204,7 @@ const KPIProgress = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search KPI Progress"
+                          placeholder="Search Warning Letters"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -212,7 +219,7 @@ const KPIProgress = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add KPI Progress
+                            Add Warning Letters
                           </Link>
                         </div>
                       </div>
@@ -261,18 +268,18 @@ const KPIProgress = () => {
             </div>
           </div>
         </div>
-        <ManageKPIProgress
-          setKPIProgress={setSelectedKPIProgress}
-          kpiProgress={selectedKPIProgress}
+        <ManageWarningLetters
+          setWarningLetters={setSelectedWarningLetters}
+          warningLetters={selectedWarningLetters}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        kpiProgressId={selectedKPIProgress?.id}
+        warningLettersId={selectedWarningLetters?.id}
       />
     </>
   );
 };
 
-export default KPIProgress;
+export default WarningLetters;
