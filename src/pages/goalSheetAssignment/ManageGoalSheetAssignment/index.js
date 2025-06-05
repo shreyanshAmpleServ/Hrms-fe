@@ -7,7 +7,10 @@ import moment from "moment";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchAppraisalEntries } from "../../../redux/AppraisalsEntries";
 import { fetchgoal_category } from "../../../redux/goalCategoryMaster";
-import { creategoalSheet, updategoalSheet } from "../../../redux/GoalSheetAssignment";
+import {
+  creategoalSheet,
+  updategoalSheet,
+} from "../../../redux/GoalSheetAssignment";
 
 const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   const dispatch = useDispatch();
@@ -21,10 +24,16 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   } = useForm();
 
   const { employee } = useSelector((state) => state.employee || {});
-  const { appraisalEntries } = useSelector((state) => state.appraisalEntries || []);
+  const { appraisalEntries } = useSelector(
+    (state) => state.appraisalEntries || []
+  );
   console.log("appraisalEntries:", appraisalEntries);
 
-  const { goalCategoryMaster } = useSelector((state) => state.goalCategoryMaster || {});
+  const { goalCategoryMaster } = useSelector(
+    (state) => state.goalCategoryMaster || {}
+  );
+  console.log("goalCategoryMaster:", goalCategoryMaster);
+
   const { loading } = useSelector((state) => state.goalSheet || {});
 
   const employees = employee?.data?.map((i) => ({
@@ -34,15 +43,17 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
 
   const appraisalEntriesList = Array.isArray(appraisalEntries)
     ? appraisalEntries.map((i) => ({
-      label: i?.review_period,
-      value: i?.id,
-    }))
+        label: i?.review_period,
+        value: i?.id,
+      }))
     : [];
 
-  const goalCategoryOptions = goalCategoryMaster?.map((i) => ({
-    label: i?.category_name,
-    value: i?.id,
-  }));
+  const goalCategoryMasterList = Array.isArray(goalCategoryMaster)
+    ? goalCategoryMaster.map((i) => ({
+        label: i?.category_name,
+        value: i?.id,
+      }))
+    : [];
 
   const statusOptions = [
     { value: "pending", label: "Pending" },
@@ -85,12 +96,16 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   };
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large" tabIndex={-1} id="offcanvas_add">
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
+      tabIndex={-1}
+      id="offcanvas_add"
+    >
       <div className="offcanvas-header border-bottom">
         <h4>{goalSheet ? "Update" : "Add New"} Goal Sheet</h4>
         <button
           type="button"
-          className="btn-close custom-btn-close border p-1 rounded-circle"
+          className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
           onClick={() => {
@@ -107,7 +122,9 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
           <div className="row">
             {/* Employee */}
             <div className="col-md-6 mb-3">
-              <label className="form-label">Employee <span className="text-danger">*</span></label>
+              <label className="form-label">
+                Employee <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="employee_id"
                 control={control}
@@ -118,19 +135,27 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                     options={employees}
                     placeholder="Select Employee"
                     onInputChange={(val) => setSearchValue(val)}
-                    value={employees?.find((e) => e.value === field.value) || null}
+                    value={
+                      employees?.find((e) => e.value === field.value) || null
+                    }
                     onChange={(opt) => field.onChange(opt.value)}
                   />
                 )}
               />
-              {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+              {errors.employee_id && (
+                <small className="text-danger">
+                  {errors.employee_id.message}
+                </small>
+              )}
             </div>
 
             {/* Appraisal Cycle */}
             <div className="col-md-6 mb-3">
-              <label className="form-label">Appraisal Cycle <span className="text-danger">*</span></label>
+              <label className="form-label">
+                Appraisal Cycle <span className="text-danger">*</span>
+              </label>
               <Controller
-                name="appraisal_id"
+                name="id"
                 control={control}
                 rules={{ required: "Appraisal cycle is required" }}
                 render={({ field }) => (
@@ -138,26 +163,32 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                     {...field}
                     options={appraisalEntriesList}
                     placeholder="Select Cycle"
-                    value={appraisalEntriesList.find((opt) => opt.value === field.value) || null}
+                    value={
+                      appraisalEntriesList.find(
+                        (opt) => opt.value === field.value
+                      ) || null
+                    }
                     onChange={(opt) => field.onChange(opt.value)}
                   />
                 )}
               />
-              {errors.appraisal_id && <small className="text-danger">{errors.appraisal_id.message}</small>}
+              {errors.id && (
+                <small className="text-danger">{errors.id.message}</small>
+              )}
             </div>
 
             {/* Goal Category */}
             <div className="col-md-6 mb-3">
               <label className="form-label">Goal Category</label>
               <Controller
-                name="goal_category_id"
+                name="id"
                 control={control}
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={goalCategoryOptions}
+                    options={goalCategoryMasterList}
                     placeholder="Select Category"
-                    // value={goalCategoryOptions.find((opt) => opt.value === field.value) || null}
+                    // value={goalCategoryMasterList.find((opt) => opt.value === field.value) || null}
                     onChange={(opt) => field.onChange(opt?.value)}
                     isClearable
                   />
@@ -167,30 +198,51 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
 
             {/* Goal Description */}
             <div className="col-md-6 mb-3">
-              <label className="form-label">Goal Description <span className="text-danger">*</span></label>
+              <label className="form-label">
+                Goal Description <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="goal_description"
                 control={control}
                 rules={{ required: "Description is required" }}
                 render={({ field }) => (
-                  <input {...field} className="form-control" placeholder="Enter Description" />
+                  <input
+                    {...field}
+                    className="form-control"
+                    placeholder="Enter Description"
+                  />
                 )}
               />
-              {errors.goal_description && <small className="text-danger">{errors.goal_description.message}</small>}
+              {errors.goal_description && (
+                <small className="text-danger">
+                  {errors.goal_description.message}
+                </small>
+              )}
             </div>
 
             {/* Weightage */}
             <div className="col-md-6 mb-3">
-              <label className="form-label">Weightage (%) <span className="text-danger">*</span></label>
+              <label className="form-label">
+                Weightage (%) <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="weightage"
                 control={control}
                 rules={{ required: "Weightage is required" }}
                 render={({ field }) => (
-                  <input type="number" {...field} className="form-control" placeholder="Enter weightage" />
+                  <input
+                    type="number"
+                    {...field}
+                    className="form-control"
+                    placeholder="Enter weightage"
+                  />
                 )}
               />
-              {errors.weightage && <small className="text-danger">{errors.weightage.message}</small>}
+              {errors.weightage && (
+                <small className="text-danger">
+                  {errors.weightage.message}
+                </small>
+              )}
             </div>
 
             {/* Target Value */}
@@ -200,7 +252,11 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 name="target_value"
                 control={control}
                 render={({ field }) => (
-                  <input {...field} className="form-control" placeholder="Enter target value" />
+                  <input
+                    {...field}
+                    className="form-control"
+                    placeholder="Enter target value"
+                  />
                 )}
               />
             </div>
@@ -212,7 +268,11 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 name="measurement_criteria"
                 control={control}
                 render={({ field }) => (
-                  <input {...field} className="form-control" placeholder="Enter measurement criteria" />
+                  <input
+                    {...field}
+                    className="form-control"
+                    placeholder="Enter measurement criteria"
+                  />
                 )}
               />
             </div>
@@ -237,7 +297,9 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
 
             {/* Status */}
             <div className="col-md-6 mb-3">
-              <label className="form-label">Status <span className="text-danger">*</span></label>
+              <label className="form-label">
+                Status <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="status"
                 control={control}
@@ -247,20 +309,39 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                     {...field}
                     options={statusOptions}
                     placeholder="Select Status"
-                    value={statusOptions.find((opt) => opt.value === field.value) || null}
+                    value={
+                      statusOptions.find((opt) => opt.value === field.value) ||
+                      null
+                    }
                     onChange={(opt) => field.onChange(opt.value)}
                   />
                 )}
               />
-              {errors.status && <small className="text-danger">{errors.status.message}</small>}
+              {errors.status && (
+                <small className="text-danger">{errors.status.message}</small>
+              )}
             </div>
           </div>
 
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">Cancel</button>
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
+              Cancel
+            </button>
             <button type="submit" className="btn btn-primary">
-              {goalSheet ? (loading ? "Updating..." : "Update") : (loading ? "Creating..." : "Create")}
-              {loading && <span className="spinner-border spinner-border-sm ms-2" />}
+              {goalSheet
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <span className="spinner-border spinner-border-sm ms-2" />
+              )}
             </button>
           </div>
         </form>

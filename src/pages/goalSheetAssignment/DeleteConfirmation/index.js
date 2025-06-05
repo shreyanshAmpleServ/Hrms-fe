@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deleteNotifications } from "../../../redux/Notifications";
+import { deletegoalSheet } from "../../../redux/GoalSheetAssignment";
 
-const DeleteConfirmation = ({ showModal, setShowModal, NotificationsId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, goalSheetId }) => {
   const dispatch = useDispatch();
-  const handleDeleteNotifications = () => {
-    if (NotificationsId) {
-      dispatch(deleteNotifications(NotificationsId));
+  const handleDeletegoalSheet = () => {
+    if (goalSheetId) {
+      dispatch(deletegoalSheet(goalSheetId));
       setShowModal(false);
     }
   };
@@ -28,8 +28,8 @@ const DeleteConfirmation = ({ showModal, setShowModal, NotificationsId }) => {
                   </div>
                   <h4 className="mb-2">Remove Notifications?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the Notifications
-                    you selected?
+                    Are you sure you want to remove <br /> the Notifications you
+                    selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button
@@ -40,7 +40,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, NotificationsId }) => {
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={handleDeleteNotifications}
+                      onClick={handleDeletegoalSheet}
                     >
                       Yes, Delete it
                     </button>
