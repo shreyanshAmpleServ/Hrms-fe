@@ -116,7 +116,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
         contact_relation: employeeData?.contact_relation || "",
       });
       setManageAddress(
-        employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || []
+        employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || [],
       );
       setStateOptions(
         employeeData?.hrms_employee_address?.map((addr) => [
@@ -124,7 +124,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
             value: addr?.state,
             label: addr?.employee_state.name,
           },
-        ]) || []
+        ]) || [],
       );
     } else {
       reset(initialEmpData);
@@ -154,19 +154,19 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   }, [searchEmployee]);
 
   const { employee, loading: loadingEmployee } = useSelector(
-    (state) => state.employee
+    (state) => state.employee,
   );
 
   const { bank, loading: loadingBank } = useSelector((state) => state.bank);
 
   const { employmentType, loading: loadingEmp } = useSelector(
-    (state) => state.employmentType
+    (state) => state.employmentType,
   );
   const { designation, loading: loadingDesignaion } = useSelector(
-    (state) => state.designation
+    (state) => state.designation,
   );
   const { department, loading: loadingDept } = useSelector(
-    (state) => state.department
+    (state) => state.department,
   );
 
   // const currencyLists = currencies?.data?.map(i => i?.is_active === "Y" ? ({ label: `${i?.code} - ${i?.name}`, value: i?.code }) : null).filter(Boolean) || [];
@@ -212,7 +212,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
             key,
             typeof data[key] === "object"
               ? JSON.stringify(data[key])
-              : data[key]
+              : data[key],
           );
         }
       }
@@ -245,7 +245,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   };
   React.useEffect(() => {
     const offcanvasElement = document.getElementById(
-      "offcanvas_add_edit_employee"
+      "offcanvas_add_edit_employee",
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -256,12 +256,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -511,7 +511,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               classNamePrefix="react-select"
                               value={
                                 genderOptions?.find(
-                                  (option) => option.value === watch("gender")
+                                  (option) => option.value === watch("gender"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -572,7 +572,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               value={
                                 employmentOptions?.find(
                                   (option) =>
-                                    option.value === watch("employment_type")
+                                    option.value === watch("employment_type"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -620,7 +620,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               value={
                                 designationOptions?.find(
                                   (option) =>
-                                    option.value === watch("designation_id")
+                                    option.value === watch("designation_id"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -656,7 +656,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               value={
                                 departmentOptions?.find(
                                   (option) =>
-                                    option.value === watch("department_id")
+                                    option.value === watch("department_id"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -740,7 +740,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               classNamePrefix="react-select"
                               value={
                                 bankOptions?.find(
-                                  (option) => option.value === watch("bank_id")
+                                  (option) => option.value === watch("bank_id"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -765,7 +765,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               classNamePrefix="react-select"
                               value={
                                 empStatusOptions?.find(
-                                  (option) => option.value === watch("status")
+                                  (option) => option.value === watch("status"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -818,7 +818,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               value={
                                 employeeOptions?.find(
                                   (option) =>
-                                    option.value === watch("manager_id")
+                                    option.value === watch("manager_id"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -992,7 +992,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               value={
                                 maritalStatusOptions?.find(
                                   (option) =>
-                                    option.value === watch("marital_status")
+                                    option.value === watch("marital_status"),
                                 ) || ""
                               }
                               onChange={(selectedOption) => {

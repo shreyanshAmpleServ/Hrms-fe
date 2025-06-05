@@ -47,7 +47,7 @@ const CompanyList = () => {
   const [paginationData, setPaginationData] = useState();
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Companies"
+    (i) => i?.module_name === "Companies",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -161,7 +161,7 @@ const CompanyList = () => {
   ];
   const navigate = useNavigate();
   const { companies, loading, error, success } = useSelector(
-    (state) => state.companies
+    (state) => state.companies,
   );
 
   React.useEffect(() => {
@@ -189,7 +189,7 @@ const CompanyList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -248,7 +248,7 @@ const CompanyList = () => {
     doc.autoTable({
       head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || "")
+        columns.map((col) => row[col.dataIndex] || ""),
       ),
       startY: 20,
     });

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ActKanbanCard from "./KanbanCard";
 
-const   KanbanListItem = ({ activities,status, addContainerRef }) => {
+const KanbanListItem = ({ activities, status, addContainerRef }) => {
   return (
     <div className="kanban-list-items">
       <div className="card mb-0">
@@ -62,14 +62,15 @@ const   KanbanListItem = ({ activities,status, addContainerRef }) => {
         data-stage-id={status}
         ref={(ref) => addContainerRef(ref)}
       >
-        {(activities || activities?.length) && activities?.map((items) => (
-          <ActKanbanCard
-            key={items.id}
-            activity={items}
-            stage={status}
-            ActContainerID={items.id}
-          />
-        ))}
+        {(activities || activities?.length) &&
+          activities?.map((items) => (
+            <ActKanbanCard
+              key={items.id}
+              activity={items}
+              stage={status}
+              ActContainerID={items.id}
+            />
+          ))}
       </div>
     </div>
   );

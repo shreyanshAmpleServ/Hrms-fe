@@ -43,7 +43,7 @@ const DealList = () => {
   const [paginationData, setPaginationData] = useState();
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Deals"
+    (i) => i?.module_name === "Deals",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -185,7 +185,7 @@ const DealList = () => {
       : []),
   ];
   const { deals, loading, error, success } = useSelector(
-    (state) => state.deals
+    (state) => state.deals,
   );
 
   React.useEffect(() => {
@@ -195,7 +195,7 @@ const DealList = () => {
         status: selectedStatus,
         priority: selectedPriority,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [
     dispatch,
@@ -228,7 +228,7 @@ const DealList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -324,7 +324,7 @@ const DealList = () => {
             return moment(row.expectedCloseDate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

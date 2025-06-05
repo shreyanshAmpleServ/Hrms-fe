@@ -60,7 +60,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatetax_Regime({
           id: initialData.id,
           tax_RegimeData: finalData,
-        })
+        }),
       );
     }
     reset();
@@ -131,7 +131,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                         }
                         value={
                           CountriesList?.find(
-                            (option) => option.value === watch("country_code")
+                            (option) => option.value === watch("country_code"),
                           ) || ""
                         }
                       />

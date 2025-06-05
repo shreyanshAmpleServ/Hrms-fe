@@ -38,7 +38,7 @@ const ContactDetails = () => {
   // Get the contact details from Redux store
   const { contactDetail } = useSelector((state) => state.contacts);
   const { lostReasons: contactStatus } = useSelector(
-    (state) => state.lostReasons
+    (state) => state.lostReasons,
   );
 
   const route = all_routes;
@@ -364,7 +364,7 @@ const ContactDetails = () => {
                   <ul className="social-info">
                     {contactDetail?.socialProfiles &&
                       Object.entries(
-                        JSON.parse(contactDetail?.socialProfiles)
+                        JSON.parse(contactDetail?.socialProfiles),
                       ).map(([platform, url]) =>
                         url ? ( // Only render if a URL exists
                           <li key={platform}>
@@ -378,7 +378,7 @@ const ContactDetails = () => {
                               <i className={socialIcons[platform]} />
                             </Link>
                           </li>
-                        ) : null
+                        ) : null,
                       )}
                   </ul>
                   <hr />

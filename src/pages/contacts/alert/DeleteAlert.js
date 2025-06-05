@@ -10,7 +10,7 @@ const DeleteAlert = ({ showModal, setShowModal, selectedContact }) => {
   const handleDeleteContact = () => {
     if (selectedContact) {
       dispatch(deleteContact(selectedContact.id)); // Dispatch the delete action
-      navigate('/contacts')
+      navigate("/contacts");
       setShowModal(false); // Close the modal
     }
   };
@@ -18,7 +18,12 @@ const DeleteAlert = ({ showModal, setShowModal, selectedContact }) => {
   return (
     <>
       {showModal && (
-        <div className="modal fade show" id="delete_contact" role="dialog" style={{ display: "block" }}>
+        <div
+          className="modal fade show"
+          id="delete_contact"
+          role="dialog"
+          style={{ display: "block" }}
+        >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-body">
@@ -28,7 +33,8 @@ const DeleteAlert = ({ showModal, setShowModal, selectedContact }) => {
                   </div>
                   <h4 className="mb-2">Remove Contact?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the contact you selected?
+                    Are you sure you want to remove <br /> the contact you
+                    selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button

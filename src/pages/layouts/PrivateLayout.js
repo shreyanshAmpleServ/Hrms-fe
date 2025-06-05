@@ -14,19 +14,20 @@ const PrivateLayout = () => {
   const mobileSidebar = useSelector((state) => state.common?.mobileSidebar);
   const miniSidebar = useSelector((state) => state.common?.miniSidebar);
   const expandMenu = useSelector((state) => state.common?.expandMenu);
- 
+
   return (
-    <div className={`
+    <div
+      className={`
       ${miniSidebar ? "mini-sidebar" : ""}
-      ${expandMenu ? "expand-menu" : ""}`}>
-     
-       <div
+      ${expandMenu ? "expand-menu" : ""}`}
+    >
+      <div
         className={`main-wrapper 
         ${headerCollapse ? "header-collapse" : ""} 
         ${mobileSidebar ? "slide-nav" : ""}`}
       >
         <Header />
-        <Sidebar/>
+        <Sidebar />
         <Outlet />
         {/* <ThemeSettings/> */}
       </div>

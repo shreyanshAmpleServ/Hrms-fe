@@ -38,7 +38,7 @@ const Solutions = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Solutions"
+    (i) => i?.module_name === "Solutions",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -164,7 +164,7 @@ const Solutions = () => {
   }, [dispatch, selectedDateRange, searchText]);
 
   const { solutions, loading, error, success } = useSelector(
-    (state) => state.solutions
+    (state) => state.solutions,
   );
   useEffect(() => {
     setPaginationData({
@@ -186,7 +186,7 @@ const Solutions = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -241,7 +241,7 @@ const Solutions = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

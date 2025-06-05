@@ -26,19 +26,18 @@ const ManageAddress = ({
     country_id && dispatch(fetchStates({ country_id, search: searchState }));
   }, [dispatch, manageAddress]);
 
-  const stateApiCall = ()=>{
+  const stateApiCall = () => {
     country_id && dispatch(fetchStates({ country_id, search: searchState }));
-
-  }
+  };
   React.useEffect(() => {
     searchCountry && dispatch(fetchCountries({ search: searchCountry }));
   }, [dispatch, searchCountry]);
 
   const { countries, loading: loadingCountry } = useSelector(
-    (state) => state.countries
+    (state) => state.countries,
   );
   const { states, loading: loadingState } = useSelector(
-    (state) => state.states
+    (state) => state.states,
   );
   const countryList = countries.map((emnt) => ({
     value: emnt.id,
@@ -51,7 +50,7 @@ const ManageAddress = ({
   const updateItem = (index, field, value) => {
     setManageAddress((prev) => {
       const updatedItems = prev.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
+        i === index ? { ...item, [field]: value } : item,
       );
       return updatedItems;
     });
@@ -137,14 +136,14 @@ const ManageAddress = ({
                           placeholder="Choose"
                           classNamePrefix="react-select"
                           isLoading={loadingState}
-                           onFocus={() =>stateApiCall()}
+                          onFocus={() => stateApiCall()}
                           onInputChange={(value) => {
                             setSearchState(value);
                           }}
                           value={
                             (Array.isArray(stateOptions?.[index])
                               ? stateOptions[index].find(
-                                  (option) => option.value == item[fieldKey]
+                                  (option) => option.value == item[fieldKey],
                                 ) || ""
                               : "") || ""
                           }
@@ -152,7 +151,7 @@ const ManageAddress = ({
                             updateItem(
                               index,
                               fieldKey,
-                              selectedOption?.value || null
+                              selectedOption?.value || null,
                             );
                           }}
                         />
@@ -176,7 +175,7 @@ const ManageAddress = ({
                           }}
                           value={
                             countryList?.find(
-                              (option) => option.value == item[fieldKey]
+                              (option) => option.value == item[fieldKey],
                             ) || ""
                           }
                           onChange={(selectedOption) => {
@@ -184,7 +183,7 @@ const ManageAddress = ({
                             updateItem(
                               index,
                               fieldKey,
-                              selectedOption?.value || null
+                              selectedOption?.value || null,
                             );
                             setCountryIndex(index);
                           }}

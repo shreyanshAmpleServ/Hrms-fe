@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updateaward_type({
           id: initialData.id,
           award_typeData: data,
-        })
+        }),
       );
     }
     reset();

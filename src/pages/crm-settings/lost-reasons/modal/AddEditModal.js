@@ -4,8 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { addLostReason, updateLostReason } from "../../../../redux/lostReasons"; // Adjust as per your redux actions
 import { Link, useNavigate } from "react-router-dom";
 
-
-const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) => {
+const AddEditModal = ({
+  mode = "add",
+  initialData = null,
+  sourcePage = null,
+}) => {
   const { loading } = useSelector((state) => state.lostReasons);
   const [colorCode, setColorCode] = useState("#000");
   const navigate = useNavigate();
@@ -68,14 +71,12 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
         }),
       );
 
-      if (sourcePage === 'leads-kanban') {
+      if (sourcePage === "leads-kanban") {
         window.location.reload();
       }
-
     }
     reset(); // Clear the form
     closeButton.click();
-
   };
 
   return (
@@ -127,7 +128,6 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
                   className={`form-control ${errors.order ? "is-invalid" : ""}`}
                   {...register("order", {
                     required: "Order is required.",
-
                   })}
                 />
                 {errors.reason && (

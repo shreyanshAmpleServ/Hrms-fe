@@ -34,7 +34,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_lost_reason_modal"
+      "close_btn_add_edit_lost_reason_modal",
     );
     if (mode === "add") {
       dispatch(
@@ -42,7 +42,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           name: data.name,
           code: data.code,
           is_active: data.is_active,
-        })
+        }),
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -53,7 +53,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             code: data.code,
             is_active: data.is_active,
           },
-        })
+        }),
       );
     }
     reset();

@@ -47,7 +47,7 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_update_passport_info_modal"
+      "close_btn_update_passport_info_modal",
     );
     const formData = new FormData();
     if (employeeDetail) {
@@ -56,11 +56,11 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
       formData.append("nationality", data.nationality);
       formData.append(
         "passport_issue_date",
-        new Date(data.passport_issue_date).toISOString()
+        new Date(data.passport_issue_date).toISOString(),
       );
       formData.append(
         "passport_expiry_date",
-        new Date(data.passport_expiry_date).toISOString()
+        new Date(data.passport_expiry_date).toISOString(),
       );
       dispatch(updateEmployee(formData));
     }

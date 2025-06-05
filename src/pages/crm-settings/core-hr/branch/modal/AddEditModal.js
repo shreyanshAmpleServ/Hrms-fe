@@ -59,7 +59,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updatebranch({
           id: initialData.id,
           branchData: data,
-        })
+        }),
       );
     }
     reset();
@@ -119,7 +119,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     rules={{ required: "Company is required" }}
                     render={({ field }) => {
                       const selectedCompany = CompanyList?.find(
-                        (option) => option.value === field.value
+                        (option) => option.value === field.value,
                       );
                       return (
                         <Select

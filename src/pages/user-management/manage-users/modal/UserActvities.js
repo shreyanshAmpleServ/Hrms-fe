@@ -4,7 +4,7 @@ import { ActivityDetailOfUser } from "../../../../components/common/detailPages/
 import { CallsDetailsOfUser } from "../../../../components/common/detailPages/UserDetails/callsDetails";
 import FilesDetails from "../../../../components/common/detailPages/UserDetails/FilesDetails";
 const UserActvities = ({ user }) => {
-  const {id} = useParams()
+  const { id } = useParams();
   return (
     <div className="col-xl-9">
       <div className="card mb-3">
@@ -411,10 +411,10 @@ const UserActvities = ({ user }) => {
         </div> */}
         {/* /Notes */}
         {/* Calls */}
-          <CallsDetailsOfUser />
+        <CallsDetailsOfUser />
         {/* /Calls */}
         {/* Files */}
-      <FilesDetails type={"User"} type_id={id} type_name={user} />
+        <FilesDetails type={"User"} type_id={id} type_name={user} />
         {/* /Files */}
         {/* Email */}
         {/* <div className="tab-pane fade" id="email">

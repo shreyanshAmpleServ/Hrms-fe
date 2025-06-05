@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updateassets_type({
           id: initialData.id,
           assets_typeData: data,
-        })
+        }),
       );
     }
     reset();

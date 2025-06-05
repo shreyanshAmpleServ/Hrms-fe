@@ -4,16 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import { fetchCurrencies } from "../../../redux/currency";
-import {
-  fetchProducts
-} from "../../../redux/products";
+import { fetchProducts } from "../../../redux/products";
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
 
-const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
+const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
   const dispatch = useDispatch();
   const formatNumber = (num) => {
     if (num === 0 || isNaN(num)) {
-      return '0';
+      return "0";
     }
     const number = parseFloat(num);
     if (Number.isInteger(number)) {
@@ -21,7 +19,6 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
     }
     return number.toFixed(2);
   };
-  
 
   const addNewColumn = () => {
     setItemNumber((prev) => [
@@ -57,10 +54,10 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
 
   const { products } = useSelector((state) => state.products);
   const { manufacturers, loading: loadingTax } = useSelector(
-    (state) => state.manufacturers
+    (state) => state.manufacturers,
   );
   const { currencies, loading: loadingCurrency } = useSelector(
-    (state) => state.currency
+    (state) => state.currency,
   );
   const { taxs, loading: loadingTAx } = useSelector((state) => state.taxs);
 
@@ -80,9 +77,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
   const TaxList = taxs.map((emnt) => ({
     value: emnt.id,
     label: emnt.name + " (" + emnt.rate + "%)",
-    tax:emnt.rate
+    tax: emnt.rate,
   }));
-
 
   return (
     <div>
@@ -115,7 +111,6 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
             {itemNumber?.length &&
               itemNumber?.map((i, index) => (
                 <tr>
-                  
                   <td>
                     <div className="input-table">
                       <input
@@ -125,7 +120,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
                         className="w-100"
                         value={i.from_price}
                         onChange={(e) => {
-                          updateItem( index, "from_price",  e.target.value  );
+                          updateItem(index, "from_price", e.target.value);
                         }}
                       />
                     </div>
@@ -139,7 +134,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
                         placeholder="0.0"
                         value={i?.to_price}
                         onChange={(e) => {
-                          updateItem( index, "to_price",  e.target.value  );
+                          updateItem(index, "to_price", e.target.value);
                         }}
                       />
                     </div>
@@ -153,19 +148,18 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
                         placeholder="0.0"
                         value={i?.discount_per}
                         onChange={(e) => {
-                          updateItem( index, "discount_per",  e.target.value  );
+                          updateItem(index, "discount_per", e.target.value);
                         }}
                       />
                     </div>
                   </td>
 
-                
                   <td>
                     <button
                       onClick={() => deleteRow(index)}
                       type="button"
                       disabled={itemNumber?.length <= 1}
-                      className={`btn ${itemNumber?.length <= 1 ? "": "btn-danger-light"} `}
+                      className={`btn ${itemNumber?.length <= 1 ? "" : "btn-danger-light"} `}
                     >
                       <i
                         className="ti ti-trash "

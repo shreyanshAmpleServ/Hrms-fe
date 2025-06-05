@@ -1,9 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import {
-  actistatus,
-
-} from "../../../components/common/selectoption/selectoption";
+import { actistatus } from "../../../components/common/selectoption/selectoption";
 const FilterComponent = ({ applyFilters }) => {
   const [selectedPriority, setSelectedPriorty] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null); // Change to a single status

@@ -51,7 +51,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(
         updateCallStatus({
           id: initialData.id,
-          callStatusData: { name: data.name, description: data.description, is_active: data.is_active },
+          callStatusData: {
+            name: data.name,
+            description: data.description,
+            is_active: data.is_active,
+          },
         }),
       );
     }
@@ -90,7 +94,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "Call status name is required.",
                     minLength: {
                       value: 3,
-                      message: "Call status name must be at least 3 characters.",
+                      message:
+                        "Call status name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -101,9 +106,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
               {/* Call Status Description */}
               <div className="mb-3">
-                <label className="col-form-label">
-                  Description
-                </label>
+                <label className="col-form-label">Description</label>
                 <textarea
                   type="text"
                   rows="4"
@@ -117,7 +120,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.name && (
-                  <small className="text-danger">{errors?.description?.message}</small>
+                  <small className="text-danger">
+                    {errors?.description?.message}
+                  </small>
                 )}
               </div>
 

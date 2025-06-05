@@ -41,7 +41,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
 );
 // import FlashMessage from "../../components/common/modals/FlashMessage";
 

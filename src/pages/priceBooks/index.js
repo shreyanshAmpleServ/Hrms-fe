@@ -39,7 +39,7 @@ const PriceBook = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Price Book"
+    (i) => i?.module_name === "Price Book",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -139,7 +139,7 @@ const PriceBook = () => {
     dispatch(fetchPriceBook({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
   const { priceBooks, loading, error, success } = useSelector(
-    (state) => state.priceBooks
+    (state) => state.priceBooks,
   );
   useEffect(() => {
     setPaginationData({
@@ -162,7 +162,7 @@ const PriceBook = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -224,7 +224,7 @@ const PriceBook = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

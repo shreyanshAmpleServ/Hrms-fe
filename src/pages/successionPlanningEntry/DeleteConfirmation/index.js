@@ -1,7 +1,11 @@
 import { useDispatch } from "react-redux";
 import { deletesuccessionPlanning } from "../../../redux/successionPlanningEntry";
 
-const DeleteConfirmation = ({ showModal, setShowModal, successionPlanningId }) => {
+const DeleteConfirmation = ({
+  showModal,
+  setShowModal,
+  successionPlanningId,
+}) => {
   const dispatch = useDispatch();
   const handleDeletesuccessionPlanning = () => {
     if (successionPlanningId) {
@@ -28,8 +32,8 @@ const DeleteConfirmation = ({ showModal, setShowModal, successionPlanningId }) =
                   </div>
                   <h4 className="mb-2">Remove succession planning?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the succession planning
-                    you selected?
+                    Are you sure you want to remove <br /> the succession
+                    planning you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button

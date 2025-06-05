@@ -25,7 +25,7 @@ const LeaveApplications = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Manufacturer",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,7 +42,7 @@ const LeaveApplications = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.leave_employee?.full_name || "").localeCompare(
-          b.leave_employee?.full_name || ""
+          b.leave_employee?.full_name || "",
         ),
     },
     {
@@ -51,7 +51,7 @@ const LeaveApplications = () => {
       render: (value) => <div>{value?.leave_type}</div>,
       sorter: (a, b) =>
         (a.leave_types?.leave_type || "").localeCompare(
-          b.leave_types?.leave_type || ""
+          b.leave_types?.leave_type || "",
         ),
     },
     {
@@ -127,7 +127,7 @@ const LeaveApplications = () => {
   ];
 
   const { leave_application, loading, error, success } = useSelector(
-    (state) => state.leave_Applications
+    (state) => state.leave_Applications,
   );
 
   React.useEffect(() => {
@@ -153,7 +153,7 @@ const LeaveApplications = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -166,11 +166,11 @@ const LeaveApplications = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

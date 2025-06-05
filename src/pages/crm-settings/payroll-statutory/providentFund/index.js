@@ -25,7 +25,7 @@ const ProvidentFund = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Provident Fund"
+    (i) => i?.module_name === "Provident Fund",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -47,7 +47,7 @@ const ProvidentFund = () => {
       dataIndex: "employer_contribution",
       sorter: (a, b) =>
         (a.employer_contribution || "").localeCompare(
-          b.employer_contribution || ""
+          b.employer_contribution || "",
         ),
     },
     {
@@ -55,7 +55,7 @@ const ProvidentFund = () => {
       dataIndex: "employee_contribution",
       sorter: (a, b) =>
         (a.employee_contribution || "").localeCompare(
-          b.employee_contribution || ""
+          b.employee_contribution || "",
         ),
     },
     {
@@ -112,7 +112,7 @@ const ProvidentFund = () => {
   ];
 
   const { provident_fund, loading } = useSelector(
-    (state) => state.providentFund
+    (state) => state.providentFund,
   );
 
   React.useEffect(() => {
@@ -138,7 +138,7 @@ const ProvidentFund = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -151,11 +151,11 @@ const ProvidentFund = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

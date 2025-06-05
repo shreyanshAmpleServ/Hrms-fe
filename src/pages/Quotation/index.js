@@ -38,7 +38,7 @@ const Quotation = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Quotation"
+    (i) => i?.module_name === "Quotation",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -196,7 +196,7 @@ const Quotation = () => {
     dispatch(fetchquotations({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
   const { quotations, loading, error, success } = useSelector(
-    (state) => state.quotations
+    (state) => state.quotations,
   );
   useEffect(() => {
     setPaginationData({
@@ -219,7 +219,7 @@ const Quotation = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -277,7 +277,7 @@ const Quotation = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

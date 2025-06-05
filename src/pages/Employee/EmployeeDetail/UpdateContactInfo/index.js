@@ -56,7 +56,7 @@ const UpdateContactInfo = ({ employeeDetail }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_update_contact_info_modal"
+      "close_btn_update_contact_info_modal",
     );
     const formData = new FormData();
     if (employeeDetail) {
@@ -64,17 +64,17 @@ const UpdateContactInfo = ({ employeeDetail }) => {
       formData.append("primary_contact_name", data.primary_contact_name);
       formData.append(
         "primary_contact_relation",
-        data.primary_contact_relation
+        data.primary_contact_relation,
       );
       formData.append("primary_contact_number", data.primary_contact_number);
       formData.append("secondary_contact_name", data.secondary_contact_name);
       formData.append(
         "secondary_contact_relation",
-        data.secondary_contact_relation
+        data.secondary_contact_relation,
       );
       formData.append(
         "secondary_contact_mumber",
-        data.secondary_contact_mumber
+        data.secondary_contact_mumber,
       );
       dispatch(updateEmployee(formData));
     }

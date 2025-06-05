@@ -27,7 +27,7 @@ const UpdateEducations = ({ employeeDetail }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const closeButton = document.getElementById(
-      "close_btn_update_education_modal"
+      "close_btn_update_education_modal",
     );
     console.log(educations);
     closeButton.click();
@@ -66,10 +66,10 @@ const UpdateEducations = ({ employeeDetail }) => {
                       onClick={() =>
                         index === 0
                           ? toast.error(
-                              "You cannot remove the first qualification"
+                              "You cannot remove the first qualification",
                             )
                           : setEducations(
-                              educations.filter((_, i) => i !== index)
+                              educations.filter((_, i) => i !== index),
                             )
                       }
                     >
@@ -92,7 +92,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "institute",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />
@@ -113,7 +113,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "degree",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />
@@ -136,7 +136,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "specialization",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />
@@ -159,7 +159,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "from",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />
@@ -180,7 +180,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "to",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />

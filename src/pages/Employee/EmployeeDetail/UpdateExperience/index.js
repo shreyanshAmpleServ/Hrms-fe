@@ -26,7 +26,7 @@ const UpdateExperience = ({ employeeDetail }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const closeButton = document.getElementById(
-      "close_btn_update_experience_modal"
+      "close_btn_update_experience_modal",
     );
     console.log(experiences);
     closeButton.click();
@@ -65,10 +65,10 @@ const UpdateExperience = ({ employeeDetail }) => {
                       onClick={() =>
                         index === 0
                           ? toast.error(
-                              "You cannot remove the first experience"
+                              "You cannot remove the first experience",
                             )
                           : setExperiences(
-                              experiences.filter((_, i) => i !== index)
+                              experiences.filter((_, i) => i !== index),
                             )
                       }
                     >
@@ -91,7 +91,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                             handleChangeExperience(
                               index,
                               "company",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />
@@ -112,7 +112,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                             handleChangeExperience(
                               index,
                               "position",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />
@@ -135,7 +135,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                             handleChangeExperience(
                               index,
                               "from",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />

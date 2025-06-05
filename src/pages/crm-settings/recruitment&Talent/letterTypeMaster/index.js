@@ -23,7 +23,7 @@ const LetterTypeMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Letter Type"
+    (i) => i?.module_name === "Letter Type",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -102,7 +102,7 @@ const LetterTypeMaster = () => {
   ];
 
   const { latter_type, loading } = useSelector(
-    (state) => state.letterTypeMaster
+    (state) => state.letterTypeMaster,
   );
 
   React.useEffect(() => {
@@ -128,7 +128,7 @@ const LetterTypeMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -141,11 +141,11 @@ const LetterTypeMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

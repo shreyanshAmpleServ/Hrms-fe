@@ -183,7 +183,7 @@ const EmployeeDetail = () => {
                           <span className="text-black fw-semibold">
                             {employeeDetail?.join_date
                               ? moment(employeeDetail?.join_date).format(
-                                  "DD-MM-YYYY"
+                                  "DD-MM-YYYY",
                                 )
                               : " - - "}
                           </span>
@@ -213,7 +213,7 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           {employeeDetail?.date_of_birth
                             ? moment(employeeDetail?.date_of_birth).format(
-                                "DD-MM-YYYY"
+                                "DD-MM-YYYY",
                               )
                             : " - - "}
                         </p>
@@ -504,7 +504,7 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           {employeeDetail?.passport_issue_date
                             ? moment(
-                                employeeDetail?.passport_issue_date
+                                employeeDetail?.passport_issue_date,
                               ).format("DD-MM-YYYY")
                             : " - - "}
                         </p>
@@ -516,7 +516,7 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           {employeeDetail?.passport_expiry_date
                             ? moment(
-                                employeeDetail?.passport_expiry_date
+                                employeeDetail?.passport_expiry_date,
                               ).format("DD-MM-YYYY")
                             : " - - "}
                         </p>

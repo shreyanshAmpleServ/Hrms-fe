@@ -1,6 +1,12 @@
 import React from "react";
 
-const DeleteAlert = ({ showModal, setShowModal, onDelete, label, sourcePage = null }) => {
+const DeleteAlert = ({
+  showModal,
+  setShowModal,
+  onDelete,
+  label,
+  sourcePage = null,
+}) => {
   return (
     <>
       {showModal && (
@@ -29,7 +35,10 @@ const DeleteAlert = ({ showModal, setShowModal, onDelete, label, sourcePage = nu
                     >
                       Cancel
                     </button>
-                    <button className="btn btn-danger" onClick={onDelete(sourcePage)}>
+                    <button
+                      className="btn btn-danger"
+                      onClick={onDelete(sourcePage)}
+                    >
                       Yes, Delete it
                     </button>
                   </div>

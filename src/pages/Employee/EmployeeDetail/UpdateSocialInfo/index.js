@@ -53,7 +53,7 @@ const UpdateSocialInfo = ({ employeeDetail }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_update_social_info_modal"
+      "close_btn_update_social_info_modal",
     );
     const formData = new FormData();
     if (employeeDetail) {

@@ -11,7 +11,6 @@ import { Helmet } from "react-helmet-async";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {
-
   deleteoffer_letter,
   fetchoffer_letter,
 } from "../../redux/offerLetters";
@@ -23,7 +22,7 @@ const OfferLetters = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Manufacturer",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -45,7 +44,7 @@ const OfferLetters = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.offered_employee?.full_name || "").localeCompare(
-          b.offered_employee?.full_name || ""
+          b.offered_employee?.full_name || "",
         ),
     },
 
@@ -91,54 +90,52 @@ const OfferLetters = () => {
     },
     ...(isUpdate || isDelete
       ? [
-        {
-          title: "Actions",
-          dataIndex: "actions",
-          render: (_text, record) => (
-            <div className="dropdown table-action">
-              <Link
-                to="#"
-                className="action-icon"
-                data-bs-toggle="dropdown"
-                aria-expanded="true"
-              >
-                <i className="fa fa-ellipsis-v"></i>
-              </Link>
-              <div className="dropdown-menu dropdown-menu-right">
-                {isUpdate && (
-                  <Link
-                    className="dropdown-item edit-popup"
-                    to="#"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#add_edit_offer_letter_modal"
-                    onClick={() => {
-                      setSelectedIndustry(record);
-                      setMode("edit");
-                    }}
-                  >
-                    <i className="ti ti-edit text-blue"></i> Edit
-                  </Link>
-                )}
-                {isDelete && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    onClick={() => handleDeleteIndustry(record)}
-                  >
-                    <i className="ti ti-trash text-danger"></i> Delete
-                  </Link>
-                )}
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (_text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#add_edit_offer_letter_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ),
-        },
-      ]
+            ),
+          },
+        ]
       : []),
   ];
 
-  const { offer_letter, loading, } = useSelector(
-    (state) => state.offer_letter
-  );
+  const { offer_letter, loading } = useSelector((state) => state.offer_letter);
 
   React.useEffect(() => {
     dispatch(fetchoffer_letter({ search: searchText }));
@@ -163,7 +160,7 @@ const OfferLetters = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -176,11 +173,11 @@ const OfferLetters = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;
@@ -211,8 +208,6 @@ const OfferLetters = () => {
         />
       </Helmet>
       <div className="content">
-
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">

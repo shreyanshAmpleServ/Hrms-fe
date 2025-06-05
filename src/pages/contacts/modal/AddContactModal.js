@@ -169,7 +169,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
       ?.map((i) =>
         i?.is_active === "Y"
           ? { label: `${i?.code} - ${i?.name}`, value: i?.code }
-          : null
+          : null,
       )
       .filter(Boolean) || [];
 
@@ -198,7 +198,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
         // Convert complex data to strings if needed
         formData.append(
           key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
+          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
         );
       }
     });
@@ -233,12 +233,12 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -419,7 +419,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           // rules={{ required: "Company is required" }} // Validation rule
                           render={({ field }) => {
                             const selectedCompany = companies?.data?.find(
-                              (company) => company.id === field.value
+                              (company) => company.id === field.value,
                             );
                             return (
                               <Select
@@ -552,7 +552,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           // rules={{ required: "Deal is required" }} // Validation rule
                           render={({ field }) => {
                             const selectedDeal = deals?.data?.find(
-                              (deal) => deal.id === field.value
+                              (deal) => deal.id === field.value,
                             );
                             return (
                               <Select
@@ -629,7 +629,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           rules={{ required: "Owner is required" }} // Validation rule
                           render={({ field }) => {
                             const selectedDeal = users?.data?.find(
-                              (owner) => owner.id === field.value
+                              (owner) => owner.id === field.value,
                             );
                             return (
                               <Select
@@ -684,7 +684,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           rules={{ required: "Source is required" }} // Validation rule
                           render={({ field }) => {
                             const selectedSource = sources?.find(
-                              (source) => source.id === field.value
+                              (source) => source.id === field.value,
                             );
                             return (
                               <Select
@@ -723,7 +723,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           rules={{ required: "industry is required" }} // Validation rule
                           render={({ field }) => {
                             const selectedIndustry = industries?.find(
-                              (industry) => industry.id === field.value
+                              (industry) => industry.id === field.value,
                             );
                             return (
                               <Select
@@ -803,7 +803,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                                 field.onChange(selectedOption.value)
                               }
                               value={currencyLists?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )}
                             />
                           )}
@@ -853,7 +853,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value
                               value={languages?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )}
                             />
                           )}
@@ -952,7 +952,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               value={
                                 watch("country") &&
                                 countryList?.find(
-                                  (option) => option.value === watch("country")
+                                  (option) => option.value === watch("country"),
                                 )
                               }
                               styles={{
@@ -993,7 +993,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               value={
                                 watch("state") &&
                                 stateList?.find(
-                                  (option) => option.value === watch("state")
+                                  (option) => option.value === watch("state"),
                                 )
                               }
                               styles={{

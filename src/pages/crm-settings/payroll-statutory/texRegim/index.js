@@ -28,7 +28,7 @@ const TaxRegime = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Tax Regime"
+    (i) => i?.module_name === "Tax Regime",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -52,7 +52,7 @@ const TaxRegime = () => {
       render: (text) => text?.name || "",
       sorter: (a, b) =>
         (a.regime_country?.name || "").localeCompare(
-          b.regime_country?.name || ""
+          b.regime_country?.name || "",
         ),
     },
     {
@@ -109,7 +109,7 @@ const TaxRegime = () => {
   ];
 
   const { tax_Regime, loading, error, success } = useSelector(
-    (state) => state.taxRegime
+    (state) => state.taxRegime,
   );
 
   React.useEffect(() => {
@@ -131,7 +131,11 @@ const TaxRegime = () => {
       pageSize,
     }));
     dispatch(
-      fetchtax_Regime({ search: searchText, page: currentPage, size: pageSize })
+      fetchtax_Regime({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
+      }),
     );
   };
 
@@ -144,11 +148,11 @@ const TaxRegime = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

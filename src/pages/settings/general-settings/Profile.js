@@ -52,7 +52,7 @@ const Profile = () => {
     formData.append("is_active", userDetail?.is_active);
     formData.append(
       "role_id",
-      userDetail?.crms_d_user_role?.[0]?.crms_m_role?.id
+      userDetail?.crms_d_user_role?.[0]?.crms_m_role?.id,
     );
     if (selectedAvatar) {
       formData.append("profile_img", selectedAvatar);
@@ -60,7 +60,7 @@ const Profile = () => {
     console.log("FormData : ", ...formData);
     try {
       await dispatch(
-        updateUser({ id: userDetail.id, userData: formData })
+        updateUser({ id: userDetail.id, userData: formData }),
       ).unwrap();
       //   closeButton.click();
       setSelectedAvatar(null);

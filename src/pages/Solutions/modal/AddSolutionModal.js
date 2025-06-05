@@ -7,10 +7,10 @@ import { fetchProducts } from "../../../redux/products";
 import { addSolutions, updateSolutions } from "../../../redux/solutions";
 import { OrderStatusOptions } from "../../../components/common/selectoption/selectoption";
 
-const AddSolutionModal = ({solution,setSolution}) => {
+const AddSolutionModal = ({ solution, setSolution }) => {
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.users);
-  const {  loading } = useSelector((state) => state.solutions);
+  const { loading } = useSelector((state) => state.solutions);
 
   // React Hook Form setup
   const {
@@ -26,13 +26,13 @@ const AddSolutionModal = ({solution,setSolution}) => {
       title: "",
       is_active: "Y",
       solution_owner: null,
-      product_id:null,
+      product_id: null,
       status: "",
-      question:"",
-      answer:""
+      question: "",
+      answer: "",
     },
   });
-React.useEffect(() => {
+  React.useEffect(() => {
     if (solution) {
       reset({
         title: solution?.title || "",
@@ -48,18 +48,17 @@ React.useEffect(() => {
         title: "",
         is_active: "Y",
         solution_owner: null,
-        product_id:null,
+        product_id: null,
         status: "",
-        question:"",
-        answer:""
-       
+        question: "",
+        answer: "",
       });
     }
   }, [solution]);
 
   useEffect(() => {
-     dispatch(fetchProducts());
-     dispatch(fetchUsers())
+    dispatch(fetchProducts());
+    dispatch(fetchUsers());
   }, [dispatch]);
 
   const { products } = useSelector((state) => state.products);
@@ -73,14 +72,15 @@ React.useEffect(() => {
     label: emnt.name,
   }));
 
-console.log("Solution : ", solution)
+  console.log("Solution : ", solution);
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_add_user");
-    const FinalData = {...data}
-    if (solution)  FinalData.id = solution.id 
+    const FinalData = { ...data };
+    if (solution) FinalData.id = solution.id;
     try {
-      solution ? await dispatch(updateSolutions(FinalData))
-      : await dispatch(addSolutions(FinalData)).unwrap();
+      solution
+        ? await dispatch(updateSolutions(FinalData))
+        : await dispatch(addSolutions(FinalData)).unwrap();
       closeButton.click();
       reset();
     } catch (error) {
@@ -88,23 +88,25 @@ console.log("Solution : ", solution)
     }
   };
   React.useEffect(() => {
-        const offcanvasElement = document.getElementById("offcanvas_add_edit_solution");
-        if (offcanvasElement) {
-          const handleModalClose = () => {
-            setSolution();
-          };
-          offcanvasElement.addEventListener(
-            "hidden.bs.offcanvas",
-            handleModalClose
-          );
-          return () => {
-            offcanvasElement.removeEventListener(
-              "hidden.bs.offcanvas",
-              handleModalClose
-            );
-          };
-        }
-      }, []);
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_edit_solution",
+    );
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setSolution();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -112,7 +114,9 @@ console.log("Solution : ", solution)
       id="offcanvas_add_edit_solution"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{solution ? "Update " : "Add New"} Solution</h5>
+        <h5 className="fw-semibold">
+          {solution ? "Update " : "Add New"} Solution
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -126,7 +130,6 @@ console.log("Solution : ", solution)
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-        
             {/* Title */}
             <div className="col-md-6">
               <div className="mb-3">
@@ -141,9 +144,7 @@ console.log("Solution : ", solution)
                   })}
                 />
                 {errors.title && (
-                  <small className="text-danger">
-                    {errors.title.message}
-                  </small>
+                  <small className="text-danger">{errors.title.message}</small>
                 )}
               </div>
             </div>
@@ -168,90 +169,96 @@ console.log("Solution : ", solution)
                   </small>
                 )}
             </div> */}
-         
+
             {/* Solution Owner */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                   Solution Owner 
-                   <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="solution_owner"
-                    rules={{ required: "Solution Owner is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={usersList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={ watch("solution_owner") && usersList?.find(
-                          (option) => option.value === watch("solution_owner")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.solution_owner && (
-                    <small className="text-danger">
-                      {errors.solution_owner.message}
-                    </small>
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Solution Owner
+                  <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="solution_owner"
+                  rules={{ required: "Solution Owner is required!" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={usersList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={
+                        watch("solution_owner") &&
+                        usersList?.find(
+                          (option) => option.value === watch("solution_owner"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
                   )}
-                </div>
+                />
+                {errors.solution_owner && (
+                  <small className="text-danger">
+                    {errors.solution_owner.message}
+                  </small>
+                )}
               </div>
+            </div>
 
             {/* Product */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                   Product <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="product_id"
-                    rules={{ required: "Product is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={productsList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={ watch("product_id") && productsList?.find(
-                          (option) => option.value === watch("product_id")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.product_id && (
-                    <small className="text-danger">
-                      {errors.product_id.message}
-                    </small>
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Product <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="product_id"
+                  rules={{ required: "Product is required!" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={productsList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={
+                        watch("product_id") &&
+                        productsList?.find(
+                          (option) => option.value === watch("product_id"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
                   )}
-                </div>
+                />
+                {errors.product_id && (
+                  <small className="text-danger">
+                    {errors.product_id.message}
+                  </small>
+                )}
               </div>
+            </div>
 
-                 {/* Status */}
-                 <div className="col-md-6">
+            {/* Status */}
+            <div className="col-md-6">
               <div className="mb-1">
                 <label className="col-form-label ">Status</label>
                 <Select
@@ -260,24 +267,30 @@ console.log("Solution : ", solution)
                   placeholder="Choose"
                   classNamePrefix="react-select"
                   onChange={(selectedOption) => {
-                    setValue("status",selectedOption.value)
+                    setValue("status", selectedOption.value);
                   }}
-                  value={OrderStatusOptions?.find( (option) => option.value === watch("status") ) || "" }
+                  value={
+                    OrderStatusOptions?.find(
+                      (option) => option.value === watch("status"),
+                    ) || ""
+                  }
                 />
               </div>
             </div>
             {/* Question */}
             <div className="col-md-12">
               <div className="mb-3">
-                <label className="col-form-label">Question <span className="text-danger">*</span></label>
+                <label className="col-form-label">
+                  Question <span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
-                  {...register("question" , {
+                  {...register("question", {
                     required: "Case type is required",
                   })}
                 />
-                 {errors.question && (
+                {errors.question && (
                   <small className="text-danger">
                     {errors.question.message}
                   </small>
@@ -287,23 +300,23 @@ console.log("Solution : ", solution)
             {/* Answer */}
             <div className="col-md-12">
               <div className="mb-3">
-                <label className="col-form-label">Answer<span className="text-danger">*</span></label>
+                <label className="col-form-label">
+                  Answer<span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
                   {...register("answer", {
                     required: "Case priority is required",
-                  } )}
+                  })}
                 />
-                 {errors.answer && (
-                  <small className="text-danger">
-                    {errors.answer.message}
-                  </small>
+                {errors.answer && (
+                  <small className="text-danger">{errors.answer.message}</small>
                 )}
               </div>
             </div>
-          
-             {/* Description */}
+
+            {/* Description */}
             {/* <div className="col-md-12">
                       <div className="mb-0">
                         <label className="col-form-label">
@@ -333,19 +346,25 @@ console.log("Solution : ", solution)
               className="btn btn-primary"
               disabled={loading}
             >
-              {solution ? loading ? "Updating ....": "Update" : loading ? "Creating..." : "Create"}
+              {solution
+                ? loading
+                  ? "Updating ...."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

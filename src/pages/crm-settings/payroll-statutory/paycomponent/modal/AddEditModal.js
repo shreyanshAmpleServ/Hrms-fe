@@ -60,7 +60,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatepay_component({
           id: initialData.id,
           pay_componentData: finalData,
-        })
+        }),
       );
     }
     reset();

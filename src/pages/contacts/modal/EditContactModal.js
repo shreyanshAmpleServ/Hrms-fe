@@ -148,7 +148,7 @@ const EditContactModal = ({ contact }) => {
         // Convert complex data to strings if needed
         formData.append(
           key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
+          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
         );
       }
     });
@@ -430,7 +430,7 @@ const EditContactModal = ({ contact }) => {
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value
                               value={dealsopen?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )}
                             />
                           )}
@@ -511,7 +511,7 @@ const EditContactModal = ({ contact }) => {
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value
                               value={activities?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )}
                             />
                           )}
@@ -543,7 +543,7 @@ const EditContactModal = ({ contact }) => {
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value
                               value={industries?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )}
                             />
                           )}
@@ -594,7 +594,7 @@ const EditContactModal = ({ contact }) => {
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value
                               value={languages?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )}
                             />
                           )}
@@ -725,7 +725,7 @@ const EditContactModal = ({ contact }) => {
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value
                               value={countries?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )}
                             />
                           )}

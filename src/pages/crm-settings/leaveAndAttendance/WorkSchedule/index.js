@@ -25,7 +25,7 @@ const WorkTemplateList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Work Schedule"
+    (i) => i?.module_name === "Work Schedule",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -102,7 +102,7 @@ const WorkTemplateList = () => {
   ];
 
   const { WorkScheduleTemp, loading } = useSelector(
-    (state) => state.WorkScheduleTemp
+    (state) => state.WorkScheduleTemp,
   );
 
   React.useEffect(() => {
@@ -129,7 +129,7 @@ const WorkTemplateList = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -141,11 +141,11 @@ const WorkTemplateList = () => {
     let data = WorkScheduleTemp?.data || [];
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
       );
     }
     return data;

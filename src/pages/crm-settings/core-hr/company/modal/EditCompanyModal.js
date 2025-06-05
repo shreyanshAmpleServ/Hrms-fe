@@ -64,7 +64,7 @@ const EditCompanyModal = ({ company }) => {
     const closeButton = document.getElementById("close_company_edit_btn");
     try {
       await dispatch(
-        updateCompany({ id: company.id, companyData: data })
+        updateCompany({ id: company.id, companyData: data }),
       ).unwrap();
       closeButton.click();
       reset();
@@ -192,7 +192,7 @@ const EditCompanyModal = ({ company }) => {
                               value={
                                 CountriesList?.find(
                                   (option) =>
-                                    option.value === watch("country_id")
+                                    option.value === watch("country_id"),
                                 ) || ""
                               }
                             />
@@ -229,7 +229,7 @@ const EditCompanyModal = ({ company }) => {
                               value={
                                 CurrenciesList.find(
                                   (option) =>
-                                    option.value === watch("currency_code")
+                                    option.value === watch("currency_code"),
                                 ) || ""
                               }
                             />

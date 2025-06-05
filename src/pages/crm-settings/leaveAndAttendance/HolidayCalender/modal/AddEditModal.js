@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_holiday_calender_modal"
+      "close_btn_add_edit_holiday_calender_modal",
     );
     if (mode === "add") {
       dispatch(
@@ -49,7 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           holiday_name: data.holiday_name,
           holiday_date: data?.holiday_date || "",
           location: data?.location || "",
-        })
+        }),
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -60,7 +60,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             holiday_date: data?.holiday_date || "",
             location: data?.location || "",
           },
-        })
+        }),
       );
     }
     reset();

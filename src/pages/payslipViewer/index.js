@@ -28,7 +28,7 @@ const PayslipViewer = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Manufacturer",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -45,7 +45,7 @@ const PayslipViewer = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.payslip_employee?.full_name || "").localeCompare(
-          b.payslip_employee?.full_name || ""
+          b.payslip_employee?.full_name || "",
         ),
     },
     {
@@ -104,66 +104,66 @@ const PayslipViewer = () => {
 
     ...(isUpdate || isDelete
       ? [
-        {
-          title: "Actions",
-          dataIndex: "actions",
-          render: (_text, record) => (
-            <div className="dropdown table-action">
-              <Link
-                to="#"
-                className="action-icon"
-                data-bs-toggle="dropdown"
-                aria-expanded="true"
-              >
-                <i className="fa fa-ellipsis-v"></i>
-              </Link>
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (_text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
 
-              <div className="dropdown-menu dropdown-menu-right">
-                {record.resume_path && (
-                  <a
-                    className="dropdown-item"
-                    href={record.resume_path}
-                    download
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i className="ti ti-download text-success"></i> Download
-                  </a>
-                )}
+                <div className="dropdown-menu dropdown-menu-right">
+                  {record.resume_path && (
+                    <a
+                      className="dropdown-item"
+                      href={record.resume_path}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i className="ti ti-download text-success"></i> Download
+                    </a>
+                  )}
 
-                {isUpdate && (
-                  <Link
-                    className="dropdown-item edit-popup"
-                    to="#"
-                    data-bs-toggle="modal"
-                    data-bs-target="#add_edit_payslip_modal"
-                    onClick={() => {
-                      setSelectedIndustry(record);
-                      setMode("edit");
-                    }}
-                  >
-                    <i className="ti ti-edit text-blue"></i> Edit
-                  </Link>
-                )}
-                {isDelete && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    onClick={() => handleDeleteIndustry(record)}
-                  >
-                    <i className="ti ti-trash text-danger"></i> Delete
-                  </Link>
-                )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_payslip_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ),
-        },
-      ]
+            ),
+          },
+        ]
       : []),
   ];
 
   const { payslip, loading, error, success } = useSelector(
-    (state) => state.payslip
+    (state) => state.payslip,
   );
 
   React.useEffect(() => {
@@ -185,7 +185,7 @@ const PayslipViewer = () => {
       pageSize,
     }));
     dispatch(
-      fetchpayslip({ search: searchText, page: currentPage, size: pageSize })
+      fetchpayslip({ search: searchText, page: currentPage, size: pageSize }),
     );
   };
 
@@ -198,11 +198,11 @@ const PayslipViewer = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

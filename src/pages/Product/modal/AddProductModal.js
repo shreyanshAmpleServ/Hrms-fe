@@ -9,9 +9,9 @@ import { addProduct, updateProduct } from "../../../redux/products";
 import { fetchVendors } from "../../../redux/vendor";
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
 
-const AddProductModal = ({product,setProduct}) => {
+const AddProductModal = ({ product, setProduct }) => {
   const dispatch = useDispatch();
-  const {loading} = useSelector((state)=>state.products)
+  const { loading } = useSelector((state) => state.products);
 
   const [selectedAvatar, setSelectedAvatar] = useState(null); // For profile image upload
 
@@ -31,19 +31,18 @@ const AddProductModal = ({product,setProduct}) => {
       code: "",
       is_active: "Y",
       vendor_id: null,
-      manufacturer_id:null,
-      currency:null,
-      onhand:null,
-      ordered:null,
+      manufacturer_id: null,
+      currency: null,
+      onhand: null,
+      ordered: null,
       product_image: null,
       commited: null,
       reorder_level: null,
-      tax_id:null,
+      tax_id: null,
       description: "",
-      
     },
   });
-React.useEffect(() => {
+  React.useEffect(() => {
     if (product) {
       reset({
         name: product?.name || "",
@@ -58,41 +57,44 @@ React.useEffect(() => {
         product_image: product?.product_image || null,
         commited: product?.commited || null,
         reorder_level: product?.reorder_level || null,
-        tax_id:product?.tax_id || null,
+        tax_id: product?.tax_id || null,
         description: product?.description || "",
- });
+      });
     } else {
       reset({
         name: "",
         unit_price: "",
         code: "",
         is_active: "",
-        vendor_id:null,
-        manufacturer_id:null,
-        currency:null,
+        vendor_id: null,
+        manufacturer_id: null,
+        currency: null,
         onhand: null,
         ordered: null,
         product_image: null,
         commited: null,
         reorder_level: null,
-        tax_id:null,
+        tax_id: null,
         description: "",
-       
       });
     }
   }, [product]);
 
   useEffect(() => {
-     dispatch(fetchVendors());
+    dispatch(fetchVendors());
     //  dispatch(fetchManufacturer());
-     dispatch(fetchCurrencies())
-     dispatch(fetchTaxSetup())
+    dispatch(fetchCurrencies());
+    dispatch(fetchTaxSetup());
   }, [dispatch]);
 
-  const { vendor} = useSelector((state) => state.vendor);
-  const { manufacturers, loading :loadingMnf} = useSelector((state) => state.manufacturers);
-  const { currencies, loading :loadingCurrency} = useSelector((state) => state.currency);
-  const { taxs, loading :loadingTAx} = useSelector((state) => state.taxs);
+  const { vendor } = useSelector((state) => state.vendor);
+  const { manufacturers, loading: loadingMnf } = useSelector(
+    (state) => state.manufacturers,
+  );
+  const { currencies, loading: loadingCurrency } = useSelector(
+    (state) => state.currency,
+  );
+  const { taxs, loading: loadingTAx } = useSelector((state) => state.taxs);
 
   const vendorList = vendor?.data?.map((emnt) => ({
     value: emnt.id,
@@ -108,7 +110,7 @@ React.useEffect(() => {
   }));
   const TaxList = taxs.map((emnt) => ({
     value: emnt.id,
-    label: emnt.name + " ( " + emnt.rate +"% )",
+    label: emnt.name + " ( " + emnt.rate + "% )",
   }));
 
   // Handle avatar upload
@@ -129,13 +131,16 @@ React.useEffect(() => {
     });
 
     if (selectedAvatar) {
-      formData.append("product_image", selectedAvatar );
+      formData.append("product_image", selectedAvatar);
     }
     // formData.append("email_opt_out",watch("email_opt_out") === true ? "Y" : "N")
 
     try {
-      product ? await dispatch(updateProduct({id :product?.id, productData:formData}))
-      :  await dispatch(addProduct(formData)).unwrap();
+      product
+        ? await dispatch(
+            updateProduct({ id: product?.id, productData: formData }),
+          )
+        : await dispatch(addProduct(formData)).unwrap();
       closeButton.click();
       reset();
       setSelectedAvatar(null);
@@ -144,24 +149,26 @@ React.useEffect(() => {
     }
   };
   React.useEffect(() => {
-        const offcanvasElement = document.getElementById("offcanvas_add_edit_product");
-        if (offcanvasElement) {
-          const handleModalClose = () => {
-            setSelectedAvatar(null)
-            setProduct();
-          };
-          offcanvasElement.addEventListener(
-            "hidden.bs.offcanvas",
-            handleModalClose
-          );
-          return () => {
-            offcanvasElement.removeEventListener(
-              "hidden.bs.offcanvas",
-              handleModalClose
-            );
-          };
-        }
-      }, []);
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_edit_product",
+    );
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setSelectedAvatar(null);
+        setProduct();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -169,7 +176,9 @@ React.useEffect(() => {
       id="offcanvas_add_edit_product"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{product ? "Update " : "Add New"} Product</h5>
+        <h5 className="fw-semibold">
+          {product ? "Update " : "Add New"} Product
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -195,13 +204,13 @@ React.useEffect(() => {
                       alt="Avatar Preview"
                       className="img-fluid h-100 w-100"
                     />
-                  ) : product?.product_image ? 
-                    <ImageWithDatabase 
+                  ) : product?.product_image ? (
+                    <ImageWithDatabase
                       src={product?.product_image}
                       alt="image"
-                      className="w-100 h-100" 
-                      />
-                  :(
+                      className="w-100 h-100"
+                    />
+                  ) : (
                     <span>
                       <i className="ti ti-photo" />
                     </span>
@@ -238,21 +247,18 @@ React.useEffect(() => {
                   })}
                 />
                 {errors.name && (
-                  <small className="text-danger">
-                    {errors.name.message}
-                  </small>
+                  <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
             </div>
-
 
             {/* Email */}
             <div className="col-md-6">
               <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center">
-                <label className="col-form-label">
-                  Code <span className="text-danger">*</span>
-                </label>
+                  <label className="col-form-label">
+                    Code <span className="text-danger">*</span>
+                  </label>
                 </div>
                 <input
                   type="text"
@@ -267,82 +273,88 @@ React.useEffect(() => {
 
             {/* Vendor */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
+              <div className="mb-3">
+                <label className="col-form-label">
                   Vendor <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="vendor_id"
-                    rules={{ required: "Vendor is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={vendorList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={ watch("vendor_id") && vendorList?.find(
-                          (option) => option.value === watch("vendor_id")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.vendor_id && (
-                    <small className="text-danger">
-                      {errors.vendor_id.message}
-                    </small>
+                </label>
+                <Controller
+                  name="vendor_id"
+                  rules={{ required: "Vendor is required!" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={vendorList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={
+                        watch("vendor_id") &&
+                        vendorList?.find(
+                          (option) => option.value === watch("vendor_id"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
                   )}
-                </div>
+                />
+                {errors.vendor_id && (
+                  <small className="text-danger">
+                    {errors.vendor_id.message}
+                  </small>
+                )}
               </div>
+            </div>
             {/* Manufacturer */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
+              <div className="mb-3">
+                <label className="col-form-label">
                   Manufacturer <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="manufacturer_id"
-                    rules={{ required: "Manufacturer is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={manufacturerList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={ watch("manufacturer_id") && manufacturerList?.find(
-                          (option) => option.value === watch("manufacturer_id")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.manufacturer_id && (
-                    <small className="text-danger">
-                      {errors.manufacturer_id.message}
-                    </small>
+                </label>
+                <Controller
+                  name="manufacturer_id"
+                  rules={{ required: "Manufacturer is required!" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={manufacturerList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={
+                        watch("manufacturer_id") &&
+                        manufacturerList?.find(
+                          (option) => option.value === watch("manufacturer_id"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
                   )}
-                </div>
+                />
+                {errors.manufacturer_id && (
+                  <small className="text-danger">
+                    {errors.manufacturer_id.message}
+                  </small>
+                )}
               </div>
+            </div>
 
             {/* unit_price */}
             <div className="col-md-6">
@@ -358,50 +370,55 @@ React.useEffect(() => {
                   })}
                 />
                 {errors.unit_price && (
-                  <small className="text-danger">{errors.unit_price.message}</small>
+                  <small className="text-danger">
+                    {errors.unit_price.message}
+                  </small>
                 )}
               </div>
             </div>
 
-                   {/* Currency */}
-                   <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
+            {/* Currency */}
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">
                   Currency <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="currency"
-                    rules={{ required: "Currency is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={CurrencyList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={ watch("currency") && CurrencyList?.find(
-                          (option) => option.value === watch("currency")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.currency && (
-                    <small className="text-danger">
-                      {errors.currency.message}
-                    </small>
+                </label>
+                <Controller
+                  name="currency"
+                  rules={{ required: "Currency is required!" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={CurrencyList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={
+                        watch("currency") &&
+                        CurrencyList?.find(
+                          (option) => option.value === watch("currency"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
                   )}
-                </div>
+                />
+                {errors.currency && (
+                  <small className="text-danger">
+                    {errors.currency.message}
+                  </small>
+                )}
               </div>
+            </div>
 
             {/* Tex id */}
             {/* <div className="col-md-6">
@@ -415,43 +432,45 @@ React.useEffect(() => {
               </div>
                   </div> */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
+              <div className="mb-3">
+                <label className="col-form-label">
                   Tax <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="tax_id"
-                    rules={{ required: "Tax is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={TaxList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={ watch("tax_id") && TaxList?.find(
-                          (option) => option.value === watch("tax_id")
-                        ) || ""}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.tax_id && (
-                    <small className="text-danger">
-                      {errors.tax_id.message}
-                    </small>
+                </label>
+                <Controller
+                  name="tax_id"
+                  rules={{ required: "Tax is required!" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={TaxList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={
+                        (watch("tax_id") &&
+                          TaxList?.find(
+                            (option) => option.value === watch("tax_id"),
+                          )) ||
+                        ""
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
                   )}
-                </div>
+                />
+                {errors.tax_id && (
+                  <small className="text-danger">{errors.tax_id.message}</small>
+                )}
               </div>
+            </div>
 
             {/* onhand */}
             <div className="col-md-6">
@@ -463,7 +482,7 @@ React.useEffect(() => {
                   {...register("onhand")}
                 />
               </div>
-                  </div>
+            </div>
 
             {/* ordered */}
             <div className="col-md-6">
@@ -472,12 +491,12 @@ React.useEffect(() => {
                 <input
                   type="number"
                   className="form-control"
-                  {...register("ordered" )}
+                  {...register("ordered")}
                 />
               </div>
             </div>
-              {/* commited */}
-              <div className="col-md-6">
+            {/* commited */}
+            <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">Commited</label>
                 <input
@@ -491,9 +510,7 @@ React.useEffect(() => {
             {/* Reorder Level */}
             <div className="col-md-6">
               <div className="mb-3">
-                <label className="col-form-label">
-                Reorder Level 
-                </label>
+                <label className="col-form-label">Reorder Level</label>
                 <input
                   type="number"
                   className="form-control"
@@ -502,20 +519,17 @@ React.useEffect(() => {
               </div>
             </div>
 
-
-             {/* Description */}
+            {/* Description */}
             <div className="col-md-12">
-                      <div className="mb-0">
-                        <label className="col-form-label">
-                          Description
-                        </label>
-                        <textarea
-                          className="form-control"
-                          rows={5}
-                          {...register("description")}
-                        />
-                      </div>
-                    </div>
+              <div className="mb-0">
+                <label className="col-form-label">Description</label>
+                <textarea
+                  className="form-control"
+                  rows={5}
+                  {...register("description")}
+                />
+              </div>
+            </div>
           </div>
 
           <div className="d-flex mt-3 align-items-center justify-content-end">
@@ -531,19 +545,25 @@ React.useEffect(() => {
               className="btn btn-primary"
               disabled={loading}
             >
-              {product ? loading ? "Updating ....": "Update" : loading ? "Creating..." : "Create"}
+              {product
+                ? loading
+                  ? "Updating ...."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

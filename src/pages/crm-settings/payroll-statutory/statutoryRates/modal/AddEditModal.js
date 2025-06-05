@@ -68,7 +68,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatestatutory_rates({
           id: initialData.id,
           statutory_ratesData: data,
-        })
+        }),
       );
     }
     reset();
@@ -233,7 +233,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                           } // Send only value
                           value={
                             CountriesList?.find(
-                              (option) => option.value === watch("country_code")
+                              (option) =>
+                                option.value === watch("country_code"),
                             ) || ""
                           }
                         />

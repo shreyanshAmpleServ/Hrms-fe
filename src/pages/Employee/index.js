@@ -49,7 +49,7 @@ const EmployeeList = () => {
   const dispatch = useDispatch();
 
   const { employee, loading, error, success } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   React.useEffect(() => {
@@ -59,7 +59,7 @@ const EmployeeList = () => {
         ...selectedDateRange,
         filter: filter,
         filter2: newFilter,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange, filter, newFilter]);
 
@@ -86,7 +86,7 @@ const EmployeeList = () => {
         filter2: newFilter,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -94,7 +94,7 @@ const EmployeeList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Employee"
+    (i) => i?.module_name === "Employee",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

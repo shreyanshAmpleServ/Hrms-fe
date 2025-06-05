@@ -30,7 +30,7 @@ const CountryFilter = ({ availableCountries, onFilterChange }) => {
       <ul>
         {availableCountries
           .filter((country) =>
-            country.toLowerCase().includes(countrySearchText.toLowerCase())
+            country.toLowerCase().includes(countrySearchText.toLowerCase()),
           )
           .map((country) => (
             <li key={country}>

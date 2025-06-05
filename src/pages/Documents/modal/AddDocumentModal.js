@@ -76,18 +76,39 @@ const AddFiles = ({ data, setData }) => {
     related_type === "Orders" && dispatch(fetchorders());
   }, [related_type]);
 
-  const { deals  ,loading:loadingDeals } = useSelector((state) => state?.deals);
-  const { companies ,loading:loadingComp } = useSelector((state) => state?.companies);
-  const { vendor ,loading:loadingVendor } = useSelector((state) => state?.vendor);
-  const { contacts ,loading:loadingContacts } = useSelector((state) => state?.contacts);
-  const { leads ,loading:loadingLeads } = useSelector((state) => state?.leads);
-  const { users ,loading:loadingUser } = useSelector((state) => state?.users);
-  const { projects ,loading:loadingProject } = useSelector((state) => state?.projects);
-  const { orders ,loading:loadingOrder } = useSelector((state) => state?.orders);
+  const { deals, loading: loadingDeals } = useSelector((state) => state?.deals);
+  const { companies, loading: loadingComp } = useSelector(
+    (state) => state?.companies,
+  );
+  const { vendor, loading: loadingVendor } = useSelector(
+    (state) => state?.vendor,
+  );
+  const { contacts, loading: loadingContacts } = useSelector(
+    (state) => state?.contacts,
+  );
+  const { leads, loading: loadingLeads } = useSelector((state) => state?.leads);
+  const { users, loading: loadingUser } = useSelector((state) => state?.users);
+  const { projects, loading: loadingProject } = useSelector(
+    (state) => state?.projects,
+  );
+  const { orders, loading: loadingOrder } = useSelector(
+    (state) => state?.orders,
+  );
 
-  let isLoading = loadingDeals ||loadingComp ||loadingVendor ||loadingContacts ||loadingLeads ||loadingUser ||loadingProject ||loadingOrder
+  let isLoading =
+    loadingDeals ||
+    loadingComp ||
+    loadingVendor ||
+    loadingContacts ||
+    loadingLeads ||
+    loadingUser ||
+    loadingProject ||
+    loadingOrder;
 
-  const dealsList = deals?.data?.map((i) => ({ label: i?.dealName, value: i?.id }));
+  const dealsList = deals?.data?.map((i) => ({
+    label: i?.dealName,
+    value: i?.id,
+  }));
   const contactsList = contacts?.data?.map((i) => ({
     label: i?.firstName + " " + i?.lastName,
     value: i?.id,
@@ -96,9 +117,18 @@ const AddFiles = ({ data, setData }) => {
     label: i?.first_name + " " + i?.last_name,
     value: i?.id,
   }));
-  const projectsList = projects?.data?.map((i) => ({ label: i?.name, value: i?.id }));
-  const vendorList = vendor?.data?.map((i) => ({ label: i?.name, value: i?.id }));
-  const userList = users?.data?.map((i) => ({ label: i?.full_name, value: i?.id }));
+  const projectsList = projects?.data?.map((i) => ({
+    label: i?.name,
+    value: i?.id,
+  }));
+  const vendorList = vendor?.data?.map((i) => ({
+    label: i?.name,
+    value: i?.id,
+  }));
+  const userList = users?.data?.map((i) => ({
+    label: i?.full_name,
+    value: i?.id,
+  }));
   const companiesList = companies?.data?.map((i) => ({
     label: i?.name,
     value: i?.id,
@@ -127,7 +157,7 @@ const AddFiles = ({ data, setData }) => {
 
   const onSubmit = async (datas) => {
     const closeButton = document.getElementById(
-      "close_offcanvas_edit_documents"
+      "close_offcanvas_edit_documents",
     );
     const formData = new FormData();
     Object.keys(datas).forEach((key) => {
@@ -144,7 +174,7 @@ const AddFiles = ({ data, setData }) => {
     }
     try {
       await dispatch(
-        data ? updateAttachment(formData) : addAttachment(formData)
+        data ? updateAttachment(formData) : addAttachment(formData),
       ).unwrap();
       reset();
       closeButton.click();
@@ -168,12 +198,12 @@ const AddFiles = ({ data, setData }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -253,7 +283,7 @@ const AddFiles = ({ data, setData }) => {
                               value={
                                 DocumentRelatedType?.find(
                                   (i) =>
-                                    i?.value === watch("related_entity_type")
+                                    i?.value === watch("related_entity_type"),
                                 ) || " "
                               }
                               onChange={(selectedOption) => {
@@ -294,13 +324,13 @@ const AddFiles = ({ data, setData }) => {
                                 field.onChange(selectedOption?.value || null);
                                 setValue(
                                   "related_entity_name",
-                                  selectedOption?.label || ""
+                                  selectedOption?.label || "",
                                 );
                               }}
                               value={
                                 related_options?.find(
                                   (option) =>
-                                    option.value === watch("related_entity_id")
+                                    option.value === watch("related_entity_id"),
                                 ) || ""
                               }
                               isSearchable

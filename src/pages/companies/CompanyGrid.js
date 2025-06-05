@@ -90,7 +90,6 @@ const ContactGrid = ({ data }) => {
                       <i className="fa fa-ellipsis-v" />
                     </Link>
                     <div className="dropdown-menu dropdown-menu-right">
-                      
                       <Link
                         className="dropdown-item"
                         to="#"

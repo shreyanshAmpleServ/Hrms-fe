@@ -55,7 +55,7 @@ const UpdateBankInfo = ({ employeeDetail }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_update_bank_info_modal"
+      "close_btn_update_bank_info_modal",
     );
     const formData = new FormData();
     if (employeeDetail) {
@@ -149,7 +149,7 @@ const UpdateBankInfo = ({ employeeDetail }) => {
                       rules={{ required: "Bank name is required" }}
                       render={({ field }) => {
                         const selectedDeal = bankOptions?.find(
-                          (bank) => bank.value === field.value
+                          (bank) => bank.value === field.value,
                         );
                         return (
                           <Select

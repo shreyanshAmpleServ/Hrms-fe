@@ -47,7 +47,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatereview_template({
           id: initialData.id,
           review_templateData: data,
-        })
+        }),
       );
     }
     reset();

@@ -69,7 +69,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_source_modal"
-            //onClick={onClose}
+              //onClick={onClose}
             >
               <i className="ti ti-x" />
             </button>
@@ -134,7 +134,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
-                //onClick={onClose}
+                  //onClick={onClose}
                 >
                   Cancel
                 </Link>

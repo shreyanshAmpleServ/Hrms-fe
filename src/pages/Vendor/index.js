@@ -38,7 +38,7 @@ const Vendor = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Vendor"
+    (i) => i?.module_name === "Vendor",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -151,7 +151,7 @@ const Vendor = () => {
   }, [dispatch, searchText, selectedDateRange]);
 
   const { vendor, loading, error, success } = useSelector(
-    (state) => state.vendor
+    (state) => state.vendor,
   );
   useEffect(() => {
     setPaginationData({
@@ -174,7 +174,7 @@ const Vendor = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
   const handleSearch = useCallback((e) => {
@@ -224,7 +224,7 @@ const Vendor = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

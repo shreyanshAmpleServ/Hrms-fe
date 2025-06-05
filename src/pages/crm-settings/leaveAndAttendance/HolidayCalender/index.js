@@ -25,7 +25,7 @@ const HolidayCalenderList = () => {
   const [paginationData, setPaginationData] = useState();
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Holiday Calender"
+    (i) => i?.module_name === "Holiday Calender",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -108,7 +108,7 @@ const HolidayCalenderList = () => {
   ];
 
   const { holidayCalender, loading } = useSelector(
-    (state) => state.holidayCalender
+    (state) => state.holidayCalender,
   );
 
   React.useEffect(() => {
@@ -135,7 +135,7 @@ const HolidayCalenderList = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -147,11 +147,11 @@ const HolidayCalenderList = () => {
     let data = holidayCalender?.data || [];
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? -1 : 1
+        moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? 1 : -1
+        moment(a.holiday_date).isBefore(moment(b.holiday_date)) ? 1 : -1,
       );
     }
     return data;

@@ -29,7 +29,7 @@ const GoalSheetAssignment = () => {
       fetchgoalSheet({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -54,7 +54,7 @@ const GoalSheetAssignment = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -62,7 +62,7 @@ const GoalSheetAssignment = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Helpdesk Ticket"
+    (i) => i?.module_name === "Helpdesk Ticket",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

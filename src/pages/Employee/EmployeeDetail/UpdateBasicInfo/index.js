@@ -99,7 +99,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_update_basic_info_modal"
+      "close_btn_update_basic_info_modal",
     );
     const formData = new FormData();
     if (employeeDetail) {
@@ -108,7 +108,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
       formData.append("first_name", data.full_name?.split(" ")[0] || "");
       formData.append(
         "last_name",
-        data.full_name?.split(" ").slice(1).join(" ") || ""
+        data.full_name?.split(" ").slice(1).join(" ") || "",
       );
       formData.append("email", data.email);
       formData.append("phone_number", data.phone_number);
@@ -281,7 +281,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
                           value={
                             departmentOptions?.find(
                               (option) =>
-                                option.value === watch("department_id")
+                                option.value === watch("department_id"),
                             ) || ""
                           }
                           onChange={(selectedOption) => {
@@ -316,7 +316,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
                           value={
                             designationOptions?.find(
                               (option) =>
-                                option.value === watch("designation_id")
+                                option.value === watch("designation_id"),
                             ) || ""
                           }
                           onChange={(selectedOption) => {
@@ -353,7 +353,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
                           classNamePrefix="react-select"
                           value={
                             genderOptions?.find(
-                              (option) => option.value === watch("gender")
+                              (option) => option.value === watch("gender"),
                             ) || ""
                           }
                           onChange={(selectedOption) => {

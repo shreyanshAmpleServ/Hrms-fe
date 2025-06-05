@@ -6,8 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
-import { createmonthlyPayroll, updatemonthlyPayroll } from "../../../redux/monthlyPayrollProcessing";
-import { fetchgrievance_type } from "../../../redux/grievanceTypeMaster"
+import {
+  createmonthlyPayroll,
+  updatemonthlyPayroll,
+} from "../../../redux/monthlyPayrollProcessing";
+import { fetchgrievance_type } from "../../../redux/grievanceTypeMaster";
 
 const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -67,12 +70,10 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
-  const { grievance_type } = useSelector(
-    (state) => state.grievanceType || {}
-  );
+  const { grievance_type } = useSelector((state) => state.grievanceType || {});
 
   const employees = employee?.data?.map((i) => ({
     label: i?.full_name,
@@ -92,7 +93,7 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
           updatemonthlyPayroll({
             id: monthlyPayroll.id,
             monthlyPayrollData: { ...data },
-          })
+          }),
         ).unwrap();
       } else {
         await dispatch(createmonthlyPayroll({ ...data })).unwrap();
@@ -112,13 +113,18 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
       const handleModalClose = () => {
         setmonthlyPayroll(null);
       };
-      offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
       return () => {
-        offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
       };
     }
   }, [setmonthlyPayroll]);
-
 
   return (
     <>
@@ -129,7 +135,9 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{monthlyPayroll ? "Update " : "Add New "} Grievance Submission</h4>
+          <h4>
+            {monthlyPayroll ? "Update " : "Add New "} Grievance Submission
+          </h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -148,13 +156,17 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
             <div>
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Employee<span className="text-danger">*</span></label>
+                  <label className="col-form-label">
+                    Employee<span className="text-danger">*</span>
+                  </label>
                   <Controller
                     name="employee_id"
                     control={control}
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
-                      const selectedEmployee = employees?.find(emp => emp.value === field.value);
+                      const selectedEmployee = employees?.find(
+                        (emp) => emp.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -166,17 +178,19 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                           value={selectedEmployee || null}
                           onInputChange={setSearchValue}
                           onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
                         />
                       );
                     }}
                   />
-                  {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+                  {errors.employee_id && (
+                    <small className="text-danger">
+                      {errors.employee_id.message}
+                    </small>
+                  )}
                 </div>
-
-
-
-
 
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
@@ -194,7 +208,9 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                         placeholder="Select Status"
                         classNamePrefix="react-select"
                         value={
-                          field.value ? { label: field.value, value: field.value } : null
+                          field.value
+                            ? { label: field.value, value: field.value }
+                            : null
                         }
                         onChange={(opt) => field.onChange(opt.value)}
                       />
@@ -212,7 +228,9 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                     control={control}
                     rules={{ required: "Grievance type is required" }}
                     render={({ field }) => {
-                      const selectedGrievance = grievanceTypeOptions?.find(gt => gt.value === field.value);
+                      const selectedGrievance = grievanceTypeOptions?.find(
+                        (gt) => gt.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -222,16 +240,19 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                           classNamePrefix="react-select"
                           value={selectedGrievance || null}
                           onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
                         />
                       );
                     }}
                   />
                   {errors.grievance_type && (
-                    <small className="text-danger">{errors.grievance_type.message}</small>
+                    <small className="text-danger">
+                      {errors.grievance_type.message}
+                    </small>
                   )}
                 </div>
-
 
                 {/* Resolved On */}
                 <div className="col-md-6 mb-3">
@@ -250,9 +271,6 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                     )}
                   />
                 </div>
-
-
-
 
                 {/* Submitted On */}
                 <div className="col-md-6 mb-3">
@@ -278,7 +296,9 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                     name="assigned_to"
                     control={control}
                     render={({ field }) => {
-                      const selectedUser = employees?.find(emp => emp.value === field.value);
+                      const selectedUser = employees?.find(
+                        (emp) => emp.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -288,13 +308,14 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                           onInputChange={setSearchValue}
                           onChange={(opt) => field.onChange(opt?.value)}
                           classNamePrefix="react-select"
-                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
                         />
                       );
                     }}
                   />
                 </div>
-
 
                 {/* Anonymous */}
                 <div className="col-md-6 mb-3">
@@ -312,8 +333,6 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                     )}
                   />
                 </div>
-
-
 
                 {/* Resolution Notes */}
                 <div className="col-12 mb-3">
@@ -346,13 +365,7 @@ const ManagemonthlyPayroll = ({ setmonthlyPayroll, monthlyPayroll }) => {
                     )}
                   />
                 </div>
-
-
-
-
-
               </div>
-
             </div>
             <div className="d-flex align-items-center justify-content-end">
               <button

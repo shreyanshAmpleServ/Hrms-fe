@@ -43,10 +43,10 @@ const AddPipelineModal = () => {
       stages.map((stage) =>
         stage.id === updatedStage.id
           ? {
-            ...stage,
-            name: updatedStage.name,
-            colorCode: updatedStage.colorCode,
-          }
+              ...stage,
+              name: updatedStage.name,
+              colorCode: updatedStage.colorCode,
+            }
           : stage,
       ),
     );

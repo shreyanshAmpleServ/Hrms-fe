@@ -38,7 +38,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       dispatch(addemploymentType(data));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateemploymentType({ id: initialData.id, employee_typeData: data })
+        updateemploymentType({ id: initialData.id, employee_typeData: data }),
       );
     }
     reset();

@@ -23,7 +23,7 @@ const JobPosting = () => {
   const dispatch = useDispatch();
 
   const { JobPosting, loading } = useSelector(
-    (state) => state.JobPosting || {}
+    (state) => state.JobPosting || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const JobPosting = () => {
       fetchJobPosting({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const JobPosting = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const JobPosting = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Helpdesk Ticket"
+    (i) => i?.module_name === "Helpdesk Ticket",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -114,48 +114,47 @@ const JobPosting = () => {
       render: (value) => (value ? "Yes" : "No"),
     },
 
-
     ...(isDelete || isUpdate
       ? [
-        {
-          title: "Action",
-          render: (text, a) => (
-            <div className="dropdown table-action">
-              <Link
-                to="#"
-                className="action-icon "
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="fa fa-ellipsis-v"></i>
-              </Link>
-              <div className="dropdown-menu dropdown-menu-right">
-                {isUpdate && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvas_add"
-                    onClick={() => setSelectedJobPosting(a)}
-                  >
-                    <i className="ti ti-edit text-blue" /> Edit
-                  </Link>
-                )}
+          {
+            title: "Action",
+            render: (text, a) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon "
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add"
+                      onClick={() => setSelectedJobPosting(a)}
+                    >
+                      <i className="ti ti-edit text-blue" /> Edit
+                    </Link>
+                  )}
 
-                {isDelete && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    onClick={() => handleDeleteJobPosting(a)}
-                  >
-                    <i className="ti ti-trash text-danger" /> Delete
-                  </Link>
-                )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteJobPosting(a)}
+                    >
+                      <i className="ti ti-trash text-danger" /> Delete
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ),
-        },
-      ]
+            ),
+          },
+        ]
       : []),
   ];
 

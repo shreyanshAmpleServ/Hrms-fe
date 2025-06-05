@@ -1,20 +1,25 @@
-import moment from 'moment';
-import React, { useState } from 'react';
+import moment from "moment";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import AddCallsModal from './modal/AddCallsModal';
+import AddCallsModal from "./modal/AddCallsModal";
 
 const CallsGrid = ({ data }) => {
-    const [selectedContact ,setSelectedContact] = useState()
-    return (
-        <>
-            <div className="d-flex flex-wrap gap-2">
-                
-                {data.map((activity, index) => (
-                    <div className="col-xxl-3 col-xl-4 col-md-6 " key={activity.id || index}>
-                        <div className="card border">
-                            <div className="card-body position-relative" style={{padding:"10px"}}>
-                                <div className="d-flex align-items-center justify-content-between  mb-3">
-                                    {/* <div className="d-flex align-items-center">
+  const [selectedContact, setSelectedContact] = useState();
+  return (
+    <>
+      <div className="d-flex flex-wrap gap-2">
+        {data.map((activity, index) => (
+          <div
+            className="col-xxl-3 col-xl-4 col-md-6 "
+            key={activity.id || index}
+          >
+            <div className="card border">
+              <div
+                className="card-body position-relative"
+                style={{ padding: "10px" }}
+              >
+                <div className="d-flex align-items-center justify-content-between  mb-3">
+                  {/* <div className="d-flex align-items-center">
                                         <img src={activity?.owner?.profile_img} style={{width:'50px',height:"50px",marginRight:'7px' , objectFit:"contain"}}  className="border  shadow-4  rounded-circle" alt='img' />
                                         <div className=''>
                                             <h6>
@@ -32,50 +37,56 @@ const CallsGrid = ({ data }) => {
                                             </p>
                                         </div>
                                     </div> */}
-                                </div>
-                                    <div style={{marginLeft:"80%"}} className="dropdown position-absolute right-0 top-1 table-action">
-                                        <Link
-                                            to="#"
-                                            className="action-icon"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            <i className="fa fa-ellipsis-v" />
-                                        </Link>
-                                        <div className="dropdown-menu dropdown-menu-right">
-                                             <Link
-                                                          className="dropdown-item edit-popup"
-                                                          to="#"
-                                                          data-bs-toggle="offcanvas"
-                                                          data-bs-target="#offcanvas_add"
-                                                          onClick={() => setSelectedContact(activity)} // Set selected contact
-                                                        >
-                                                          <i className="ti ti-edit text-blue"></i> Edit
-                                                        </Link>
-                                            <Link
-                                                className="dropdown-item"
-                                                to="#"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#delete_activity"
-                                                onClick={() => setSelectedContact(activity)} 
-                                            >
-                                                <i className="ti ti-trash text-danger" /> Delete
-                                            </Link>
-                                            {/* <Link
+                </div>
+                <div
+                  style={{ marginLeft: "80%" }}
+                  className="dropdown position-absolute right-0 top-1 table-action"
+                >
+                  <Link
+                    to="#"
+                    className="action-icon"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i className="fa fa-ellipsis-v" />
+                  </Link>
+                  <div className="dropdown-menu dropdown-menu-right">
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add"
+                      onClick={() => setSelectedContact(activity)} // Set selected contact
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#delete_activity"
+                      onClick={() => setSelectedContact(activity)}
+                    >
+                      <i className="ti ti-trash text-danger" /> Delete
+                    </Link>
+                    {/* <Link
                                                 className="dropdown-item"
                                                 to={activity.contactDetails || '#'}
                                             >
                                                 <i className="ti ti-eye text-blue-light" /> Preview
                                             </Link> */}
-                                        </div>
-                                    </div>
-                                <div className="d-block">
-                                    <div className="d-flex flex-column mb-3">
-                                        <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
-                                          <span className='fw-medium text-black text-nowrap'>  Owner: </span>
-                                            {activity.owner?.full_name || 'No Email'}
-                                        </p>
-                                        {/* <p className="text-default d-inline-flex align-items-center mb-2">
+                  </div>
+                </div>
+                <div className="d-block">
+                  <div className="d-flex flex-column mb-3">
+                    <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
+                      <span className="fw-medium text-black text-nowrap">
+                        {" "}
+                        Owner:{" "}
+                      </span>
+                      {activity.owner?.full_name || "No Email"}
+                    </p>
+                    {/* <p className="text-default d-inline-flex align-items-center mb-2">
                                             <i className="ti ti-phone text-dark me-1" />
                                             {activity.phone1 || 'No Phone'}
                                         </p>
@@ -83,38 +94,71 @@ const CallsGrid = ({ data }) => {
                                             <i className="ti ti-map-pin-pin text-dark me-1" />
                                             {`${activity.city || ''}, ${activity.country || ''}`}
                                         </p> */}
-                                        <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
-                                          <span className='fw-medium text-black text-nowrap'>  Due date: </span>
-                                            {moment(activity.due_date).format("ll") + " "+ moment(activity.due_time).format("HH:mm A") || 'No Email'}
-                                        </p>
-                                        <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
-                                          <span className='fw-medium text-black text-nowrap'>  Company : </span>
-                                            {activity.company_of_activity?.name || 'No Company'}
-                                        </p>
-                                        <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
-                                          <span className='fw-medium text-black text-nowrap'>  Deal : </span>
-                                            {activity.deal_of_activity?.dealName || 'No Deal'}
-                                        </p>
-                                        <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
-                                          <span className='fw-medium text-black text-nowrap'>  Contact: </span>
-                                            {activity.contact_of_activity?.firstName + " " + activity.contact_of_activity?.lastName || 'No Contact'}
-                                        </p>
-                                        <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
-                                          <span className='fw-medium text-black text-nowrap'>  Priority: </span>
-                                          <span
-              className={`badge activity-badge ${activity.priority == 1 ? "text-success" : activity.priority == 2 ? "text-warning"  : activity.priority === 3 ? "text-danger" : "text-info"}`}
-            >  {activity.priority === 1 ? "Low" :activity.priority ===2 ? "Normal" : activity.priority ==3 ? "High" :  'No Priority'}</span>
-                                        </p>
-                                    </div>
-                                    <div className="d-flex align-items-center">
-                                        {activity.tags && activity.tags.split(',').map((tag, i) => (
-                                            <span key={i} className="badge badge-tag badge-success-light me-2">
-                                                {tag.trim()}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                                {/* <div className="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                    <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
+                      <span className="fw-medium text-black text-nowrap">
+                        {" "}
+                        Due date:{" "}
+                      </span>
+                      {moment(activity.due_date).format("ll") +
+                        " " +
+                        moment(activity.due_time).format("HH:mm A") ||
+                        "No Email"}
+                    </p>
+                    <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
+                      <span className="fw-medium text-black text-nowrap">
+                        {" "}
+                        Company :{" "}
+                      </span>
+                      {activity.company_of_activity?.name || "No Company"}
+                    </p>
+                    <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
+                      <span className="fw-medium text-black text-nowrap">
+                        {" "}
+                        Deal :{" "}
+                      </span>
+                      {activity.deal_of_activity?.dealName || "No Deal"}
+                    </p>
+                    <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
+                      <span className="fw-medium text-black text-nowrap">
+                        {" "}
+                        Contact:{" "}
+                      </span>
+                      {activity.contact_of_activity?.firstName +
+                        " " +
+                        activity.contact_of_activity?.lastName || "No Contact"}
+                    </p>
+                    <p className="text-default d-inline-flex gap-2 align-items-center mb-2">
+                      <span className="fw-medium text-black text-nowrap">
+                        {" "}
+                        Priority:{" "}
+                      </span>
+                      <span
+                        className={`badge activity-badge ${activity.priority == 1 ? "text-success" : activity.priority == 2 ? "text-warning" : activity.priority === 3 ? "text-danger" : "text-info"}`}
+                      >
+                        {" "}
+                        {activity.priority === 1
+                          ? "Low"
+                          : activity.priority === 2
+                            ? "Normal"
+                            : activity.priority == 3
+                              ? "High"
+                              : "No Priority"}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    {activity.tags &&
+                      activity.tags.split(",").map((tag, i) => (
+                        <span
+                          key={i}
+                          className="badge badge-tag badge-success-light me-2"
+                        >
+                          {tag.trim()}
+                        </span>
+                      ))}
+                  </div>
+                </div>
+                {/* <div className="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
                                     <div className="d-flex align-items-center grid-social-links">
                                         {Object.entries(activity.socialProfiles || {}).map(([key, value], i) => (
                                             value && (
@@ -147,21 +191,24 @@ const CallsGrid = ({ data }) => {
                                         </Link>
                                     </div>
                                 </div> */}
-                            </div>
-                        </div>
-                    </div>
-                ))}
+              </div>
             </div>
+          </div>
+        ))}
+      </div>
 
-            <div className="load-btn text-center pb-4">
-                <Link to="#" className="btn btn-primary">
-                    Load More Activity
-                    <i className="ti ti-loader" />
-                </Link>
-            </div>
-             <AddCallsModal callsDetails={selectedContact} setCallDetails={setSelectedContact} />
-            {/* <AddContactModal contact={selectedContact} setSelectedContact={setSelectedContact}/> */}
-        </>
-    )
-}
+      <div className="load-btn text-center pb-4">
+        <Link to="#" className="btn btn-primary">
+          Load More Activity
+          <i className="ti ti-loader" />
+        </Link>
+      </div>
+      <AddCallsModal
+        callsDetails={selectedContact}
+        setCallDetails={setSelectedContact}
+      />
+      {/* <AddContactModal contact={selectedContact} setSelectedContact={setSelectedContact}/> */}
+    </>
+  );
+};
 export default CallsGrid;

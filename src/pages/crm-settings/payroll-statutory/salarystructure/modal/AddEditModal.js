@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatesalary_structure({
           id: initialData.id,
           salary_structureData: data,
-        })
+        }),
       );
     }
     setSelected(null);

@@ -23,7 +23,7 @@ const ExitClearance = () => {
   const dispatch = useDispatch();
 
   const { exitClearance, loading } = useSelector(
-    (state) => state.exitClearance || {}
+    (state) => state.exitClearance || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const ExitClearance = () => {
       fetchExitClearance({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const ExitClearance = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const ExitClearance = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Exit Clearance"
+    (i) => i?.module_name === "Exit Clearance",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

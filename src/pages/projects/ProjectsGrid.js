@@ -119,25 +119,32 @@ const ProjectsGrid = ({ data }) => {
                 <div className="d-block">
                   <div className="d-flex flex-column mb-3">
                     <p className="text-default d-inline-flex align-items-center  mb-2">
-                      
                       <span className="col-md-6 text-dark">Project Timing</span>
                       <span>{company.projectTiming || "No Timing"}</span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
-                    <span className="col-md-6 text-dark">Budget</span>
-                    <span>{company.amount || "No amount"}</span>
+                      <span className="col-md-6 text-dark">Budget</span>
+                      <span>{company.amount || "No amount"}</span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
-                    <span className="col-md-6 text-dark">Due date</span>
-                    <span>{moment(company.dueDate).format("ll") || "No due date"}</span>
+                      <span className="col-md-6 text-dark">Due date</span>
+                      <span>
+                        {moment(company.dueDate).format("ll") || "No due date"}
+                      </span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
-                    <span className="col-md-6 text-dark">Start date</span>
-                    <span>{moment(company.startDate).format("ll") || "No start date"}</span>
+                      <span className="col-md-6 text-dark">Start date</span>
+                      <span>
+                        {moment(company.startDate).format("ll") ||
+                          "No start date"}
+                      </span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center">
-                    <span className="col-md-6 text-dark">Created by</span>
-                    <span>{moment(company.createdDate).format("ll") || "No start date"}</span>
+                      <span className="col-md-6 text-dark">Created by</span>
+                      <span>
+                        {moment(company.createdDate).format("ll") ||
+                          "No start date"}
+                      </span>
                     </p>
                   </div>
                 </div>

@@ -55,7 +55,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -68,7 +68,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   }, [dispatch, searchDesignation]);
 
   const { designation, loading: designationLoading } = useSelector(
-    (state) => state.designation || {}
+    (state) => state.designation || {},
   );
 
   const designations = designation?.data?.map((i) => ({
@@ -81,7 +81,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
     try {
       appointment
         ? await dispatch(
-            updateAppointment({ id: appointment.id, appointmentData: data })
+            updateAppointment({ id: appointment.id, appointmentData: data }),
           ).unwrap()
         : await dispatch(createAppointment(data)).unwrap();
       closeButton.click();
@@ -100,12 +100,12 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -149,7 +149,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select
@@ -194,7 +194,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                       rules={{ required: "Designation is required" }}
                       render={({ field }) => {
                         const selectedDeal = designations?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

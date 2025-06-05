@@ -21,11 +21,7 @@ const FilterComponent = ({ countryList, applyFilters }) => {
 
   return (
     <div className="form-sorts dropdown me-2">
-      <Link
-        to="#"
-        data-bs-toggle="dropdown"
-        data-bs-auto-close="outside"
-      >
+      <Link to="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">
         <i className="ti ti-filter-share" />
         Filter
       </Link>
@@ -84,24 +80,27 @@ const FilterComponent = ({ countryList, applyFilters }) => {
               >
                 <div className="filter-content-list">
                   <ul>
-                  {[{"Y": "Active"}, {"N": "Inactive"}].map((statusObj, index) => {
-                      const [key, value] = Object.entries(statusObj)[0]; // Extract the key-value pair
-                      return (
-                        <li key={key}>
-                          <div className="filter-checks">
-                            <label className="checkboxs">
-                              <input
-                                type="radio" // Use radio for single selection
-                                checked={selectedStatus === key} // Only one status can be selected
-                                onChange={() => setSelectedStatus(key)} // Set the selected status key
-                              />
-                              <span className="checkmarks" />
-                              {value} {/* Display the value (Active/Inactive) */}
-                            </label>
-                          </div>
-                        </li>
-                      );
-                    })}
+                    {[{ Y: "Active" }, { N: "Inactive" }].map(
+                      (statusObj, index) => {
+                        const [key, value] = Object.entries(statusObj)[0]; // Extract the key-value pair
+                        return (
+                          <li key={key}>
+                            <div className="filter-checks">
+                              <label className="checkboxs">
+                                <input
+                                  type="radio" // Use radio for single selection
+                                  checked={selectedStatus === key} // Only one status can be selected
+                                  onChange={() => setSelectedStatus(key)} // Set the selected status key
+                                />
+                                <span className="checkmarks" />
+                                {value}{" "}
+                                {/* Display the value (Active/Inactive) */}
+                              </label>
+                            </div>
+                          </li>
+                        );
+                      },
+                    )}
                   </ul>
                 </div>
               </div>

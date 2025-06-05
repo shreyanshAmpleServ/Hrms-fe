@@ -23,7 +23,7 @@ const AppointmentLetters = () => {
   const dispatch = useDispatch();
 
   const { appointment, loading } = useSelector(
-    (state) => state.appointment || {}
+    (state) => state.appointment || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const AppointmentLetters = () => {
       fetchAppointments({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const AppointmentLetters = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const AppointmentLetters = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Appointment Letters"
+    (i) => i?.module_name === "Appointment Letters",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

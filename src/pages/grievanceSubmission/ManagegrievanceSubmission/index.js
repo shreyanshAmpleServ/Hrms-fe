@@ -7,10 +7,16 @@ import Select from "react-select";
 import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchLeaveType } from "../../../redux/LeaveType";
-import { creategrievanceSubmission, updategrievanceSubmission } from "../../../redux/grievanceSubmission";
-import { fetchgrievance_type } from "../../../redux/grievanceTypeMaster"
+import {
+  creategrievanceSubmission,
+  updategrievanceSubmission,
+} from "../../../redux/grievanceSubmission";
+import { fetchgrievance_type } from "../../../redux/grievanceTypeMaster";
 
-const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission }) => {
+const ManagegrievanceSubmission = ({
+  setgrievanceSubmission,
+  grievanceSubmission,
+}) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -41,11 +47,13 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
         grievance_type: grievanceSubmission.grievance_type || "",
         description: grievanceSubmission.description || "",
         anonymous: grievanceSubmission.anonymous || false,
-        submitted_on: grievanceSubmission.submitted_on || new Date().toISOString(),
+        submitted_on:
+          grievanceSubmission.submitted_on || new Date().toISOString(),
         status: grievanceSubmission.status || "Pending",
         assigned_to: grievanceSubmission.assigned_to || "",
         resolution_notes: grievanceSubmission.resolution_notes || "",
-        resolved_on: grievanceSubmission.resolved_on || new Date().toISOString(),
+        resolved_on:
+          grievanceSubmission.resolved_on || new Date().toISOString(),
       });
     } else {
       reset({
@@ -68,12 +76,10 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
-  const { grievance_type } = useSelector(
-    (state) => state.grievanceType || {}
-  );
+  const { grievance_type } = useSelector((state) => state.grievanceType || {});
 
   const employees = employee?.data?.map((i) => ({
     label: i?.full_name,
@@ -93,7 +99,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
           updategrievanceSubmission({
             id: grievanceSubmission.id,
             grievanceSubmissionData: { ...data },
-          })
+          }),
         ).unwrap();
       } else {
         await dispatch(creategrievanceSubmission({ ...data })).unwrap();
@@ -113,13 +119,18 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
       const handleModalClose = () => {
         setgrievanceSubmission(null);
       };
-      offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
       return () => {
-        offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
       };
     }
   }, [setgrievanceSubmission]);
-
 
   return (
     <>
@@ -130,7 +141,9 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{grievanceSubmission ? "Update " : "Add New "} Grievance Submission</h4>
+          <h4>
+            {grievanceSubmission ? "Update " : "Add New "} Grievance Submission
+          </h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -149,13 +162,17 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
             <div>
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Employee<span className="text-danger">*</span></label>
+                  <label className="col-form-label">
+                    Employee<span className="text-danger">*</span>
+                  </label>
                   <Controller
                     name="employee_id"
                     control={control}
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
-                      const selectedEmployee = employees?.find(emp => emp.value === field.value);
+                      const selectedEmployee = employees?.find(
+                        (emp) => emp.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -167,17 +184,19 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                           value={selectedEmployee || null}
                           onInputChange={setSearchValue}
                           onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
                         />
                       );
                     }}
                   />
-                  {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+                  {errors.employee_id && (
+                    <small className="text-danger">
+                      {errors.employee_id.message}
+                    </small>
+                  )}
                 </div>
-
-
-
-
 
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
@@ -195,7 +214,9 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                         placeholder="Select Status"
                         classNamePrefix="react-select"
                         value={
-                          field.value ? { label: field.value, value: field.value } : null
+                          field.value
+                            ? { label: field.value, value: field.value }
+                            : null
                         }
                         onChange={(opt) => field.onChange(opt.value)}
                       />
@@ -213,7 +234,9 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                     control={control}
                     rules={{ required: "Grievance type is required" }}
                     render={({ field }) => {
-                      const selectedGrievance = grievanceTypeOptions?.find(gt => gt.value === field.value);
+                      const selectedGrievance = grievanceTypeOptions?.find(
+                        (gt) => gt.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -223,16 +246,19 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                           classNamePrefix="react-select"
                           value={selectedGrievance || null}
                           onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
                         />
                       );
                     }}
                   />
                   {errors.grievance_type && (
-                    <small className="text-danger">{errors.grievance_type.message}</small>
+                    <small className="text-danger">
+                      {errors.grievance_type.message}
+                    </small>
                   )}
                 </div>
-
 
                 {/* Resolved On */}
                 <div className="col-md-6 mb-3">
@@ -244,7 +270,9 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                       <DatePicker
                         {...field}
                         value={
-                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : ""
                         }
                         selected={field.value ? new Date(field.value) : null}
                         onChange={field.onChange}
@@ -254,9 +282,6 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                     )}
                   />
                 </div>
-
-
-
 
                 {/* Submitted On */}
                 <div className="col-md-6 mb-3">
@@ -268,7 +293,9 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                       <DatePicker
                         {...field}
                         value={
-                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : ""
                         }
                         selected={field.value ? new Date(field.value) : null}
                         onChange={field.onChange}
@@ -285,7 +312,9 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                     name="assigned_to"
                     control={control}
                     render={({ field }) => {
-                      const selectedUser = employees?.find(emp => emp.value === field.value);
+                      const selectedUser = employees?.find(
+                        (emp) => emp.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -295,13 +324,14 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                           onInputChange={setSearchValue}
                           onChange={(opt) => field.onChange(opt?.value)}
                           classNamePrefix="react-select"
-                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
                         />
                       );
                     }}
                   />
                 </div>
-
 
                 {/* Anonymous */}
                 <div className="col-md-6 mb-3">
@@ -316,14 +346,10 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                         onChange={(e) => field.onChange(e.target.checked)}
                       />
                     )}
-
                   />
 
                   <label className="col-form-label ms-2">Anonymous?</label>
-
                 </div>
-
-
 
                 {/* Resolution Notes */}
                 <div className="col-12 mb-3">
@@ -356,13 +382,7 @@ const ManagegrievanceSubmission = ({ setgrievanceSubmission, grievanceSubmission
                     )}
                   />
                 </div>
-
-
-
-
-
               </div>
-
             </div>
             <div className="d-flex align-items-center justify-content-end">
               <button

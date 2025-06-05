@@ -5,28 +5,35 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { OrderStatusOptions } from "../../../components/common/selectoption/selectoption";
 import { fetchCurrencies } from "../../../redux/currency";
-import { addOrder, fetchOrderCode, fetchSalesType, updateOrder } from "../../../redux/order";
+import {
+  addOrder,
+  fetchOrderCode,
+  fetchSalesType,
+  updateOrder,
+} from "../../../redux/order";
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
 import { fetchVendors } from "../../../redux/vendor";
 import ManageOrderItemModal from "./ManageOrderItemModal";
 
-const initialItem = [{
-  parent_id: null,
-  item_id: null,
-  item_name: "",
-  quantity: 1,
-  delivered_qty: 0,
-  unit_price: 0,
-  currency: null,
-  rate: 0,
-  disc_prcnt: 0,
-  disc_amount: 0,
-  tax_id: null,
-  tax_per: 0.0,
-  line_tax: 0,
-  total_bef_disc: 0,
-  total_amount: 0
-}]
+const initialItem = [
+  {
+    parent_id: null,
+    item_id: null,
+    item_name: "",
+    quantity: 1,
+    delivered_qty: 0,
+    unit_price: 0,
+    currency: null,
+    rate: 0,
+    disc_prcnt: 0,
+    disc_amount: 0,
+    tax_id: null,
+    tax_per: 0.0,
+    line_tax: 0,
+    total_bef_disc: 0,
+    total_amount: 0,
+  },
+];
 
 const AddProductModal = ({ order, setOrder }) => {
   const dispatch = useDispatch();
@@ -35,15 +42,21 @@ const AddProductModal = ({ order, setOrder }) => {
     setSelectedDate(date);
   };
 
-  const { salesTypes, orderCode, loading } = useSelector((state) => state.orders)
+  const { salesTypes, orderCode, loading } = useSelector(
+    (state) => state.orders,
+  );
 
   const formatNumber = (num) => {
-    if (num === 0 || isNaN(num)) { return '0'; }
+    if (num === 0 || isNaN(num)) {
+      return "0";
+    }
     const number = parseFloat(num);
-    const [integerPart, decimalPart] = number.toString().split('.');
-    const formattedInteger = parseInt(integerPart).toLocaleString('en-IN');
+    const [integerPart, decimalPart] = number.toString().split(".");
+    const formattedInteger = parseInt(integerPart).toLocaleString("en-IN");
     if (decimalPart !== undefined) {
-      const fixedDecimal = parseFloat(`0.${decimalPart}`).toFixed(2).split('.')[1];
+      const fixedDecimal = parseFloat(`0.${decimalPart}`)
+        .toFixed(2)
+        .split(".")[1];
       return `${formattedInteger}.${fixedDecimal}`;
     }
     return formattedInteger;
@@ -83,12 +96,12 @@ const AddProductModal = ({ order, setOrder }) => {
       source_doc_id: "",
       source_doc_type: "",
       apr_by: null,
-      apr_date: new Date,
+      apr_date: new Date(),
       auto_approved: "N",
       apr_status: "",
       apr_remark: "",
       attachment1: "",
-      attachment2: ""
+      attachment2: "",
     },
   });
 
@@ -116,28 +129,30 @@ const AddProductModal = ({ order, setOrder }) => {
         source_doc_id: order?.source_doc_id || "",
         source_doc_type: order?.source_doc_type || "",
         apr_by: order?.apr_by || null,
-        apr_date: order?.apr_date || new Date,
+        apr_date: order?.apr_date || new Date(),
         auto_approved: order?.auto_approved || "N",
         apr_status: order?.apr_status || "",
         apr_remark: order?.apr_remark || "",
       });
-      setItemNumber(order?.order_items?.map((item) => ({
-        parent_id: item?.parent_id || null,
-        item_id: item?.item_id || null,
-        item_name: item?.item_name || "",
-        quantity: Number(item?.quantity) || 1,
-        delivered_qty: Number(item?.delivered_qty) || 0,
-        unit_price: Number(item?.unit_price) || 0,
-        currency: Number(item?.currency) || null,
-        rate: Number(item?.rate) || 0,
-        disc_prcnt: Number(item?.disc_prcnt) || 0,
-        disc_amount: Number(item?.disc_amount) || 0,
-        tax_id: Number(item?.tax_id) || null,
-        tax_per: Number(item?.tax_per) || 0.0,
-        line_tax: Number(item?.line_tax) || 0,
-        total_bef_disc: Number(item?.total_bef_disc) || 0,
-        total_amount: Number(item?.total_amount) || 0
-      })))
+      setItemNumber(
+        order?.order_items?.map((item) => ({
+          parent_id: item?.parent_id || null,
+          item_id: item?.item_id || null,
+          item_name: item?.item_name || "",
+          quantity: Number(item?.quantity) || 1,
+          delivered_qty: Number(item?.delivered_qty) || 0,
+          unit_price: Number(item?.unit_price) || 0,
+          currency: Number(item?.currency) || null,
+          rate: Number(item?.rate) || 0,
+          disc_prcnt: Number(item?.disc_prcnt) || 0,
+          disc_amount: Number(item?.disc_amount) || 0,
+          tax_id: Number(item?.tax_id) || null,
+          tax_per: Number(item?.tax_per) || 0.0,
+          line_tax: Number(item?.line_tax) || 0,
+          total_bef_disc: Number(item?.total_bef_disc) || 0,
+          total_amount: Number(item?.total_amount) || 0,
+        })),
+      );
     } else {
       reset({
         order_code: orderCode,
@@ -161,27 +176,26 @@ const AddProductModal = ({ order, setOrder }) => {
         source_doc_id: "",
         source_doc_type: "",
         apr_by: null,
-        apr_date: new Date,
+        apr_date: new Date(),
         auto_approved: "N",
         apr_status: "",
-        apr_remark: ""
+        apr_remark: "",
       });
     }
   }, [order]);
   useEffect(() => {
-    dispatch(fetchSalesType())
-    dispatch(fetchOrderCode())
+    dispatch(fetchSalesType());
+    dispatch(fetchOrderCode());
     dispatch(fetchVendors());
     dispatch(fetchCurrencies());
     dispatch(fetchTaxSetup());
   }, [dispatch]);
 
-
   const { vendor, loading: loadingVendor } = useSelector(
-    (state) => state.vendor
+    (state) => state.vendor,
   );
   const { currencies, loading: loadingCurrency } = useSelector(
-    (state) => state.currency
+    (state) => state.currency,
   );
   const vendorList = vendor?.data?.map((emnt) => ({
     value: emnt.id,
@@ -202,22 +216,22 @@ const AddProductModal = ({ order, setOrder }) => {
     let disc_prcnt = 0;
     let total_amount = 0;
     itemNumber?.map((i) => {
-      total_bef_tax += Number(i?.total_bef_disc) || 0
-      tax_total += Number(i?.line_tax) || 0
-      disc_prcnt += Number(i?.disc_amount) || 0
-      total_amount += Number(i?.total_amount) || 0
-    })
+      total_bef_tax += Number(i?.total_bef_disc) || 0;
+      tax_total += Number(i?.line_tax) || 0;
+      disc_prcnt += Number(i?.disc_amount) || 0;
+      total_amount += Number(i?.total_amount) || 0;
+    });
 
-    setValue("total_bef_tax", total_bef_tax)
-    setValue("tax_total", tax_total)
-    setValue("disc_prcnt", disc_prcnt)
-    setValue("total_amount", total_amount)
-    setValue("rounding_amount", total_amount)
-  }, [itemNumber])
+    setValue("total_bef_tax", total_bef_tax);
+    setValue("tax_total", tax_total);
+    setValue("disc_prcnt", disc_prcnt);
+    setValue("total_amount", total_amount);
+    setValue("rounding_amount", total_amount);
+  }, [itemNumber]);
 
   useEffect(() => {
-    !order && setValue("order_code", orderCode)
-  }, [orderCode])
+    !order && setValue("order_code", orderCode);
+  }, [orderCode]);
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
 
@@ -227,7 +241,10 @@ const AddProductModal = ({ order, setOrder }) => {
         alert("File size exceeds 5 MB. Please select a smaller file.");
         return;
       } else {
-        setValue(e.target.name === "attachment1" ? "attachment1" : "attachment2", file);
+        setValue(
+          e.target.name === "attachment1" ? "attachment1" : "attachment2",
+          file,
+        );
       }
     }
   };
@@ -238,7 +255,10 @@ const AddProductModal = ({ order, setOrder }) => {
     Object.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
         let value = data[key];
-        if ((key === "due_date" || key === "apr_date") && value instanceof Date) {
+        if (
+          (key === "due_date" || key === "apr_date") &&
+          value instanceof Date
+        ) {
           value = value.toISOString();
         }
         formData.append(key, value);
@@ -249,37 +269,40 @@ const AddProductModal = ({ order, setOrder }) => {
     //     formData.append(key, (key=== "due_date" || key === "apr_date") ? data[key] ? data[key]?.toISOString() : "" : data[key]);
     //   }
     // });
-    formData.append("orderItemsData", JSON.stringify(itemNumber))
-    order && formData.append("id", order?.id)
+    formData.append("orderItemsData", JSON.stringify(itemNumber));
+    order && formData.append("id", order?.id);
     try {
-      order ? await dispatch(updateOrder(formData))
+      order
+        ? await dispatch(updateOrder(formData))
         : await dispatch(addOrder(formData)).unwrap();
       // order ? await dispatch(updateOrder({id :order?.id,orderData : { orderData: formData,orderItemsData:JSON.stringify(itemNumber)}}))
       // :  await dispatch(addOrder({orderData: formData,orderItemsData:JSON.stringify(itemNumber)})).unwrap();
 
       closeButton.click();
-      dispatch(fetchOrderCode())
+      dispatch(fetchOrderCode());
       reset();
-      setItemNumber(initialItem)
+      setItemNumber(initialItem);
     } catch (error) {
       closeButton.click();
     }
   };
   React.useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_add_edit_order");
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_edit_order",
+    );
     if (offcanvasElement) {
       const handleModalClose = () => {
         setOrder();
-        setItemNumber(initialItem)
+        setItemNumber(initialItem);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -310,7 +333,6 @@ const AddProductModal = ({ order, setOrder }) => {
               <div className=" col-md-6 mb-3">
                 <div className="d-flex align-items-center justify-content-between">
                   <label className="col-form-label">Customer</label>
-
                 </div>
                 <Controller
                   name="cust_id"
@@ -325,12 +347,15 @@ const AddProductModal = ({ order, setOrder }) => {
                       classNamePrefix="react-select"
                       onChange={(selectedOption) => {
                         field.onChange(selectedOption?.value || null);
-                        setValue("cont_person", selectedDate?.label)
+                        setValue("cont_person", selectedDate?.label);
                       }}
-                      value={vendorList?.find((option) => option.value === watch("cust_id")) || ""}
-
+                      value={
+                        vendorList?.find(
+                          (option) => option.value === watch("cust_id"),
+                        ) || ""
+                      }
                       styles={{
-                        menu: (provided) => ({ ...provided, zIndex: 9999, }),
+                        menu: (provided) => ({ ...provided, zIndex: 9999 }),
                       }}
                     />
                   )}
@@ -422,11 +447,15 @@ const AddProductModal = ({ order, setOrder }) => {
                     placeholder="Choose"
                     classNamePrefix="react-select"
                     onChange={(selectedOption) => {
-                      setValue("sales_type", selectedOption.value)
+                      setValue("sales_type", selectedOption.value);
                     }}
-                    value={salesTypesOption?.find((option) => option.value === watch("sales_type")) || ""}
+                    value={
+                      salesTypesOption?.find(
+                        (option) => option.value === watch("sales_type"),
+                      ) || ""
+                    }
                     styles={{
-                      menu: (provided) => ({ ...provided, zIndex: 9999, }),
+                      menu: (provided) => ({ ...provided, zIndex: 9999 }),
                     }}
                   />
                 </div>
@@ -451,9 +480,12 @@ const AddProductModal = ({ order, setOrder }) => {
                         onChange={(selectedOption) =>
                           field.onChange(selectedOption?.value || null)
                         } // Send only value
-                        value={watch("currency") && CurrencyList?.find(
-                          (option) => option.value === watch("currency")
-                        )}
+                        value={
+                          watch("currency") &&
+                          CurrencyList?.find(
+                            (option) => option.value === watch("currency"),
+                          )
+                        }
                         styles={{
                           menu: (provided) => ({
                             ...provided,
@@ -499,59 +531,101 @@ const AddProductModal = ({ order, setOrder }) => {
                     placeholder="Choose"
                     classNamePrefix="react-select"
                     onChange={(selectedOption) => {
-                      setValue("status", selectedOption.value)
+                      setValue("status", selectedOption.value);
                     }}
-                    value={OrderStatusOptions?.find((option) => option.value === watch("status")) || ""}
+                    value={
+                      OrderStatusOptions?.find(
+                        (option) => option.value === watch("status"),
+                      ) || ""
+                    }
                   />
                 </div>
               </div>
               {/* Order Items  */}
-              <ManageOrderItemModal itemNumber={itemNumber} setItemNumber={setItemNumber} />
+              <ManageOrderItemModal
+                itemNumber={itemNumber}
+                setItemNumber={setItemNumber}
+              />
               {/* Amount Calculation  */}
               <div className="subtotal-div mb-3">
                 <ul className="mb-3">
                   <li>
                     <h5>Total Befor Tax</h5>
-                    <input name="total_bef_tax" type="text" value={formatNumber(watch("total_bef_tax"))} disabled />
+                    <input
+                      name="total_bef_tax"
+                      type="text"
+                      value={formatNumber(watch("total_bef_tax"))}
+                      disabled
+                    />
                   </li>
                   <li>
                     <h5>Total Discount </h5>
-                    <input name="disc_prcnt" type="text" value={formatNumber(watch("disc_prcnt"))} disabled />
+                    <input
+                      name="disc_prcnt"
+                      type="text"
+                      value={formatNumber(watch("disc_prcnt"))}
+                      disabled
+                    />
                   </li>
                   <li>
-                    <h5>Rounded
+                    <h5>
+                      Rounded
                       <input
                         type="checkbox"
                         className="mx-3"
                         onChange={(e) => {
                           const newValue = e.target.checked ? "Y" : "N";
                           setValue("rounding", newValue);
-                          const totalAmount = parseFloat(watch("total_amount")) || 0;
-                          const roundedAmount = e.target.checked ? Math.ceil(totalAmount) : totalAmount;
+                          const totalAmount =
+                            parseFloat(watch("total_amount")) || 0;
+                          const roundedAmount = e.target.checked
+                            ? Math.ceil(totalAmount)
+                            : totalAmount;
                           setValue("rounding_amount", roundedAmount);
                         }}
                         checked={watch("rounding") === "Y"}
-                      /> </h5>
+                      />{" "}
+                    </h5>
 
-                    <input name="rounding" type="text" value={watch("rounding") === "Y" ? formatNumber(Math.round(watch("rounding_amount"))) : formatNumber(watch("rounding_amount"))} disabled />
+                    <input
+                      name="rounding"
+                      type="text"
+                      value={
+                        watch("rounding") === "Y"
+                          ? formatNumber(Math.round(watch("rounding_amount")))
+                          : formatNumber(watch("rounding_amount"))
+                      }
+                      disabled
+                    />
                   </li>
                   <li>
                     <h5>Total tax amount</h5>
-                    <input name="tax_total" type="text" value={formatNumber(watch("tax_total"))} disabled />
+                    <input
+                      name="tax_total"
+                      type="text"
+                      value={formatNumber(watch("tax_total"))}
+                      disabled
+                    />
                   </li>
                   <li>
                     <h5>Total Amount</h5>
-                    <input name="total_amount" type="text" value={watch("rounding") === "Y" ? formatNumber(Math.round(watch("rounding_amount"))) : formatNumber(watch("total_amount"))} disabled />
+                    <input
+                      name="total_amount"
+                      type="text"
+                      value={
+                        watch("rounding") === "Y"
+                          ? formatNumber(Math.round(watch("rounding_amount")))
+                          : formatNumber(watch("total_amount"))
+                      }
+                      disabled
+                    />
                   </li>
                 </ul>
-
               </div>
               {/* Attachment 1  */}
               <div className="col-md-6">
                 <div className="mb-3">
-                  <label className="col-form-label">
-                    Attachment 1
-                  </label>
+                  <label className="col-form-label">Attachment 1</label>
                   <input
                     type="file"
                     name="attachment1"
@@ -564,27 +638,25 @@ const AddProductModal = ({ order, setOrder }) => {
                       File size exceeds 5MB. Please select a smaller file
                     </small>
                   )}
-
                 </div>
               </div>
               {/* Attachment 2  */}
               <div className="col-md-6">
                 <div className="mb-3">
-                  <label className="col-form-label">
-                    Attachment 2
-                  </label>
+                  <label className="col-form-label">Attachment 2</label>
                   <input
                     type="file"
                     name="attachment2"
                     className="form-control"
                     //  value={watch("attachment2") || ""}
                     onChange={handleAvatarChange}
-                  // ref={fileInputRef}
-                  // value={selectedFile}
+                    // ref={fileInputRef}
+                    // value={selectedFile}
                   />
                   {watch("attachment2")?.size > 5 * 1024 * 1024 && (
                     <small className="text-danger">
-                      {watch("attachment2") && "File size exceeds 5MB. Please select a smaller file."}
+                      {watch("attachment2") &&
+                        "File size exceeds 5MB. Please select a smaller file."}
                     </small>
                   )}
                   {/* <div className="upload-content border p-1 ">
@@ -626,9 +698,7 @@ const AddProductModal = ({ order, setOrder }) => {
               {/* Description */}
               <div className="col-md-12 mb-3">
                 <div className="mb-0">
-                  <label className="col-form-label">
-                    Remarks
-                  </label>
+                  <label className="col-form-label">Remarks</label>
                   <textarea
                     className="form-control"
                     rows={4}
@@ -636,7 +706,6 @@ const AddProductModal = ({ order, setOrder }) => {
                   />
                 </div>
               </div>
-
             </div>
           </div>
           <div className="d-flex align-items-center justify-content-end">
@@ -647,9 +716,18 @@ const AddProductModal = ({ order, setOrder }) => {
             >
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn btn-primary">
-
-              {order ? loading ? "Updating ...." : "Update" : loading ? "Creating..." : "Create"}
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary"
+            >
+              {order
+                ? loading
+                  ? "Updating ...."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
               {loading && (
                 <div
                   style={{

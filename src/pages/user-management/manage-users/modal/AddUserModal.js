@@ -114,9 +114,12 @@ const AddUserModal = () => {
         </button>
       </div>
       <div className="offcanvas-body">
-        <form  onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <input type="hidden" {...register("entityType", { value: "user" })} />
-          <input type="hidden" {...register("username", { value: watch('email') })} />
+          <input
+            type="hidden"
+            {...register("username", { value: watch("email") })}
+          />
           <div className="row">
             {/* Profile Image Upload */}
             <div className="col-md-12">
@@ -226,7 +229,7 @@ const AddUserModal = () => {
                   }
                   placeholder="Select Role"
                   menuPortalTarget={document.body}
-                  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                 />
                 {errors.role_id && (
                   <small className="text-danger">
@@ -299,7 +302,7 @@ const AddUserModal = () => {
               </div>
             </div>
 
-                   {/* Address */}
+            {/* Address */}
             <div className="col-md-12">
               <div className="mb-3">
                 <label className="col-form-label">Address</label>
@@ -357,17 +360,17 @@ const AddUserModal = () => {
             >
               {loading ? "Creating..." : "Create"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

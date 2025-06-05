@@ -14,7 +14,7 @@ import { fetchCallStatuses } from "../../../redux/callStatus";
 import { fetchContacts } from "../../../redux/contacts/contactSlice";
 import { fetchUsers } from "../../../redux/manage-user";
 import { fetchProjects } from "../../../redux/projects";
-import "./Toggle.css"
+import "./Toggle.css";
 import { fetchCallTypes } from "../../../redux/callType";
 import moment from "moment";
 
@@ -45,34 +45,39 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   const [searchLeads, setSearchLeads] = useState("");
   const [searchProjects, setSearchProjects] = useState("");
   const [searchCallFor, setSearchCallFor] = useState("");
-  const { contacts ,loading: loadingContact } = useSelector((state) => state.contacts);
-  const { leads ,loading:loadingLeads } = useSelector((state) => state.leads);
-  const { users ,loading:loadingUser} = useSelector((state) => state.users);
+  const { contacts, loading: loadingContact } = useSelector(
+    (state) => state.contacts,
+  );
+  const { leads, loading: loadingLeads } = useSelector((state) => state.leads);
+  const { users, loading: loadingUser } = useSelector((state) => state.users);
   const { callPurposes } = useSelector((state) => state.callPurposes);
   const { callStatuses } = useSelector((state) => state.callStatuses);
   const { callTypes } = useSelector((state) => state.callTypes);
-  const { projects ,loading:loadingProjects } = useSelector((state) => state.projects);
-  const [isScheduled,setIsScheduled] = useState(false)
+  const { projects, loading: loadingProjects } = useSelector(
+    (state) => state.projects,
+  );
+  const [isScheduled, setIsScheduled] = useState(false);
   // const { relatedTo } = useSelector((state) => state.calls);
   React.useEffect(() => {
-    if (searchCallFor) dispatch(fetchContacts({search:searchCallFor}));
-  }, [ searchCallFor]);
+    if (searchCallFor) dispatch(fetchContacts({ search: searchCallFor }));
+  }, [searchCallFor]);
 
   React.useEffect(() => {
-    if (searchLeads) dispatch(fetchLeads({search:searchLeads}));
-  }, [ searchLeads]);
-  
+    if (searchLeads) dispatch(fetchLeads({ search: searchLeads }));
+  }, [searchLeads]);
+
   React.useEffect(() => {
     if (searchProjects) dispatch(fetchProjects(searchProjects));
-  }, [ searchProjects]);
+  }, [searchProjects]);
 
   const RefreshApi = async () => {
     watch("call_for") === "Leads" && (await dispatch(fetchLeads()).unwrap());
-    watch("call_for") === "Accounts" && (await dispatch(fetchContacts()).unwrap());
-    watch("call_for") === "Projects" && (await dispatch(fetchProjects("")).unwrap());
+    watch("call_for") === "Accounts" &&
+      (await dispatch(fetchContacts()).unwrap());
+    watch("call_for") === "Projects" &&
+      (await dispatch(fetchProjects("")).unwrap());
   };
 
- 
   React.useEffect(() => {
     dispatch(fetchUsers());
     // dispatch(fetchContacts(""));
@@ -89,7 +94,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   }));
   const leadList = leads?.data?.map((emnt) => ({
     value: emnt.id,
-    label: emnt.first_name + " "+emnt?.last_name,
+    label: emnt.first_name + " " + emnt?.last_name,
   }));
   const projectList = projects?.data?.map((emnt) => ({
     value: emnt.id,
@@ -180,7 +185,10 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
         related_to_id: callsDetails?.related_to_id || null,
         call_purpose_id: callsDetails?.call_purpose_id || null,
         call_status_id: callsDetails?.call_status_id || null,
-        ongoing_callStatus: callsDetails?.ongoing_callStatus || isScheduled ? "Scheduled" : "Completed",
+        ongoing_callStatus:
+          callsDetails?.ongoing_callStatus || isScheduled
+            ? "Scheduled"
+            : "Completed",
         call_type_id: callsDetails?.call_type_id || null,
         call_start_date: new Date(callsDetails?.call_start_date) || new Date(),
         call_start_time: dayjs(callsDetails?.call_start_time) || "",
@@ -222,37 +230,47 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   const callForLeadId = watch("call_for_lead_id");
   const callForContactId = watch("call_for_contact_id");
   const callForProjectId = watch("call_for_project_id");
-  const callForOptions = callFor === "Accounts" ? constactList : callFor === "Leads" ? leadList : projectList;
- const calForLoading =   watch("call_for") === "Accounts"
- ? loadingContact && true
- : watch("call_for") === "Leads" ? loadingLeads && true
- : watch("call_for") === "Projects" ? loadingProjects && true : false
+  const callForOptions =
+    callFor === "Accounts"
+      ? constactList
+      : callFor === "Leads"
+        ? leadList
+        : projectList;
+  const calForLoading =
+    watch("call_for") === "Accounts"
+      ? loadingContact && true
+      : watch("call_for") === "Leads"
+        ? loadingLeads && true
+        : watch("call_for") === "Projects"
+          ? loadingProjects && true
+          : false;
 
   const { loading } = useSelector((state) => state.calls);
 
-
-  React.useEffect(()=>{
-   ( callFor === "Accounts" || watch("related_to")) && dispatch(fetchContacts());
-    callFor === "Leads" &&  dispatch(fetchLeads());
-    callFor === "Projects" &&  dispatch(fetchProjects());
-   },[dispatch,callFor,watch("related_to")])
-console.log("IsScheduled : ",isScheduled)
+  React.useEffect(() => {
+    (callFor === "Accounts" || watch("related_to")) &&
+      dispatch(fetchContacts());
+    callFor === "Leads" && dispatch(fetchLeads());
+    callFor === "Projects" && dispatch(fetchProjects());
+  }, [dispatch, callFor, watch("related_to")]);
+  console.log("IsScheduled : ", isScheduled);
   const onSubmit = async (data) => {
-  
     const closeButton = document.getElementById("offcanvas_add_calls_close");
     const finalData = {
-      call_for_contact_id: callFor === "Accounts" ? data.call_for_contact_id : null,
+      call_for_contact_id:
+        callFor === "Accounts" ? data.call_for_contact_id : null,
       call_for_lead_id: callFor === "Leads" ? data.call_for_lead_id : null,
-      call_for_project_id: callFor === "Projects" ? data.call_for_project_id : null,
+      call_for_project_id:
+        callFor === "Projects" ? data.call_for_project_id : null,
       ...data,
-      call_start_time : dayjs(data.call_start_time).toDate()?.toISOString(),
+      call_start_time: dayjs(data.call_start_time).toDate()?.toISOString(),
       ongoing_callStatus: isScheduled ? "Scheduled" : "Completed",
     };
     try {
       await dispatch(
         callsDetails
           ? updateCalls({ id: callsDetails.id, callData: { ...finalData } })
-          : addCalls(finalData)
+          : addCalls(finalData),
       ).unwrap();
       reset();
       closeButton.click();
@@ -266,23 +284,27 @@ console.log("IsScheduled : ",isScheduled)
     if (offcanvasElement) {
       const handleModalClose = () => {
         setCallDetails(null);
-        setIsScheduled(false)
-        reset()
+        setIsScheduled(false);
+        reset();
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
   }, []);
 
-useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ? true : false)},[callsDetails])
+  useEffect(() => {
+    setIsScheduled(
+      callsDetails?.ongoing_callStatus === "Scheduled" ? true : false,
+    );
+  }, [callsDetails]);
 
   return (
     <div
@@ -294,7 +316,6 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
         <h5 className="fw-semibold">
           {callsDetails ? " Update " : "Add New "} Calls
         </h5>
-       
 
         <button
           type="button"
@@ -306,12 +327,23 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
           <i className="ti ti-x" />
         </button>
       </div>
-              <div className="d-flex justify-content-end mt-1 " style={{marginBottom:"0px" ,marginRight:"13px"}}> <label for="filter" class="switch" aria-label="Toggle Filter">
-  <input type="checkbox" id="filter" checked={isScheduled} onChange={(e)=>setIsScheduled(e.target.checked)} />
-  <span>Call log</span>
-  <span>Scheduled</span>
-</label></div>
-      <div className="offcanvas-body" style={{paddingTop:"4px"}}>
+      <div
+        className="d-flex justify-content-end mt-1 "
+        style={{ marginBottom: "0px", marginRight: "13px" }}
+      >
+        {" "}
+        <label for="filter" class="switch" aria-label="Toggle Filter">
+          <input
+            type="checkbox"
+            id="filter"
+            checked={isScheduled}
+            onChange={(e) => setIsScheduled(e.target.checked)}
+          />
+          <span>Call log</span>
+          <span>Scheduled</span>
+        </label>
+      </div>
+      <div className="offcanvas-body" style={{ paddingTop: "4px" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="accordion" id="main_accordion">
             <div className="row">
@@ -334,13 +366,22 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                             options={options1}
                             onChange={(selectedOption) => {
                               field.onChange(selectedOption?.value || null);
-                              setValue("call_for_contact_id", null , { shouldValidate: true });
-                              setValue("call_for_lead_id", null , { shouldValidate: true });
-                              setValue("call_for_project_id", null , { shouldValidate: true });
-                              }}
-                            value={options1?.find(
-                              (option) => option.value === watch("call_for") || ""
-                            ) || ""}
+                              setValue("call_for_contact_id", null, {
+                                shouldValidate: true,
+                              });
+                              setValue("call_for_lead_id", null, {
+                                shouldValidate: true,
+                              });
+                              setValue("call_for_project_id", null, {
+                                shouldValidate: true,
+                              });
+                            }}
+                            value={
+                              options1?.find(
+                                (option) =>
+                                  option.value === watch("call_for") || "",
+                              ) || ""
+                            }
                             styles={customStyles}
                           />
                         )}
@@ -351,8 +392,9 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                         name={
                           watch("call_for") === "Accounts"
                             ? "call_for_contact_id"
-                            :watch("call_for") === "Leads" ? "call_for_lead_id"
-                            :"call_for_project_id"
+                            : watch("call_for") === "Leads"
+                              ? "call_for_lead_id"
+                              : "call_for_project_id"
                         }
                         rules={{ required: "Call For To is required!" }}
                         control={control}
@@ -365,46 +407,56 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                             onInputChange={(e) =>
                               callFor === "Accounts"
                                 ? setSearchCallFor(e)
-                                : callFor === "Leads" ? setSearchLeads(e) : setSearchProjects(e)
+                                : callFor === "Leads"
+                                  ? setSearchLeads(e)
+                                  : setSearchProjects(e)
                             }
                             options={
                               callFor === "Accounts"
                                 ? constactList
-                                : callFor === "Leads" ? leadList 
-                                : projectList
+                                : callFor === "Leads"
+                                  ? leadList
+                                  : projectList
                             }
                             onChange={(selectedOption) => {
                               RefreshApi();
                               callFor === "Accounts"
                                 ? setSearchCallFor("")
-                                :  callFor === "Leads" ? setSearchLeads("") : setSearchProjects("");
+                                : callFor === "Leads"
+                                  ? setSearchLeads("")
+                                  : setSearchProjects("");
                               field.onChange(selectedOption?.value || null);
                             }}
-                            value={callForOptions?.find(
-                              (option) =>
-                                option.value ===
-                                (callFor === "Accounts"
-                                  ? callForContactId
-                                  : callFor === "Leads" ? callForLeadId : callForProjectId)
-                            ) || ""}
+                            value={
+                              callForOptions?.find(
+                                (option) =>
+                                  option.value ===
+                                  (callFor === "Accounts"
+                                    ? callForContactId
+                                    : callFor === "Leads"
+                                      ? callForLeadId
+                                      : callForProjectId),
+                              ) || ""
+                            }
                             isSearchable
-                            styles={{  control: (provided, state) => ({
-                              ...provided,
-                              width: "100%",
-                              minHeight: "38px",
-                              outline: "none",
-                              boxShadow: "none",
-                              color: "white",
-                              borderTopLeftRadius: "0px",
-                              borderBottomLeftRadius: "0px",
-                            }),
+                            styles={{
+                              control: (provided, state) => ({
+                                ...provided,
+                                width: "100%",
+                                minHeight: "38px",
+                                outline: "none",
+                                boxShadow: "none",
+                                color: "white",
+                                borderTopLeftRadius: "0px",
+                                borderBottomLeftRadius: "0px",
+                              }),
                             }}
                           />
                         )}
                       />
                     </div>
                   </div>
-               
+
                   {errors.call_for && (
                     <small className="text-danger">
                       {errors.call_for.message}
@@ -451,11 +503,13 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption?.value || null)
                             } // Send only value
-                            value={options3?.find(
-                              (option) => option.value === watch("related_to")
-                            ) || ""}
-                            styles={{ 
-                              
+                            value={
+                              options3?.find(
+                                (option) =>
+                                  option.value === watch("related_to"),
+                              ) || ""
+                            }
+                            styles={{
                               ...customStyles, // Keep existing styles if any
                             }}
                           />
@@ -480,10 +534,12 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                               setSearchCallFor("");
                               field.onChange(selectedOption?.value || null);
                             }} // Send only value
-                            value={constactList?.find(
-                              (option) =>
-                                option.value === watch("related_to_id")
-                            ) || ""}
+                            value={
+                              constactList?.find(
+                                (option) =>
+                                  option.value === watch("related_to_id"),
+                              ) || ""
+                            }
                             isSearchable
                             styles={{
                               control: (provided, state) => ({
@@ -534,45 +590,49 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                   />
                 </div>
               </div>
-            {isScheduled && <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Call Owner <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="assigned_to"
-                    rules={{ required: "Call For To is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={usersList}
-                        isLoading={loadingUser && true}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={usersList?.find(
-                          (option) => option.value === watch("assigned_to")
-                        ) || ""}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
+              {isScheduled && (
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Call Owner <span className="text-danger">*</span>
+                    </label>
+                    <Controller
+                      name="assigned_to"
+                      rules={{ required: "Call For To is required!" }} // Make the field required
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={usersList}
+                          isLoading={loadingUser && true}
+                          placeholder="Choose"
+                          className="select2"
+                          classNamePrefix="react-select"
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption?.value || null)
+                          } // Send only value
+                          value={
+                            usersList?.find(
+                              (option) => option.value === watch("assigned_to"),
+                            ) || ""
+                          }
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                            }),
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.assigned_to && (
+                      <small className="text-danger">
+                        {errors.assigned_to.message}
+                      </small>
                     )}
-                  />
-                  {errors.assigned_to && (
-                    <small className="text-danger">
-                      {errors.assigned_to.message}
-                    </small>
-                  )}
+                  </div>
                 </div>
-              </div>}
+              )}
               <div className="col-md-6">
                 <div className="mb-3">
                   <label className="col-form-label">Call Purpose</label>
@@ -590,9 +650,12 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                         onChange={(selectedOption) =>
                           field.onChange(selectedOption?.value || null)
                         } // Send only value
-                        value={callPurposeList?.find(
-                          (option) => option.value === watch("call_purpose_id")
-                        ) || ""}
+                        value={
+                          callPurposeList?.find(
+                            (option) =>
+                              option.value === watch("call_purpose_id"),
+                          ) || ""
+                        }
                         styles={{
                           menu: (provided) => ({
                             ...provided,
@@ -609,8 +672,8 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                   )}
                 </div>
               </div>
-         
-             <div className="col-md-6">
+
+              <div className="col-md-6">
                 <div className="mb-3">
                   <div className="d-flex justify-content-between align-items-center">
                     <label className="col-form-label">
@@ -631,9 +694,11 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                         onChange={(selectedOption) =>
                           field.onChange(selectedOption?.value || null)
                         } // Send only value
-                        value={callTypeList?.find(
-                          (option) => option.value === watch("call_type_id")
-                        ) || ""}
+                        value={
+                          callTypeList?.find(
+                            (option) => option.value === watch("call_type_id"),
+                          ) || ""
+                        }
                         styles={{
                           menu: (provided) => ({
                             ...provided,
@@ -650,46 +715,51 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                   )}
                 </div>
               </div>
-         {!isScheduled && <div className="col-md-6">
-                <div className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <label className="col-form-label">
-                      Call Status <span className="text-danger">*</span>
-                    </label>
-                  </div>
-                  <Controller
-                    name="call_status_id"
-                    rules={{ required: "Call For To is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={callStatusList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={callStatusList?.find(
-                          (option) => option.value === watch("call_status_id")
-                        ) || ""}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
+              {!isScheduled && (
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <label className="col-form-label">
+                        Call Status <span className="text-danger">*</span>
+                      </label>
+                    </div>
+                    <Controller
+                      name="call_status_id"
+                      rules={{ required: "Call For To is required!" }} // Make the field required
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={callStatusList}
+                          placeholder="Choose"
+                          className="select2"
+                          classNamePrefix="react-select"
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption?.value || null)
+                          } // Send only value
+                          value={
+                            callStatusList?.find(
+                              (option) =>
+                                option.value === watch("call_status_id"),
+                            ) || ""
+                          }
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                            }),
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.call_status_id && (
+                      <small className="text-danger">
+                        {errors.call_status_id.message}
+                      </small>
                     )}
-                  />
-                  {errors.call_status_id && (
-                    <small className="text-danger">
-                      {errors.call_status_id.message}
-                    </small>
-                  )}
+                  </div>
                 </div>
-              </div>}
+              )}
 
               <div className="col-md-6">
                 <div className="mb-3">
@@ -761,26 +831,32 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                   )}
                 </div>
               </div>
-             {!isScheduled && <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Duration (Min){!isScheduled && <span className="text-danger">*</span>}
-                  </label>
-                  <input
-                    type="Number"
-                    className="form-control"
-                    {...register("duration_minutes", !isScheduled && {
-                      required: "Duration is required",
-                      valueAsNumber: true,
-                    })}
-                  />
-                  {errors.duration_minutes && (
-                    <small className="text-danger">
-                      {errors.duration_minutes.message}
-                    </small>
-                  )}
+              {!isScheduled && (
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Duration (Min)
+                      {!isScheduled && <span className="text-danger">*</span>}
+                    </label>
+                    <input
+                      type="Number"
+                      className="form-control"
+                      {...register(
+                        "duration_minutes",
+                        !isScheduled && {
+                          required: "Duration is required",
+                          valueAsNumber: true,
+                        },
+                      )}
+                    />
+                    {errors.duration_minutes && (
+                      <small className="text-danger">
+                        {errors.duration_minutes.message}
+                      </small>
+                    )}
+                  </div>
                 </div>
-              </div>}
+              )}
               <div className="col-md-6">
                 <div className="mb-3">
                   <label className="col-form-label">Call Subject</label>
@@ -791,64 +867,70 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                   />
                 </div>
               </div>
-              {isScheduled  && <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">Call Reminder (Min)</label>
-
-                  <input
-                    type="number"
-                    className="form-control"
-                    {...register("call_reminder", {
-                      valueAsNumber: true,
-                    })}
-                    // onInput={(e) => {
-                    //   if (e.target.value > 10) e.target.value = 10; // Prevents values > 10
-                    // }}
-                    // min={0}
-                    // max={10}
-                  />
-                </div>
-              </div>}
-            {isScheduled  && <div className="col-md-6">
-                <div className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center">
+              {isScheduled && (
+                <div className="col-md-6">
+                  <div className="mb-3">
                     <label className="col-form-label">
-                      Reminder Type <span className="text-danger">*</span>
+                      Call Reminder (Min)
                     </label>
+
+                    <input
+                      type="number"
+                      className="form-control"
+                      {...register("call_reminder", {
+                        valueAsNumber: true,
+                      })}
+                      // onInput={(e) => {
+                      //   if (e.target.value > 10) e.target.value = 10; // Prevents values > 10
+                      // }}
+                      // min={0}
+                      // max={10}
+                    />
                   </div>
-                  <Controller
-                    name="reminder_type"
-                    // rules={{ required: "Call For To is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={reminderTypes}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={reminderTypes?.find(
-                          (option) => option.value === watch("reminder_type")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {/* {errors.call_status_id && (
+                </div>
+              )}
+              {isScheduled && (
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <label className="col-form-label">
+                        Reminder Type <span className="text-danger">*</span>
+                      </label>
+                    </div>
+                    <Controller
+                      name="reminder_type"
+                      // rules={{ required: "Call For To is required!" }} // Make the field required
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={reminderTypes}
+                          placeholder="Choose"
+                          className="select2"
+                          classNamePrefix="react-select"
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption?.value || null)
+                          } // Send only value
+                          value={reminderTypes?.find(
+                            (option) => option.value === watch("reminder_type"),
+                          )}
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                            }),
+                          }}
+                        />
+                      )}
+                    />
+                    {/* {errors.call_status_id && (
                     <small className="text-danger">
                       {errors.call_status_id.message}
                     </small>
                   )} */}
+                  </div>
                 </div>
-              </div>}
+              )}
               <div className="col-md-12">
                 <div className="mb-3">
                   <label className="col-form-label">Call Note</label>
@@ -943,18 +1025,18 @@ useEffect(()=>{setIsScheduled(callsDetails?.ongoing_callStatus === "Scheduled" ?
                 : loading
                   ? "Creating..."
                   : "Create"}
-                 {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+              {loading && (
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

@@ -34,7 +34,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_disciplinary_penalty_modal"
+      "close_disciplinary_penalty_modal",
     );
     if (mode === "add") {
       dispatch(adddisciplinary_penalty(data));
@@ -43,7 +43,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatedisciplinary_penalty({
           id: initialData.id,
           disciplinary_penaltyData: data,
-        })
+        }),
       );
     }
     reset();

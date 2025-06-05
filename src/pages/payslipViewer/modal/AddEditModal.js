@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.first_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
-    [employee]
+    [employee],
   );
 
   // Prefill form in edit mode
@@ -63,7 +63,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     }
   }, [mode, initialData, reset]);
 
-
   const onSubmit = (data) => {
     const closeButton = document.getElementById("close_payslip_modal");
     const pdfFile = data.pdf_path?.[0];
@@ -90,9 +89,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset();
     closeButton?.click();
   };
-
-
-
 
   return (
     <div className="modal fade" id="add_edit_payslip_modal" role="dialog">
@@ -131,12 +127,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       classNamePrefix="react-select"
                       className="select2"
                       onChange={(option) => field.onChange(option?.value || "")}
-                      value={EmployeeList.find(option => option.value === watch("employee_id"))}
+                      value={EmployeeList.find(
+                        (option) => option.value === watch("employee_id"),
+                      )}
                     />
                   )}
                 />
                 {errors.employee_id && (
-                  <small className="text-danger">{errors.employee_id.message}</small>
+                  <small className="text-danger">
+                    {errors.employee_id.message}
+                  </small>
                 )}
               </div>
 
@@ -163,10 +163,22 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 >
                   <option value="">Select Month</option>
                   {[
-                    "January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
                   ].map((month) => (
-                    <option key={month} value={month}>{month}</option>
+                    <option key={month} value={month}>
+                      {month}
+                    </option>
                   ))}
                 </select>
                 {errors.month && (
@@ -183,15 +195,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   {...register("year", { required: "Year is required" })}
                 >
                   <option value="">Select Year</option>
-                  {Array.from({ length: 110 }, (_, i) => 1990 + i).map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
+                  {Array.from({ length: 110 }, (_, i) => 1990 + i).map(
+                    (year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ),
+                  )}
                 </select>
                 {errors.year && (
                   <small className="text-danger">{errors.year.message}</small>
                 )}
               </div>
-
 
               {/* Net Salary */}
               <div className="mb-3">
@@ -202,10 +217,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   type="number"
                   step="0.01"
                   className={`form-control ${errors.net_salary ? "is-invalid" : ""}`}
-                  {...register("net_salary", { required: "Net salary is required" })}
+                  {...register("net_salary", {
+                    required: "Net salary is required",
+                  })}
                 />
                 {errors.net_salary && (
-                  <small className="text-danger">{errors.net_salary.message}</small>
+                  <small className="text-danger">
+                    {errors.net_salary.message}
+                  </small>
                 )}
               </div>
 
@@ -220,12 +239,15 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "PDF file is required.",
                     validate: {
                       isPdf: (files) =>
-                        files[0]?.type === "application/pdf" || "Only PDF files are allowed.",
+                        files[0]?.type === "application/pdf" ||
+                        "Only PDF files are allowed.",
                     },
                   })}
                 />
                 {errors.pdf_path && (
-                  <small className="text-danger">{errors.pdf_path.message}</small>
+                  <small className="text-danger">
+                    {errors.pdf_path.message}
+                  </small>
                 )}
               </div>
 
@@ -240,11 +262,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     <DatePicker
                       {...field}
                       value={
-                        field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                        field.value
+                          ? moment(field.value).format("DD-MM-YYYY")
+                          : ""
                       }
                       selected={field.value ? new Date(field.value) : null}
                       onChange={(date) => {
-                        field.onChange(date)
+                        field.onChange(date);
                       }}
                       className="form-control"
                       dateFormat="dd-MM-yyyy"
@@ -253,11 +277,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   )}
                 />
                 {errors.uploaded_on && (
-                  <small className="text-danger">{errors.uploaded_on.message}</small>
+                  <small className="text-danger">
+                    {errors.uploaded_on.message}
+                  </small>
                 )}
               </div>
             </div>
-
 
             {/* Footer */}
             <div className="modal-footer">

@@ -51,7 +51,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -67,13 +67,13 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
             updateAppraisalEntries({
               id: selected.id,
               appraisalEntriesData: { ...data, rating: Number(data.rating) },
-            })
+            }),
           ).unwrap()
         : await dispatch(
             createAppraisalEntries({
               ...data,
               rating: Number(data.rating),
-            })
+            }),
           ).unwrap();
       closeButton.click();
       reset();
@@ -91,12 +91,12 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -140,7 +140,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

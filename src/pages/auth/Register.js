@@ -32,7 +32,7 @@ const Register = () => {
     e.preventDefault();
     // const result = await dispatch(loginUser({ email:username, password }));
     const result = await dispatch(
-      registerUser({ email, full_name: username, password, role_id: 1 })
+      registerUser({ email, full_name: username, password, role_id: 1 }),
     );
 
     if (registerUser.fulfilled.match(result)) {
@@ -64,9 +64,22 @@ const Register = () => {
           className="h-100 login-left position-relative "
           style={{ width: "45vw" }}
         >
-            <img src={bolls} alt="image" className="position-absolute z-3 h-25 "  style={{bottom:"-22px" , left:"-22px"}} />
-            <img src={bolls} alt="image" className="position-absolute z-0  "  style={{top:"20%" , left:"65%" , height:"17%"}}  />
-          <div   className="position-absolute z-0 m-5 rounded-5  bg-white  opacity-25 w-75 "style={{ height: "85%" }} ></div>
+          <img
+            src={bolls}
+            alt="image"
+            className="position-absolute z-3 h-25 "
+            style={{ bottom: "-22px", left: "-22px" }}
+          />
+          <img
+            src={bolls}
+            alt="image"
+            className="position-absolute z-0  "
+            style={{ top: "20%", left: "65%", height: "17%" }}
+          />
+          <div
+            className="position-absolute z-0 m-5 rounded-5  bg-white  opacity-25 w-75 "
+            style={{ height: "85%" }}
+          ></div>
           <div
             className="m-5 p-5 rounded-5 d-flex flex-column justify-content-between text-white z-2 w-75 border-white border-4 "
             style={{ height: "86%" }}
@@ -83,7 +96,6 @@ const Register = () => {
             </div>
           </div>
         </div>
-
 
         <div
           style={{ width: "55vw" }}
@@ -145,7 +157,7 @@ const Register = () => {
                     <input
                       type="text"
                       className="form-control"
-                        placeholder="Enter your email"
+                      placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -159,7 +171,7 @@ const Register = () => {
                       type={isPasswordVisible ? "text" : "password"}
                       className="pass-input form-control"
                       value={password}
-                        placeholder="Enter your password"
+                      placeholder="Enter your password"
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
@@ -177,7 +189,7 @@ const Register = () => {
                     <input
                       type={isCPasswordVisible ? "text" : "password"}
                       className="pass-input form-control"
-                        placeholder="Confirm your password"
+                      placeholder="Confirm your password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
@@ -189,11 +201,11 @@ const Register = () => {
                       onClick={() => togglePasswordVisibility(2)}
                     ></span>
                   </div>
-                    {password != confirmPassword && (
-                      <div className="text-primary m-xl-2">
-                        confirm password is not matched !
-                      </div>
-                    )}
+                  {password != confirmPassword && (
+                    <div className="text-primary m-xl-2">
+                      confirm password is not matched !
+                    </div>
+                  )}
                 </div>
                 {/* <div className="d-flex align-items-center justify-content-between mb-3">
                 <div className="form-check form-check-md d-flex align-items-center">
@@ -226,16 +238,15 @@ const Register = () => {
                     {loading ? "Signing In..." : "Sign In"}
                   </button>
                 </div>
-                     <div className="mb-3">
-                                <h6>
-                            
-                                  You have alread Account ?
-                                  <Link to={route.login} className="text-purple link-hover">
-                                    {" "}
-                                    Login
-                                  </Link>
-                                </h6>
-                              </div>
+                <div className="mb-3">
+                  <h6>
+                    You have alread Account ?
+                    <Link to={route.login} className="text-purple link-hover">
+                      {" "}
+                      Login
+                    </Link>
+                  </h6>
+                </div>
                 <div className="text-center">
                   <p className="fw-medium text-gray">
                     Copyright © 2024 - CRMS

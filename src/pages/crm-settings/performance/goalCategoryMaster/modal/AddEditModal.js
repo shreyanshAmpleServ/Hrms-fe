@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updategoal_category({
           id: initialData.id,
           goal_categoryData: data,
-        })
+        }),
       );
     }
     reset();

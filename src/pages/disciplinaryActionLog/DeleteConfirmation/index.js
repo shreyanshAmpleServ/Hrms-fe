@@ -1,7 +1,11 @@
 import { useDispatch } from "react-redux";
 import { deletedisciplinryAction } from "../../../redux/disciplinaryActionLog";
 
-const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) => {
+const DeleteConfirmation = ({
+  showModal,
+  setShowModal,
+  disciplinryActionId,
+}) => {
   const dispatch = useDispatch();
   const handleDeletedisciplinryAction = () => {
     if (disciplinryActionId) {
@@ -28,8 +32,8 @@ const DeleteConfirmation = ({ showModal, setShowModal, disciplinryActionId }) =>
                   </div>
                   <h4 className="mb-2">Remove Disciplinry Action?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the Disciplinry Action
-                    you selected?
+                    Are you sure you want to remove <br /> the Disciplinry
+                    Action you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button

@@ -9,7 +9,7 @@ import { ActivityDetailOfUser } from "../../../components/common/detailPages/Use
 import { CallsDetailsOfUser } from "../../../components/common/detailPages/UserDetails/callsDetails";
 import FilesDetails from "../../../components/common/detailPages/UserDetails/FilesDetails";
 const ProjectActvities = () => {
-  const {id}= useParams()
+  const { id } = useParams();
   return (
     <div className="col-xl-9">
       <div className="card mb-3">
@@ -48,15 +48,14 @@ const ProjectActvities = () => {
                 Files
               </Link>
             </li>
-            
           </ul>
         </div>
       </div>
       {/* Tab Content */}
       <div className="tab-content pt-0">
         {/* Activities */}
-        
- <ActivityDetailOfUser project_id={id} />
+
+        <ActivityDetailOfUser project_id={id} />
         {/* <div className="tab-pane active show" id="activities">
           <div className="card">
             <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
@@ -286,13 +285,12 @@ const ProjectActvities = () => {
             </div>
           </div>
         </div> */}
-       
+
         {/* Calls */}
         <CallsDetailsOfUser project_id={id} />
 
         {/* Files */}
-       <FilesDetails type={"Projects"} type_id={id} />
-
+        <FilesDetails type={"Projects"} type_id={id} />
       </div>
       {/* /Tab Content */}
     </div>

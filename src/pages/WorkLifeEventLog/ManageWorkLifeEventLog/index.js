@@ -48,7 +48,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -61,7 +61,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
   }, [dispatch, searchValue]);
 
   const { work_life, loading: workLifeEventTypeLoading } = useSelector(
-    (state) => state.workLifeEvent || {}
+    (state) => state.workLifeEvent || {},
   );
 
   const workLifeEventTypes = work_life?.data?.map((i) => ({
@@ -77,7 +77,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
             updateWorkLifeEventLog({
               id: workLifeEventLog.id,
               workLifeEventLogData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createWorkLifeEventLog({ ...data })).unwrap();
       closeButton.click();
@@ -96,12 +96,12 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -146,7 +146,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select
@@ -193,7 +193,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                       render={({ field }) => {
                         const selectedDeal = workLifeEventTypes?.find(
                           (workLifeEventType) =>
-                            workLifeEventType.value === field.value
+                            workLifeEventType.value === field.value,
                         );
                         return (
                           <Select

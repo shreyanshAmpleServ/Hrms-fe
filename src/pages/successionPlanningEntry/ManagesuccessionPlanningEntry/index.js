@@ -4,10 +4,16 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
-import { createsuccessionPlanning, updatesuccessionPlanning } from "../../../redux/successionPlanningEntry";
+import {
+  createsuccessionPlanning,
+  updatesuccessionPlanning,
+} from "../../../redux/successionPlanningEntry";
 import DatePicker from "react-datepicker";
 
-const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning }) => {
+const ManagesuccessionPlanning = ({
+  setsuccessionPlanning,
+  successionPlanning,
+}) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
@@ -70,10 +76,12 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       if (successionPlanning) {
-        await dispatch(updatesuccessionPlanning({
-          id: successionPlanning.id,
-          successionPlanningData: { ...data },
-        })).unwrap();
+        await dispatch(
+          updatesuccessionPlanning({
+            id: successionPlanning.id,
+            successionPlanningData: { ...data },
+          }),
+        ).unwrap();
       } else {
         await dispatch(createsuccessionPlanning({ ...data })).unwrap();
       }
@@ -87,7 +95,11 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
   };
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large" tabIndex={-1} id="offcanvas_add">
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
+      tabIndex={-1}
+      id="offcanvas_add"
+    >
       <div className="offcanvas-header border-bottom">
         <h4>{successionPlanning ? "Update" : "Add New"} Succession Planning</h4>
         <button
@@ -103,16 +115,19 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-
             {/* Current Holder */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Current Holder <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Current Holder <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="current_holder_id"
                 control={control}
                 rules={{ required: "Current holder is required" }}
                 render={({ field }) => {
-                  const selected = employeeOptions?.find(opt => opt.value === field.value);
+                  const selected = employeeOptions?.find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -126,18 +141,26 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
                   );
                 }}
               />
-              {errors.current_holder_id && <small className="text-danger">{errors.current_holder_id.message}</small>}
+              {errors.current_holder_id && (
+                <small className="text-danger">
+                  {errors.current_holder_id.message}
+                </small>
+              )}
             </div>
 
             {/* Potential Successor */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Potential Successor <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Potential Successor <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="potential_successor_id"
                 control={control}
                 rules={{ required: "Potential successor is required" }}
                 render={({ field }) => {
-                  const selected = employeeOptions?.find(opt => opt.value === field.value);
+                  const selected = employeeOptions?.find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -151,12 +174,18 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
                   );
                 }}
               />
-              {errors.potential_successor_id && <small className="text-danger">{errors.potential_successor_id.message}</small>}
+              {errors.potential_successor_id && (
+                <small className="text-danger">
+                  {errors.potential_successor_id.message}
+                </small>
+              )}
             </div>
 
             {/* Critical Position */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label d-block">Is Critical Position?</label>
+              <label className="col-form-label d-block">
+                Is Critical Position?
+              </label>
               <Controller
                 name="critical_position"
                 control={control}
@@ -176,13 +205,17 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
 
             {/* Readiness Level */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Readiness Level <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Readiness Level <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="readiness_level"
                 control={control}
                 rules={{ required: "Readiness level is required" }}
                 render={({ field }) => {
-                  const selected = readinessOptions.find(opt => opt.value === field.value);
+                  const selected = readinessOptions.find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -195,12 +228,18 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
                   );
                 }}
               />
-              {errors.readiness_level && <small className="text-danger">{errors.readiness_level.message}</small>}
+              {errors.readiness_level && (
+                <small className="text-danger">
+                  {errors.readiness_level.message}
+                </small>
+              )}
             </div>
 
             {/* Plan Date */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Plan Date<span className="text-danger"> *</span></label>
+              <label className="col-form-label">
+                Plan Date<span className="text-danger"> *</span>
+              </label>
               <Controller
                 name="plan_date"
                 control={control}
@@ -209,11 +248,13 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
                   <DatePicker
                     {...field}
                     value={
-                      field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : ""
                     }
                     selected={field.value ? new Date(field.value) : null}
                     onChange={(date) => {
-                      field.onChange(date)
+                      field.onChange(date);
                     }}
                     className="form-control"
                     dateFormat="dd-MM-yyyy"
@@ -221,19 +262,34 @@ const ManagesuccessionPlanning = ({ setsuccessionPlanning, successionPlanning })
                   />
                 )}
               />
-              {errors.plan_date && <small className="text-danger">{errors.plan_date.message}</small>}
+              {errors.plan_date && (
+                <small className="text-danger">
+                  {errors.plan_date.message}
+                </small>
+              )}
             </div>
-
           </div>
 
           {/* Submit Buttons */}
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
               Cancel
             </button>
             <button type="submit" className="btn btn-primary">
-              {successionPlanning ? (loading ? "Updating..." : "Update") : loading ? "Creating..." : "Create"}
-              {loading && <div className="spinner-border spinner-border-sm ms-2" />}
+              {successionPlanning
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <div className="spinner-border spinner-border-sm ms-2" />
+              )}
             </button>
           </div>
         </form>

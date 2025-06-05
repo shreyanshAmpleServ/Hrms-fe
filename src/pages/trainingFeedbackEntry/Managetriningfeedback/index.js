@@ -7,7 +7,10 @@ import Select from "react-select";
 import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchtrainingSession } from "../../../redux/trainingSessionSchedule";
-import { createtrainingFeedback, updatetrainingFeedback } from "../../../redux/trainingFeedbackEntry";
+import {
+  createtrainingFeedback,
+  updatetrainingFeedback,
+} from "../../../redux/trainingFeedbackEntry";
 
 const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -51,7 +54,9 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   }, [trainingFeedback, reset]);
 
   const { employee } = useSelector((state) => state.employee || {});
-  const { trainingSession } = useSelector((state) => state.trainingSession || {});
+  const { trainingSession } = useSelector(
+    (state) => state.trainingSession || {},
+  );
   const { loading } = useSelector((state) => state.trainingFeedback || {});
 
   const employeeOptions = employee?.data?.map((emp) => ({
@@ -73,10 +78,12 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       if (trainingFeedback) {
-        await dispatch(updatetrainingFeedback({
-          id: trainingFeedback.id,
-          trainingFeedbackData: { ...data },
-        })).unwrap();
+        await dispatch(
+          updatetrainingFeedback({
+            id: trainingFeedback.id,
+            trainingFeedbackData: { ...data },
+          }),
+        ).unwrap();
       } else {
         await dispatch(createtrainingFeedback({ ...data })).unwrap();
       }
@@ -90,7 +97,11 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   };
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large" tabIndex={-1} id="offcanvas_add">
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
+      tabIndex={-1}
+      id="offcanvas_add"
+    >
       <div className="offcanvas-header border-bottom">
         <h4>{trainingFeedback ? "Update" : "Add New"} Training Feedback</h4>
         <button
@@ -108,13 +119,17 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
           <div className="row">
             {/* Employee */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Employee<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Employee<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="employee_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = (employeeOptions || []).find(opt => opt.value === field.value);
+                  const selected = (employeeOptions || []).find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -128,19 +143,26 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                   );
                 }}
               />
-              {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+              {errors.employee_id && (
+                <small className="text-danger">
+                  {errors.employee_id.message}
+                </small>
+              )}
             </div>
-
 
             {/* Training */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Training Session<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Training Session<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="training_id"
                 control={control}
                 rules={{ required: "Training is required" }}
                 render={({ field }) => {
-                  const selected = (trainingOptions || []).find(opt => opt.value === field.value);
+                  const selected = (trainingOptions || []).find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -153,7 +175,11 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                   );
                 }}
               />
-              {errors.training_id && <small className="text-danger">{errors.training_id.message}</small>}
+              {errors.training_id && (
+                <small className="text-danger">
+                  {errors.training_id.message}
+                </small>
+              )}
             </div>
 
             <div className="col-md-6">
@@ -190,9 +216,7 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                 />
               </div>
               {errors.rating && (
-                <small className="text-danger">
-                  {errors.rating.message}
-                </small>
+                <small className="text-danger">{errors.rating.message}</small>
               )}
             </div>
             {/* Feedback */}
@@ -202,23 +226,37 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                 name="feedback_text"
                 control={control}
                 render={({ field }) => (
-                  <DefaultEditor value={field.value} onChange={field.onChange} />
+                  <DefaultEditor
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 )}
               />
             </div>
 
             {/* Rating */}
-
           </div>
 
           {/* Submit/Cancel Buttons */}
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
               Cancel
             </button>
             <button type="submit" className="btn btn-primary">
-              {trainingFeedback ? (loading ? "Updating..." : "Update") : loading ? "Creating..." : "Create"}
-              {loading && <div className="spinner-border spinner-border-sm ms-2" />}
+              {trainingFeedback
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <div className="spinner-border spinner-border-sm ms-2" />
+              )}
             </button>
           </div>
         </form>

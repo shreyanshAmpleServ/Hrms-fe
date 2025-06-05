@@ -59,7 +59,7 @@ const EditCompanyModal = ({ company }) => {
       if (data[key] !== null && data[key] !== undefined) {
         formData.append(
           key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
+          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
         );
       }
     });
@@ -76,7 +76,7 @@ const EditCompanyModal = ({ company }) => {
     const closeButton = document.getElementById("close_company_edit_btn");
     try {
       await dispatch(
-        updateCompany({ id: company.id, companyData: formData })
+        updateCompany({ id: company.id, companyData: formData }),
       ).unwrap();
       closeButton.click();
       reset();

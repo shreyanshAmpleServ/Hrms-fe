@@ -46,7 +46,7 @@ const LeadList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Leads"
+    (i) => i?.module_name === "Leads",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -174,7 +174,7 @@ const LeadList = () => {
       : []),
   ];
   const { leads, loading, error, success } = useSelector(
-    (state) => state.leads
+    (state) => state.leads,
   );
 
   // Show FlashMessage when success or error changes
@@ -208,7 +208,7 @@ const LeadList = () => {
         search: searchText,
         status: selectedStatus,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchText, selectedStatus, selectedDateRange]);
 
@@ -234,7 +234,7 @@ const LeadList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -304,7 +304,7 @@ const LeadList = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

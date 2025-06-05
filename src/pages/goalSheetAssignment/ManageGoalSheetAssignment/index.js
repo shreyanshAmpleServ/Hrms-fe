@@ -25,12 +25,12 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
 
   const { employee } = useSelector((state) => state.employee || {});
   const { appraisalEntries } = useSelector(
-    (state) => state.appraisalEntries || []
+    (state) => state.appraisalEntries || [],
   );
   console.log("appraisalEntries:", appraisalEntries);
 
   const { goalCategoryMaster } = useSelector(
-    (state) => state.goalCategoryMaster || {}
+    (state) => state.goalCategoryMaster || {},
   );
   console.log("goalCategoryMaster:", goalCategoryMaster);
 
@@ -165,7 +165,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                     placeholder="Select Cycle"
                     value={
                       appraisalEntriesList.find(
-                        (opt) => opt.value === field.value
+                        (opt) => opt.value === field.value,
                       ) || null
                     }
                     onChange={(opt) => field.onChange(opt.value)}

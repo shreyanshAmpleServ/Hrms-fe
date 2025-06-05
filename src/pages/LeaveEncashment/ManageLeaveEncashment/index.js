@@ -60,7 +60,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -73,7 +73,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
   }, [dispatch, searchValue]);
 
   const { leaveType, loading: leaveTypeLoading } = useSelector(
-    (state) => state.leaveType || {}
+    (state) => state.leaveType || {},
   );
 
   const leaveTypes = leaveType?.data?.map((i) => ({
@@ -95,7 +95,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
             updateLeaveEncashment({
               id: leaveEncashment.id,
               leaveEncashmentData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createLeaveEncashment({ ...data })).unwrap();
       closeButton.click();
@@ -114,12 +114,12 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -163,7 +163,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select
@@ -209,7 +209,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                       rules={{ required: "Leave type is required" }}
                       render={({ field }) => {
                         const selectedDeal = leaveTypes?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select
@@ -343,7 +343,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                       rules={{ required: "Approved Status is required" }}
                       render={({ field }) => {
                         const selectedDeal = approvedStatus?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

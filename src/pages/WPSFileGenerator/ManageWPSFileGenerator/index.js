@@ -3,10 +3,7 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import {
-  createWPSFile,
-  updateWPSFile,
-} from "../../../redux/WPSFileGenerator";
+import { createWPSFile, updateWPSFile } from "../../../redux/WPSFileGenerator";
 import moment from "moment";
 
 const ManageWPSFileGenerator = ({ setSelected, selected }) => {
@@ -61,8 +58,6 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     }
   }, [selected, reset]);
 
-
-
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     const formData = new FormData();
@@ -73,17 +68,17 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     try {
       selected
         ? await dispatch(
-          updateWPSFile({
-            id: selected.id,
-            wpsFileData: { ...data, rating: Number(data.rating) },
-          })
-        ).unwrap()
+            updateWPSFile({
+              id: selected.id,
+              wpsFileData: { ...data, rating: Number(data.rating) },
+            }),
+          ).unwrap()
         : await dispatch(
-          createWPSFile({
-            ...data,
-            rating: Number(data.rating),
-          })
-        ).unwrap();
+            createWPSFile({
+              ...data,
+              rating: Number(data.rating),
+            }),
+          ).unwrap();
       closeButton.click();
       reset();
       setSelected(null);
@@ -100,12 +95,12 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -149,7 +144,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                       rules={{ required: "Payroll month is required" }}
                       render={({ field }) => {
                         const selectedMonth = monthsOptions?.find(
-                          (month) => month.value === field.value
+                          (month) => month.value === field.value,
                         );
                         return (
                           <Select
@@ -181,7 +176,6 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                 </div>
 
                 <div className="col-md-6">
-
                   <div className="mb-3 ">
                     <label className="col-form-label">File Path</label>
                     <input
@@ -192,12 +186,15 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                         required: "File Path is required.",
                         validate: {
                           isPdf: (files) =>
-                            files[0]?.type === "application/pdf" || "Only PDF files are allowed.",
+                            files[0]?.type === "application/pdf" ||
+                            "Only PDF files are allowed.",
                         },
                       })}
                     />
                     {errors.file_path && (
-                      <small className="text-danger">{errors.file_path.message}</small>
+                      <small className="text-danger">
+                        {errors.file_path.message}
+                      </small>
                     )}
                   </div>
                 </div>

@@ -2,7 +2,10 @@ import React, { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { addoffer_letter, updateoffer_letter } from "../../../redux/offerLetters";
+import {
+  addoffer_letter,
+  updateoffer_letter,
+} from "../../../redux/offerLetters";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchEmployee } from "../../../redux/Employee";
 import moment from "moment";
@@ -33,25 +36,28 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         value: item.id,
         label: item.full_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
-    [employee]
+    [employee],
   );
   const Status = [
     { label: "Pending", value: "pending" },
     { label: "Approved", value: "approved" },
     { label: "Rejected", value: "rejected" },
-  ];;
+  ];
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         status: initialData.status || "",
-        offer_date: initialData.offer_date ? new Date(initialData.offer_date).toISOString().split("T")[0] : "",
-        valid_until: initialData.valid_until ? new Date(initialData.valid_until).toISOString().split("T")[0] : "",
+        offer_date: initialData.offer_date
+          ? new Date(initialData.offer_date).toISOString().split("T")[0]
+          : "",
+        valid_until: initialData.valid_until
+          ? new Date(initialData.valid_until).toISOString().split("T")[0]
+          : "",
         offered_salary: initialData.offered_salary || "",
         position: initialData.position || "",
         employee_id: initialData.employee_id || "",
       });
-
     } else {
       reset({
         status: "",
@@ -79,12 +85,12 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       closing_date: data.closing_date ? new Date(data.closing_date) : null,
       offer_date: data.offer_date ? new Date(data.offer_date) : null,
       valid_until: data.valid_until ? new Date(data.valid_until) : null,
-      required_experience: data.required_experience !== "" && !isNaN(data.required_experience)
-        ? data.required_experience
-        : null,
+      required_experience:
+        data.required_experience !== "" && !isNaN(data.required_experience)
+          ? data.required_experience
+          : null,
       is_internal: data.is_internal,
     };
-
 
     if (mode === "add") {
       dispatch(addoffer_letter(formattedData));
@@ -93,7 +99,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         updateoffer_letter({
           id: initialData.id,
           offer_letterData: formattedData,
-        })
+        }),
       );
     }
 
@@ -102,24 +108,36 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   };
 
   useEffect(() => {
-    const offcanvasElement = document.getElementById("add_edit_offer_letter_modal");
+    const offcanvasElement = document.getElementById(
+      "add_edit_offer_letter_modal",
+    );
     if (offcanvasElement) {
       const handleModalClose = () => {
         // Clean up state if needed
       };
-      offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
-      return () => offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
+      return () =>
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
     }
   }, []);
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large"
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
       tabIndex={-1}
       id="add_edit_offer_letter_modal"
-    // aria-labelledby="offcanvasLabel"
+      // aria-labelledby="offcanvasLabel"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{contact ? "Update" : "Add New"} Offer Letter</h5>
+        <h5 className="fw-semibold">
+          {contact ? "Update" : "Add New"} Offer Letter
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -151,17 +169,17 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id")
+                    (option) => option.value === watch("employee_id"),
                   )}
                 />
               )}
             />
             {errors.employee_id && (
-              <small className="text-danger">{errors.employee_id.message}</small>
+              <small className="text-danger">
+                {errors.employee_id.message}
+              </small>
             )}
-
           </div>
-
 
           {/* Offer Date */}
           <div className="col-md-6 mb-3">
@@ -178,7 +196,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   }
                   selected={field.value ? new Date(field.value) : null}
                   onChange={(date) => {
-                    field.onChange(date)
+                    field.onChange(date);
                   }}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
@@ -212,10 +230,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               type="number"
               placeholder="Offered Salary"
               className="form-control"
-              {...register("offered_salary", { required: "Offered salary is required" })}
+              {...register("offered_salary", {
+                required: "Offered salary is required",
+              })}
             />
             {errors.offered_salary && (
-              <small className="text-danger">{errors.offered_salary.message}</small>
+              <small className="text-danger">
+                {errors.offered_salary.message}
+              </small>
             )}
           </div>
 
@@ -234,7 +256,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   }
                   selected={field.value ? new Date(field.value) : null}
                   onChange={(date) => {
-                    field.onChange(date)
+                    field.onChange(date);
                   }}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
@@ -243,7 +265,9 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               )}
             />
             {errors.valid_until && (
-              <small className="text-danger">{errors.valid_until.message}</small>
+              <small className="text-danger">
+                {errors.valid_until.message}
+              </small>
             )}
           </div>
 
@@ -256,7 +280,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               rules={{ required: "Approved Status is required" }}
               render={({ field }) => {
                 const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value
+                  (employee) => employee.value === field.value,
                 );
                 return (
                   <Select
@@ -284,13 +308,26 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-
-
-
           <div className="col-md-12 text-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? (mode === "add" ? "Creating..." : "Updating...") : mode === "add" ? "Create" : "Update"}
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              {loading
+                ? mode === "add"
+                  ? "Creating..."
+                  : "Updating..."
+                : mode === "add"
+                  ? "Create"
+                  : "Update"}
             </button>
           </div>
         </form>

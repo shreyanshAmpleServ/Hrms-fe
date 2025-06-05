@@ -1,7 +1,7 @@
 // DealKanbanCard.js
 import React from "react";
 import { Link } from "react-router-dom";
-import moment from "moment"
+import moment from "moment";
 import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
 
 const ActContainerIDKanbanCard = ({ activity, ActContainerID }) => {
@@ -27,7 +27,8 @@ const ActContainerIDKanbanCard = ({ activity, ActContainerID }) => {
         </div>
         <div className="mb-3 d-flex flex-column">
           <p className="text-default d-inline-flex align-items-center mb-2">
-            <i className="ti ti-report-money text-dark me-1" />{activity?.activity_type.name}
+            <i className="ti ti-report-money text-dark me-1" />
+            {activity?.activity_type.name}
           </p>
           {/* Add more deal-related information here */}
         </div>
@@ -38,7 +39,7 @@ const ActContainerIDKanbanCard = ({ activity, ActContainerID }) => {
               <ImageWithDatabase src={activity?.owner?.profile_img} />
             </Link>
             <Link to="#" className="text-default">
-             {activity?.owner?.full_name}
+              {activity?.owner?.full_name}
             </Link>
           </div>
           <span className="badge badge-sm text-white bg-blue">
@@ -48,7 +49,8 @@ const ActContainerIDKanbanCard = ({ activity, ActContainerID }) => {
         </div>
         <div className="d-flex align-items-center justify-content-between border-top pt-3 mt-3">
           <span>
-            <i className="ti ti-calendar-due" />{moment(activity?.ceatedDate).format("LL")}
+            <i className="ti ti-calendar-due" />
+            {moment(activity?.ceatedDate).format("LL")}
           </span>
           <div className="icons-social d-flex align-items-center">
             <Link

@@ -9,13 +9,13 @@ import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
 import { fetchCountries } from "../../../redux/country";
 import { fetchMappedStates } from "../../../redux/mappedState";
 
-const AddVendorModal = ({vendor,setVendor}) => {
+const AddVendorModal = ({ vendor, setVendor }) => {
   const dispatch = useDispatch();
 
   // Access roles and user creation state from Redux
   // const { loading } = useSelector((state) => state.vendor);
   const { users } = useSelector((state) => state.users);
-  const {  loading } = useSelector((state) => state.vendor);
+  const { loading } = useSelector((state) => state.vendor);
 
   const [selectedAvatar, setSelectedAvatar] = useState(null); // For profile image upload
 
@@ -46,10 +46,9 @@ const AddVendorModal = ({vendor,setVendor}) => {
       billing_zipcode: "",
       billing_country: null,
       description: "",
-      
     },
   });
-React.useEffect(() => {
+  React.useEffect(() => {
     if (vendor) {
       reset({
         name: vendor?.name || "",
@@ -61,21 +60,21 @@ React.useEffect(() => {
         glaccount: vendor?.glaccount || "",
         profile_img: vendor?.profile_img || null,
         category: vendor?.category || "",
-        email_opt_out: vendor?.email_opt_out == "Y" ? true : false || "", 
+        email_opt_out: vendor?.email_opt_out == "Y" ? true : false || "",
         billing_street: vendor?.billing_street || "",
         billing_city: vendor?.billing_city || "",
         billing_state: vendor?.billing_state || null,
         billing_zipcode: vendor?.billing_zipcode || "",
         billing_country: vendor?.billing_country || null,
         description: vendor?.description || "",
- });
+      });
     } else {
       reset({
         name: "",
         phone: "",
         email: "",
         is_active: "",
-        account_owner:null,
+        account_owner: null,
         website: "",
         glaccount: "",
         profile_img: null,
@@ -87,24 +86,23 @@ React.useEffect(() => {
         billing_zipcode: "",
         billing_country: null,
         description: "",
-       
       });
     }
   }, [vendor]);
 
-  const country_id = watch("billing_country")
+  const country_id = watch("billing_country");
   useEffect(() => {
-     dispatch(fetchVendors());
-     dispatch(fetchUsers())
-     dispatch(fetchCountries());
+    dispatch(fetchVendors());
+    dispatch(fetchUsers());
+    dispatch(fetchCountries());
   }, [dispatch]);
 
   React.useEffect(() => {
-    country_id  &&  dispatch(fetchMappedStates(country_id));
+    country_id && dispatch(fetchMappedStates(country_id));
   }, [dispatch, country_id]);
-  
-  const { countries } = useSelector( (state) => state.countries  );
-  const { mappedStates } = useSelector( (state) => state.mappedStates );
+
+  const { countries } = useSelector((state) => state.countries);
+  const { mappedStates } = useSelector((state) => state.mappedStates);
 
   const countryList = countries.map((emnt) => ({
     value: emnt.id,
@@ -112,7 +110,7 @@ React.useEffect(() => {
   }));
   const stateList = mappedStates?.data?.map((emnt) => ({
     value: emnt.id,
-    label:emnt.name,
+    label: emnt.name,
   }));
   const usersList = users?.data?.map((emnt) => ({
     value: emnt.id,
@@ -132,18 +130,26 @@ React.useEffect(() => {
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
       if (data[key] !== null) {
-        formData.append(key,key === "email_opt_out" ? watch("email_opt_out") === true ? "Y" : "N" : data[key]);
+        formData.append(
+          key,
+          key === "email_opt_out"
+            ? watch("email_opt_out") === true
+              ? "Y"
+              : "N"
+            : data[key],
+        );
       }
     });
 
     if (selectedAvatar) {
-      formData.append("profile_img", selectedAvatar );
+      formData.append("profile_img", selectedAvatar);
     }
     // formData.append("email_opt_out",watch("email_opt_out") === true ? "Y" : "N")
 
     try {
-      vendor ? await dispatch(updateVendor({id :vendor?.id, vendorData:formData}))
-      : await dispatch(addVendor(formData)).unwrap();
+      vendor
+        ? await dispatch(updateVendor({ id: vendor?.id, vendorData: formData }))
+        : await dispatch(addVendor(formData)).unwrap();
       closeButton.click();
       reset();
       setSelectedAvatar(null);
@@ -152,24 +158,24 @@ React.useEffect(() => {
     }
   };
   React.useEffect(() => {
-        const offcanvasElement = document.getElementById("offcanvas_add_vendor");
-        if (offcanvasElement) {
-          const handleModalClose = () => {
-            setSelectedAvatar(null)
-            setVendor();
-          };
-          offcanvasElement.addEventListener(
-            "hidden.bs.offcanvas",
-            handleModalClose
-          );
-          return () => {
-            offcanvasElement.removeEventListener(
-              "hidden.bs.offcanvas",
-              handleModalClose
-            );
-          };
-        }
-      }, []);
+    const offcanvasElement = document.getElementById("offcanvas_add_vendor");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setSelectedAvatar(null);
+        setVendor();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -203,11 +209,9 @@ React.useEffect(() => {
                       alt="Avatar Preview"
                       className="img-fluid"
                     />
-                  ) : vendor?.profile_img ? 
-                    <ImageWithDatabase 
-                      src={vendor?.profile_img}
-                      alt="image" />
-                  :(
+                  ) : vendor?.profile_img ? (
+                    <ImageWithDatabase src={vendor?.profile_img} alt="image" />
+                  ) : (
                     <span>
                       <i className="ti ti-photo" />
                     </span>
@@ -244,42 +248,36 @@ React.useEffect(() => {
                   })}
                 />
                 {errors.full_name && (
-                  <small className="text-danger">
-                    {errors.name.message}
-                  </small>
+                  <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
             </div>
-
 
             {/* Email */}
             <div className="col-md-6">
               <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center">
-                <label className="col-form-label">
-                  Email <span className="text-danger">*</span>
-                </label>
+                  <label className="col-form-label">
+                    Email <span className="text-danger">*</span>
+                  </label>
                   <div className="status-toggle small-toggle-btn d-flex align-items-center">
-               
-                                            <span className="me-2 label-text">
-                                              Email Opt Out
-                                            </span>
-                                            <Controller
-                                              name="email_opt_out"
-                                              control={control}
-                                              render={({ field }) => (
-                                                <input
-                                                  type="checkbox"
-                                                  className="form-check-input"
-                                                  {...field}
-                                                  checked={field.value}
-                                                />
-                                              )}
-                                            />
-                
-                                            {/* <label htmlFor="user" className="checktoggle" /> */}
-                                          </div>
-                                          </div>
+                    <span className="me-2 label-text">Email Opt Out</span>
+                    <Controller
+                      name="email_opt_out"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          {...field}
+                          checked={field.value}
+                        />
+                      )}
+                    />
+
+                    {/* <label htmlFor="user" className="checktoggle" /> */}
+                  </div>
+                </div>
                 <input
                   type="text"
                   className="form-control"
@@ -293,43 +291,46 @@ React.useEffect(() => {
 
             {/* Owner */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                   Account Owner <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="account_owner"
-                    rules={{ required: "Account Owner is required!" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={usersList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={ watch("account_owner") && usersList?.find(
-                          (option) => option.value === watch("account_owner")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.account_owner && (
-                    <small className="text-danger">
-                      {errors.account_owner.message}
-                    </small>
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Account Owner <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="account_owner"
+                  rules={{ required: "Account Owner is required!" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={usersList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={
+                        watch("account_owner") &&
+                        usersList?.find(
+                          (option) => option.value === watch("account_owner"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
                   )}
-                </div>
+                />
+                {errors.account_owner && (
+                  <small className="text-danger">
+                    {errors.account_owner.message}
+                  </small>
+                )}
               </div>
+            </div>
 
             {/* Phone */}
             <div className="col-md-6">
@@ -363,10 +364,8 @@ React.useEffect(() => {
                 />
               </div>
               {errors.website && (
-                  <small className="text-danger">
-                    {errors.website.message}
-                  </small>
-                )}
+                <small className="text-danger">{errors.website.message}</small>
+              )}
             </div>
             {/* GLAccount */}
             <div className="col-md-6">
@@ -375,19 +374,19 @@ React.useEffect(() => {
                 <input
                   type="text"
                   className="form-control"
-                  {...register("glaccount" , {
+                  {...register("glaccount", {
                     required: "Gl Account is required",
                   })}
                 />
               </div>
               {errors.glaccount && (
-                  <small className="text-danger">
-                    {errors.glaccount.message}
-                  </small>
-                )}
+                <small className="text-danger">
+                  {errors.glaccount.message}
+                </small>
+              )}
             </div>
-              {/* Category */}
-              <div className="col-md-6">
+            {/* Category */}
+            <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">Category</label>
                 <input
@@ -399,10 +398,8 @@ React.useEffect(() => {
                 />
               </div>
               {errors.category && (
-                  <small className="text-danger">
-                    {errors.category.message}
-                  </small>
-                )}
+                <small className="text-danger">{errors.category.message}</small>
+              )}
             </div>
 
             {/* Billing Street */}
@@ -421,117 +418,121 @@ React.useEffect(() => {
 
             {/* Billing Country */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                  Billing Country
-                  </label>
-                  <Controller
-                    name="billing_country"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={countryList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>{
-                          field.onChange(selectedOption?.value || null)
-                          setValue("billing_state",null,{ shouldValidate: true, shouldDirty: true })
-                        }} // Send only value
-                        value={watch("billing_country") && countryList?.find(
-                          (option) => option.value === watch("billing_country")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                </div>
+              <div className="mb-3">
+                <label className="col-form-label">Billing Country</label>
+                <Controller
+                  name="billing_country"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={countryList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value || null);
+                        setValue("billing_state", null, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                      }} // Send only value
+                      value={
+                        watch("billing_country") &&
+                        countryList?.find(
+                          (option) => option.value === watch("billing_country"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
+                  )}
+                />
               </div>
+            </div>
 
             {/* Billing State */}
             <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                   Billing State
-                  </label>
-                  <Controller
-                    name="billing_state"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={stateList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } 
-                        value={ watch("billing_state") && stateList?.find(
-                          (option) => option.value === watch("billing_state")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                </div>
+              <div className="mb-3">
+                <label className="col-form-label">Billing State</label>
+                <Controller
+                  name="billing_state"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={stateList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      }
+                      value={
+                        watch("billing_state") &&
+                        stateList?.find(
+                          (option) => option.value === watch("billing_state"),
+                        )
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                        }),
+                      }}
+                    />
+                  )}
+                />
               </div>
+            </div>
 
-              {/* Billing City */}
-             <div className="col-md-6">
+            {/* Billing City */}
+            <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
-                Billing City <span className="text-danger">*</span>
+                  Billing City <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className="form-control"
                   {...register("billing_city")}
-                /></div>
+                />
               </div>
-            
+            </div>
 
-            
             {/* Billing Zipcode */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
-                Billing Zipcode<span className="text-danger">*</span>
+                  Billing Zipcode<span className="text-danger">*</span>
                 </label>
                 <input
                   type="number"
                   className="form-control"
-                  {...register("billing_zipcode")}/>
-               
+                  {...register("billing_zipcode")}
+                />
               </div>
             </div>
 
-             {/* Description */}
+            {/* Description */}
             <div className="col-md-12">
-                      <div className="mb-0">
-                        <label className="col-form-label">
-                          Description <span className="text-danger">*</span>
-                        </label>
-                        <textarea
-                          className="form-control"
-                          rows={5}
-                          {...register("description", {
-                            required: "Description is required",
-                          })}
-                        />
-                      </div>
-                    </div>
+              <div className="mb-0">
+                <label className="col-form-label">
+                  Description <span className="text-danger">*</span>
+                </label>
+                <textarea
+                  className="form-control"
+                  rows={5}
+                  {...register("description", {
+                    required: "Description is required",
+                  })}
+                />
+              </div>
+            </div>
           </div>
 
           <div className="d-flex mt-3 align-items-center justify-content-end">
@@ -547,19 +548,25 @@ React.useEffect(() => {
               className="btn btn-primary"
               disabled={loading}
             >
-              {vendor ? loading ? "Updating ....": "Update" : loading ? "Creating..." : "Create"}
+              {vendor
+                ? loading
+                  ? "Updating ...."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>
