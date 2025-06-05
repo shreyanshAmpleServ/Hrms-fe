@@ -28,7 +28,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
         value: item.id,
         label: item.department_name,
       })) || [],
-    [department],
+    [department]
   );
 
   const DesignationList = useMemo(
@@ -37,7 +37,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
         value: item.id,
         label: item.designation_name,
       })) || [],
-    [designation],
+    [designation]
   );
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
     try {
       JobPosting
         ? await dispatch(
-            updateJobPosting({ id: JobPosting.id, JobPostingData: data }),
+            updateJobPosting({ id: JobPosting.id, JobPostingData: data })
           ).unwrap()
         : await dispatch(createJobPosting(data)).unwrap();
       closeButton.click();
@@ -85,7 +85,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{JobPosting ? "Update" : "Add New"} Job Posting</h4>
+        <h4>{JobPosting ? "Update" : "Add"} Job Posting</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 d-flex align-items-center justify-content-center rounded-circle"
@@ -119,7 +119,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                     placeholder="Select Department"
                     classNamePrefix="react-select"
                     value={DepartmentList.find(
-                      (opt) => opt.value === field.value,
+                      (opt) => opt.value === field.value
                     )}
                     onChange={(opt) => field.onChange(opt.value)}
                   />
@@ -148,7 +148,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                     placeholder="Select Designation"
                     classNamePrefix="react-select"
                     value={DesignationList.find(
-                      (opt) => opt.value === field.value,
+                      (opt) => opt.value === field.value
                     )}
                     onChange={(opt) => field.onChange(opt.value)}
                   />
@@ -264,11 +264,17 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
               <Controller
                 name="description"
                 control={control}
-                rules={{ required: "Description is required" }}
+                rules={{
+                  maxLength: {
+                    value: 255,
+                    message: "Remarks must be less than 255 characters",
+                  },
+                  required: "Remarks is required!",
+                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
-                    rows={4}
+                    rows={3}
                     className="form-control"
                     placeholder="Enter Description"
                   />

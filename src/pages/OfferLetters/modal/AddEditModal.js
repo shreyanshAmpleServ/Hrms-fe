@@ -136,7 +136,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">
-          {contact ? "Update" : "Add New"} Offer Letter
+          {contact ? "Update" : "Add"} Offer Letter
         </h5>
         <button
           type="button"

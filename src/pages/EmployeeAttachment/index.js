@@ -31,7 +31,7 @@ const EmployeeAttachment = () => {
   const dispatch = useDispatch();
 
   const { employeeAttachment, loading } = useSelector(
-    (state) => state.employeeAttachment || {},
+    (state) => state.employeeAttachment || {}
   );
 
   React.useEffect(() => {
@@ -39,7 +39,7 @@ const EmployeeAttachment = () => {
       fetchEmployeeAttachment({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -64,7 +64,7 @@ const EmployeeAttachment = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -72,7 +72,7 @@ const EmployeeAttachment = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Employee Attachment",
+    (i) => i?.module_name === "Employee Attachment"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -87,7 +87,7 @@ const EmployeeAttachment = () => {
       render: (text) => text?.full_name || "-",
       sorter: (a, b) =>
         a.document_upload_employee.full_name.localeCompare(
-          b.document_upload_employee.full_name,
+          b.document_upload_employee.full_name
         ),
     },
     {
@@ -249,7 +249,7 @@ const EmployeeAttachment = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Employee Attachment
+                            Add Employee Attachment
                           </Link>
                         </div>
                       </div>

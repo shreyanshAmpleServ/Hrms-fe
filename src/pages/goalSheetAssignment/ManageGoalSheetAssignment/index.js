@@ -29,10 +29,10 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   );
   console.log("appraisalEntries:", appraisalEntries);
 
-  const { goalCategoryMasters, loading: categoryLoading } = useSelector(
-    (state) => state.goalCategoryMasters || {}
+  const { goal_category } = useSelector(
+    (state) => state.goalCategoryMaster || {}
   );
-  console.log("goalCategoryMaster:", goalCategoryMasters);
+  console.log("goalCategoryMaster:", goal_category);
 
   const { loading } = useSelector((state) => state.goalSheet || {});
 
@@ -46,7 +46,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
     value: i?.id,
   }));
 
-  const goalCategoryMasterList = (goalCategoryMasters?.data || []).map((i) => ({
+  const goalCategoryMasterList = (goal_category?.data || []).map((i) => ({
     label: i?.category_name,
     value: i?.id,
   }));
@@ -122,7 +122,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 Employee <span className="text-danger">*</span>
               </label>
               <Controller
-                name="appraisal_employee"
+                name="employee_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => (
@@ -138,9 +138,9 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                   />
                 )}
               />
-              {errors.appraisal_employee && (
+              {errors.employee_id && (
                 <small className="text-danger">
-                  {errors.appraisal_employee.message}
+                  {errors.employee_id.message}
                 </small>
               )}
             </div>
@@ -193,7 +193,6 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                       {...field}
                       options={goalCategoryMasterList}
                       placeholder="Select Category"
-                      isLoading={categoryLoading}
                       value={selected || null}
                       onChange={(opt) => field.onChange(opt?.value)}
                       classNamePrefix="react-select"
@@ -279,7 +278,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                   <input
                     {...field}
                     className="form-control"
-                    placeholder="Enter measurement criteria"
+                    placeholder="Enter Measurement Criteria"
                   />
                 )}
               />
