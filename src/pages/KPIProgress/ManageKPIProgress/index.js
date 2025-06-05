@@ -298,8 +298,6 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                           }
                           onChange={(date) => field.onChange(date)}
                           dateFormat="DD-MM-YYYY"
-                          showMonthYearPicker
-                          showFullMonthYearPicker
                         />
                       )}
                     />
