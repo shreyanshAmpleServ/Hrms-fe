@@ -139,6 +139,9 @@ export const all_routes = {
   // Arrear Adjustments
   arrearAdjustments: "/arrear-adjustments",
 
+  // KPI Progress
+  kpiProgress: "/kpi-progress",
+
   // currency: "/currency",
   // core-hr //
 

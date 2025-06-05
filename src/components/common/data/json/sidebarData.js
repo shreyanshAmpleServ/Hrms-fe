@@ -154,6 +154,12 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "KPI Progress Entry",
+            link: route.kpiProgress,
+            showSubRoute: false,
+            submenu: false,
+          },
         ],
       },
 

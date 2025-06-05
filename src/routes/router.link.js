@@ -146,6 +146,7 @@ import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import ArrearAdjustments from "../pages/ArrearAdjustments";
+import KPIProgress from "../pages/KPIProgress";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -1039,6 +1040,12 @@ export const privateRoutes = [
     element: <ArrearAdjustments />,
     route: Route,
     title: "Arrear Adjustments",
+  },
+  {
+    path: route.kpiProgress,
+    element: <KPIProgress />,
+    route: Route,
+    title: "KPI Progress",
   },
 ];
 
