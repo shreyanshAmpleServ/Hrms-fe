@@ -22,7 +22,7 @@ const OfferLetters = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer",
+    (i) => i?.module_name === "Offer Letter"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -44,7 +44,7 @@ const OfferLetters = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.offered_employee?.full_name || "").localeCompare(
-          b.offered_employee?.full_name || "",
+          b.offered_employee?.full_name || ""
         ),
     },
 
@@ -160,7 +160,7 @@ const OfferLetters = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -173,11 +173,11 @@ const OfferLetters = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

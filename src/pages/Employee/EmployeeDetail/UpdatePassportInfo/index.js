@@ -148,7 +148,16 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
                       name="passport_issue_date"
                       control={control}
                       placeholder="Select Issue Date"
-                      rules={{ required: "Issue date is required!" }}
+                      rules={{
+                        required: "Issue date is required!",
+                        validate: (value) => {
+                          const expiryDate = watch("passport_expiry_date");
+                          if (expiryDate && value >= expiryDate) {
+                            return "Issue date must be before expiry date";
+                          }
+                          return true;
+                        },
+                      }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
@@ -161,6 +170,7 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
                           }
                           onChange={field.onChange}
                           dateFormat="DD-MM-YYYY"
+                          maxDate={watch("passport_expiry_date")}
                         />
                       )}
                     />
@@ -183,7 +193,16 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
                     <Controller
                       name="passport_expiry_date"
                       control={control}
-                      rules={{ required: "Expiry date is required!" }}
+                      rules={{
+                        required: "Expiry date is required!",
+                        validate: (value) => {
+                          const issueDate = watch("passport_issue_date");
+                          if (issueDate && value <= issueDate) {
+                            return "Expiry date must be after issue date";
+                          }
+                          return true;
+                        },
+                      }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
@@ -196,6 +215,7 @@ const UpdatePassportInfo = ({ employeeDetail }) => {
                           }
                           onChange={field.onChange}
                           dateFormat="DD-MM-YYYY"
+                          minDate={watch("passport_issue_date")}
                         />
                       )}
                     />

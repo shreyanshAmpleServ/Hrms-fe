@@ -111,6 +111,54 @@ export const fetchEmployeeById = createAsyncThunk(
   }
 );
 
+export const updateEmployeeExperience = createAsyncThunk(
+  "employee/updateEmployeeExperience",
+  async ({ id, experiences }, thunkAPI) => {
+    try {
+      const response = await toast.promise(
+        apiClient.put(`/v1/employee-experience/${id}`, {
+          experiences: experiences,
+        }),
+        {
+          loading: "Employee experience updating...",
+          success: (res) =>
+            res?.data?.message || "Employee experience updated successfully!",
+          error: "Failed to update employee experience",
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to update employee experience"
+      );
+    }
+  }
+);
+
+export const updateEmployeeEducation = createAsyncThunk(
+  "employee/updateEmployeeEducation",
+  async ({ id, educations }, thunkAPI) => {
+    try {
+      const response = await toast.promise(
+        apiClient.put(`/v1/employee-education/${id}`, {
+          educations,
+        }),
+        {
+          loading: "Employee education updating...",
+          success: (res) =>
+            res?.data?.message || "Employee education updated successfully!",
+          error: "Failed to update employee education",
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to update employee education"
+      );
+    }
+  }
+);
+
 const employeesSlice = createSlice({
   name: "employee",
   initialState: {
@@ -216,6 +264,32 @@ const employeesSlice = createSlice({
         state.employeeDetail = action.payload.data;
       })
       .addCase(fetchEmployeeById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(updateEmployeeExperience.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEmployeeExperience.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.message;
+        state.employeeDetail = action.payload.data;
+      })
+      .addCase(updateEmployeeExperience.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(updateEmployeeEducation.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEmployeeEducation.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.message;
+        state.employeeDetail = action.payload.data;
+      })
+      .addCase(updateEmployeeEducation.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

@@ -1,10 +1,10 @@
+import moment from "moment";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
-import { Link } from "react-router-dom";
-import Select from "react-select";
-
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import Select from "react-select";
 import {
   empStatusOptions,
   genderOptions,
@@ -21,9 +21,7 @@ import {
   updateEmployee,
 } from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
-import { fetchStates } from "../../../redux/state";
 import ManageAddress from "./createAddress";
-import moment from "moment";
 
 const initialAddress = [
   {
@@ -62,7 +60,7 @@ const initialEmpData = {
   phone_number: "",
   status: "",
 };
-const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
+const ManageEmpModal = ({ employeeData }) => {
   const [selectedLogo, setSelectedLogo] = useState();
   const [manageAddress, setManageAddress] = useState(initialAddress);
   const [stateOptions, setStateOptions] = useState([]);
@@ -73,7 +71,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     handleSubmit,
     register,
     watch,
-    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -116,7 +113,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
         contact_relation: employeeData?.contact_relation || "",
       });
       setManageAddress(
-        employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || [],
+        employeeData?.hrms_employee_address?.map((addr) => ({ ...addr })) || []
       );
       setStateOptions(
         employeeData?.hrms_employee_address?.map((addr) => [
@@ -124,12 +121,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
             value: addr?.state,
             label: addr?.employee_state.name,
           },
-        ]) || [],
+        ]) || []
       );
     } else {
       reset(initialEmpData);
     }
-  }, [employeeData]);
+  }, [employeeData, reset]);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -151,25 +148,17 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ search: searchEmployee }));
-  }, [searchEmployee]);
+  }, [searchEmployee, dispatch]);
 
   const { employee, loading: loadingEmployee } = useSelector(
-    (state) => state.employee,
+    (state) => state.employee
   );
 
-  const { bank, loading: loadingBank } = useSelector((state) => state.bank);
+  const { bank } = useSelector((state) => state.bank);
 
-  const { employmentType, loading: loadingEmp } = useSelector(
-    (state) => state.employmentType,
-  );
-  const { designation, loading: loadingDesignaion } = useSelector(
-    (state) => state.designation,
-  );
-  const { department, loading: loadingDept } = useSelector(
-    (state) => state.department,
-  );
-
-  // const currencyLists = currencies?.data?.map(i => i?.is_active === "Y" ? ({ label: `${i?.code} - ${i?.name}`, value: i?.code }) : null).filter(Boolean) || [];
+  const { employmentType } = useSelector((state) => state.employmentType);
+  const { designation } = useSelector((state) => state.designation);
+  const { department } = useSelector((state) => state.department);
 
   const employmentOptions = employmentType?.data?.map((emnt) => ({
     value: emnt.id,
@@ -192,15 +181,10 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     label: emnt.full_name,
   }));
 
-  // Submit Handler
   const onSubmit = async (data) => {
     const formData = new FormData();
-    console.log("data", data);
-    // Append all form fields
-
     Object?.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
-        // Convert complex data to strings if needed
         if (
           key === "date_of_birth" ||
           key === "join_date" ||
@@ -212,7 +196,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
             key,
             typeof data[key] === "object"
               ? JSON.stringify(data[key])
-              : data[key],
+              : data[key]
           );
         }
       }
@@ -226,7 +210,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     if (employeeData) {
       formData.append("id", employeeData.id);
     }
-    // formData.append("reviews",data.reviews ? Number(data.reviews) : null)
 
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -245,7 +228,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   };
   React.useEffect(() => {
     const offcanvasElement = document.getElementById(
-      "offcanvas_add_edit_employee",
+      "offcanvas_add_edit_employee"
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -256,16 +239,16 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
-  }, []);
+  }, [reset]);
   const addNewColumn = () => {
     setManageAddress((prev) => [
       ...prev,
@@ -385,6 +368,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter First Name"
                           {...register("first_name", {
                             required: "First name is required",
                           })}
@@ -402,6 +386,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Last Name"
                           {...register("last_name")}
                         />
                       </div>
@@ -415,6 +400,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Employee Code"
                           {...register("employee_code", {
                             required: "Employee code is required",
                           })}
@@ -435,6 +421,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Email"
                           {...register("email", {
                             required: "Email is required",
                           })}
@@ -484,6 +471,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="number"
                           className="form-control"
+                          placeholder="Enter Mobile Number"
                           {...register("phone_number")}
                         />
                         {errors.phone_number && (
@@ -507,11 +495,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={genderOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Gender"
                               classNamePrefix="react-select"
                               value={
                                 genderOptions?.find(
-                                  (option) => option.value === watch("gender"),
+                                  (option) => option.value === watch("gender")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -536,6 +524,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="number"
                           className="form-control"
+                          placeholder="Enter National Number"
                           {...register("national_id_number")}
                         />
                       </div>
@@ -549,6 +538,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="number"
                           className="form-control"
+                          placeholder="Enter Passport Number"
                           {...register("passport_number")}
                         />
                       </div>
@@ -567,12 +557,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={employmentOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Employment Type"
                               classNamePrefix="react-select"
                               value={
                                 employmentOptions?.find(
                                   (option) =>
-                                    option.value === watch("employment_type"),
+                                    option.value === watch("employment_type")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -597,6 +587,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Employee Category"
                           {...register("employee_category")}
                         />
                       </div>
@@ -615,12 +606,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={designationOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Designation"
                               classNamePrefix="react-select"
                               value={
                                 designationOptions?.find(
                                   (option) =>
-                                    option.value === watch("designation_id"),
+                                    option.value === watch("designation_id")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -651,12 +642,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={departmentOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Department"
                               classNamePrefix="react-select"
                               value={
                                 departmentOptions?.find(
                                   (option) =>
-                                    option.value === watch("department_id"),
+                                    option.value === watch("department_id")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -736,11 +727,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={bankOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Bank"
                               classNamePrefix="react-select"
                               value={
                                 bankOptions?.find(
-                                  (option) => option.value === watch("bank_id"),
+                                  (option) => option.value === watch("bank_id")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -761,11 +752,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={empStatusOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Status"
                               classNamePrefix="react-select"
                               value={
                                 empStatusOptions?.find(
-                                  (option) => option.value === watch("status"),
+                                  (option) => option.value === watch("status")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -783,6 +774,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Account Number"
                           {...register("account_number")}
                         />
                       </div>
@@ -794,6 +786,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Work Location"
                           {...register("work_location")}
                         />
                       </div>
@@ -809,7 +802,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={employeeOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Manager"
                               classNamePrefix="react-select"
                               isLoading={loadingEmployee}
                               onInputChange={(value) => {
@@ -818,7 +811,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                               value={
                                 employeeOptions?.find(
                                   (option) =>
-                                    option.value === watch("manager_id"),
+                                    option.value === watch("manager_id")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -862,98 +855,10 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     stateOptions={stateOptions}
                     setStateOptions={setStateOptions}
                   />
-                  {/* /Address Info */}
                 </div>
               </div>
             </div>
-            {/* /Address Info */}
-            {/* Social Profile */}
-            {/* <div className="accordion-item border-top rounded mb-3">
-              <div className="accordion-header">
-                <Link
-                  to="#"
-                  className="accordion-button accordion-custom-button rounded bg-white fw-medium text-dark"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#social"
-                >
-                  <span className="avatar avatar-md rounded text-dark border me-2">
-                    <i className="ti ti-social fs-20" />
-                  </span>
-                  Social Profile
-                </Link>
-              </div>
-              <div
-                className="accordion-collapse collapse"
-                id="social"
-                data-bs-parent="#main_accordion"
-              >
-                <div className="accordion-body border-top">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label className="col-form-label">Facebook</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("socialProfiles.facebook")}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label className="col-form-label">Skype </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("socialProfiles.skype")}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label className="col-form-label">Linkedin </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("socialProfiles.linkedin")}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3">
-                        <label className="col-form-label">Twitter</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("socialProfiles.twitter")}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-3 mb-md-0">
-                        <label className="col-form-label">Whatsapp</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("socialProfiles.whatsapp")}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-4">
-                      <div className="mb-0">
-                        <label className="col-form-label">Instagram</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("socialProfiles.instagram")}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-            {/* /Social Profile */} {/* Access */}
+
             <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
                 <Link
@@ -975,8 +880,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
               >
                 <div className="accordion-body border-top">
                   <div className="row">
-                    {/* <div className="col-md-12"> */}
-
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">Marital Status</label>
@@ -987,12 +890,12 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                             <Select
                               {...field}
                               options={maritalStatusOptions}
-                              placeholder="Choose"
+                              placeholder="Choose Marital Status"
                               classNamePrefix="react-select"
                               value={
                                 maritalStatusOptions?.find(
                                   (option) =>
-                                    option.value === watch("marital_status"),
+                                    option.value === watch("marital_status")
                                 ) || ""
                               }
                               onChange={(selectedOption) => {
@@ -1006,11 +909,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">Spouse Name</label>
-
                         <input
                           type="text"
                           disabled={watch("marital_status") === "Un-married"}
                           className="form-control"
+                          placeholder="Enter Spouse Name"
                           {...register("spouse_name")}
                         />
                       </div>
@@ -1018,11 +921,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">No Of Child</label>
-
                         <input
                           type="text"
                           disabled={watch("marital_status") === "Un-married"}
                           className="form-control"
+                          placeholder="Enter No Of Child"
                           {...register("no_of_child")}
                         />
                       </div>
@@ -1030,10 +933,10 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">Father Name</label>
-
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Father Name"
                           {...register("father_name")}
                         />
                       </div>
@@ -1041,10 +944,10 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">Mother Name</label>
-
                         <input
                           type="text"
                           className="form-control"
+                          placeholder="Enter Mother Name"
                           {...register("mother_name")}
                         />
                       </div>
@@ -1054,22 +957,22 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <label className="col-form-label">
                           Emergency Contact
                         </label>
-
                         <input
                           type="text"
                           className="form-control"
-                          {...register("emergency_contact")}
+                          placeholder="Enter Emergency Contact"
+                          {...register("primary_contact_number")}
                         />
                       </div>
                     </div>
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">Contact Person</label>
-
                         <input
                           type="text"
                           className="form-control"
-                          {...register("emergency_contact_person")}
+                          placeholder="Enter Contact Person"
+                          {...register("primary_contact_name")}
                         />
                       </div>
                     </div>
@@ -1078,20 +981,18 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                         <label className="col-form-label">
                           Contact Relation
                         </label>
-
                         <input
                           type="text"
                           className="form-control"
-                          {...register("contact_relation")}
+                          placeholder="Enter Contact Relation"
+                          {...register("primary_contact_relation")}
                         />
                       </div>
                     </div>
-                    {/* </div> */}
                   </div>
                 </div>
               </div>
             </div>
-            {/* /Access */}
           </div>
           <div className="d-flex align-items-center justify-content-end">
             <button

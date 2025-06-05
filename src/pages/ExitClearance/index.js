@@ -213,12 +213,7 @@ const ExitClearance = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Exit Clearance</h4>
-                        </div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent

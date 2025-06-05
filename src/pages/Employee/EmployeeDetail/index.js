@@ -1,11 +1,11 @@
-import { EditFilled } from "@ant-design/icons";
-import { Avatar, Button, Skeleton, Tooltip } from "antd";
+import { CameraFilled, EditFilled } from "@ant-design/icons";
+import { Avatar, Button, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
-import { fetchEmployeeById } from "../../../redux/Employee";
+import { fetchEmployeeById, updateEmployee } from "../../../redux/Employee";
 import { all_routes } from "../../../routes/all_routes";
 import UpdateBankInfo from "./UpdateBankInfo";
 import UpdateBasicInfo from "./UpdateBasicInfo";
@@ -14,20 +14,67 @@ import UpdateEducations from "./UpdateEducations";
 import UpdateExperience from "./UpdateExperience";
 import UpdatePassportInfo from "./UpdatePassportInfo";
 import UpdateSocialInfo from "./UpdateSocialInfo";
+import UpdateProfilePicture from "./UploadProfile";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
+  const [image, setImage] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchEmployeeById(id));
   }, [id, dispatch]);
 
-  const { employeeDetail, loading } = useSelector((state) => state.employee);
+  const { employeeDetail, loading: employeeLoading } = useSelector(
+    (state) => state.employee,
+  );
 
   const route = all_routes;
 
-  if (loading) {
+  const handleImageUploadOpen = async (file) => {
+    const createElement = document.createElement("button");
+    createElement.id = "update_profile_picture_modal";
+    createElement.type = "button";
+    createElement.style.display = "none";
+    createElement.setAttribute("data-bs-toggle", "modal");
+    createElement.setAttribute(
+      "data-bs-target",
+      "#update_profile_picture_modal",
+    );
+    document.body.appendChild(createElement);
+    setImage(file);
+    createElement.click();
+  };
+
+  const handleProfilePictureUpload = async () => {
+    const formData = new FormData();
+    formData.append("profile_pic", image);
+    formData.append("id", id);
+    dispatch(updateEmployee(formData));
+    const closeModal = document.getElementById(
+      "close_btn_update_profile_picture_modal",
+    );
+    closeModal.click();
+    setImage(null);
+  };
+
+  const uploadButton = (
+    <div className="avatar-uploader-trigger">
+      <Avatar
+        src={employeeDetail?.profile_pic}
+        alt={employeeDetail?.full_name}
+        size={120}
+        className="fs-1"
+      >
+        {employeeDetail?.full_name?.charAt(0)}
+      </Avatar>
+      <div className="avatar-uploader-overlay">
+        <CameraFilled style={{ fontSize: "24px", color: "#fff" }} />
+      </div>
+    </div>
+  );
+
+  if (employeeLoading) {
     return (
       <div className="page-wrapper position-relative">
         <div className="content">
@@ -96,6 +143,8 @@ const EmployeeDetail = () => {
       </div>
     );
   }
+  const experiance_of_employee = employeeDetail?.experiance_of_employee;
+  const eduction_of_employee = employeeDetail?.eduction_of_employee;
 
   return (
     <>
@@ -150,14 +199,18 @@ const EmployeeDetail = () => {
                   </div>
                   <div className="d-flex justify-content-between px-3 flex-wrap">
                     <div className="d-flex w-50 gap-5">
-                      <Avatar
-                        src={employeeDetail?.profile_pic}
-                        alt={employeeDetail?.full_name}
-                        size={120}
-                        className="fs-1"
+                      <Upload
+                        name="avatar"
+                        listType="picture-card"
+                        className="avatar-uploader"
+                        showUploadList={false}
+                        customRequest={(info) =>
+                          handleImageUploadOpen(info.file)
+                        }
+                        accept="image/*"
                       >
-                        {employeeDetail?.full_name?.charAt(0)}
-                      </Avatar>
+                        {uploadButton}
+                      </Upload>
                       <div className="d-flex flex-column gap-2">
                         <h3>{employeeDetail?.full_name}</h3>
                         <h5>
@@ -185,7 +238,7 @@ const EmployeeDetail = () => {
                               ? moment(employeeDetail?.join_date).format(
                                   "DD-MM-YYYY",
                                 )
-                              : " - - "}
+                              : "N/A"}
                           </span>
                         </p>
                       </div>
@@ -215,7 +268,7 @@ const EmployeeDetail = () => {
                             ? moment(employeeDetail?.date_of_birth).format(
                                 "DD-MM-YYYY",
                               )
-                            : " - - "}
+                            : "N/A"}
                         </p>
                       </div>
                       <div className="d-flex flex-column gap-1">
@@ -223,16 +276,14 @@ const EmployeeDetail = () => {
                           <strong> Address:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.address || " - - "}
+                          {employeeDetail?.address || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex flex-column gap-1">
                         <p className="m-0">
                           <strong>Gender:</strong>
                         </p>
-                        <p className="m-0">
-                          {employeeDetail?.gender || " - - "}
-                        </p>
+                        <p className="m-0">{employeeDetail?.gender || "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -261,7 +312,7 @@ const EmployeeDetail = () => {
                             <strong>Name:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.primary_contact_name || " - - "}
+                            {employeeDetail?.primary_contact_name || "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -269,8 +320,7 @@ const EmployeeDetail = () => {
                             <strong>Relationship:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.primary_contact_relation ||
-                              " - - "}
+                            {employeeDetail?.primary_contact_relation || "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -278,7 +328,7 @@ const EmployeeDetail = () => {
                             <strong>Phone:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.primary_contact_number || " - - "}
+                            {employeeDetail?.primary_contact_number || "N/A"}
                           </p>
                         </div>
                       </div>
@@ -291,7 +341,7 @@ const EmployeeDetail = () => {
                             <strong>Name:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.secondary_contact_name || " - - "}
+                            {employeeDetail?.secondary_contact_name || "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -300,7 +350,7 @@ const EmployeeDetail = () => {
                           </p>
                           <p className="m-0">
                             {employeeDetail?.secondary_contact_relation ||
-                              " - - "}
+                              "N/A"}
                           </p>
                         </div>
                         <div className="d-flex flex-column gap-1">
@@ -308,8 +358,7 @@ const EmployeeDetail = () => {
                             <strong>Phone:</strong>
                           </p>
                           <p className="m-0">
-                            {employeeDetail?.secondary_contact_mumber ||
-                              " - - "}
+                            {employeeDetail?.secondary_contact_mumber || "N/A"}
                           </p>
                         </div>
                       </div>
@@ -334,36 +383,33 @@ const EmployeeDetail = () => {
                           />
                         </Tooltip>
                       </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            International College of Arts and Science (UG)
-                          </p>
-                          <p className="m-0">MSc In Computer Science</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            International College of Arts and Science (UG)
-                          </p>
-                          <p className="m-0">BSc In Computer Science</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            International College of Arts and Science (UG)
-                          </p>
-                          <p className="m-0">MSc In Computer Science</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
+                      {eduction_of_employee?.length > 0 ? (
+                        eduction_of_employee?.map((education) => (
+                          <div className="d-flex align-items-start mt-3 gap-2">
+                            <i className="ti ti-point-filled text-primary fs-4"></i>
+                            <div className="d-flex flex-column gap-1">
+                              <p className="m-0 fw-bold text-black">
+                                {education?.institute_name}
+                              </p>
+                              <p className="m-0">
+                                {education?.degree} ({education?.specialization}
+                                )
+                              </p>
+                              <p className="m-0">
+                                {moment(education?.start_from).format(
+                                  "DD-MM-YYYY",
+                                )}{" "}
+                                -{" "}
+                                {moment(education?.end_to).format("DD-MM-YYYY")}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="m-0 text-muted text-center py-3">
+                          No education details found
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -382,36 +428,34 @@ const EmployeeDetail = () => {
                           />
                         </Tooltip>
                       </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            Envato Inc, Melbourne
-                          </p>
-                          <p className="m-0">Head Of Review Team</p>
-                          <p className="m-0">2020 - Present</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            CodeCanyon Sydney
-                          </p>
-                          <p className="m-0">Software Developer</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-start mt-3 gap-2">
-                        <i className="ti ti-point-filled text-primary fs-4"></i>
-                        <div className="d-flex flex-column gap-1">
-                          <p className="m-0 fw-bold text-black">
-                            Facebook Inc, California
-                          </p>
-                          <p className="m-0">Junior Software Developer</p>
-                          <p className="m-0">2020 - 2022</p>
-                        </div>
-                      </div>
+                      {experiance_of_employee?.length > 0 ? (
+                        experiance_of_employee?.map((experience) => (
+                          <div className="d-flex align-items-start mt-3 gap-2">
+                            <i className="ti ti-point-filled text-primary fs-4"></i>
+                            <div className="d-flex flex-column gap-1">
+                              <p className="m-0 fw-bold text-black">
+                                {experience?.company_name}
+                              </p>
+                              <p className="m-0">{experience?.position}</p>
+                              <p className="m-0">
+                                {moment(experience?.start_from).format(
+                                  "DD-MM-YYYY",
+                                )}{" "}
+                                -{" "}
+                                {experience?.end_to
+                                  ? moment(experience?.end_to).format(
+                                      "DD-MM-YYYY",
+                                    )
+                                  : "Present"}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="m-0 text-muted text-center py-3">
+                          No experience details found
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -437,7 +481,7 @@ const EmployeeDetail = () => {
                           <strong>Account Holder Name:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.account_holder_name || " - - "}
+                          {employeeDetail?.account_holder_name || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -445,7 +489,7 @@ const EmployeeDetail = () => {
                           <strong>Account Number:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.account_number || " - - "}
+                          {employeeDetail?.account_number || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -454,14 +498,14 @@ const EmployeeDetail = () => {
                         </p>
                         <p className="m-0">
                           {employeeDetail?.hrms_employee_bank?.bank_name ||
-                            " - - "}
+                            "N/A"}
                         </p>
                       </div>
                       <div className="d-flex mb-2 justify-content-between">
                         <p className="m-0">
                           <strong>IFSC Code:</strong>
                         </p>
-                        <p className="m-0">{employeeDetail?.ifsc || " - - "}</p>
+                        <p className="m-0">{employeeDetail?.ifsc || "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -486,7 +530,7 @@ const EmployeeDetail = () => {
                           <strong>Passport Number:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.passport_number || " - - "}
+                          {employeeDetail?.passport_number || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -494,7 +538,7 @@ const EmployeeDetail = () => {
                           <strong>Nationality:</strong>
                         </p>
                         <p className="m-0">
-                          {employeeDetail?.nationality || " - - "}
+                          {employeeDetail?.nationality || "N/A"}
                         </p>
                       </div>
                       <div className="d-flex justify-content-between">
@@ -506,7 +550,7 @@ const EmployeeDetail = () => {
                             ? moment(
                                 employeeDetail?.passport_issue_date,
                               ).format("DD-MM-YYYY")
-                            : " - - "}
+                            : "N/A"}
                         </p>
                       </div>
                       <div className="d-flex mb-2 justify-content-between">
@@ -518,7 +562,7 @@ const EmployeeDetail = () => {
                             ? moment(
                                 employeeDetail?.passport_expiry_date,
                               ).format("DD-MM-YYYY")
-                            : " - - "}
+                            : "N/A"}
                         </p>
                       </div>
                     </div>
@@ -550,7 +594,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.linkedin || " - - "}
+                            {employeeDetail?.social_medias?.linkedin || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -564,7 +608,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.twitter || " - - "}
+                            {employeeDetail?.social_medias?.twitter || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -578,7 +622,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.facebook || " - - "}
+                            {employeeDetail?.social_medias?.facebook || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -592,8 +636,7 @@ const EmployeeDetail = () => {
                           rel="noopener noreferrer"
                         >
                           <small className="m-0">
-                            {employeeDetail?.social_medias?.instagram ||
-                              " - - "}
+                            {employeeDetail?.social_medias?.instagram || "N/A"}
                           </small>
                         </a>
                       </div>
@@ -611,6 +654,13 @@ const EmployeeDetail = () => {
         <UpdateSocialInfo employeeDetail={employeeDetail} />
         <UpdateEducations employeeDetail={employeeDetail} />
         <UpdateExperience employeeDetail={employeeDetail} />
+        <UpdateProfilePicture
+          employeeDetail={employeeDetail}
+          onSubmit={handleProfilePictureUpload}
+          handleImageUploadOpen={handleImageUploadOpen}
+          image={image}
+          setImage={setImage}
+        />
       </div>
     </>
   );

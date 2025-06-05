@@ -127,6 +127,21 @@ export const all_routes = {
   // Notifications
   notifications: "/notifications",
 
+  // Employee Attachments
+  employeeAttachment: "/employee-attachments",
+
+  // Advance Payment Entry
+  advancePaymentEntry: "/advance-payment-entry",
+
+  // Monthly Payroll Processing
+  monthlyPayroll: "/monthly-payroll-processing",
+
+  // Arrear Adjustments
+  arrearAdjustments: "/arrear-adjustments",
+
+  // KPI Progress
+  kpiProgress: "/kpi-progress",
+
   // currency: "/currency",
   // core-hr //
 
@@ -183,7 +198,6 @@ export const all_routes = {
 
   disciplinaryActionLog: "/disciplinary-action-log",
   grievanceSubmission: "/grievance-Submission",
-  monthlyPayrollProcessing: "/monthly-payroll-processing",
   trainingSessionSchedule: "/training-session-schedule",
   trainingFeedbackEntry: "/training-feedback-entry",
   probationReview: "/probation-review",

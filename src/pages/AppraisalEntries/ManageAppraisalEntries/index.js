@@ -252,6 +252,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                     render={({ field }) => (
                       <DefaultEditor
                         className="summernote"
+                        placeholder="Write Comments"
                         {...field}
                         value={field.value || ""}
                         onChange={(content) => field.onChange(content)}

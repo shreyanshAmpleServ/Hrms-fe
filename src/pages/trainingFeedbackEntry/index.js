@@ -24,7 +24,7 @@ const TrainingFeedbackEntry = () => {
   const dispatch = useDispatch();
 
   const { trainingFeedback, loading } = useSelector(
-    (state) => state.trainingFeedback || {},
+    (state) => state.trainingFeedback || {}
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const TrainingFeedbackEntry = () => {
       fetchtrainingFeedback({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const TrainingFeedbackEntry = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -65,7 +65,7 @@ const TrainingFeedbackEntry = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry",
+    (i) => i?.module_name === "Time Sheet Entry"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -214,14 +214,7 @@ const TrainingFeedbackEntry = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">
-                            All Training Feedback Entry
-                          </h4>
-                        </div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent

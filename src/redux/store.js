@@ -89,7 +89,6 @@ import DisciplinryActionLogReducer from "./disciplinaryActionLog";
 import GrievanceSubmissionReducer from "./grievanceSubmission";
 import workLifeEventLogReducer from "./WorkLifeEventLog";
 import competencyTrackingReducer from "./CompetencyTracking";
-import MonthlyPayrollProcessingReducer from "./monthlyPayrollProcessing";
 import WpsFilesReducer from "./WPSFileGenerator";
 import trainingSessionReducer from "./trainingSessionSchedule";
 import TrainingFeedbackReducer from "./trainingFeedbackEntry";
@@ -105,6 +104,10 @@ import surveyResponseReducer from "./SurveyResponse";
 import employeeSuggestionReducer from "./EmployeeSuggestion";
 import helpdeskTicketReducer from "./HelpdeskTicket";
 import NotificationsLogReducer from "./Notifications";
+import EmployeeAttachmentReducer from "./EmployeeAttachment";
+import AdvancePaymentReducer from "./AdvancePayment";
+import MonthlyPayrollReducer from "./MonthlyPayroll";
+import ArrearAdjustmentsReducer from "./ArrearAdjustments";
 import DailyAttendanceReducer from "./dailyAttendance";
 import GoalSheetReducer from "./GoalSheetAssignment";
 const store = configureStore({
@@ -199,7 +202,6 @@ const store = configureStore({
     grievanceSubmission: GrievanceSubmissionReducer,
     workLifeEventLog: workLifeEventLogReducer,
     competencyTracking: competencyTrackingReducer,
-    monthlyPayroll: MonthlyPayrollProcessingReducer,
     wpsFiles: WpsFilesReducer,
     trainingSession: trainingSessionReducer,
     trainingFeedback: TrainingFeedbackReducer,
@@ -215,6 +217,10 @@ const store = configureStore({
     employeeSuggestion: employeeSuggestionReducer,
     helpdeskTicket: helpdeskTicketReducer,
     Notifications: NotificationsLogReducer,
+    employeeAttachment: EmployeeAttachmentReducer,
+    advancePayment: AdvancePaymentReducer,
+    monthlyPayroll: MonthlyPayrollReducer,
+    arrearAdjustments: ArrearAdjustmentsReducer,
     dailyAttendance: DailyAttendanceReducer,
     goalSheet: GoalSheetReducer,
   },

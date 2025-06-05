@@ -22,6 +22,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Employee Attachments",
+        link: route.employeeAttachment,
+        icon: "ti ti-id-badge",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Onboarding & Hiring",
         icon: "ti ti-id-badge",
         showSubRoute: false,
@@ -98,8 +105,20 @@ export const SidebarData = [
         submenu: true,
         submenuItems: [
           {
+            label: "Monthly Payroll Processing",
+            link: route.monthlyPayroll,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
             label: "Payslip Viewer",
             link: route.payslipViewer,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "Arrear Adjustments",
+            link: route.arrearAdjustments,
             showSubRoute: false,
             submenu: false,
           },
@@ -110,14 +129,14 @@ export const SidebarData = [
             submenu: false,
           },
           {
-            label: "WPS File Generator",
-            link: route.wpsFileGenerator,
+            label: "Advance Payment Entry",
+            link: route.advancePaymentEntry,
             showSubRoute: false,
             submenu: false,
           },
           {
-            label: "Monthly Payroll Processing",
-            link: route.monthlyPayrollProcessing,
+            label: "WPS File Generator",
+            link: route.wpsFileGenerator,
             showSubRoute: false,
             submenu: false,
           },
@@ -132,6 +151,12 @@ export const SidebarData = [
           {
             label: "Performance Appraisal Entry",
             link: route.appraisalEntries,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
+            label: "KPI Progress Entry",
+            link: route.kpiProgress,
             showSubRoute: false,
             submenu: false,
           },
@@ -271,14 +296,14 @@ export const SidebarData = [
             submenu: false,
           },
           {
-            label: "Recognition Awards",
-            link: route.recognitionAwards,
+            label: "Employee Suggestion",
+            link: route.employeeSuggestion,
             showSubRoute: false,
             submenu: false,
           },
           {
-            label: "Employee Suggestion",
-            link: route.employeeSuggestion,
+            label: "Recognition Awards",
+            link: route.recognitionAwards,
             showSubRoute: false,
             submenu: false,
           },
@@ -297,14 +322,13 @@ export const SidebarData = [
             submenu: false,
           },
           {
-            label: "NotificationsLog",
+            label: "Notification Center",
             link: route.notificationsLog,
             showSubRoute: false,
             submenu: false,
           },
         ],
       },
-
 
       // {
       //   label: "Leads",

@@ -78,8 +78,8 @@ const UsersGrid = ({ data }) => {
                           {user.full_name || "N/A"}
                         </Link>
                       </h6>
-                      <p className="text-default">
-                        {user.crms_d_user_role?.[0]?.crms_m_role?.role_name ||
+                      <p className="text-default text-capitalize">
+                        {user.hrms_d_user_role?.[0]?.hrms_m_role?.role_name ||
                           "N/A"}
                       </p>
                     </div>

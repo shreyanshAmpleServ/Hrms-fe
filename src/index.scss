@@ -674,3 +674,68 @@ div.sidebar-themesettings
 .dropdown .table-action {
   z-index: 999;
 }
+
+.avatar-uploader .avatar-uploader-trigger {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-uploader .avatar-uploader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: 50%;
+}
+
+.avatar-uploader:hover .avatar-uploader-overlay {
+  opacity: 1;
+}
+
+.ant-upload-select {
+  border: none !important;
+  background: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.page-header {
+  margin-bottom: 0 !important;
+}
+
+.page-wrapper .content {
+  padding: 8px 24px !important;
+}
+
+.card-body {
+  padding: 0.5rem !important;
+}
+
+.card-body > div:first-child {
+  margin-bottom: 8px !important;
+}
+
+.page-wrapper .content .row .col-md-12 .card .card-header {
+  padding: 0.5rem !important;
+}
+
+.header .mobile-user-menu > a:first-child {
+  width: 40px;
+  height: 40px !important;
+  display: flex;
+  justify-content: center;
+}
+
+.header .mobile-user-menu {
+  top: 8px !important;
+  right: 10px !important;
+}

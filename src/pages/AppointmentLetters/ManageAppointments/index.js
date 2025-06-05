@@ -141,7 +141,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Employee
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
                       name="employee_id"
@@ -157,6 +157,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                             className="select"
                             options={employees}
                             classNamePrefix="react-select"
+                            placeholder="Select Employee"
                             isLoading={employeeLoading}
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
@@ -186,7 +187,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Designation
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
                       name="designation_id"
@@ -202,6 +203,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                             className="select"
                             options={designations}
                             isLoading={designationLoading}
+                            placeholder="Select Designation"
                             classNamePrefix="react-select"
                             onInputChange={(inputValue) =>
                               setSearchDesignation(inputValue)
@@ -229,7 +231,9 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="col-form-label">Appointment Date</label>
+                  <label className="col-form-label">
+                    Appointment Date <span className="text-danger">*</span>
+                  </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
@@ -237,7 +241,9 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                     <Controller
                       name="issue_date"
                       control={control}
-                      rules={{ required: "Appointment date is required!" }}
+                      rules={{
+                        required: "Appointment date is required!",
+                      }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
@@ -250,6 +256,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                           }
                           onChange={field.onChange}
                           dateFormat="DD-MM-YYYY"
+                          minDate={new Date()}
                         />
                       )}
                     />
@@ -269,6 +276,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                     render={({ field }) => (
                       <DefaultEditor
                         className="summernote"
+                        placeholder="Write Terms Summary"
                         {...field}
                         value={field.value || ""}
                         onChange={(content) => field.onChange(content)}

@@ -68,7 +68,7 @@ const ManageRecognitionAwards = ({
           updaterecognitionAwards({
             id: recognitionAwards.id,
             recognitionAwardsData: data,
-          }),
+          })
         ).unwrap();
       } else {
         await dispatch(createrecognitionAwards(data)).unwrap();
@@ -113,7 +113,7 @@ const ManageRecognitionAwards = ({
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
                   const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -146,7 +146,7 @@ const ManageRecognitionAwards = ({
                 rules={{ required: "Message  nominated by is required" }}
                 render={({ field }) => {
                   const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select

@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { all_routes } from "../../routes/all_routes";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ImageWithBasePath from "../../components/common/imageWithBasePath";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
-import { fetchUserById, deleteUser } from "../../redux/manage-user";
-import EditUserModal from "./modal/EditUserModal";
-import DeleteAlert from "./alert/DeleteAlert";
-import DateFormat from "../../utils/DateFormat";
-import UserActivities from "./modal/UserActvities";
-import { useNavigate } from "react-router-dom";
+import ImageWithBasePath from "../../components/common/imageWithBasePath";
+import { deleteUser } from "../../redux/manage-user";
 import { fetchVendorById } from "../../redux/vendor";
+import { all_routes } from "../../routes/all_routes";
+import DateFormat from "../../utils/DateFormat";
+import DeleteAlert from "./alert/DeleteAlert";
+import EditUserModal from "./modal/EditUserModal";
+import UserActivities from "./modal/UserActvities";
 
 const VendorDetail = () => {
   const { id } = useParams();

@@ -69,7 +69,9 @@ const ManageUsers = () => {
         title: "Role",
         dataIndex: "hrms_d_user_role",
         render: (text) => (
-          <span>{text?.[0]?.hrms_m_role?.role_name}</span> // Format the date as needed
+          <span className="text-capitalize">
+            {text?.[0]?.hrms_m_role?.role_name || "N/A"}
+          </span>
         ),
         sorter: (a, b) => (a.role || "").localeCompare(b.role || ""), // Fixed sorter logic
       },
@@ -79,7 +81,7 @@ const ManageUsers = () => {
         render: (text) => (
           <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
         ),
-        sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+        sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate), // Sort by date
       },
       {
         title: "Status",

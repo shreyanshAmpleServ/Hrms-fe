@@ -1,4 +1,4 @@
-import { Table, Tag } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -144,10 +144,10 @@ const CompetencyTracking = () => {
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Work Life Event Log</title>
+        <title>DCC HRMS - Competency Tracking</title>
         <meta
-          name="work-life-event-log"
-          content="This is work life event log page of DCC HRMS."
+          name="competency-tracking"
+          content="This is competency tracking page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -212,12 +212,7 @@ const CompetencyTracking = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Competency Tracking</h4>
-                        </div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent

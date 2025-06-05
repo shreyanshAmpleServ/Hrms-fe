@@ -24,7 +24,7 @@ const TravelReimbursement = () => {
   const dispatch = useDispatch();
 
   const { travelReimbursement, loading } = useSelector(
-    (state) => state.travelReimbursement || {},
+    (state) => state.travelReimbursement || {}
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const TravelReimbursement = () => {
       fetchtravelReimbursement({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const TravelReimbursement = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -65,7 +65,7 @@ const TravelReimbursement = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry",
+    (i) => i?.module_name === "Time Sheet Entry"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -80,53 +80,41 @@ const TravelReimbursement = () => {
       render: (text, record) =>
         record?.travel_expense_employee?.full_name || "-",
     },
-
     {
       title: "Travel Purpose",
-
       dataIndex: "travel_purpose",
-
       render: (text) => text || "-",
     },
-
     {
       title: "Start Date",
-
       dataIndex: "start_date",
-
-      render: (text) => (text ? moment(text).format("DD MMM YYYY") : "-"),
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
-
     {
       title: "End Date",
       dataIndex: "end_date",
-      render: (text) => (text ? moment(text).format("DD MMM YYYY") : "-"),
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
-
     {
       title: "Destination",
       dataIndex: "destination",
       render: (text) => text || "-",
     },
-
     {
       title: "Total Amount",
       dataIndex: "total_amount",
       render: (text) => (text ? `₹${text}` : "-"),
     },
-
     {
       title: "Approved By",
       dattIndex: "travel_expense_approver",
       render: (record) => record?.travel_expense_approver?.full_name || "-", // assuming relation
     },
-
     {
       title: "Approval Status",
       dataIndex: "approval_status",
       render: (text) => text || "-",
     },
-
     ...(isDelete || isUpdate
       ? [
           {
@@ -247,14 +235,7 @@ const TravelReimbursement = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">
-                            All Travel Reimbursement Claims
-                          </h4>
-                        </div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent

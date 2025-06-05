@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import ImageWithDatabase from "../../components/common/ImageFromDatabase";
-import { all_routes } from "../../routes/all_routes";
 import ManageEmpModal from "./modal/manageEmpModal";
 
 const EmployeeGrid = ({ data }) => {
   const [selectedContact, setSelectedContact] = useState();
-  const route = all_routes;
   return (
     <>
       <div className="row">
@@ -106,15 +104,19 @@ const EmployeeGrid = ({ data }) => {
                       <i className="ti ti-phone text-dark me-1" />
                       {contact.phone_number || "No Phone"}
                     </p>
-                    {contact?.hrms_employee_address?.map(
+                    <p className="text-default d-inline-flex align-items-center mb-1">
+                      <i className="ti ti-map-pin-pin text-dark me-1" />
+                      {contact.address || "--"}
+                    </p>
+                    {/* {contact?.hrms_employee_address?.map(
                       (item, ind) =>
                         ind === 0 && (
                           <p className="text-default d-inline-flex align-items-center mb-1">
                             <i className="ti ti-map-pin-pin text-dark me-1" />
                             {`${item.street_no || ""}, ${item.street || ""}, ${item.city || ""}, ${item.district || ""}, ${item.state || ""}, ${item.country || ""}, ${item.zip_code || ""}`}
                           </p>
-                        ),
-                    )}
+                        )
+                    )} */}
                   </div>
                   <div className="d-flex align-items-center">
                     {contact.tags &&
@@ -140,7 +142,7 @@ const EmployeeGrid = ({ data }) => {
                           >
                             <i className={`ti ti-brand-${key} fs-14`} />
                           </Link>
-                        ),
+                        )
                     )}
                   </div>
                   <div className="d-flex align-items-center">

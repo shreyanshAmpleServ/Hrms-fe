@@ -1,37 +1,106 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React from "react";
-import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { updateEmployeeEducation } from "../../../../redux/Employee";
+import ReactDatePicker from "react-datepicker";
+import moment from "moment";
 
 const UpdateEducations = ({ employeeDetail }) => {
   const { loading } = useSelector((state) => state.employee);
   const [educations, setEducations] = React.useState([
     {
-      institute: "",
+      institute_name: "",
       specialization: "",
       degree: "",
-      from: "",
-      to: "",
+      start_from: "",
+      end_to: "",
     },
   ]);
+  const [errors, setErrors] = React.useState({});
   const dispatch = useDispatch();
 
   const handleChangeQualification = (index, field, value) => {
-    const newQualifications = [...educations];
-    newQualifications[index][field] = value;
+    const newQualifications = educations.map((education, i) => {
+      if (i === index) {
+        return { ...education, [field]: value };
+      }
+      return education;
+    });
     setEducations(newQualifications);
+
+    // Clear error for this field
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[`${index}-${field}`];
+      return newErrors;
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const closeButton = document.getElementById(
-      "close_btn_update_education_modal",
-    );
-    console.log(educations);
+
+    // Validate all fields
+    const newErrors = {};
+    educations.forEach((education, index) => {
+      if (!education.institute_name?.trim()) {
+        newErrors[`${index}-institute_name`] = "Institute name is required";
+      }
+      if (!education.degree?.trim()) {
+        newErrors[`${index}-degree`] = "Degree is required";
+      }
+      if (!education.specialization?.trim()) {
+        newErrors[`${index}-specialization`] = "Specialization is required";
+      }
+      if (!education.start_from) {
+        newErrors[`${index}-start_from`] = "Start date is required";
+      }
+      if (!education.end_to) {
+        newErrors[`${index}-end_to`] = "End date is required";
+      }
+
+      // Validate dates
+      if (education.start_from && education.end_to) {
+        const startDate = new Date(education.start_from);
+        const endDate = new Date(education.end_to);
+
+        if (startDate > endDate) {
+          newErrors[`${index}-end_to`] = "End date must be after start date";
+        }
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    dispatch(updateEmployeeEducation({ id: employeeDetail.id, educations }));
+    const closeButton = document.getElementById("close_btn_update_edu_modal");
     closeButton.click();
   };
+
+  React.useEffect(() => {
+    if (
+      employeeDetail?.eduction_of_employee &&
+      employeeDetail?.eduction_of_employee?.length > 0
+    ) {
+      setEducations(
+        employeeDetail?.eduction_of_employee.map((edu) => ({ ...edu }))
+      );
+    } else {
+      setEducations([
+        {
+          institute_name: "",
+          degree: "",
+          specialization: "",
+          start_from: "",
+          end_to: "",
+        },
+      ]);
+    }
+  }, [employeeDetail]);
 
   return (
     <div className="modal fade" id="update_education_modal" role="dialog">
@@ -57,24 +126,22 @@ const UpdateEducations = ({ employeeDetail }) => {
                 <div key={index}>
                   <div className="d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-2">Education {index + 1}</h5>
-                    <Button
-                      type="button"
-                      size="small"
-                      variant="filled"
-                      shape="circle"
-                      color="danger"
-                      onClick={() =>
-                        index === 0
-                          ? toast.error(
-                              "You cannot remove the first qualification",
-                            )
-                          : setEducations(
-                              educations.filter((_, i) => i !== index),
-                            )
-                      }
-                    >
-                      <CloseOutlined />
-                    </Button>
+                    {index !== 0 && (
+                      <Button
+                        type="button"
+                        size="small"
+                        variant="filled"
+                        shape="circle"
+                        color="danger"
+                        onClick={() =>
+                          setEducations(
+                            educations.filter((_, i) => i !== index)
+                          )
+                        }
+                      >
+                        <CloseOutlined />
+                      </Button>
+                    )}
                   </div>
                   <div className="row">
                     <div className="col-md-6">
@@ -85,17 +152,22 @@ const UpdateEducations = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-institute_name`] ? "is-invalid" : ""}`}
                           placeholder="Enter Institute"
-                          value={education.institute}
+                          value={education.institute_name}
                           onChange={(e) =>
                             handleChangeQualification(
                               index,
-                              "institute",
-                              e.target.value,
+                              "institute_name",
+                              e.target.value
                             )
                           }
                         />
+                        {errors[`${index}-institute_name`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-institute_name`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -106,17 +178,22 @@ const UpdateEducations = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-degree`] ? "is-invalid" : ""}`}
                           placeholder="Enter Degree"
                           value={education.degree}
                           onChange={(e) =>
                             handleChangeQualification(
                               index,
                               "degree",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
+                        {errors[`${index}-degree`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-degree`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -129,17 +206,22 @@ const UpdateEducations = ({ employeeDetail }) => {
                         </label>
                         <input
                           type="text"
-                          className="form-control"
+                          className={`form-control ${errors[`${index}-specialization`] ? "is-invalid" : ""}`}
                           placeholder="Enter Specialization"
                           value={education.specialization}
                           onChange={(e) =>
                             handleChangeQualification(
                               index,
                               "specialization",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
+                        {errors[`${index}-specialization`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-specialization`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -150,19 +232,45 @@ const UpdateEducations = ({ employeeDetail }) => {
                         <label className="col-form-label">
                           From <span className="text-danger"> *</span>
                         </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Enter From"
-                          value={education.from}
-                          onChange={(e) =>
+                        <ReactDatePicker
+                          selected={
+                            education.start_from
+                              ? new Date(education.start_from)
+                              : null
+                          }
+                          value={
+                            education.start_from
+                              ? moment(education.start_from).format(
+                                  "DD/MM/YYYY"
+                                )
+                              : null
+                          }
+                          onChange={(date) => {
                             handleChangeQualification(
                               index,
-                              "from",
-                              e.target.value,
-                            )
+                              "start_from",
+                              date
+                            );
+
+                            if (
+                              education.end_to &&
+                              date > new Date(education.end_to)
+                            ) {
+                              handleChangeQualification(index, "end_to", null);
+                            }
+                          }}
+                          className={`form-control ${errors[`${index}-start_from`] ? "is-invalid" : ""}`}
+                          placeholderText="Select Start Date"
+                          dateFormat="DD/MM/YYYY"
+                          maxDate={
+                            education.end_to ? new Date(education.end_to) : null
                           }
                         />
+                        {errors[`${index}-start_from`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-start_from`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                     <div className="col-md-6">
@@ -171,19 +279,32 @@ const UpdateEducations = ({ employeeDetail }) => {
                         <label className="col-form-label">
                           To <span className="text-danger">*</span>
                         </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Enter To"
-                          value={education.to}
-                          onChange={(e) =>
-                            handleChangeQualification(
-                              index,
-                              "to",
-                              e.target.value,
-                            )
+                        <ReactDatePicker
+                          selected={
+                            education.end_to ? new Date(education.end_to) : null
+                          }
+                          value={
+                            education.end_to
+                              ? moment(education.end_to).format("DD/MM/YYYY")
+                              : null
+                          }
+                          onChange={(date) =>
+                            handleChangeQualification(index, "end_to", date)
+                          }
+                          className={`form-control ${errors[`${index}-end_to`] ? "is-invalid" : ""}`}
+                          placeholderText="Select End Date"
+                          dateFormat="DD/MM/YYYY"
+                          minDate={
+                            education.start_from
+                              ? new Date(education.start_from)
+                              : null
                           }
                         />
+                        {errors[`${index}-end_to`] && (
+                          <small className="text-danger">
+                            {errors[`${index}-end_to`]}
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -197,7 +318,13 @@ const UpdateEducations = ({ employeeDetail }) => {
                     onClick={() =>
                       setEducations([
                         ...educations,
-                        { institute: "", degree: "", from: "", to: "" },
+                        {
+                          institute_name: "",
+                          degree: "",
+                          specialization: "",
+                          start_from: "",
+                          end_to: "",
+                        },
                       ])
                     }
                   >

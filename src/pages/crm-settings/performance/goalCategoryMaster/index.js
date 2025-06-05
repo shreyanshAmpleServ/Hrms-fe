@@ -25,7 +25,7 @@ const GoalCategoryMaster = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Goal Category Master",
+    (i) => i?.module_name === "Goal Category Master"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -98,8 +98,8 @@ const GoalCategoryMaster = () => {
       : []),
   ];
 
-  const { goal_category, loading, error, success } = useSelector(
-    (state) => state.goalCategoryMaster,
+  const { goal_category, loading } = useSelector(
+    (state) => state.goalCategoryMaster
   );
 
   React.useEffect(() => {
@@ -125,7 +125,7 @@ const GoalCategoryMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -138,15 +138,15 @@ const GoalCategoryMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
-  }, [searchText, goal_category, columns, sortOrder]);
+  }, [goal_category, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelected(industry);
@@ -201,7 +201,7 @@ const GoalCategoryMaster = () => {
                     <div className="col-sm-8">
                       <AddButton
                         label="Add Goal Category"
-                        id="add_edit_Goal_Category_modal"
+                        id="add_edit_goal_category_modal"
                         setMode={() => setMode("add")}
                       />
                     </div>

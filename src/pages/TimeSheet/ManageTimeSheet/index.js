@@ -134,7 +134,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Employee
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
                       name="employee_id"
@@ -180,7 +180,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                   <div className="mb-3">
                     <label className="col-form-label">
                       Project Name
-                      <span className="text-danger">*</span>
+                      <span className="text-danger"> *</span>
                     </label>
                     <Controller
                       name="project_name"
@@ -208,7 +208,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Hours Worked<span className="text-danger">*</span>
+                    Hours Worked<span className="text-danger"> *</span>
                   </label>
                   <div className="mb-3">
                     <Controller
@@ -235,7 +235,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                 </div>
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Work Date<span className="text-danger">*</span>
+                    Work Date<span className="text-danger"> *</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
@@ -276,6 +276,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                     render={({ field }) => (
                       <DefaultEditor
                         className="summernote"
+                        placeholder="Write Task Description"
                         {...field}
                         value={field.value || ""}
                         onChange={(content) => field.onChange(content)}

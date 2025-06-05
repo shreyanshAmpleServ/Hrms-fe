@@ -23,7 +23,7 @@ const JobPosting = () => {
   const dispatch = useDispatch();
 
   const { JobPosting, loading } = useSelector(
-    (state) => state.JobPosting || {},
+    (state) => state.JobPosting || {}
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const JobPosting = () => {
       fetchJobPosting({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const JobPosting = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -64,7 +64,7 @@ const JobPosting = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Helpdesk Ticket",
+    (i) => i?.module_name === "Helpdesk Ticket"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

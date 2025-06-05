@@ -1,14 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addCallResult, updateCallResult } from "../../../../redux/callResult";
-import { useState } from "react";
 import { updateUser } from "../../../../redux/manage-user";
 
-const ChangePassword = (  ) => {
+const ChangePassword = () => {
   const { loading } = useSelector((state) => state.callStatuses);
-  const [userDetails , setUserDetails ] = useState()
+  const [userDetails, setUserDetails] = useState();
 
   const {
     register,
@@ -20,12 +18,12 @@ const ChangePassword = (  ) => {
 
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-setUserDetails(JSON.parse(localStorage.getItem("user")))
-  },[])
+  useEffect(() => {
+    setUserDetails(JSON.parse(localStorage.getItem("user")));
+  }, []);
   // Prefill form in edit mode
   useEffect(() => {
-    if ( userDetails) {
+    if (userDetails) {
       reset({
         full_name: userDetails.full_name || "",
         phone: userDetails.phone || "",
@@ -38,26 +36,32 @@ setUserDetails(JSON.parse(localStorage.getItem("user")))
     }
   }, [userDetails, reset]);
 
-  const onSubmit = async(data) => {
-    const closeButton = document.getElementById( "close_btn_change_password_modal",);
- try{ 
-     await dispatch(updateUser({id: userDetails.id,
-          userData: data} )).unwrap();
-    reset(); // Clear the form
-    closeButton.click();
-}catch (error){
-     closeButton.click();
-}
+  const onSubmit = async (data) => {
+    const closeButton = document.getElementById(
+      "close_btn_change_password_modal"
+    );
+    try {
+      await dispatch(
+        updateUser({ id: userDetails.id, userData: data })
+      ).unwrap();
+      reset(); // Clear the form
+      closeButton.click();
+    } catch (error) {
+      closeButton.click();
+    }
   };
 
   return (
-    <div className="modal fade" id="change_password_modal" tabindex="-1" role="dialog" >
+    <div
+      className="modal fade"
+      id="change_password_modal"
+      tabIndex="-1"
+      role="dialog"
+    >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">
-              Change Password
-            </h5>
+            <h5 className="modal-title">Change Password</h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
@@ -82,7 +86,9 @@ setUserDetails(JSON.parse(localStorage.getItem("user")))
                   })}
                 />
                 {errors.currentPassword && (
-                  <small className="text-danger">{errors.currentPassword.message}</small>
+                  <small className="text-danger">
+                    {errors.currentPassword.message}
+                  </small>
                 )}
               </div>
               {/* Call Result Name */}
@@ -102,7 +108,9 @@ setUserDetails(JSON.parse(localStorage.getItem("user")))
                   })}
                 />
                 {errors.password && (
-                  <small className="text-danger">{errors.password.message}</small>
+                  <small className="text-danger">
+                    {errors.password.message}
+                  </small>
                 )}
               </div>
               {/* Call Result Name */}
@@ -116,15 +124,16 @@ setUserDetails(JSON.parse(localStorage.getItem("user")))
                   {...register("repeatPassword", {
                     required: "Confirm password is required.",
                     validate: (value) =>
-                        value === watch("password") || "Passwords is not matched !",
+                      value === watch("password") ||
+                      "Passwords is not matched !",
                   })}
                 />
                 {errors.repeatPassword && (
-                  <small className="text-danger">{errors.repeatPassword.message}</small>
+                  <small className="text-danger">
+                    {errors.repeatPassword.message}
+                  </small>
                 )}
               </div>
-
-            
             </div>
 
             {/* Footer */}
@@ -142,9 +151,7 @@ setUserDetails(JSON.parse(localStorage.getItem("user")))
                   type="submit"
                   className="btn btn-primary"
                 >
-                  {loading
-                      ? "Updating"
-                      : "Update"}
+                  {loading ? "Updating" : "Update"}
                 </button>
               </div>
             </div>

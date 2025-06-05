@@ -166,6 +166,7 @@ const ManageContracts = ({ setContract, contract }) => {
                             className="select"
                             options={employees}
                             classNamePrefix="react-select"
+                            placeholder="Select Employee"
                             isLoading={employeeLoading}
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
@@ -211,6 +212,7 @@ const ManageContracts = ({ setContract, contract }) => {
                             className="select"
                             options={contractTypes}
                             classNamePrefix="react-select"
+                            placeholder="Select Contract Type"
                             value={selectedDeal || null}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)
@@ -302,7 +304,7 @@ const ManageContracts = ({ setContract, contract }) => {
                   )}
                 </div>
                 <div className="col-md-12 mb-3">
-                  <label className="col-form-label">Document Path</label>
+                  <label className="col-form-label">Attachment</label>
                   <input
                     type="file"
                     className="form-control"
@@ -324,6 +326,7 @@ const ManageContracts = ({ setContract, contract }) => {
                     render={({ field }) => (
                       <DefaultEditor
                         className="summernote"
+                        placeholder="Write Description"
                         {...field}
                         value={field.value || ""}
                         onChange={(content) => field.onChange(content)}

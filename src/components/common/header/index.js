@@ -340,7 +340,7 @@ const Header = () => {
                     </div>
                   </div>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link to={route.faq} className="btn btn-help">
                     <i className="ti ti-help-hexagon" />
                   </Link>
@@ -349,17 +349,17 @@ const Header = () => {
                   <Link to="#" className="btn btn-chart-pie">
                     <i className="ti ti-chart-pie" />
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </li>
             {/* /Nav List */}
             {/* Email */}
-            <li className="nav-item nav-item-email nav-item-box">
+            {/* <li className="nav-item nav-item-email nav-item-box">
               <Link to={route.email}>
                 <i className="ti ti-message-circle-exclamation" />
                 <span className="badge rounded-pill">14</span>
               </Link>
-            </li>
+            </li> */}
             {/* /Email */}
             {/* Notifications */}
             <li className="nav-item dropdown nav-item-box">
@@ -522,7 +522,7 @@ const Header = () => {
         <div className="dropdown mobile-user-menu">
           <Link
             to="#"
-            className="nav-link dropdown-toggle"
+            className="nav-link "
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
@@ -543,7 +543,7 @@ const Header = () => {
             >
               <i className="ti ti-password-fingerprint" /> Change Password
             </Link>
-            <Link className="dropdown-item" to={route.login}>
+            <Link className="dropdown-item" onClick={handleLogout}>
               <i className="ti ti-lock" /> Logout
             </Link>
           </div>

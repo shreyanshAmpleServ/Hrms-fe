@@ -1,4 +1,4 @@
-import { Table, Tag } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -75,17 +75,28 @@ const WorkLifeEventLog = () => {
 
   const columns = [
     {
-      title: "Employee Name",
+      title: "Employee",
       render: (text) => text?.work_life_event_employee?.full_name || "-",
+      sorter: (a, b) =>
+        a.work_life_event_employee.full_name.localeCompare(
+          b.work_life_event_employee.full_name,
+        ),
     },
     {
-      title: "Work Life Event Type",
+      title: "Event Type",
       render: (text) => text?.work_life_event_type?.event_type_name || "-",
+      sorter: (a, b) =>
+        a.work_life_event_type.event_type_name.localeCompare(
+          b.work_life_event_type.event_type_name,
+        ),
     },
     {
-      title: "Work Life Event Date",
+      title: "Event Date",
       dataIndex: "event_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) => {
+        return moment(a.event_date).unix() - moment(b.event_date).unix();
+      },
     },
     {
       title: "Requires Follow Up",
@@ -97,7 +108,6 @@ const WorkLifeEventLog = () => {
       dataIndex: "notes",
       render: (text) => text || "-",
     },
-
     ...(isDelete || isUpdate
       ? [
           {
@@ -218,12 +228,7 @@ const WorkLifeEventLog = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Work Life Event Log</h4>
-                        </div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent

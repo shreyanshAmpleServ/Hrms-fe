@@ -7,13 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchmonthlyPayroll } from "../../redux/monthlyPayrollProcessing/index.js";
+import { fetchAdvancePayment } from "../../redux/AdvancePayment/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagemonthlyPayroll from "./Managepayroll/index.js";
+import ManageAdvancePayment from "./ManageAdvancePayment/index.js";
 
-const MonthlyPayrollProcessing = () => {
+const AdvancePayment = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedmonthlyPayroll, setSelectedmonthlyPayroll] = useState(null);
+  const [selectedAdvancePayment, setSelectedAdvancePayment] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,13 +22,13 @@ const MonthlyPayrollProcessing = () => {
   });
   const dispatch = useDispatch();
 
-  const { monthlyPayroll, loading } = useSelector(
-    (state) => state.monthlyPayroll || {},
+  const { advancePayment, loading } = useSelector(
+    (state) => state.advancePayment || {},
   );
 
   React.useEffect(() => {
     dispatch(
-      fetchmonthlyPayroll({
+      fetchAdvancePayment({
         search: searchValue,
         ...selectedDateRange,
       }),
@@ -37,12 +37,12 @@ const MonthlyPayrollProcessing = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: monthlyPayroll?.currentPage,
-      totalPage: monthlyPayroll?.totalPages,
-      totalCount: monthlyPayroll?.totalCount,
-      pageSize: monthlyPayroll?.size,
+      currentPage: advancePayment?.currentPage,
+      totalPage: advancePayment?.totalPages,
+      totalCount: advancePayment?.totalCount,
+      pageSize: advancePayment?.size,
     });
-  }, [monthlyPayroll]);
+  }, [advancePayment]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -51,7 +51,7 @@ const MonthlyPayrollProcessing = () => {
       pageSize,
     }));
     dispatch(
-      fetchmonthlyPayroll({
+      fetchAdvancePayment({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -60,11 +60,11 @@ const MonthlyPayrollProcessing = () => {
     );
   };
 
-  const data = monthlyPayroll?.data;
+  const data = advancePayment?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry",
+    (i) => i?.module_name === "Advance Payment",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -74,49 +74,41 @@ const MonthlyPayrollProcessing = () => {
 
   const columns = [
     {
-      title: "Employee Name",
-      render: (text) => text?.employee?.full_name || "-", // assuming relation
+      title: "Employee",
+      dataIndex: "hrms_advance_payement_entry_employee",
+      render: (text) => text?.full_name || "-",
     },
     {
-      title: "Grievance Type",
-      dataIndex: "grievance_type",
-      render: (text) => text || "-",
+      title: "Amount Requested",
+      dataIndex: "amount_requested",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      render: (text) => text || "-",
+      title: "Amount Approved",
+      dataIndex: "amount_approved",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Anonymous",
-      dataIndex: "anonymous",
-      render: (val) => (val ? "Yes" : "No"),
+      title: "Due Date",
+      dataIndex: "repayment_schedule",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
-      title: "Submitted On",
-      dataIndex: "submitted_on",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY HH:mm") : "-"),
-      sorter: (a, b) => new Date(a.submitted_on) - new Date(b.submitted_on),
+      title: "Request Date",
+      dataIndex: "request_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
       title: "Status",
-      dataIndex: "status",
-      render: (text) => text || "-",
+      dataIndex: "approval_status",
+      render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Assigned To",
-      render: (text) => text?.assigned_to_user?.full_name || "-", // assuming relation
-    },
-    {
-      title: "Resolution Notes",
-      dataIndex: "resolution_notes",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Resolved On",
-      dataIndex: "resolved_on",
+      title: "Approval Date",
+      dataIndex: "approval_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
+
     ...(isDelete || isUpdate
       ? [
           {
@@ -138,7 +130,7 @@ const MonthlyPayrollProcessing = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedmonthlyPayroll(a)}
+                      onClick={() => setSelectedAdvancePayment(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -148,7 +140,7 @@ const MonthlyPayrollProcessing = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeletemonthlyPayroll(a)}
+                      onClick={() => handleDeleteAdvancePayment(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -161,18 +153,18 @@ const MonthlyPayrollProcessing = () => {
       : []),
   ];
 
-  const handleDeletemonthlyPayroll = (monthlyPayroll) => {
-    setSelectedmonthlyPayroll(monthlyPayroll);
+  const handleDeleteAdvancePayment = (advancePayment) => {
+    setSelectedAdvancePayment(advancePayment);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS -Monthly Payroll Processing</title>
+        <title>DCC HRMS - Advance Payment</title>
         <meta
-          name="time-sheet"
-          content="This is time sheet page of DCC HRMS."
+          name="advance-payment"
+          content="This is advance payment page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -185,9 +177,9 @@ const MonthlyPayrollProcessing = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Monthly Payroll Processing
+                      Advance Payment
                       <span className="count-title">
-                        {monthlyPayroll?.totalCount}
+                        {advancePayment?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -211,7 +203,7 @@ const MonthlyPayrollProcessing = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Grievance Submission"
+                          placeholder="Search Advance Payment"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -226,7 +218,7 @@ const MonthlyPayrollProcessing = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add Monthly Payroll Processing
+                            Add New Advance Payment
                           </Link>
                         </div>
                       </div>
@@ -237,14 +229,7 @@ const MonthlyPayrollProcessing = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">
-                            All Monthly Payroll Processing
-                          </h4>
-                        </div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent
@@ -282,18 +267,18 @@ const MonthlyPayrollProcessing = () => {
             </div>
           </div>
         </div>
-        <ManagemonthlyPayroll
-          setmonthlyPayroll={setSelectedmonthlyPayroll}
-          monthlyPayroll={selectedmonthlyPayroll}
+        <ManageAdvancePayment
+          setAdvancePayment={setSelectedAdvancePayment}
+          advancePayment={selectedAdvancePayment}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        monthlyPayrollId={selectedmonthlyPayroll?.id}
+        advancePaymentId={selectedAdvancePayment?.id}
       />
     </>
   );
 };
 
-export default MonthlyPayrollProcessing;
+export default AdvancePayment;

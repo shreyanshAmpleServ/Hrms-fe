@@ -36,7 +36,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         value: item.id,
         label: item.full_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
-    [employee],
+    [employee]
   );
   const Status = [
     { label: "Pending", value: "pending" },
@@ -99,7 +99,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         updateoffer_letter({
           id: initialData.id,
           offer_letterData: formattedData,
-        }),
+        })
       );
     }
 
@@ -109,7 +109,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
   useEffect(() => {
     const offcanvasElement = document.getElementById(
-      "add_edit_offer_letter_modal",
+      "add_edit_offer_letter_modal"
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -117,12 +117,12 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () =>
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
     }
   }, []);
@@ -169,7 +169,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id"),
+                    (option) => option.value === watch("employee_id")
                   )}
                 />
               )}
@@ -280,7 +280,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               rules={{ required: "Approved Status is required" }}
               render={({ field }) => {
                 const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value,
+                  (employee) => employee.value === field.value
                 );
                 return (
                   <Select
