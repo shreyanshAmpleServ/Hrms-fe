@@ -72,11 +72,11 @@ const ManagedisciplinryAction = ({
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const { disciplinary_penalty, loading: diciplinaryloading } = useSelector(
-    (state) => state.disciplinary_penalty || {},
+    (state) => state.disciplinary_penalty || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -97,7 +97,7 @@ const ManagedisciplinryAction = ({
             updatedisciplinryAction({
               id: disciplinryAction.id,
               disciplinryActionData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createdisciplinryAction({ ...data })).unwrap();
       closeButton?.click();
@@ -116,12 +116,12 @@ const ManagedisciplinryAction = ({
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -166,7 +166,7 @@ const ManagedisciplinryAction = ({
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
                       const selectedEmployee = employees?.find(
-                        (emp) => emp.value === field.value,
+                        (emp) => emp.value === field.value
                       );
                       return (
                         <Select
@@ -199,12 +199,12 @@ const ManagedisciplinryAction = ({
                     Penalty Type<span className="text-danger">*</span>
                   </label>
                   <Controller
-                    name="penalty_type"
+                    name="id"
                     control={control}
                     rules={{ required: "disciplinary penalty is required" }}
                     render={({ field }) => {
                       const selected = (penaltyOptions || []).find(
-                        (opt) => opt.value === field.value,
+                        (opt) => opt.value === field.value
                       );
                       return (
                         <Select
@@ -219,10 +219,8 @@ const ManagedisciplinryAction = ({
                       );
                     }}
                   />
-                  {errors.penalty_type && (
-                    <small className="text-danger">
-                      {errors.penalty_type.message}
-                    </small>
+                  {errors.id && (
+                    <small className="text-danger">{errors.id.message}</small>
                   )}
                 </div>
 

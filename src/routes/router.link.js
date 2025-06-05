@@ -4,6 +4,7 @@ import ActivitiesKanban from "../pages/Activities/ActivitiessKanban";
 import AdvancePayment from "../pages/AdvancePayment";
 import AppointmentLetters from "../pages/AppointmentLetters";
 import AppraisalEntries from "../pages/AppraisalEntries";
+import ArrearAdjustments from "../pages/ArrearAdjustments";
 import AssetAssignment from "../pages/AssetAssignment";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
@@ -61,6 +62,7 @@ import WorkLifeEventTypeMaster from "../pages/crm-settings/recruitment&Talent/wo
 import SourceList from "../pages/crm-settings/sources";
 import StateList from "../pages/crm-settings/state";
 import TaxSetUpList from "../pages/crm-settings/TaxSetUp";
+import DailyAttendance from "../pages/dailyAttendance";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
 import DealList from "../pages/deals";
 import DealDetail from "../pages/deals/DealDetail";
@@ -75,9 +77,11 @@ import EmployeeSuggestion from "../pages/EmployeeSuggestion";
 import EmploymentContracts from "../pages/EmploymentContracts";
 import ExitClearance from "../pages/ExitClearance";
 import ExitInterview from "../pages/ExitInterview";
+import GoalSheetAssignment from "../pages/goalSheetAssignment";
 import GrievanceSubmission from "../pages/grievanceSubmission";
 import HelpdeskTicket from "../pages/HelpdeskTicket";
 import JobPosting from "../pages/jobPosting";
+import KPIProgress from "../pages/KPIProgress";
 import LeadsList from "../pages/leads";
 import LeadsDetail from "../pages/leads/LeadsDetail";
 import LeadsKanban from "../pages/leads/LeadsKanban";
@@ -145,8 +149,6 @@ import VendorDetail from "../pages/Vendor/VendorDetail";
 import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
-import ArrearAdjustments from "../pages/ArrearAdjustments";
-import KPIProgress from "../pages/KPIProgress";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -1046,6 +1048,19 @@ export const privateRoutes = [
     element: <KPIProgress />,
     route: Route,
     title: "KPI Progress",
+  },
+  {
+    path: route.dailyAttendanceEntry,
+    element: <DailyAttendance />,
+    route: Route,
+    title: "daily Attendance Entry",
+  },
+
+  {
+    path: route.goalSheetAssignment,
+    element: <GoalSheetAssignment />,
+    route: Route,
+    title: "daily Attendance Entry",
   },
 ];
 

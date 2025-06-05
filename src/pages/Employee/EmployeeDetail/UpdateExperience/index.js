@@ -92,10 +92,10 @@ const UpdateExperience = ({ employeeDetail }) => {
       updateEmployeeExperience({
         id: employeeDetail?.id,
         experiences: experiences,
-      }),
+      })
     );
     const closeButton = document.getElementById(
-      "close_btn_update_experience_modal",
+      "close_btn_update_experience_modal"
     );
     closeButton.click();
   };
@@ -109,7 +109,7 @@ const UpdateExperience = ({ employeeDetail }) => {
         employeeDetail.experiance_of_employee.map((exp) => ({
           ...exp,
           is_current: exp?.end_to ? false : true,
-        })),
+        }))
       );
     } else {
       setExperiences([
@@ -159,7 +159,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                         color="danger"
                         onClick={() =>
                           setExperiences(
-                            experiences.filter((_, i) => i !== index),
+                            experiences.filter((_, i) => i !== index)
                           )
                         }
                       >
@@ -182,7 +182,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                             handleChangeExperience(
                               index,
                               "company_name",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
@@ -207,7 +207,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                             handleChangeExperience(
                               index,
                               "position",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
@@ -235,13 +235,13 @@ const UpdateExperience = ({ employeeDetail }) => {
                             handleChangeExperience(
                               index,
                               "start_from",
-                              date?.toISOString(),
+                              date?.toISOString()
                             )
                           }
                           value={
                             experience?.start_from
                               ? moment(experience.start_from).format(
-                                  "DD-MM-YYYY",
+                                  "DD-MM-YYYY"
                                 )
                               : null
                           }
@@ -282,7 +282,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                               handleChangeExperience(
                                 index,
                                 "end_to",
-                                date?.toISOString(),
+                                date?.toISOString()
                               )
                             }
                             className={`form-control ${errors[`${index}-end_to`] ? "is-invalid" : ""}`}
@@ -318,7 +318,7 @@ const UpdateExperience = ({ employeeDetail }) => {
                               handleChangeExperience(
                                 index,
                                 "is_current",
-                                e.target.checked,
+                                e.target.checked
                               )
                             }
                           />

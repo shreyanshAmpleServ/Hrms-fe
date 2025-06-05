@@ -4,16 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
 import Table from "../../components/common/dataTableNew/index";
-import FlashMessage from "../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 import moment from "moment";
 import { Helmet } from "react-helmet-async";
-import AddButton from "../../components/datatable/AddButton";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deleteoffer_letter,
   fetchoffer_letter,
 } from "../../redux/offerLetters";
@@ -25,7 +22,7 @@ const OfferLetters = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer",
+    (i) => i?.module_name === "Offer Letter"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -47,7 +44,7 @@ const OfferLetters = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.offered_employee?.full_name || "").localeCompare(
-          b.offered_employee?.full_name || "",
+          b.offered_employee?.full_name || ""
         ),
     },
 
@@ -138,9 +135,7 @@ const OfferLetters = () => {
       : []),
   ];
 
-  const { offer_letter, loading, error, success } = useSelector(
-    (state) => state.offer_letter,
-  );
+  const { offer_letter, loading } = useSelector((state) => state.offer_letter);
 
   React.useEffect(() => {
     dispatch(fetchoffer_letter({ search: searchText }));
@@ -165,7 +160,7 @@ const OfferLetters = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -178,11 +173,11 @@ const OfferLetters = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -213,21 +208,6 @@ const OfferLetters = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">

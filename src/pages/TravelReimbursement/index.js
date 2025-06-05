@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Rate, Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -24,7 +24,7 @@ const TravelReimbursement = () => {
   const dispatch = useDispatch();
 
   const { travelReimbursement, loading } = useSelector(
-    (state) => state.travelReimbursement || {},
+    (state) => state.travelReimbursement || {}
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const TravelReimbursement = () => {
       fetchtravelReimbursement({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const TravelReimbursement = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -65,7 +65,7 @@ const TravelReimbursement = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry",
+    (i) => i?.module_name === "Time Sheet Entry"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -88,12 +88,12 @@ const TravelReimbursement = () => {
     {
       title: "Start Date",
       dataIndex: "start_date",
-      render: (text) => (text ? moment(text).format("DD MMM YYYY") : "-"),
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
       title: "End Date",
       dataIndex: "end_date",
-      render: (text) => (text ? moment(text).format("DD MMM YYYY") : "-"),
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
       title: "Destination",
@@ -167,7 +167,7 @@ const TravelReimbursement = () => {
   return (
     <>
       <Helmet>
-        <title>DCC HRMS -Travel Reimbursement</title>
+        <title>DCC HRMS -Travel Reimbursement Claims</title>
         <meta
           name="time-sheet"
           content="This is time sheet page of DCC HRMS."
@@ -209,7 +209,7 @@ const TravelReimbursement = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Travel Reimbursement"
+                          placeholder="Search Travel Reimbursement Claims"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -224,7 +224,7 @@ const TravelReimbursement = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add Travel Reimbursement
+                            Add Travel Reimbursement Claims
                           </Link>
                         </div>
                       </div>

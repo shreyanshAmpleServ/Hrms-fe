@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Rate, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,14 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchdisciplinryAction } from "../../redux/disciplinaryActionLog/index.js";
+import { fetchgoalSheet } from "../../redux/GoalSheetAssignment";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagedisciplinryAction from "./ManagedisciplinryAction/index.js";
+import ManageGoalSheetAssignment from "./ManageGoalSheetAssignment/index.js";
 
-const DisciplinaryActionLog = () => {
+const GoalSheetAssignment = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selecteddisciplinryAction, setSelecteddisciplinryAction] =
-    useState(null);
+  const [selectedgoalSheet, setSelectedgoalSheet] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -23,27 +22,26 @@ const DisciplinaryActionLog = () => {
   });
   const dispatch = useDispatch();
 
-  const { disciplinryAction, loading } = useSelector(
-    (state) => state.disciplinryAction || {}
-  );
+  const { goalSheet, loading } = useSelector((state) => state.goalSheet || {});
 
   React.useEffect(() => {
     dispatch(
-      fetchdisciplinryAction({
+      fetchgoalSheet({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: disciplinryAction?.currentPage,
-      totalPage: disciplinryAction?.totalPages,
-      totalCount: disciplinryAction?.totalCount,
-      pageSize: disciplinryAction?.size,
+      currentPage: goalSheet?.currentPage,
+      totalPage: goalSheet?.totalPages,
+      totalCount: goalSheet?.totalCount,
+      pageSize: goalSheet?.size,
     });
-  }, [disciplinryAction]);
+  }, [goalSheet]);
+
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
@@ -51,20 +49,20 @@ const DisciplinaryActionLog = () => {
       pageSize,
     }));
     dispatch(
-      fetchdisciplinryAction({
+      fetchgoalSheet({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
-  const data = disciplinryAction?.data;
+  const data = goalSheet?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
+    (i) => i?.module_name === "Helpdesk Ticket",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -75,43 +73,48 @@ const DisciplinaryActionLog = () => {
   const columns = [
     {
       title: "Employee Name",
-      render: (text) => text?.employee?.full_name || "-",
+      dataIndex: "goal_sheet_assignment_employee", // make sure relation is populated
+      render: (text) => text?.full_name || "-",
     },
     {
-      title: "Incident Date",
-      dataIndex: "incident_date",
+      title: "Appraisal Cycle",
+      dataIndex: "goal_sheet_assignment_appraisal",
+      render: (text) => text?.review_period || "-", // assuming name exists
+    },
+    {
+      title: "Goal Category",
+      dataIndex: "goal_sheet_assignment_goalCategory",
+      render: (text) => text?.category_name || "-", // optional field
+    },
+    {
+      title: "Goal Description",
+      dataIndex: "goal_description",
+      render: (text) => <p>{text}</p> || "-",
+    },
+    {
+      title: "Weightage",
+      dataIndex: "weightage",
+      render: (text) => <span>{text}%</span> || "-",
+    },
+    {
+      title: "Target Value",
+      dataIndex: "target_value",
+      render: (text) => <p>{text}</p> || "-",
+    },
+    {
+      title: "Measurement Criteria",
+      dataIndex: "measurement_criteria",
+      render: (text) => <p>{text}</p> || "-",
+    },
+    {
+      title: "Due Date",
+      dataIndex: "due_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => new Date(a.incident_date) - new Date(b.incident_date),
-    },
-    {
-      title: "Description",
-      dataIndex: "incident_description",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Action Taken",
-      dataIndex: "action_taken",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Committee Notes",
-      dataIndex: "committee_notes",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Penalty Type",
-      render: (text) => text?.disciplinary_penalty?.description ?? "-",
-    },
-    {
-      title: "Effective From",
-      dataIndex: "effective_from",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => new Date(a.effective_from) - new Date(b.effective_from),
     },
     {
       title: "Status",
       dataIndex: "status",
-      render: (text) => text || "-",
+      render: (text) => <span className="text-capitalize">{text}</span> || "-",
     },
 
     ...(isDelete || isUpdate
@@ -135,7 +138,7 @@ const DisciplinaryActionLog = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelecteddisciplinryAction(a)}
+                      onClick={() => setSelectedgoalSheet(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -145,7 +148,7 @@ const DisciplinaryActionLog = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeletedisciplinryAction(a)}
+                      onClick={() => handleDeletegoalSheet(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -158,18 +161,18 @@ const DisciplinaryActionLog = () => {
       : []),
   ];
 
-  const handleDeletedisciplinryAction = (disciplinryAction) => {
-    setSelecteddisciplinryAction(disciplinryAction);
+  const handleDeletegoalSheet = (goalSheet) => {
+    setSelectedgoalSheet(goalSheet);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Disciplinary Action Log</title>
+        <title>DCC HRMS - Goal Sheet Assignment</title>
         <meta
-          name="time-sheet"
-          content="This is time sheet page of DCC HRMS."
+          name="helpdesk-ticket"
+          content="This is helpdesk ticket page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -182,9 +185,9 @@ const DisciplinaryActionLog = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Disciplinary Action Log
+                      Goal Sheet Assignment
                       <span className="count-title">
-                        {disciplinryAction?.totalCount}
+                        {goalSheet?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -208,7 +211,7 @@ const DisciplinaryActionLog = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Disciplinary Action"
+                          placeholder="Search Goal Sheet "
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -223,7 +226,7 @@ const DisciplinaryActionLog = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Disciplinary Action
+                            Add Goal Sheet Assignment
                           </Link>
                         </div>
                       </div>
@@ -234,7 +237,10 @@ const DisciplinaryActionLog = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
+                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
+                      <div className="d-flex align-items-center flex-wrap row-gap-2">
+                        <div className="d-flex align-items-center flex-wrap row-gap-2"></div>
+                      </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent
@@ -272,18 +278,19 @@ const DisciplinaryActionLog = () => {
             </div>
           </div>
         </div>
-        <ManagedisciplinryAction
-          setdisciplinryAction={setSelecteddisciplinryAction}
-          disciplinryAction={selecteddisciplinryAction}
+        <ManageGoalSheetAssignment
+          setgoalSheet={setSelectedgoalSheet}
+          goalSheet={selectedgoalSheet}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        disciplinryActionId={selecteddisciplinryAction?.id}
+        goalSheet
+        Id={selectedgoalSheet?.id}
       />
     </>
   );
 };
 
-export default DisciplinaryActionLog;
+export default GoalSheetAssignment;

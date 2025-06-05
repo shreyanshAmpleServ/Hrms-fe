@@ -160,6 +160,12 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "Goal Sheet Assignment",
+            link: route.goalSheetAssignment,
+            showSubRoute: false,
+            submenu: false,
+          },
         ],
       },
 

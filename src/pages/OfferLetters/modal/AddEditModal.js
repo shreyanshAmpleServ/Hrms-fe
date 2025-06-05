@@ -3,16 +3,16 @@ import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import {
-  addloan_requests,
-  updateloan_requests,
-} from "../../../redux/loanRequests";
+  addoffer_letter,
+  updateoffer_letter,
+} from "../../../redux/offerLetters";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchEmployee } from "../../../redux/Employee";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.loan_requests);
+  const { loading } = useSelector((state) => state.offer_letter);
   const dispatch = useDispatch();
 
   const {
@@ -34,9 +34,9 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     () =>
       employee?.data?.map((item) => ({
         value: item.id,
-        label: item.first_name, // or item.full_name or item.employee_name, depending on your API
+        label: item.full_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
-    [employee],
+    [employee]
   );
   const Status = [
     { label: "Pending", value: "pending" },
@@ -93,13 +93,13 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     };
 
     if (mode === "add") {
-      dispatch(addloan_requests(formattedData));
+      dispatch(addoffer_letter(formattedData));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateloan_requests({
+        updateoffer_letter({
           id: initialData.id,
-          loan_requestsData: formattedData,
-        }),
+          offer_letterData: formattedData,
+        })
       );
     }
 
@@ -109,7 +109,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
   useEffect(() => {
     const offcanvasElement = document.getElementById(
-      "add_edit_offer_letter_modal",
+      "add_edit_offer_letter_modal"
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -117,12 +117,12 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () =>
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
     }
   }, []);
@@ -169,7 +169,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id"),
+                    (option) => option.value === watch("employee_id")
                   )}
                 />
               )}
@@ -280,7 +280,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               rules={{ required: "Approved Status is required" }}
               render={({ field }) => {
                 const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value,
+                  (employee) => employee.value === field.value
                 );
                 return (
                   <Select

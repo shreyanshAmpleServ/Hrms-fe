@@ -87,7 +87,7 @@ const UpdateEducations = ({ employeeDetail }) => {
       employeeDetail?.eduction_of_employee?.length > 0
     ) {
       setEducations(
-        employeeDetail?.eduction_of_employee.map((edu) => ({ ...edu })),
+        employeeDetail?.eduction_of_employee.map((edu) => ({ ...edu }))
       );
     } else {
       setEducations([
@@ -135,7 +135,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                         color="danger"
                         onClick={() =>
                           setEducations(
-                            educations.filter((_, i) => i !== index),
+                            educations.filter((_, i) => i !== index)
                           )
                         }
                       >
@@ -159,7 +159,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "institute_name",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
@@ -185,7 +185,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "degree",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
@@ -213,7 +213,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "specialization",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
@@ -241,7 +241,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                           value={
                             education.start_from
                               ? moment(education.start_from).format(
-                                  "DD/MM/YYYY",
+                                  "DD/MM/YYYY"
                                 )
                               : null
                           }
@@ -249,7 +249,7 @@ const UpdateEducations = ({ employeeDetail }) => {
                             handleChangeQualification(
                               index,
                               "start_from",
-                              date,
+                              date
                             );
 
                             if (

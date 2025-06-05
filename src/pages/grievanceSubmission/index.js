@@ -24,7 +24,7 @@ const GrievanceSubmission = () => {
   const dispatch = useDispatch();
 
   const { grievanceSubmission, loading } = useSelector(
-    (state) => state.grievanceSubmission || {},
+    (state) => state.grievanceSubmission || {}
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const GrievanceSubmission = () => {
       fetchgrievanceSubmission({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const GrievanceSubmission = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -65,7 +65,7 @@ const GrievanceSubmission = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry",
+    (i) => i?.module_name === "Time Sheet Entry"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

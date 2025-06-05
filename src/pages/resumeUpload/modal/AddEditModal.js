@@ -36,7 +36,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     () =>
       employee?.data?.map((item) => ({
         value: item.id,
-        label: item.first_name, // or item.full_name or item.employee_name, depending on your API
+        label: item.full_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
     [employee],
   );
@@ -98,7 +98,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Goal Category " : "Edit Goal Category"}
+              {mode === "add" ? "Add New Resume " : "Edit Resume"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -147,7 +147,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
 
               {/* Resume Path */}
-              <div className="mb-3 mt-2">
+              <div className="mb-3 mt-3">
                 <label className="col-form-label">Resume File (PDF Only)</label>
                 <input
                   type="file"
@@ -190,7 +190,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       }}
                       className="form-control"
                       dateFormat="dd-MM-yyyy"
-                      placeholderText="Select Offer Date"
+                      placeholderText="Select Date"
                     />
                   )}
                 />

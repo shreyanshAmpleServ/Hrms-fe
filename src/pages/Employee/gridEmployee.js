@@ -142,7 +142,7 @@ const EmployeeGrid = ({ data }) => {
                           >
                             <i className={`ti ti-brand-${key} fs-14`} />
                           </Link>
-                        ),
+                        )
                     )}
                   </div>
                   <div className="d-flex align-items-center">

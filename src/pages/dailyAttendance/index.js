@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Rate, Table, Tag } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,14 +7,13 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchdisciplinryAction } from "../../redux/disciplinaryActionLog/index.js";
+import { fetchdailyAttendance } from "../../redux/dailyAttendance";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManagedisciplinryAction from "./ManagedisciplinryAction/index.js";
+import ManagedailyAttendance from "./ManagedailyAttendance/index.js";
 
-const DisciplinaryActionLog = () => {
+const DailyAttendance = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selecteddisciplinryAction, setSelecteddisciplinryAction] =
-    useState(null);
+  const [selecteddailyAttendance, setSelecteddailyAttendance] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -23,27 +22,28 @@ const DisciplinaryActionLog = () => {
   });
   const dispatch = useDispatch();
 
-  const { disciplinryAction, loading } = useSelector(
-    (state) => state.disciplinryAction || {}
+  const { dailyAttendance, loading } = useSelector(
+    (state) => state.dailyAttendance || {},
   );
 
   React.useEffect(() => {
     dispatch(
-      fetchdisciplinryAction({
+      fetchdailyAttendance({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: disciplinryAction?.currentPage,
-      totalPage: disciplinryAction?.totalPages,
-      totalCount: disciplinryAction?.totalCount,
-      pageSize: disciplinryAction?.size,
+      currentPage: dailyAttendance?.currentPage,
+      totalPage: dailyAttendance?.totalPages,
+      totalCount: dailyAttendance?.totalCount,
+      pageSize: dailyAttendance?.size,
     });
-  }, [disciplinryAction]);
+  }, [dailyAttendance]);
+
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
@@ -51,20 +51,20 @@ const DisciplinaryActionLog = () => {
       pageSize,
     }));
     dispatch(
-      fetchdisciplinryAction({
+      fetchdailyAttendance({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
-  const data = disciplinryAction?.data;
+  const data = dailyAttendance?.data;
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
+    (i) => i?.module_name === "Helpdesk Ticket",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -74,43 +74,40 @@ const DisciplinaryActionLog = () => {
 
   const columns = [
     {
+      title: "Employee Code",
+      render: (_, record) =>
+        record?.hrms_daily_attendance_employee?.employee_code || "-",
+    },
+    {
       title: "Employee Name",
-      render: (text) => text?.employee?.full_name || "-",
+      render: (_, record) =>
+        record?.hrms_daily_attendance_employee?.full_name || "-",
     },
     {
-      title: "Incident Date",
-      dataIndex: "incident_date",
+      title: "Attendance Date",
+      dataIndex: "attendance_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => new Date(a.incident_date) - new Date(b.incident_date),
+      sorter: (a, b) =>
+        new Date(a.attendance_date) - new Date(b.attendance_date),
     },
     {
-      title: "Description",
-      dataIndex: "incident_description",
-      render: (text) => text || "-",
+      title: "Check-In Time",
+      dataIndex: "check_in_time",
+      render: (text) => (text ? moment(text).format("hh:mm A") : "-"),
     },
     {
-      title: "Action Taken",
-      dataIndex: "action_taken",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Committee Notes",
-      dataIndex: "committee_notes",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Penalty Type",
-      render: (text) => text?.disciplinary_penalty?.description ?? "-",
-    },
-    {
-      title: "Effective From",
-      dataIndex: "effective_from",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => new Date(a.effective_from) - new Date(b.effective_from),
+      title: "Check-Out Time",
+      dataIndex: "check_out_time",
+      render: (text) => (text ? moment(text).format("hh:mm A") : "-"),
     },
     {
       title: "Status",
       dataIndex: "status",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Remarks",
+      dataIndex: "remarks",
       render: (text) => text || "-",
     },
 
@@ -135,7 +132,7 @@ const DisciplinaryActionLog = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelecteddisciplinryAction(a)}
+                      onClick={() => setSelecteddailyAttendance(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -145,7 +142,7 @@ const DisciplinaryActionLog = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeletedisciplinryAction(a)}
+                      onClick={() => handleDeletedailyAttendance(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -158,18 +155,18 @@ const DisciplinaryActionLog = () => {
       : []),
   ];
 
-  const handleDeletedisciplinryAction = (disciplinryAction) => {
-    setSelecteddisciplinryAction(disciplinryAction);
+  const handleDeletedailyAttendance = (dailyAttendance) => {
+    setSelecteddailyAttendance(dailyAttendance);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Disciplinary Action Log</title>
+        <title>DCC HRMS - Daily Attendance Entry</title>
         <meta
-          name="time-sheet"
-          content="This is time sheet page of DCC HRMS."
+          name="helpdesk-ticket"
+          content="This is helpdesk ticket page of DCC HRMS."
         />
       </Helmet>
       {/* Page Wrapper */}
@@ -182,9 +179,9 @@ const DisciplinaryActionLog = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Disciplinary Action Log
+                      Daily Attendance Entry
                       <span className="count-title">
-                        {disciplinryAction?.totalCount}
+                        {dailyAttendance?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -208,7 +205,7 @@ const DisciplinaryActionLog = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Disciplinary Action"
+                          placeholder="Search Daily Attendance"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -223,7 +220,7 @@ const DisciplinaryActionLog = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Disciplinary Action
+                            Add Daily Attendance Entry
                           </Link>
                         </div>
                       </div>
@@ -234,7 +231,14 @@ const DisciplinaryActionLog = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
+                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
+                      <div className="d-flex align-items-center flex-wrap row-gap-2">
+                        <div className="d-flex align-items-center flex-wrap row-gap-2">
+                          <h4 className="mb-0 me-3">
+                            All Daily Attendance Entry{" "}
+                          </h4>
+                        </div>
+                      </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent
@@ -272,18 +276,18 @@ const DisciplinaryActionLog = () => {
             </div>
           </div>
         </div>
-        <ManagedisciplinryAction
-          setdisciplinryAction={setSelecteddisciplinryAction}
-          disciplinryAction={selecteddisciplinryAction}
+        <ManagedailyAttendance
+          setAttendance={setSelecteddailyAttendance}
+          dailyAttendance={selecteddailyAttendance}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        disciplinryActionId={selecteddisciplinryAction?.id}
+        dailyAttendanceId={selecteddailyAttendance?.id}
       />
     </>
   );
 };
 
-export default DisciplinaryActionLog;
+export default DailyAttendance;

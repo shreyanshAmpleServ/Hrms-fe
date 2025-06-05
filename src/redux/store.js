@@ -108,6 +108,8 @@ import EmployeeAttachmentReducer from "./EmployeeAttachment";
 import AdvancePaymentReducer from "./AdvancePayment";
 import MonthlyPayrollReducer from "./MonthlyPayroll";
 import ArrearAdjustmentsReducer from "./ArrearAdjustments";
+import DailyAttendanceReducer from "./dailyAttendance";
+import GoalSheetReducer from "./GoalSheetAssignment";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -183,7 +185,7 @@ const store = configureStore({
     leaveType: leaveTypeReducer,
     holidayCalender: holidayCalenderReducer,
     WorkScheduleTemp: WorkScheduleTempReducer,
-    job_posting: JobPostingReducer,
+    JobPosting: JobPostingReducer,
     appointment: AppointmentLetters,
     contracts: EmploymentContracts,
     leaveEncashment: LeaveEncashmentReducer,
@@ -219,6 +221,8 @@ const store = configureStore({
     advancePayment: AdvancePaymentReducer,
     monthlyPayroll: MonthlyPayrollReducer,
     arrearAdjustments: ArrearAdjustmentsReducer,
+    dailyAttendance: DailyAttendanceReducer,
+    goalSheet: GoalSheetReducer,
   },
 });
 

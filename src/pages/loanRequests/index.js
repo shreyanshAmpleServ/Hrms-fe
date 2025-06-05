@@ -241,7 +241,7 @@ const LoanRequests = () => {
                       <SearchBar
                         searchText={searchText}
                         handleSearch={handleSearch}
-                        label="Search Offer Letters"
+                        label="Search lone Requests"
                       />
                     </div>
                   </div>

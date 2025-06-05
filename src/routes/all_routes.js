@@ -205,6 +205,8 @@ export const all_routes = {
   travelReimbursementClaims: "/travel-Reimbursement-Claims",
   recognitionAwards: "/Recognition-Awards",
   notificationsLog: "/notifications-log",
+  dailyAttendanceEntry: "/daily-attendance-entry",
+  goalSheetAssignment: "/goal-sheet-assignment",
   /* USER MANAGEMENT */
   manageusers: "/manage-users",
   manageusersDetails: "/manage-users/:id",

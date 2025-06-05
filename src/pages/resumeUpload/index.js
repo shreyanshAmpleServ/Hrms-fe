@@ -72,7 +72,7 @@ const ResumeUpload = () => {
           title="View or Download PDF"
         >
           <i className="ti ti-file-type-pdf fs-5"></i>
-          <span>View PDF</span>
+          <span>View </span>
         </a>
       ),
     },
