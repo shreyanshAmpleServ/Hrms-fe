@@ -55,7 +55,7 @@ const AddEditRole = ({ mode = "add", initialData = null }) => {
     reset(); // Clear the form
     closeButton.click();
   };
-
+  //
   return (
     <div className="modal fade" id="add_edit_role_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
