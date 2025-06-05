@@ -110,6 +110,7 @@ import MonthlyPayrollReducer from "./MonthlyPayroll";
 import ArrearAdjustmentsReducer from "./ArrearAdjustments";
 import DailyAttendanceReducer from "./dailyAttendance";
 import GoalSheetReducer from "./GoalSheetAssignment";
+import KPIProgressReducer from "./KPIProgress";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -223,6 +224,7 @@ const store = configureStore({
     arrearAdjustments: ArrearAdjustmentsReducer,
     dailyAttendance: DailyAttendanceReducer,
     goalSheet: GoalSheetReducer,
+    kpiProgress: KPIProgressReducer,
   },
 });
 

@@ -4,11 +4,12 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { fetchEmployee } from "../../../redux/Employee";
+import { fetchgoalSheet } from "../../../redux/GoalSheetAssignment";
 import {
   createKPIProgress,
   updateKPIProgress,
 } from "../../../redux/KPIProgress";
-import { fetchEmployee } from "../../../redux/Employee";
 
 const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -21,6 +22,16 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
   } = useForm();
 
   const { loading } = useSelector((state) => state.kpiProgress || {});
+  const { goalSheet } = useSelector((state) => state.goalSheet || {});
+
+  const goalSheetOptions = goalSheet?.data?.map((item) => ({
+    label: item?.goal_description,
+    value: item?.id,
+  }));
+
+  React.useEffect(() => {
+    dispatch(fetchgoalSheet());
+  }, [dispatch]);
 
   React.useEffect(() => {
     if (kpiProgress) {
@@ -51,26 +62,13 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
     label: i?.full_name,
     value: i?.id,
   }));
-
-  const adjustmentTypes = [
-    { value: "Bonus", label: "Bonus" },
-    { value: "Incentive", label: "Incentive" },
-    { value: "Overtime", label: "Overtime" },
-    { value: "Leave Encashment", label: "Leave Encashment" },
-    { value: "Salary Advance", label: "Salary Advance" },
-    { value: "Loan Deduction", label: "Loan Deduction" },
-    { value: "Tax Adjustment", label: "Tax Adjustment" },
-    { value: "Reimbursement", label: "Reimbursement" },
-    { value: "Correction", label: "Correction" },
-    { value: "Other", label: "Other" },
-  ];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -80,7 +78,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
             updateKPIProgress({
               id: kpiProgress.id,
               kpiProgressData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createKPIProgress({ ...data })).unwrap();
       closeButton.click();
@@ -99,12 +97,12 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -148,7 +146,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -183,132 +181,189 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                   </div>
                 </div>
                 <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Goal
+                      <span className="text-danger"> *</span>
+                    </label>
+                    <Controller
+                      name="goal_id"
+                      control={control}
+                      rules={{ required: "Goal is required" }}
+                      render={({ field }) => {
+                        const selectedGoal = goalSheetOptions?.find(
+                          (goal) => goal.value === field.value
+                        );
+                        return (
+                          <Select
+                            {...field}
+                            className="select"
+                            options={goalSheetOptions}
+                            placeholder="Select Goal"
+                            classNamePrefix="react-select"
+                            isLoading={employeeLoading}
+                            onInputChange={(inputValue) =>
+                              setSearchValue(inputValue)
+                            }
+                            value={selectedGoal || null}
+                            onChange={(selectedOption) =>
+                              field.onChange(selectedOption.value)
+                            }
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    {errors.goal_id && (
+                      <small className="text-danger">
+                        {errors.goal_id.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Reviewed By
+                      <span className="text-danger"> *</span>
+                    </label>
+                    <Controller
+                      name="reviewed_by"
+                      control={control}
+                      rules={{ required: "Reviewed By is required" }}
+                      render={({ field }) => {
+                        const selectedEmployee = employees?.find(
+                          (employee) => employee.value === field.value
+                        );
+                        return (
+                          <Select
+                            {...field}
+                            className="select"
+                            options={employees}
+                            placeholder="Select Reviewed By"
+                            classNamePrefix="react-select"
+                            isLoading={employeeLoading}
+                            onInputChange={(inputValue) =>
+                              setSearchValue(inputValue)
+                            }
+                            value={selectedEmployee || null}
+                            onChange={(selectedOption) =>
+                              field.onChange(selectedOption.value)
+                            }
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    {errors.reviewed_by && (
+                      <small className="text-danger">
+                        {errors.reviewed_by.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
                   <label className="col-form-label">
-                    Payroll Month<span className="text-danger">*</span>
+                    Reviewed On<span className="text-danger">*</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
                     </span>
                     <Controller
-                      name="payroll_month"
+                      name="reviewed_on"
                       control={control}
-                      rules={{ required: "Payroll Month is required!" }}
+                      rules={{ required: "Reviewed On is required!" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
-                          placeholderText="Select Payroll Month"
+                          placeholderText="Select Reviewed On"
                           selected={field.value}
                           value={
                             field.value
-                              ? moment(field.value).format("MM-YYYY")
+                              ? moment(field.value).format("DD-MM-YYYY")
                               : null
                           }
                           onChange={(date) => field.onChange(date)}
-                          dateFormat="MM-YYYY"
+                          dateFormat="DD-MM-YYYY"
                           showMonthYearPicker
                           showFullMonthYearPicker
                         />
                       )}
                     />
                   </div>
-                  {errors.payroll_month && (
+                  {errors.reviewed_on && (
                     <small className="text-danger">
-                      {errors.payroll_month.message}
+                      {errors.reviewed_on.message}
                     </small>
                   )}
                 </div>
 
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Arrear Amount <span className="text-danger">*</span>
+                    Progress Value <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="arrear_amount"
+                      name="progress_value"
                       control={control}
-                      rules={{ required: "Arrear Amount is required!" }}
+                      rules={{ required: "Progress Value is required!" }}
                       render={({ field }) => (
                         <input
                           {...field}
                           type="number"
-                          className={`form-control ${errors.arrear_amount ? "is-invalid" : ""}`}
-                          placeholder="Enter Arrear Amount"
+                          className={`form-control ${errors.progress_value ? "is-invalid" : ""}`}
+                          placeholder="Enter Progress Value"
                         />
                       )}
                     />
-                    {errors.arrear_amount && (
+                    {errors.progress_value && (
                       <small className="text-danger">
-                        {errors.arrear_amount.message}
+                        {errors.progress_value.message}
                       </small>
                     )}
                   </div>
                 </div>
 
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Adjustment Type <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="adjustment_type"
-                      control={control}
-                      rules={{ required: "Adjustment Type is required!" }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          className="select"
-                          options={adjustmentTypes}
-                          placeholder="Select Adjustment Type"
-                          classNamePrefix="react-select"
-                          value={adjustmentTypes.find(
-                            (x) => x.value === field.value,
-                          )}
-                          onChange={(option) => field.onChange(option.value)}
-                        />
-                      )}
-                    />
-                    {errors.adjustment_type && (
-                      <small className="text-danger">
-                        {errors.adjustment_type.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-md-12">
-                  <label className="col-form-label">Arrear Reason</label>
-                  <div className="mb-3">
-                    <Controller
-                      name="arrear_reason"
-                      control={control}
-                      render={({ field }) => (
-                        <textarea
-                          {...field}
-                          className="form-control"
-                          placeholder="Enter Arrear Reason"
-                          rows={2}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
                 <div className="col-md-12">
                   <label className="col-form-label">Remarks</label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"
                       control={control}
+                      rules={{
+                        maxLength: {
+                          value: 255,
+                          message: "Remarks must be less than 255 characters",
+                        },
+                        required: "Remarks is required!",
+                      }}
                       render={({ field }) => (
                         <textarea
                           {...field}
                           className="form-control"
                           placeholder="Enter Remarks"
-                          rows={2}
+                          rows={3}
                         />
                       )}
                     />
+                    {errors.remarks && (
+                      <small className="text-danger">
+                        {errors.remarks.message}
+                      </small>
+                    )}
                   </div>
                 </div>
               </div>
