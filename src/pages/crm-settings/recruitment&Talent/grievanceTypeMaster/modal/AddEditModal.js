@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updategrievance_type({
           id: initialData.id,
           grievance_typeData: data,
-        }),
+        })
       );
     }
     reset();
@@ -53,9 +53,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add"
-                ? "Add New Grievance Type "
-                : "Edit Grievance Type "}
+              {mode === "add" ? "Add Grievance Type " : "Edit Grievance Type "}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

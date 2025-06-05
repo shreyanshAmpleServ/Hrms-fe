@@ -24,7 +24,7 @@ const ArrearAdjustments = () => {
   const dispatch = useDispatch();
 
   const { arrearAdjustments, loading } = useSelector(
-    (state) => state.arrearAdjustments || {},
+    (state) => state.arrearAdjustments || {}
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const ArrearAdjustments = () => {
       fetchArrearAdjustments({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const ArrearAdjustments = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -65,7 +65,7 @@ const ArrearAdjustments = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Arrear Adjustments",
+    (i) => i?.module_name === "Arrear Adjustments"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -213,7 +213,7 @@ const ArrearAdjustments = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Arrear Adjustments
+                            Add Arrear Adjustments
                           </Link>
                         </div>
                       </div>

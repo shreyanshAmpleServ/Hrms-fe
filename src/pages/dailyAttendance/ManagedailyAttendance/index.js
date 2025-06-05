@@ -25,7 +25,7 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
 
   const { loading } = useSelector((state) => state.dailyAttendance || {});
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const statusOptions = [
@@ -70,7 +70,7 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
             updatedailyAttendance({
               id: dailyAttendance.id,
               dailyAttendanceData: data,
-            }),
+            })
           ).unwrap()
         : await dispatch(createdailyAttendance(data)).unwrap();
       closeButton.click();
@@ -88,7 +88,7 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{dailyAttendance ? "Update" : "Add New"} Daily Attendance</h4>
+        <h4>{dailyAttendance ? "Update" : "Add "} Daily Attendance</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 d-flex align-items-center justify-content-center rounded-circle"
@@ -117,7 +117,7 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
                   const selected = employees?.find(
-                    (emp) => emp.value === field.value,
+                    (emp) => emp.value === field.value
                   );
                   return (
                     <Select
@@ -244,7 +244,7 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
                     options={statusOptions}
                     placeholder="Select Status"
                     value={statusOptions.find(
-                      (opt) => opt.value === field.value,
+                      (opt) => opt.value === field.value
                     )}
                     onChange={(option) => field.onChange(option.value)}
                     classNamePrefix="react-select"

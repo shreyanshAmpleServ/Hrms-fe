@@ -32,7 +32,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       dispatch(addjob_category(data));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updatejob_category({ id: initialData.id, job_categoryData: data }),
+        updatejob_category({ id: initialData.id, job_categoryData: data })
       );
     }
     reset();
@@ -46,7 +46,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Job Category" : "Edit Job Category"}
+              {mode === "add" ? "Add Job Category" : "Edit Job Category"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

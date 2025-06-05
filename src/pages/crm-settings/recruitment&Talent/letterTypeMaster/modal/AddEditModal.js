@@ -58,7 +58,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Letter " : "Edit Letter"}
+              {mode === "add" ? "Add  Letter " : "Edit Letter"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -73,17 +73,17 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             <div className="modal-body">
               <div className="mb-3">
                 <label className="col-form-label">
-                  Latter Name <span className="text-danger">*</span>
+                  Letter Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  placeholder="Enter Latter Name"
+                  placeholder="Enter Letter Name"
                   {...register("letter_name", {
-                    required: "Latter name is required.",
+                    required: "Letter name is required.",
                     minLength: {
                       value: 3,
-                      message: "Latter name must be at least 3 characters.",
+                      message: "Letter name must be at least 3 characters.",
                     },
                   })}
                 />

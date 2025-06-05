@@ -45,7 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updaterating_scale({
           id: initialData.id,
           rating_scaleData: finalData,
-        }),
+        })
       );
     }
     reset();
@@ -59,7 +59,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Rating Scale" : "Edit Rating Scale"}
+              {mode === "add" ? "Add  Rating Scale" : "Edit Rating Scale"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

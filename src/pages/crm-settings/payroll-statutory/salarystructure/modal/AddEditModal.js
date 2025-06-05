@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatesalary_structure({
           id: initialData.id,
           salary_structureData: data,
-        }),
+        })
       );
     }
     setSelected(null);
@@ -54,7 +54,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           <div className="modal-header">
             <h5 className="modal-title">
               {mode === "add"
-                ? "Add New Salary Structure "
+                ? "Add Salary Structure "
                 : "Edit Salary Structure"}
             </h5>
             <button

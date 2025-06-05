@@ -38,7 +38,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.full_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
-    [employee],
+    [employee]
   );
 
   // Prefill form in edit mode
@@ -84,7 +84,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateresume_upload({
           id: initialData.id,
           resume_uploadData: formData,
-        }),
+        })
       );
     }
 
@@ -98,7 +98,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Resume " : "Edit Resume"}
+              {mode === "add" ? "Add  Resume " : "Edit Resume"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -134,7 +134,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       className="select2"
                       onChange={(option) => field.onChange(option?.value || "")}
                       value={EmployeeList.find(
-                        (option) => option.value === watch("employee_id"),
+                        (option) => option.value === watch("employee_id")
                       )}
                     />
                   )}

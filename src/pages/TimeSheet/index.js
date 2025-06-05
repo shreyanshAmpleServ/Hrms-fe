@@ -29,7 +29,7 @@ const TimeSheet = () => {
       fetchTimeSheet({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -54,7 +54,7 @@ const TimeSheet = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -62,7 +62,7 @@ const TimeSheet = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry",
+    (i) => i?.module_name === "Time Sheet Entry"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -76,7 +76,7 @@ const TimeSheet = () => {
       render: (text) => text?.time_sheet_employee?.full_name || "-",
       sorter: (a, b) =>
         a.time_sheet_employee.full_name.localeCompare(
-          b.time_sheet_employee.full_name,
+          b.time_sheet_employee.full_name
         ),
     },
     {
@@ -213,7 +213,7 @@ const TimeSheet = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Time Sheet Entry
+                            Add Time Sheet Entry
                           </Link>
                         </div>
                       </div>

@@ -24,15 +24,15 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   } = useForm();
 
   const { employee } = useSelector((state) => state.employee || {});
-  const { appraisalEntries } = useSelector(
-    (state) => state.appraisalEntries || [],
+  const { appraisalEntries, loading: appraisalLoading } = useSelector(
+    (state) => state.appraisalEntries || {}
   );
   console.log("appraisalEntries:", appraisalEntries);
 
-  const { goalCategoryMaster } = useSelector(
-    (state) => state.goalCategoryMaster || {},
+  const { goal_category } = useSelector(
+    (state) => state.goalCategoryMaster || {}
   );
-  console.log("goalCategoryMaster:", goalCategoryMaster);
+  console.log("goalCategoryMaster:", goal_category);
 
   const { loading } = useSelector((state) => state.goalSheet || {});
 
@@ -41,19 +41,15 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
     value: i?.id,
   }));
 
-  const appraisalEntriesList = Array.isArray(appraisalEntries)
-    ? appraisalEntries.map((i) => ({
-        label: i?.review_period,
-        value: i?.id,
-      }))
-    : [];
+  const appraisalEntriesList = (appraisalEntries?.data || []).map((i) => ({
+    label: i?.review_period, // or `full_name` if that's correct
+    value: i?.id,
+  }));
 
-  const goalCategoryMasterList = Array.isArray(goalCategoryMaster)
-    ? goalCategoryMaster.map((i) => ({
-        label: i?.category_name,
-        value: i?.id,
-      }))
-    : [];
+  const goalCategoryMasterList = (goal_category?.data || []).map((i) => ({
+    label: i?.category_name,
+    value: i?.id,
+  }));
 
   const statusOptions = [
     { value: "pending", label: "Pending" },
@@ -102,7 +98,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{goalSheet ? "Update" : "Add New"} Goal Sheet</h4>
+        <h4>{goalSheet ? "Update" : "Add "} Goal Sheet</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -155,25 +151,30 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 Appraisal Cycle <span className="text-danger">*</span>
               </label>
               <Controller
-                name="id"
+                name="appraisal_cycle_id" // ✅ unique name
                 control={control}
                 rules={{ required: "Appraisal cycle is required" }}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={appraisalEntriesList}
-                    placeholder="Select Cycle"
-                    value={
-                      appraisalEntriesList.find(
-                        (opt) => opt.value === field.value,
-                      ) || null
-                    }
-                    onChange={(opt) => field.onChange(opt.value)}
-                  />
-                )}
+                render={({ field }) => {
+                  const selected = appraisalEntriesList.find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={appraisalEntriesList}
+                      placeholder="Select Appraisal Cycle"
+                      isLoading={appraisalLoading}
+                      value={selected || null}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  );
+                }}
               />
-              {errors.id && (
-                <small className="text-danger">{errors.id.message}</small>
+              {errors.appraisal_cycle_id && (
+                <small className="text-danger">
+                  {errors.appraisal_cycle_id.message}
+                </small>
               )}
             </div>
 
@@ -181,18 +182,24 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
             <div className="col-md-6 mb-3">
               <label className="form-label">Goal Category</label>
               <Controller
-                name="id"
+                name="goal_category_id" // ✅ unique name
                 control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={goalCategoryMasterList}
-                    placeholder="Select Category"
-                    // value={goalCategoryMasterList.find((opt) => opt.value === field.value) || null}
-                    onChange={(opt) => field.onChange(opt?.value)}
-                    isClearable
-                  />
-                )}
+                render={({ field }) => {
+                  const selected = goalCategoryMasterList.find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={goalCategoryMasterList}
+                      placeholder="Select Category"
+                      value={selected || null}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                      isClearable
+                    />
+                  );
+                }}
               />
             </div>
 
@@ -271,7 +278,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                   <input
                     {...field}
                     className="form-control"
-                    placeholder="Enter measurement criteria"
+                    placeholder="Enter Measurement Criteria"
                   />
                 )}
               />

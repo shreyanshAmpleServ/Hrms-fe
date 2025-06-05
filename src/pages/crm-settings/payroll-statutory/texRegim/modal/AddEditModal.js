@@ -60,7 +60,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatetax_Regime({
           id: initialData.id,
           tax_RegimeData: finalData,
-        }),
+        })
       );
     }
     reset();
@@ -74,7 +74,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Tax Regime" : "Edit Tax Regime"}
+              {mode === "add" ? "Add Tax Regime" : "Edit Tax Regime"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -131,7 +131,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                         }
                         value={
                           CountriesList?.find(
-                            (option) => option.value === watch("country_code"),
+                            (option) => option.value === watch("country_code")
                           ) || ""
                         }
                       />

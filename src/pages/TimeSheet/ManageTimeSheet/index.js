@@ -54,7 +54,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -74,7 +74,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
             updateTimeSheet({
               id: timeSheet.id,
               timeSheetData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createTimeSheet({ ...data })).unwrap();
       closeButton.click();
@@ -93,12 +93,12 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -112,7 +112,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{timeSheet ? "Update " : "Add New "} Time Sheet Entry</h4>
+          <h4>{timeSheet ? "Update " : "Add "} Time Sheet Entry</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -142,7 +142,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -268,21 +268,36 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                   )}
                 </div>
 
-                <div className="mb-3">
-                  <label className="col-form-label">Task Description</label>
+                <div className="col-md-12 mb-3">
+                  <label className="col-form-label">
+                    Work Date <span className="text-danger">*</span>
+                  </label>
                   <Controller
-                    name="task_description"
+                    name="work_date"
                     control={control}
+                    rules={{
+                      required: "work_date is required!",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "work_date must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
-                        className="summernote"
-                        placeholder="Write Task Description"
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(content) => field.onChange(content)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter work_date "
                       />
                     )}
                   />
+                  {errors.work_date && (
+                    <small className="text-danger">
+                      {errors.work_date.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

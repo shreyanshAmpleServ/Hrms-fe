@@ -125,7 +125,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{kpiProgress ? "Update " : "Add New "} KPI Progress</h4>
+          <h4>{kpiProgress ? "Update " : "Add  "} KPI Progress</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -307,6 +307,7 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                           }
                           onChange={(date) => field.onChange(date)}
                           dateFormat="DD-MM-YYYY"
+                          maxDate={new Date()}
                         />
                       )}
                     />

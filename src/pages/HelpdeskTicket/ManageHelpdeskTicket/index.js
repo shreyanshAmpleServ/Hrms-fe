@@ -64,7 +64,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -80,7 +80,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
             updateHelpdeskTicket({
               id: helpdeskTicket.id,
               helpdeskTicketData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createHelpdeskTicket({ ...data })).unwrap();
       closeButton.click();
@@ -99,12 +99,12 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -118,7 +118,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{helpdeskTicket ? "Update " : "Add New "} Helpdesk Ticket</h4>
+          <h4>{helpdeskTicket ? "Update " : "Add "} Helpdesk Ticket</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -148,7 +148,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -200,7 +200,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                           placeholder="Select Status"
                           classNamePrefix="react-select"
                           value={statusOptions.find(
-                            (x) => x.value === field.value,
+                            (x) => x.value === field.value
                           )}
                           onChange={(option) => field.onChange(option.value)}
                         />
@@ -231,7 +231,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                           placeholder="Select Priority"
                           classNamePrefix="react-select"
                           value={priorityOptions.find(
-                            (x) => x.value === field.value,
+                            (x) => x.value === field.value
                           )}
                           onChange={(option) => field.onChange(option.value)}
                         />
@@ -262,7 +262,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                           placeholder="Select Ticket Type"
                           classNamePrefix="react-select"
                           value={ticketTypeOptions.find(
-                            (x) => x.value === field.value,
+                            (x) => x.value === field.value
                           )}
                           onChange={(option) => field.onChange(option.value)}
                         />
@@ -376,7 +376,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                       rules={{ required: "Assigned to is required" }}
                       render={({ field }) => {
                         const selectedAssignee = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select

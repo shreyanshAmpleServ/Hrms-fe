@@ -169,7 +169,7 @@ const LetterTypeMaster = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS -Latter Type</title>
+        <title>DCC HRMS -Letter Type</title>
         <meta
           name="DepanrtmentList"
           content="This is latter_type page of DCC HRMS."
@@ -182,7 +182,7 @@ const LetterTypeMaster = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Latter Type
+                    Letter Type
                     <span className="count-title">
                       {latter_type?.totalCount || 0}
                     </span>
@@ -201,12 +201,12 @@ const LetterTypeMaster = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Latter Type"
+                    label="Search Letter Type"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Latter Type"
+                        label="Add Letter Type"
                         id="add_edit_latter_type_modal"
                         setMode={() => setMode("add")}
                       />

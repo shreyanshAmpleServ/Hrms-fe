@@ -29,7 +29,7 @@ const WPSFileGenerator = () => {
       fetchWPSFiles({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -54,7 +54,7 @@ const WPSFileGenerator = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -62,7 +62,7 @@ const WPSFileGenerator = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "WPS File Generator",
+    (i) => i?.module_name === "WPS File Generator"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -215,7 +215,7 @@ const WPSFileGenerator = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New WPS File
+                            Add WPS File
                           </Link>
                         </div>
                       </div>

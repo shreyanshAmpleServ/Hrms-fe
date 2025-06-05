@@ -49,7 +49,7 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   }, [dispatch]);
 
   const { survey, loading: surveyLoading } = useSelector(
-    (state) => state.surveyMaster,
+    (state) => state.surveyMaster
   );
   const surveyTypes = survey?.data?.map((i) => ({
     label: i?.survey_title,
@@ -57,7 +57,7 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   }));
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -73,7 +73,7 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
             updateSurveyResponse({
               id: surveyResponse.id,
               surveyResponseData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createSurveyResponse({ ...data })).unwrap();
       closeButton.click();
@@ -92,12 +92,12 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -110,7 +110,7 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{surveyResponse ? "Update " : "Add New "} Survey Response</h4>
+          <h4>{surveyResponse ? "Update " : "Add "} Survey Response</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -140,7 +140,7 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -186,7 +186,7 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
                       rules={{ required: "Survey type is required" }}
                       render={({ field }) => {
                         const selectedDeal = surveyTypes?.find(
-                          (surveyType) => surveyType.value === field.value,
+                          (surveyType) => surveyType.value === field.value
                         );
                         return (
                           <Select

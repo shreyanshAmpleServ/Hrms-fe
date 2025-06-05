@@ -62,7 +62,7 @@ const AddCompanyModal = () => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       await dispatch(
-        addCompany({ ...data, currency_code: String(data?.currency_code) }),
+        addCompany({ ...data, currency_code: String(data?.currency_code) })
       ).unwrap();
       closeButton.click();
       reset();
@@ -78,7 +78,7 @@ const AddCompanyModal = () => {
       id="offcanvas_add_company"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">Add New Company</h5>
+        <h5 className="fw-semibold">Add Company</h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -162,7 +162,7 @@ const AddCompanyModal = () => {
                               value={
                                 CountriesList?.find(
                                   (option) =>
-                                    option.value === watch("country_id"),
+                                    option.value === watch("country_id")
                                 ) || ""
                               }
                             />
@@ -198,7 +198,7 @@ const AddCompanyModal = () => {
                               value={
                                 CurrenciesList.find(
                                   (option) =>
-                                    option.value === watch("currency_code"),
+                                    option.value === watch("currency_code")
                                 ) || ""
                               }
                             />

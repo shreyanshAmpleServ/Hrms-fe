@@ -1,16 +1,14 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
 import {
   createContract,
   updateContract,
 } from "../../../redux/EmployementContracts";
 import { fetchEmployee } from "../../../redux/Employee";
-
+import moment from "moment";
 const ManageContracts = ({ setContract, contract }) => {
   const [searchValue, setSearchValue] = useState("");
   const [documentPath, setDocumentPath] = useState(null);
@@ -19,6 +17,7 @@ const ManageContracts = ({ setContract, contract }) => {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -62,7 +61,7 @@ const ManageContracts = ({ setContract, contract }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -88,10 +87,10 @@ const ManageContracts = ({ setContract, contract }) => {
             updateContract({
               id: contract.id,
               contractData: { ...data, document_path: documentPath },
-            }),
+            })
           ).unwrap()
         : await dispatch(
-            createContract({ ...data, document_path: documentPath }),
+            createContract({ ...data, document_path: documentPath })
           ).unwrap();
       closeButton.click();
       reset();
@@ -109,12 +108,12 @@ const ManageContracts = ({ setContract, contract }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -128,7 +127,7 @@ const ManageContracts = ({ setContract, contract }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{contract ? "Update " : "Add New "} Employment Contracts</h4>
+          <h4>{contract ? "Update " : "Add"} Employment Contracts</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -158,7 +157,7 @@ const ManageContracts = ({ setContract, contract }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -204,7 +203,7 @@ const ManageContracts = ({ setContract, contract }) => {
                       rules={{ required: "Contract type is required" }}
                       render={({ field }) => {
                         const selectedDeal = contractTypes?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -303,8 +302,11 @@ const ManageContracts = ({ setContract, contract }) => {
                     </small>
                   )}
                 </div>
+
                 <div className="col-md-12 mb-3">
-                  <label className="col-form-label">Attachment</label>
+                  <label className="col-form-label">
+                    Attachment<span className="text-danger">*</span>
+                  </label>
                   <input
                     type="file"
                     className="form-control"
@@ -318,21 +320,36 @@ const ManageContracts = ({ setContract, contract }) => {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label className="col-form-label">Description</label>
+                <div className="col-md-12 mb-3">
+                  <label className="col-form-label">
+                    Description <span className="text-danger">*</span>
+                  </label>
                   <Controller
                     name="description"
                     control={control}
+                    rules={{
+                      required: "Description is required!",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Description must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
-                        className="summernote"
-                        placeholder="Write Description"
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(content) => field.onChange(content)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter Description (max 255 characters)"
                       />
                     )}
                   />
+                  {errors.description && (
+                    <small className="text-danger">
+                      {errors.description.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

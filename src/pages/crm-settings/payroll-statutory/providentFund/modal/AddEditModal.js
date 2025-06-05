@@ -43,7 +43,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updateprovident_fund({
           id: initialData.id,
           provident_fundData: data,
-        }),
+        })
       );
     }
     reset();
@@ -61,9 +61,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add"
-                ? "Add New Provident Fund"
-                : "Edit Provident Fund"}
+              {mode === "add" ? "Add  Provident Fund" : "Edit Provident Fund"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import {
@@ -29,6 +29,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   }, [dispatch]);
 
   const employee = useSelector((state) => state.employee.employee);
+  const offerDate = useWatch({ control, name: "offer_date" });
 
   const EmployeeList = useMemo(
     () =>
@@ -136,7 +137,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">
-          {contact ? "Update" : "Add New"} Offer Letter
+          {contact ? "Update" : "Add"} Offer Letter
         </h5>
         <button
           type="button"
@@ -183,21 +184,21 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* Offer Date */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Offer Date</label>
+            <label className="form-label">
+              Offer Date <span className="text-danger">*</span>
+            </label>
             <Controller
               name="offer_date"
               control={control}
-              rules={{ required: "Date is required" }}
+              rules={{ required: "Offer Date is required" }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
-                  value={
-                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
-                  }
                   selected={field.value ? new Date(field.value) : null}
-                  onChange={(date) => {
-                    field.onChange(date);
-                  }}
+                  onChange={(date) =>
+                    field.onChange(moment(date).startOf("day").toDate())
+                  }
+                  maxDate={new Date()}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
                   placeholderText="Select Offer Date"
@@ -211,7 +212,9 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* Position */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Position</label>
+            <label className="form-label">
+              Position <span className="text-danger">*</span>
+            </label>
             <input
               type="text"
               placeholder="Position"
@@ -225,13 +228,19 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* Offered Salary */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Offered Salary</label>
+            <label className="form-label">
+              Offered Salary <span className="text-danger">*</span>
+            </label>
             <input
               type="number"
               placeholder="Offered Salary"
               className="form-control"
               {...register("offered_salary", {
-                required: "Offered salary is required",
+                required: "Offered Salary is required",
+                min: {
+                  value: 1,
+                  message: "Salary must be greater than zero",
+                },
               })}
             />
             {errors.offered_salary && (
@@ -243,24 +252,30 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* Valid Until */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Valid Until</label>
+            <label className="form-label">
+              Valid Until <span className="text-danger">*</span>
+            </label>
             <Controller
               name="valid_until"
               control={control}
-              rules={{ required: "Date is required" }}
+              rules={{
+                required: "Valid Until Date is required",
+                validate: (value) =>
+                  !offerDate ||
+                  moment(value).isSameOrAfter(moment(offerDate), "day") ||
+                  "Valid Until date must be after or equal to Offer Date",
+              }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
-                  value={
-                    field.value ? moment(field.value).format("DD-MM-YYYY") : ""
-                  }
                   selected={field.value ? new Date(field.value) : null}
-                  onChange={(date) => {
-                    field.onChange(date);
-                  }}
+                  onChange={(date) =>
+                    field.onChange(moment(date).startOf("day").toDate())
+                  }
+                  minDate={offerDate || null}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
-                  placeholderText="Select  Date"
+                  placeholderText="Select Valid Until Date"
                 />
               )}
             />
@@ -273,31 +288,27 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* Status */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Status</label>
+            <label className="form-label">
+              Status <span className="text-danger">*</span>
+            </label>
             <Controller
               name="status"
               control={control}
-              rules={{ required: "Approved Status is required" }}
+              rules={{ required: "Status is required" }}
               render={({ field }) => {
-                const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value
+                const selectedOption = Status.find(
+                  (option) => option.value === field.value
                 );
                 return (
                   <Select
                     {...field}
-                    className="select"
                     options={Status}
-                    placeholder="Select  Status"
-                    value={selectedDeal || null}
+                    value={selectedOption || null}
+                    placeholder="Select Status"
                     classNamePrefix="react-select"
-                    onChange={(selectedOption) =>
-                      field.onChange(selectedOption.value)
-                    }
+                    onChange={(selected) => field.onChange(selected.value)}
                     styles={{
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9999,
-                      }),
+                      menu: (provided) => ({ ...provided, zIndex: 9999 }),
                     }}
                   />
                 );

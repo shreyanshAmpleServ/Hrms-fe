@@ -102,7 +102,7 @@ const AddUserModal = () => {
       id="offcanvas_add_user"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">Add New User</h5>
+        <h5 className="fw-semibold">Add User</h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"

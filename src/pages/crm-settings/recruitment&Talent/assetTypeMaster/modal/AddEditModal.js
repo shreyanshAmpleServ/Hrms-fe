@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updateassets_type({
           id: initialData.id,
           assets_typeData: data,
-        }),
+        })
       );
     }
     reset();
@@ -55,7 +55,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Asset Type" : "Edit Asset Type"}
+              {mode === "add" ? "Add Asset Type" : "Edit Asset Type"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

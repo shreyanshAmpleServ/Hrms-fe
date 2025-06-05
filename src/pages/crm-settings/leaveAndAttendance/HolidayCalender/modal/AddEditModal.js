@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_holiday_calender_modal",
+      "close_btn_add_edit_holiday_calender_modal"
     );
     if (mode === "add") {
       dispatch(
@@ -49,7 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           holiday_name: data.holiday_name,
           holiday_date: data?.holiday_date || "",
           location: data?.location || "",
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -60,7 +60,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             holiday_date: data?.holiday_date || "",
             location: data?.location || "",
           },
-        }),
+        })
       );
     }
     reset();
@@ -78,7 +78,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Holiday" : "Edit Holiday"}
+              {mode === "add" ? "Add  Holiday" : "Edit Holiday"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

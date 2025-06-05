@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_work_schedule_modal",
+      "close_btn_add_edit_work_schedule_modal"
     );
     console.log("DAta", data);
     if (mode === "add") {
@@ -43,7 +43,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         addWorkScheduleTemp({
           template_name: data.template_name,
           description: data?.description || "",
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -53,7 +53,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             template_name: data.template_name,
             description: data?.description || "",
           },
-        }),
+        })
       );
     }
     reset(); // Clear the form
@@ -67,7 +67,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Work Schedule" : "Edit Work Schedule"}
+              {mode === "add" ? "Add Work Schedule" : "Edit Work Schedule"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

@@ -23,7 +23,7 @@ const MonthlyPayroll = () => {
   const dispatch = useDispatch();
 
   const { monthlyPayroll, loading } = useSelector(
-    (state) => state.monthlyPayroll || {},
+    (state) => state.monthlyPayroll || {}
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const MonthlyPayroll = () => {
       fetchMonthlyPayroll({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const MonthlyPayroll = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -64,7 +64,7 @@ const MonthlyPayroll = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Monthly Payroll",
+    (i) => i?.module_name === "Monthly Payroll"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -222,7 +222,7 @@ const MonthlyPayroll = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Monthly Payroll
+                            Add Monthly Payroll
                           </Link>
                         </div>
                       </div>
