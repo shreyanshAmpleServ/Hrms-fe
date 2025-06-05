@@ -51,7 +51,7 @@ const AddEditModal = ({
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_state_modal",
+      "close_btn_add_edit_state_modal"
     );
     if (mode === "add") {
       dispatch(
@@ -59,7 +59,7 @@ const AddEditModal = ({
           name: data.name,
           country_code: data.country_code,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -70,7 +70,7 @@ const AddEditModal = ({
             country_code: data.country_code,
             is_active: data.is_active,
           },
-        }),
+        })
       );
     }
     reset();
@@ -84,7 +84,7 @@ const AddEditModal = ({
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New States" : "Edit States"}
+              {mode === "add" ? "Add States" : "Edit States"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -118,7 +118,7 @@ const AddEditModal = ({
                       }
                       value={
                         CountriesList?.find(
-                          (option) => option.value === watch("country_code"),
+                          (option) => option.value === watch("country_code")
                         ) || ""
                       }
                     />

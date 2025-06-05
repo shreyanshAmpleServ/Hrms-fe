@@ -44,7 +44,7 @@ const AddEditModal = ({
           module_name: data.module_name,
           description: data.description,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -55,7 +55,7 @@ const AddEditModal = ({
             description: data.description,
             is_active: data.is_active,
           },
-        }),
+        })
       );
     }
 
@@ -70,7 +70,7 @@ const AddEditModal = ({
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Module" : "Edit Module"}
+              {mode === "add" ? "Add  Module" : "Edit Module"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

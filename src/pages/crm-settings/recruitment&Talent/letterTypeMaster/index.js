@@ -23,7 +23,7 @@ const LetterTypeMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Letter Type",
+    (i) => i?.module_name === "Letter Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -102,7 +102,7 @@ const LetterTypeMaster = () => {
   ];
 
   const { latter_type, loading } = useSelector(
-    (state) => state.letterTypeMaster,
+    (state) => state.letterTypeMaster
   );
 
   React.useEffect(() => {
@@ -128,7 +128,7 @@ const LetterTypeMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -141,11 +141,11 @@ const LetterTypeMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -168,7 +168,7 @@ const LetterTypeMaster = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS -Latter Type</title>
+        <title>DCC HRMS -Letter Type</title>
         <meta
           name="DepanrtmentList"
           content="This is latter_type page of DCC HRMS."
@@ -181,7 +181,7 @@ const LetterTypeMaster = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Latter Type
+                    Letter Type
                     <span className="count-title">
                       {latter_type?.totalCount || 0}
                     </span>
@@ -200,12 +200,12 @@ const LetterTypeMaster = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Latter Type"
+                    label="Search Letter Type"
                   />
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Latter Type"
+                        label="Add Letter Type"
                         id="add_edit_latter_type_modal"
                         setMode={() => setMode("add")}
                       />

@@ -23,7 +23,7 @@ const HelpdeskTicket = () => {
   const dispatch = useDispatch();
 
   const { helpdeskTicket, loading } = useSelector(
-    (state) => state.helpdeskTicket || {},
+    (state) => state.helpdeskTicket || {}
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const HelpdeskTicket = () => {
       fetchHelpdeskTicket({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const HelpdeskTicket = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -64,7 +64,7 @@ const HelpdeskTicket = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Helpdesk Ticket",
+    (i) => i?.module_name === "Helpdesk Ticket"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -218,7 +218,7 @@ const HelpdeskTicket = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Helpdesk Ticket
+                            Add Helpdesk Ticket
                           </Link>
                         </div>
                       </div>

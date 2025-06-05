@@ -47,7 +47,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatereview_template({
           id: initialData.id,
           review_templateData: data,
-        }),
+        })
       );
     }
     reset();
@@ -65,9 +65,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add"
-                ? "Add New Review Template"
-                : "Edit Review Template"}
+              {mode === "add" ? "Add  Review Template" : "Edit Review Template"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

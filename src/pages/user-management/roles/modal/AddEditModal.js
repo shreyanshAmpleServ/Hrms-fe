@@ -33,7 +33,7 @@ const AddEditRole = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_role_modal",
+      "close_btn_add_edit_role_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -41,7 +41,7 @@ const AddEditRole = ({ mode = "add", initialData = null }) => {
         addRole({
           role_name: data.role_name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
@@ -49,7 +49,7 @@ const AddEditRole = ({ mode = "add", initialData = null }) => {
         updateRole({
           id: initialData.id,
           roleData: { role_name: data.role_name, is_active: data.is_active },
-        }),
+        })
       );
     }
     reset(); // Clear the form
@@ -62,7 +62,7 @@ const AddEditRole = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Role" : "Edit Role"}
+              {mode === "add" ? "Add Role" : "Edit Role"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

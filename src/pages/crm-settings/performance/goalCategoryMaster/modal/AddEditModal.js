@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updategoal_category({
           id: initialData.id,
           goal_categoryData: data,
-        }),
+        })
       );
     }
     reset();
@@ -49,7 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Goal Category " : "Edit Goal Category"}
+              {mode === "add" ? "Add Goal Category " : "Edit Goal Category"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

@@ -31,14 +31,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_leave_type_modal",
+      "close_btn_add_edit_leave_type_modal"
     );
     if (mode === "add") {
       dispatch(
         addLeaveType({
           leave_type: data.leave_type,
           carry_forward: data?.carry_forward || false,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -48,7 +48,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             leave_type: data.leave_type,
             carry_forward: data?.carry_forward || false,
           },
-        }),
+        })
       );
     }
     reset();
@@ -62,7 +62,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Leave Type" : "Edit Leave Type"}
+              {mode === "add" ? "Add  Leave Type" : "Edit Leave Type"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

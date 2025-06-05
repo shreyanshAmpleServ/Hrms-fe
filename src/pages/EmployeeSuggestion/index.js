@@ -24,7 +24,7 @@ const EmployeeSuggestion = () => {
   const dispatch = useDispatch();
 
   const { employeeSuggestion, loading } = useSelector(
-    (state) => state.employeeSuggestion || {},
+    (state) => state.employeeSuggestion || {}
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const EmployeeSuggestion = () => {
       fetchEmployeeSuggestion({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const EmployeeSuggestion = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -65,7 +65,7 @@ const EmployeeSuggestion = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Employee Suggestion",
+    (i) => i?.module_name === "Employee Suggestion"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -204,7 +204,7 @@ const EmployeeSuggestion = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Employee Suggestion
+                            Add Employee Suggestion
                           </Link>
                         </div>
                       </div>

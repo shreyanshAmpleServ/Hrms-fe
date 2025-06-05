@@ -7,6 +7,7 @@ import Select from "react-select";
 import { fetchdepartment } from "../../../redux/department"; // Update path as needed
 import { fetchdesignation } from "../../../redux/designation";
 import { createJobPosting, updateJobPosting } from "../../../redux/JobPosting"; // You need to create this
+import { useWatch } from "react-hook-form";
 
 const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
     reset,
     formState: { errors },
   } = useForm();
+  const postingDate = useWatch({ control, name: "posting_date" });
 
   const department = useSelector((state) => state.department.department);
   const designation = useSelector((state) => state.designation.designation);
@@ -219,9 +221,13 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                   <DatePicker
                     {...field}
                     className="form-control"
-                    selected={field.value}
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) =>
+                      field.onChange(moment(date).startOf("day").toDate())
+                    }
                     dateFormat="dd-MM-yyyy"
-                    onChange={(date) => field.onChange(date)}
+                    maxDate={new Date()}
+                    placeholderText="Select Posting Date"
                   />
                 )}
               />
@@ -239,14 +245,24 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
               <Controller
                 name="closing_date"
                 control={control}
-                rules={{ required: "Closing date is required" }}
+                rules={{
+                  required: "Closing date is required",
+                  validate: (value) =>
+                    !postingDate ||
+                    value >= postingDate ||
+                    "Closing date must be after or equal to posting date",
+                }}
                 render={({ field }) => (
                   <DatePicker
                     {...field}
                     className="form-control"
-                    selected={field.value}
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) =>
+                      field.onChange(moment(date).startOf("day").toDate())
+                    }
                     dateFormat="dd-MM-yyyy"
-                    onChange={(date) => field.onChange(date)}
+                    minDate={postingDate || null}
+                    placeholderText="Select Closing Date"
                   />
                 )}
               />
@@ -256,7 +272,6 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 </small>
               )}
             </div>
-
             <div className="col-md-12 mb-3">
               <label className="col-form-label">
                 Description <span className="text-danger">*</span>
@@ -265,18 +280,20 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 name="description"
                 control={control}
                 rules={{
+                  required: "Description is required!",
                   maxLength: {
                     value: 255,
-                    message: "Remarks must be less than 255 characters",
+                    message:
+                      "Description must be less than or equal to 255 characters",
                   },
-                  required: "Remarks is required!",
                 }}
                 render={({ field }) => (
                   <textarea
                     {...field}
                     rows={3}
+                    maxLength={255}
                     className="form-control"
-                    placeholder="Enter Description"
+                    placeholder="Enter Description "
                   />
                 )}
               />

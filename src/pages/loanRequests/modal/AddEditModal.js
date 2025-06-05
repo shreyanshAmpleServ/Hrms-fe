@@ -39,7 +39,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.first_name + " " + (item.last_name || ""),
       })) || [],
-    [employee],
+    [employee]
   );
 
   const LoanTypeList = useMemo(
@@ -48,7 +48,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.loan_name,
       })) || [],
-    [loan_type],
+    [loan_type]
   );
   const Status = [
     { label: "Pending", value: "pending" },
@@ -97,7 +97,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateloan_requests({
           id: initialData.id,
           loan_requestsData: formattedData,
-        }),
+        })
       );
     }
 
@@ -116,7 +116,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">
-          {mode === "add" ? "Add New" : "Update"} Loan Request
+          {mode === "add" ? "Add" : "Update"} Loan Request
         </h5>
         <button
           type="button"
@@ -147,7 +147,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   classNamePrefix="react-select"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id"),
+                    (option) => option.value === watch("employee_id")
                   )}
                 />
               )}
@@ -177,7 +177,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   classNamePrefix="react-select"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={LoanTypeList.find(
-                    (option) => option.value === watch("loan_type_id"),
+                    (option) => option.value === watch("loan_type_id")
                   )}
                 />
               )}
@@ -268,7 +268,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               rules={{ required: "Approved Status is required" }}
               render={({ field }) => {
                 const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value,
+                  (employee) => employee.value === field.value
                 );
                 return (
                   <Select

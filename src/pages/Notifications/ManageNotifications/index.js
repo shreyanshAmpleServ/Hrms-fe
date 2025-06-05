@@ -23,7 +23,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
 
   const { loading } = useSelector((state) => state.Notifications || {});
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const statusOptions = [
@@ -68,7 +68,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
             updateNotifications({
               id: Notifications.id,
               NotificationsData: data,
-            }),
+            })
           ).unwrap()
         : await dispatch(createNotifications(data)).unwrap();
       closeButton.click();
@@ -86,7 +86,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{Notifications ? "Update" : "Add New"} Notifications</h4>
+        <h4>{Notifications ? "Update" : "Add"} Notifications</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 d-flex align-items-center justify-content-center rounded-circle"
@@ -114,7 +114,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
                   const selectedEmployee = employees?.find(
-                    (emp) => emp.value === field.value,
+                    (emp) => emp.value === field.value
                   );
                   return (
                     <Select

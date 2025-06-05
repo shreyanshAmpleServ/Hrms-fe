@@ -60,7 +60,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatepay_component({
           id: initialData.id,
           pay_componentData: finalData,
-        }),
+        })
       );
     }
     reset();
@@ -74,7 +74,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Pay Component" : "Edit Pay Component"}
+              {mode === "add" ? "Add  Pay Component" : "Edit Pay Component"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"

@@ -55,7 +55,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -68,7 +68,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   }, [dispatch, searchDesignation]);
 
   const { designation, loading: designationLoading } = useSelector(
-    (state) => state.designation || {},
+    (state) => state.designation || {}
   );
 
   const designations = designation?.data?.map((i) => ({
@@ -81,7 +81,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
     try {
       appointment
         ? await dispatch(
-            updateAppointment({ id: appointment.id, appointmentData: data }),
+            updateAppointment({ id: appointment.id, appointmentData: data })
           ).unwrap()
         : await dispatch(createAppointment(data)).unwrap();
       closeButton.click();
@@ -100,12 +100,12 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -119,7 +119,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{appointment ? "Update " : "Add New "} Appointment Letters</h4>
+          <h4>{appointment ? "Update " : "Add"} Appointment Letters</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -149,7 +149,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -195,7 +195,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                       rules={{ required: "Designation is required" }}
                       render={({ field }) => {
                         const selectedDeal = designations?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -268,21 +268,36 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                   )}
                 </div>
 
-                <div className="mb-3">
-                  <label className="col-form-label">Terms Summary</label>
+                <div className="col-md-12 mb-3">
+                  <label className="col-form-label">
+                    Terms Summary <span className="text-danger">*</span>
+                  </label>
                   <Controller
                     name="terms_summary"
                     control={control}
+                    rules={{
+                      required: "Description is required (max 255 characters)",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Description must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
-                        className="summernote"
-                        placeholder="Write Terms Summary"
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(content) => field.onChange(content)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter Description "
                       />
                     )}
                   />
+                  {errors.terms_summary && (
+                    <small className="text-danger">
+                      {errors.terms_summary.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

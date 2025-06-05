@@ -41,7 +41,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         value: item.id,
         label: item.full_name,
       })) || [],
-    [employee],
+    [employee]
   );
 
   // Leave Type dropdown list
@@ -51,7 +51,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         value: item.id,
         label: item.leave_type,
       })) || [],
-    [leaveType],
+    [leaveType]
   );
 
   const Status = [
@@ -104,7 +104,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         updateleave_application({
           id: initialData.id,
           leave_applicationData: formattedData,
-        }),
+        })
       );
     }
 
@@ -114,7 +114,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
   useEffect(() => {
     const offcanvasElement = document.getElementById(
-      "add_edit_leave_application_modal",
+      "add_edit_leave_application_modal"
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -122,12 +122,12 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () =>
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
     }
   }, []);
@@ -141,7 +141,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">
-          {contact ? "Update" : "Add New"} Leave Applications
+          {contact ? "Update" : "Add"} Leave Applications
         </h5>
         <button
           type="button"
@@ -174,7 +174,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id"),
+                    (option) => option.value === watch("employee_id")
                   )}
                 />
               )}
@@ -205,7 +205,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={LeaveTypeList.find(
-                    (option) => option.value === watch("leave_type_id"),
+                    (option) => option.value === watch("leave_type_id")
                   )}
                 />
               )}
@@ -295,7 +295,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               rules={{ required: "Approved Status is required" }}
               render={({ field }) => {
                 const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value,
+                  (employee) => employee.value === field.value
                 );
                 return (
                   <Select

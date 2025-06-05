@@ -65,7 +65,7 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -81,7 +81,7 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
             updateMonthlyPayroll({
               id: monthlyPayroll.id,
               monthlyPayrollData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createMonthlyPayroll({ ...data })).unwrap();
       closeButton.click();
@@ -100,12 +100,12 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -119,7 +119,7 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{monthlyPayroll ? "Update " : "Add New "} Monthly Payroll</h4>
+          <h4>{monthlyPayroll ? "Update " : "Add  "} Monthly Payroll</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -149,7 +149,7 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -338,7 +338,7 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
                           placeholder="Select Status"
                           classNamePrefix="react-select"
                           value={statusOptions.find(
-                            (x) => x.value === field.value,
+                            (x) => x.value === field.value
                           )}
                           onChange={(option) => field.onChange(option.value)}
                         />

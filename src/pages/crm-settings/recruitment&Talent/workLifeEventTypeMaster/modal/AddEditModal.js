@@ -45,7 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           <div className="modal-header">
             <h5 className="modal-title">
               {mode === "add"
-                ? "Add New Work Life Event Type"
+                ? "Add  Work Life Event Type"
                 : "Edit Work Life Event Type"}
             </h5>
             <button

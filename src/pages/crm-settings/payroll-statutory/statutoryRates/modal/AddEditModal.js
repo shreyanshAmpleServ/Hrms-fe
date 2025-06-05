@@ -68,7 +68,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatestatutory_rates({
           id: initialData.id,
           statutory_ratesData: data,
-        }),
+        })
       );
     }
     reset();
@@ -86,9 +86,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add"
-                ? "Add New Statutory Rates"
-                : "Edit Statutory Rates"}
+              {mode === "add" ? "Add Statutory Rates" : "Edit Statutory Rates"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -233,8 +231,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                           } // Send only value
                           value={
                             CountriesList?.find(
-                              (option) =>
-                                option.value === watch("country_code"),
+                              (option) => option.value === watch("country_code")
                             ) || ""
                           }
                         />

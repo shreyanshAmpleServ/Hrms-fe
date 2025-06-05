@@ -23,7 +23,7 @@ const AdvancePayment = () => {
   const dispatch = useDispatch();
 
   const { advancePayment, loading } = useSelector(
-    (state) => state.advancePayment || {},
+    (state) => state.advancePayment || {}
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const AdvancePayment = () => {
       fetchAdvancePayment({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const AdvancePayment = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -64,7 +64,7 @@ const AdvancePayment = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Advance Payment",
+    (i) => i?.module_name === "Advance Payment"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -218,7 +218,7 @@ const AdvancePayment = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Advance Payment
+                            Add Advance Payment
                           </Link>
                         </div>
                       </div>

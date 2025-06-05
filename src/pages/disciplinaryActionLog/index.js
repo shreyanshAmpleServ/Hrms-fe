@@ -223,7 +223,7 @@ const DisciplinaryActionLog = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Disciplinary Action
+                            Add Disciplinary Action
                           </Link>
                         </div>
                       </div>

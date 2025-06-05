@@ -137,7 +137,7 @@ const ManagedisciplinryAction = ({
       >
         <div className="offcanvas-header border-bottom">
           <h4>
-            {disciplinryAction ? "Update " : "Add New "} Disciplinary Action Log
+            {disciplinryAction ? "Update " : "Add  "} Disciplinary Action Log
           </h4>
           <button
             type="button"

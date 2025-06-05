@@ -59,7 +59,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updatebranch({
           id: initialData.id,
           branchData: data,
-        }),
+        })
       );
     }
     reset();
@@ -71,7 +71,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Branch" : "Edit Branch "}
+              {mode === "add" ? "Add  Branch" : "Edit Branch "}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -119,7 +119,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     rules={{ required: "Company is required" }}
                     render={({ field }) => {
                       const selectedCompany = CompanyList?.find(
-                        (option) => option.value === field.value,
+                        (option) => option.value === field.value
                       );
                       return (
                         <Select

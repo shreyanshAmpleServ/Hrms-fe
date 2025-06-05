@@ -98,7 +98,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{goalSheet ? "Update" : "Add New"} Goal Sheet</h4>
+        <h4>{goalSheet ? "Update" : "Add "} Goal Sheet</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"

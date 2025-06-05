@@ -23,7 +23,7 @@ const LeaveEncashment = () => {
   const dispatch = useDispatch();
 
   const { leaveEncashment, loading } = useSelector(
-    (state) => state.leaveEncashment || {},
+    (state) => state.leaveEncashment || {}
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const LeaveEncashment = () => {
       fetchLeaveEncashment({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const LeaveEncashment = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -64,7 +64,7 @@ const LeaveEncashment = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Leave Encashment",
+    (i) => i?.module_name === "Leave Encashment"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -223,7 +223,7 @@ const LeaveEncashment = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Leave Encashment
+                            Add Leave Encashment
                           </Link>
                         </div>
                       </div>
