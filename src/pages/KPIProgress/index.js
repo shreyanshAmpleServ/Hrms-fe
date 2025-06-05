@@ -23,7 +23,7 @@ const KPIProgress = () => {
   const dispatch = useDispatch();
 
   const { kpiProgress, loading } = useSelector(
-    (state) => state.kpiProgress || {},
+    (state) => state.kpiProgress || {}
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const KPIProgress = () => {
       fetchKPIProgress({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const KPIProgress = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -64,7 +64,7 @@ const KPIProgress = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "KPI Progress",
+    (i) => i?.module_name === "KPI Progress"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -75,28 +75,28 @@ const KPIProgress = () => {
   const columns = [
     {
       title: "Employee",
-      dataIndex: "hrms_kpi_progress_employee",
+      dataIndex: "kpi_progress_entry_employee",
       render: (text) => text?.full_name || "-",
     },
     {
-      title: "Payroll Month",
-      dataIndex: "payroll_month",
-      render: (text) => moment(text).format("MMM YYYY") || "-",
+      title: "Goal",
+      dataIndex: "kpi_progress_entry_goal",
+      render: (text) => text?.goal_description || "-",
     },
     {
-      title: "Adjustment Type",
-      dataIndex: "adjustment_type",
+      title: "Reviewed By",
+      dataIndex: "kpi_progress_entry_reviewedBy",
+      render: (text) => text?.full_name || "-",
+    },
+    {
+      title: "Progress Value",
+      dataIndex: "progress_value",
       render: (text) => text || "-",
     },
     {
-      title: "Arrear Amount",
-      dataIndex: "arrear_amount",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Arrear Reason",
-      dataIndex: "arrear_reason",
-      render: (text) => text || "-",
+      title: "Reviewed On",
+      dataIndex: "reviewed_on",
+      render: (text) => moment(text).format("DD-MM-YYYY") || "-",
     },
     {
       title: "Remarks",
@@ -212,7 +212,7 @@ const KPIProgress = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New KPI Progress
+                            Add KPI Progress
                           </Link>
                         </div>
                       </div>
