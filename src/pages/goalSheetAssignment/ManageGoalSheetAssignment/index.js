@@ -24,15 +24,15 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   } = useForm();
 
   const { employee } = useSelector((state) => state.employee || {});
-  const { appraisalEntries } = useSelector(
-    (state) => state.appraisalEntries || [],
+  const { appraisalEntries, loading: appraisalLoading } = useSelector(
+    (state) => state.appraisalEntries || {}
   );
   console.log("appraisalEntries:", appraisalEntries);
 
-  const { goalCategoryMaster } = useSelector(
-    (state) => state.goalCategoryMaster || {},
+  const { goalCategoryMasters, loading: categoryLoading } = useSelector(
+    (state) => state.goalCategoryMasters || {}
   );
-  console.log("goalCategoryMaster:", goalCategoryMaster);
+  console.log("goalCategoryMaster:", goalCategoryMasters);
 
   const { loading } = useSelector((state) => state.goalSheet || {});
 
@@ -41,19 +41,15 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
     value: i?.id,
   }));
 
-  const appraisalEntriesList = Array.isArray(appraisalEntries)
-    ? appraisalEntries.map((i) => ({
-        label: i?.review_period,
-        value: i?.id,
-      }))
-    : [];
+  const appraisalEntriesList = (appraisalEntries?.data || []).map((i) => ({
+    label: i?.review_period, // or `full_name` if that's correct
+    value: i?.id,
+  }));
 
-  const goalCategoryMasterList = Array.isArray(goalCategoryMaster)
-    ? goalCategoryMaster.map((i) => ({
-        label: i?.category_name,
-        value: i?.id,
-      }))
-    : [];
+  const goalCategoryMasterList = (goalCategoryMasters?.data || []).map((i) => ({
+    label: i?.category_name,
+    value: i?.id,
+  }));
 
   const statusOptions = [
     { value: "pending", label: "Pending" },
@@ -126,7 +122,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 Employee <span className="text-danger">*</span>
               </label>
               <Controller
-                name="employee_id"
+                name="appraisal_employee"
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => (
@@ -142,9 +138,9 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                   />
                 )}
               />
-              {errors.employee_id && (
+              {errors.appraisal_employee && (
                 <small className="text-danger">
-                  {errors.employee_id.message}
+                  {errors.appraisal_employee.message}
                 </small>
               )}
             </div>
@@ -155,25 +151,30 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 Appraisal Cycle <span className="text-danger">*</span>
               </label>
               <Controller
-                name="id"
+                name="appraisal_cycle_id" // ✅ unique name
                 control={control}
                 rules={{ required: "Appraisal cycle is required" }}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={appraisalEntriesList}
-                    placeholder="Select Cycle"
-                    value={
-                      appraisalEntriesList.find(
-                        (opt) => opt.value === field.value,
-                      ) || null
-                    }
-                    onChange={(opt) => field.onChange(opt.value)}
-                  />
-                )}
+                render={({ field }) => {
+                  const selected = appraisalEntriesList.find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={appraisalEntriesList}
+                      placeholder="Select Appraisal Cycle"
+                      isLoading={appraisalLoading}
+                      value={selected || null}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  );
+                }}
               />
-              {errors.id && (
-                <small className="text-danger">{errors.id.message}</small>
+              {errors.appraisal_cycle_id && (
+                <small className="text-danger">
+                  {errors.appraisal_cycle_id.message}
+                </small>
               )}
             </div>
 
@@ -181,18 +182,25 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
             <div className="col-md-6 mb-3">
               <label className="form-label">Goal Category</label>
               <Controller
-                name="id"
+                name="goal_category_id" // ✅ unique name
                 control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={goalCategoryMasterList}
-                    placeholder="Select Category"
-                    // value={goalCategoryMasterList.find((opt) => opt.value === field.value) || null}
-                    onChange={(opt) => field.onChange(opt?.value)}
-                    isClearable
-                  />
-                )}
+                render={({ field }) => {
+                  const selected = goalCategoryMasterList.find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={goalCategoryMasterList}
+                      placeholder="Select Category"
+                      isLoading={categoryLoading}
+                      value={selected || null}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                      isClearable
+                    />
+                  );
+                }}
               />
             </div>
 
