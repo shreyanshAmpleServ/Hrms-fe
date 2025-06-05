@@ -10,8 +10,10 @@ import {
 
 import DatePicker from "react-datepicker";
 
-
-const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) => {
+const ManageRecognitionAwards = ({
+  setrecognitionAwards,
+  recognitionAwards,
+}) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
@@ -40,7 +42,9 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
         employee_id: recognitionAwards.employee_id || "",
         award_title: recognitionAwards.award_title || "",
         description: recognitionAwards.description || "",
-        award_date: recognitionAwards.award_date ? new Date(recognitionAwards.sent_on) : new Date(),
+        award_date: recognitionAwards.award_date
+          ? new Date(recognitionAwards.sent_on)
+          : new Date(),
         nominated_by: recognitionAwards.nominated_by || "",
       });
     } else {
@@ -60,10 +64,12 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       if (recognitionAwards) {
-        await dispatch(updaterecognitionAwards({
-          id: recognitionAwards.id,
-          recognitionAwardsData: data,
-        })).unwrap();
+        await dispatch(
+          updaterecognitionAwards({
+            id: recognitionAwards.id,
+            recognitionAwardsData: data,
+          }),
+        ).unwrap();
       } else {
         await dispatch(createrecognitionAwards(data)).unwrap();
       }
@@ -76,7 +82,11 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
   };
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large" tabIndex={-1} id="offcanvas_add">
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
+      tabIndex={-1}
+      id="offcanvas_add"
+    >
       <div className="offcanvas-header border-bottom">
         <h4>{recognitionAwards ? "Update" : "Add"} Recognition Award</h4>
         <button
@@ -94,13 +104,17 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
           <div className="row">
             {/* Employee */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Employee<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Employee<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="employee_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = employeeOptions?.find(opt => opt.value === field.value);
+                  const selected = employeeOptions?.find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -114,18 +128,26 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
                   );
                 }}
               />
-              {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+              {errors.employee_id && (
+                <small className="text-danger">
+                  {errors.employee_id.message}
+                </small>
+              )}
             </div>
 
             {/* Nominated By */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Nominated By<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Nominated By<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="nominated_by"
                 control={control}
                 rules={{ required: "Message  nominated by is required" }}
                 render={({ field }) => {
-                  const selected = employeeOptions?.find(opt => opt.value === field.value);
+                  const selected = employeeOptions?.find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -143,7 +165,9 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
 
             {/* Award Title */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Award Title <span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Award Title <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="award_title"
                 control={control}
@@ -156,9 +180,12 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
                   />
                 )}
               />
-              {errors.award_title && <small className="text-danger">{errors.award_title.message}</small>}
+              {errors.award_title && (
+                <small className="text-danger">
+                  {errors.award_title.message}
+                </small>
+              )}
             </div>
-
 
             {/* Award Date */}
             <div className="col-md-6 mb-3">
@@ -178,7 +205,11 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
                   />
                 )}
               />
-              {errors.sent_on && <small className="text-danger">{errors.award_data.message}</small>}
+              {errors.sent_on && (
+                <small className="text-danger">
+                  {errors.award_data.message}
+                </small>
+              )}
             </div>
 
             {/* Description */}
@@ -188,17 +219,36 @@ const ManageRecognitionAwards = ({ setrecognitionAwards, recognitionAwards }) =>
                 name="description"
                 control={control}
                 render={({ field }) => (
-                  <textarea className="form-control" rows={4} placeholder="Enter Description" {...field} />
+                  <textarea
+                    className="form-control"
+                    rows={4}
+                    placeholder="Enter Description"
+                    {...field}
+                  />
                 )}
               />
             </div>
           </div>
 
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">Cancel</button>
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
+              Cancel
+            </button>
             <button type="submit" className="btn btn-primary">
-              {recognitionAwards ? (loading ? "Updating..." : "Update") : loading ? "Creating..." : "Create"}
-              {loading && <div className="spinner-border spinner-border-sm ms-2" />}
+              {recognitionAwards
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <div className="spinner-border spinner-border-sm ms-2" />
+              )}
             </button>
           </div>
         </form>

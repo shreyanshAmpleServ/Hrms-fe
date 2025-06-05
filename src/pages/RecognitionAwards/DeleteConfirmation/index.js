@@ -1,7 +1,11 @@
 import { useDispatch } from "react-redux";
 import { deleterecognitionAwards } from "../../../redux/RecognitionAwards";
 
-const DeleteConfirmation = ({ showModal, setShowModal, recognitionAwardsId }) => {
+const DeleteConfirmation = ({
+  showModal,
+  setShowModal,
+  recognitionAwardsId,
+}) => {
   const dispatch = useDispatch();
   const handleDeletetravelReimbursement = () => {
     if (recognitionAwardsId) {
@@ -28,7 +32,8 @@ const DeleteConfirmation = ({ showModal, setShowModal, recognitionAwardsId }) =>
                   </div>
                   <h4 className="mb-2">Remove Recognition Awards?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the Recognition Awards
+                    Are you sure you want to remove <br /> the Recognition
+                    Awards
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button

@@ -107,12 +107,12 @@ const EditUserModal = ({ user }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -256,7 +256,7 @@ const EditUserModal = ({ user }) => {
                   }}
                   value={
                     roleOptions?.find(
-                      (option) => option.value === watch("role_id")
+                      (option) => option.value === watch("role_id"),
                     ) || ""
                   }
                   placeholder="Select Role"

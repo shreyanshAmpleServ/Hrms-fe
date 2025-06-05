@@ -23,7 +23,7 @@ const RelievingLetter = () => {
   const dispatch = useDispatch();
 
   const { relievingLetter, loading } = useSelector(
-    (state) => state.relievingLetter || {}
+    (state) => state.relievingLetter || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const RelievingLetter = () => {
       fetchRelievingLetter({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const RelievingLetter = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const RelievingLetter = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Relieving Letter"
+    (i) => i?.module_name === "Relieving Letter",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

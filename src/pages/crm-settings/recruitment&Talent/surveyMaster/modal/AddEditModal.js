@@ -49,7 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatesurvey({
           id: initialData?.id,
           surveyData: data,
-        })
+        }),
       );
     }
     reset();

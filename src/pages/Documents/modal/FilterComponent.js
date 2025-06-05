@@ -41,49 +41,49 @@ const FilterComponent = ({ applyFilters }) => {
             </h4>
           </div>
           <div className="accordion" id="accordionDealFilter">
-             {/* Priorty Filter */}
-                        <div className="filter-set-content">
-                          <div className="filter-set-content-head">
-                            <Link
-                              to="#"
-                              className="collapsed"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#Priority"
-                              aria-expanded="false"
-                              aria-controls="Priority"
-                            >
-                              Call Type
-                            </Link>
+            {/* Priorty Filter */}
+            <div className="filter-set-content">
+              <div className="filter-set-content-head">
+                <Link
+                  to="#"
+                  className="collapsed"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#Priority"
+                  aria-expanded="false"
+                  aria-controls="Priority"
+                >
+                  Call Type
+                </Link>
+              </div>
+              <div
+                className="filter-set-contents accordion-collapse collapse"
+                id="Priority"
+                data-bs-parent="#accordionDealFilter"
+              >
+                <div className="filter-content-list">
+                  <ul className="d-flex flex-wrap">
+                    {DocumentRelatedType.map((type, index) => {
+                      return (
+                        <li key={type?.value} className="col-md-4">
+                          <div className="filter-checks">
+                            <label className="checkboxs">
+                              <input
+                                name="call_type"
+                                type="radio" // Use radio for single selection
+                                checked={selectedType === type?.value} // Only one status can be selected
+                                onChange={() => setSelectedType(type?.value)} // Set the selected status key
+                              />
+                              <span className="checkmarks" />
+                              {type?.label}{" "}
+                            </label>
                           </div>
-                          <div
-                            className="filter-set-contents accordion-collapse collapse"
-                            id="Priority"
-                            data-bs-parent="#accordionDealFilter"
-                          >
-                            <div className="filter-content-list">
-                              <ul className="d-flex flex-wrap"  >
-                                {DocumentRelatedType .map((type, index) => {
-                                  return (
-                                    <li key={type?.value} className="col-md-4">
-                                      <div className="filter-checks">
-                                        <label className="checkboxs">
-                                          <input
-                                            name="call_type"
-                                            type="radio" // Use radio for single selection
-                                            checked={selectedType === type?.value} // Only one status can be selected
-                                            onChange={() => setSelectedType(type?.value)} // Set the selected status key
-                                          />
-                                          <span className="checkmarks" />
-                                          {type?.label}{" "}
-                                        </label>
-                                      </div>
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            </div>
             {/* Status Filter */}
             {/* <div className="filter-set-content">
               <div className="filter-set-content-head">

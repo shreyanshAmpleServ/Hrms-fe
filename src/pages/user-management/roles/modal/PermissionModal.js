@@ -44,7 +44,7 @@ export const PermissionModal = ({
                     [permissionType]: checked,
                   },
           }
-        : item
+        : item,
     );
     setUpdatedData({
       role_id: updatedData?.role_id,

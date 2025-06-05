@@ -33,10 +33,10 @@ const ManageAddress = ({
   }, [dispatch, searchCountry]);
 
   const { countries, loading: loadingCountry } = useSelector(
-    (state) => state.countries
+    (state) => state.countries,
   );
   const { states, loading: loadingState } = useSelector(
-    (state) => state.states
+    (state) => state.states,
   );
   const countryList = countries.map((emnt) => ({
     value: emnt.id,
@@ -49,7 +49,7 @@ const ManageAddress = ({
   const updateItem = (index, field, value) => {
     setManageAddress((prev) => {
       const updatedItems = prev.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
+        i === index ? { ...item, [field]: value } : item,
       );
       return updatedItems;
     });
@@ -131,7 +131,7 @@ const ManageAddress = ({
                           value={
                             (Array.isArray(stateOptions?.[index])
                               ? stateOptions[index].find(
-                                  (option) => option.value === item[fieldKey]
+                                  (option) => option.value === item[fieldKey],
                                 ) || ""
                               : "") || ""
                           }
@@ -139,7 +139,7 @@ const ManageAddress = ({
                             updateItem(
                               index,
                               fieldKey,
-                              selectedOption?.value || null
+                              selectedOption?.value || null,
                             );
                           }}
                         />
@@ -163,7 +163,7 @@ const ManageAddress = ({
                           }}
                           value={
                             countryList?.find(
-                              (option) => option.value === item[fieldKey]
+                              (option) => option.value === item[fieldKey],
                             ) || ""
                           }
                           onChange={(selectedOption) => {
@@ -171,7 +171,7 @@ const ManageAddress = ({
                             updateItem(
                               index,
                               fieldKey,
-                              selectedOption?.value || null
+                              selectedOption?.value || null,
                             );
                             setCountryIndex(index);
                           }}
@@ -185,7 +185,7 @@ const ManageAddress = ({
                     placeholder={`Enter ${fieldKey
                       .split("_")
                       .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1),
                       )
                       .join(" ")}`}
                     value={item[fieldKey]}

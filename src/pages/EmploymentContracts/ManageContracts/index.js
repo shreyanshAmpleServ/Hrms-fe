@@ -62,7 +62,7 @@ const ManageContracts = ({ setContract, contract }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -88,10 +88,10 @@ const ManageContracts = ({ setContract, contract }) => {
             updateContract({
               id: contract.id,
               contractData: { ...data, document_path: documentPath },
-            })
+            }),
           ).unwrap()
         : await dispatch(
-            createContract({ ...data, document_path: documentPath })
+            createContract({ ...data, document_path: documentPath }),
           ).unwrap();
       closeButton.click();
       reset();
@@ -109,12 +109,12 @@ const ManageContracts = ({ setContract, contract }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -158,7 +158,7 @@ const ManageContracts = ({ setContract, contract }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select
@@ -204,7 +204,7 @@ const ManageContracts = ({ setContract, contract }) => {
                       rules={{ required: "Contract type is required" }}
                       render={({ field }) => {
                         const selectedDeal = contractTypes?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

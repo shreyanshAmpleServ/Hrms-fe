@@ -28,8 +28,8 @@ const DeleteConfirmation = ({ showModal, setShowModal, NotificationsId }) => {
                   </div>
                   <h4 className="mb-2">Remove Notifications?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the Notifications
-                    you selected?
+                    Are you sure you want to remove <br /> the Notifications you
+                    selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button

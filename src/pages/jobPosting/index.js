@@ -28,7 +28,7 @@ const JobPosting = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Manufacturer",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -50,7 +50,7 @@ const JobPosting = () => {
       render: (value) => <div>{value?.department_name}</div>,
       sorter: (a, b) =>
         (a.hrms_job_department?.department_name || "").localeCompare(
-          b.hrms_job_department?.department_name || ""
+          b.hrms_job_department?.department_name || "",
         ),
     },
     {
@@ -59,7 +59,7 @@ const JobPosting = () => {
       render: (value) => <div>{value?.designation_name}</div>,
       sorter: (a, b) =>
         (a.hrms_job_designation?.designation_name || "").localeCompare(
-          b.hrms_job_designation?.designation_name || ""
+          b.hrms_job_designation?.designation_name || "",
         ),
     },
 
@@ -154,7 +154,7 @@ const JobPosting = () => {
   ];
 
   const { job_posting, loading, error, success } = useSelector(
-    (state) => state.job_posting
+    (state) => state.job_posting,
   );
 
   React.useEffect(() => {
@@ -180,7 +180,7 @@ const JobPosting = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -193,11 +193,11 @@ const JobPosting = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

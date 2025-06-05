@@ -25,7 +25,7 @@ const TaxSetUpList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Tax Setup"
+    (i) => i?.module_name === "Tax Setup",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -170,17 +170,17 @@ const TaxSetUpList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
+            .includes(searchText.toLowerCase()),
+        ),
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

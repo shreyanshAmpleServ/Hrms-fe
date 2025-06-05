@@ -44,7 +44,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           code: data.code,
           is_active: data.is_active,
           is_default: data.is_default,
-        })
+        }),
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -55,7 +55,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             code: data.code,
             is_active: data.is_active,
           },
-        })
+        }),
       );
     }
 
@@ -187,8 +187,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
               </div>
-
-
             </div>
 
             {/* Footer */}

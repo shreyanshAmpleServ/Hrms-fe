@@ -25,11 +25,13 @@ import { fetchContacts } from "../../../redux/contacts/contactSlice";
 import { fetchDeals } from "../../../redux/deals";
 import { fetchUsers } from "../../../redux/manage-user";
 import { fetchProjects } from "../../../redux/projects";
-import { CampaignStatusOptions, CampaignTypeOptions, StatusOptions } from "../../../components/common/selectoption/selectoption";
+import {
+  CampaignStatusOptions,
+  CampaignTypeOptions,
+  StatusOptions,
+} from "../../../components/common/selectoption/selectoption";
 import { fetchLeads } from "../../../redux/leads";
 import { createCampaign, updateCampaign } from "../../../redux/campaign";
-
-
 
 const ActivitiesModal = ({ setCampaign, campaign }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -46,7 +48,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
   } = useForm({
     defaultValues: {
       name: "",
-      status:"",
+      status: "",
       type: "",
       start_date: new Date(),
       end_date: new Date(),
@@ -56,7 +58,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       description: "",
       lead_ids: [],
       contact_ids: [],
-      is_active:"Y"
+      is_active: "Y",
     },
   });
 
@@ -73,9 +75,17 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
           camp_cost: campaign?.camp_cost || "",
           owner_id: campaign?.owner_id || null,
           description: campaign?.description || "",
-          lead_ids: campaign?.campaign_leads?.map((data)=>({label:data.title,value:data.id})) || [],
-          contact_ids: campaign?.campaign_contact?.map((data)=>({label:`${data?.firstName} ${data?.lastName}`,value:data.id})) || [],
-          is_active: campaign?.is_active || "Y"
+          lead_ids:
+            campaign?.campaign_leads?.map((data) => ({
+              label: data.title,
+              value: data.id,
+            })) || [],
+          contact_ids:
+            campaign?.campaign_contact?.map((data) => ({
+              label: `${data?.firstName} ${data?.lastName}`,
+              value: data.id,
+            })) || [],
+          is_active: campaign?.is_active || "Y",
         });
       } else {
         reset({
@@ -83,23 +93,23 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
           status: "",
           type: null,
           start_date: new Date(),
-          end_date:new Date(),
+          end_date: new Date(),
           exp_revenue: "",
           camp_cost: "",
           owner_id: null,
           description: "",
           lead_ids: [],
           contact_ids: [],
-          is_active : "Y"
+          is_active: "Y",
         });
         setSelectedType(null);
       }
     },
     [campaign],
-    reset
+    reset,
   );
   React.useEffect(() => {
-    dispatch(fetchContacts({search:searchValue}));
+    dispatch(fetchContacts({ search: searchValue }));
   }, [dispatch, searchValue]);
   const { loading } = useSelector((state) => state?.activities);
   React.useEffect(() => {
@@ -118,7 +128,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       contact_ids: data.contact_ids?.map((contact) => contact.value),
       lead_ids: data.lead_ids?.map((contact) => contact.value),
       start_date: new Date(data.start_date),
-      end_date: new Date(data.end_date)
+      end_date: new Date(data.end_date),
     };
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -126,8 +136,8 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
         ? await dispatch(
             updateCampaign({
               id: campaign.id,
-              campaignData: finalData
-            })
+              campaignData: finalData,
+            }),
           ).unwrap()
         : await dispatch(createCampaign(finalData)).unwrap();
       closeButton.click();
@@ -154,12 +164,12 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -191,7 +201,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div className="row">
-                      {/* Name */}
+                {/* Name */}
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
@@ -207,16 +217,14 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                     />
                   </div>
                   {errors.name && (
-                    <small className="text-danger">
-                      {errors.name.message}
-                    </small>
+                    <small className="text-danger">{errors.name.message}</small>
                   )}
                 </div>
-                     {/* Campaign Owner */}
-               <div className="col-md-6">
+                {/* Campaign Owner */}
+                <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                     Campaign Owner <span className="text-danger">*</span>
+                      Campaign Owner <span className="text-danger">*</span>
                     </label>
                     <Controller
                       name="owner_id"
@@ -224,7 +232,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                       rules={{ required: "Owner is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedDeal = users?.data?.find(
-                          (owner) => owner.id === field.value
+                          (owner) => owner.id === field.value,
                         );
                         return (
                           <Select
@@ -263,7 +271,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                     )}
                   </div>
                 </div>
-                      {/* Start Date  */}
+                {/* Start Date  */}
                 <div className="col-md-6">
                   <label className="col-form-label">
                     Start Date <span className="text-danger">*</span>
@@ -298,14 +306,14 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                     </small>
                   )}
                 </div>
-                      {/* End Date  */}
+                {/* End Date  */}
                 <div className="col-md-6">
                   <label className="col-form-label">
                     End Date <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon">
-                    <i className="ti ti-calendar-check" />
+                      <i className="ti ti-calendar-check" />
                     </span>
                     <Controller
                       name="end_date"
@@ -317,7 +325,9 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                           placeholder="Select Time"
                           className="form-control"
                           value={
-                            field.value ? dayjs(field.value,"dd-MM-yyyy") : null
+                            field.value
+                              ? dayjs(field.value, "dd-MM-yyyy")
+                              : null
                           }
                           selected={field.value}
                           onChange={field.onChange}
@@ -342,81 +352,89 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                     </small>
                   )}
                 </div>
-                      {/* Exp Revenue  */}
+                {/* Exp Revenue  */}
                 <div className="col-md-6">
-                    <label className="col-form-label">
-                      Expected Revanue <span className="text-danger">*</span>
-                    </label>
-                    <div className="mb-3 ">
-                      <input
-                        type="number"
-                        placeholder="0.0"
-                        className="form-control"
-                        {...register("exp_revenue", {
-                          // required: "Expected Revenue is required",
-                        })}
-                      />
-                    </div>
+                  <label className="col-form-label">
+                    Expected Revanue <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 ">
+                    <input
+                      type="number"
+                      placeholder="0.0"
+                      className="form-control"
+                      {...register("exp_revenue", {
+                        // required: "Expected Revenue is required",
+                      })}
+                    />
                   </div>
-                      {/* Campaign Cost  */}
-                  <div className="col-md-6">
-                    <label className="col-form-label">
-                      Campaign Cost <span className="text-danger">*</span>
-                    </label>
-                    <div className="mb-3 ">
-                      <input
-                        type="number"
-                        placeholder="0.0"
-                        className="form-control"
-                        {...register("camp_cost", {
-                          // required: "Campaign cost is required",
-                        })}
-                      />
-                    </div>
+                </div>
+                {/* Campaign Cost  */}
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Campaign Cost <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 ">
+                    <input
+                      type="number"
+                      placeholder="0.0"
+                      className="form-control"
+                      {...register("camp_cost", {
+                        // required: "Campaign cost is required",
+                      })}
+                    />
                   </div>
-                      {/* Status  */}
+                </div>
+                {/* Status  */}
                 <div className="col-md-6">
                   <label className="col-form-label">
                     Status <span className="text-danger">*</span>
                   </label>
                   <Controller
-                      name="status"
-                      control={control}
-                      rules={{ required: "Status is required" }} // Validation rule
-                      render={({ field }) => {
-                        const selectedDeal = deals?.data?.find(
-                          (deal) => deal.id === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={CampaignStatusOptions}
-                            classNamePrefix="react-select"
-                            value={CampaignStatusOptions?.find(
-                              (option) =>
-                                option.value === watch("status")) || ""}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            } // Store only value
-                            getOptionLabel={(option) => (
-                              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <span
-                                  style={{
-                                    width: "10px",
-                                    height: "10px",
-                                    borderRadius: "50%",
-                                    backgroundColor: option.color || "black", // Use color property from options
-                                    display: "inline-block",
-                                  }}
-                                />
-                                {option.label}
-                              </div>
-                            )}
-                          />
-                        );
-                      }}
-                    />
+                    name="status"
+                    control={control}
+                    rules={{ required: "Status is required" }} // Validation rule
+                    render={({ field }) => {
+                      const selectedDeal = deals?.data?.find(
+                        (deal) => deal.id === field.value,
+                      );
+                      return (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={CampaignStatusOptions}
+                          classNamePrefix="react-select"
+                          value={
+                            CampaignStatusOptions?.find(
+                              (option) => option.value === watch("status"),
+                            ) || ""
+                          }
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption.value)
+                          } // Store only value
+                          getOptionLabel={(option) => (
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor: option.color || "black", // Use color property from options
+                                  display: "inline-block",
+                                }}
+                              />
+                              {option.label}
+                            </div>
+                          )}
+                        />
+                      );
+                    }}
+                  />
                   {errors.status && (
                     <small className="text-danger">
                       {errors.status.message}
@@ -500,7 +518,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                   </div>
                 )} */}
 
-                      {/* Campaign Type */}
+                {/* Campaign Type */}
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
@@ -512,7 +530,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                       rules={{ required: "type is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedDeal = CampaignTypeOptions?.find(
-                          (owner) => owner.value === field.value
+                          (owner) => owner.value === field.value,
                         );
                         return (
                           <Select
@@ -530,7 +548,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                                     value: selectedDeal.value,
                                   }
                                 : null
-                            } 
+                            }
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)
                             }
@@ -545,7 +563,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                     )}
                   </div>
                 </div>
-                      {/* Leads  */}
+                {/* Leads  */}
                 <div className="col-md-12">
                   <div className="mb-3">
                     <div className="d-flex align-items-center justify-content-between">
@@ -555,7 +573,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                       name="lead_ids"
                       control={control}
                       rules={{ required: "Deal is required" }} // Validation rule
-                      defaultValue={[]} 
+                      defaultValue={[]}
                       render={({ field }) => {
                         // const selectedDeal = leads?.data?.find(
                         //   (deal) => deal.id === field.value
@@ -592,7 +610,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                     )}
                   </div>
                 </div>
-                      {/* Contact  */}
+                {/* Contact  */}
                 <div className="col-md-12">
                   <div className="mb-3">
                     <div className="d-flex align-items-center justify-content-between">
@@ -601,7 +619,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                     <Controller
                       name="contact_ids"
                       control={control}
-                      defaultValue={[]} 
+                      defaultValue={[]}
                       rules={{ required: "Contact is required" }} // Validation rule
                       render={({ field }) => {
                         return (
@@ -628,57 +646,57 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                   </div>
                 </div>
 
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      Description 
-                    </label>
-                    <Controller
-                      name="description"
-                      control={control}
-                      render={({ field }) => (
-                        <DefaultEditor
-                          className="summernote"
-                          {...field}
-                          value={field.value || ""}
-                          onChange={(content) => field.onChange(content)}
-                        />
-                      )}
-                    />
-                    {/* <DefaultEditor className="summernote"  {...register("description", {
+                <div className="mb-3">
+                  <label className="col-form-label">Description</label>
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <DefaultEditor
+                        className="summernote"
+                        {...field}
+                        value={field.value || ""}
+                        onChange={(content) => field.onChange(content)}
+                      />
+                    )}
+                  />
+                  {/* <DefaultEditor className="summernote"  {...register("description", {
                                             required: "Description is required",
                                         })} /> */}
-                  </div>
-                                {/* Status */}
-              <div className="mb-0">
-                <label className="col-form-label">Active status</label>
-                <div className="d-flex align-items-center">
-                  <div className="me-2">
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="active"
-                      value="Y"
-                      {...register("is_active", {
-                        required: "Status is required.",
-                      })}
-                    />
-                    <label htmlFor="active">Active</label>
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      className="status-radio"
-                      id="inactive"
-                      value="N"
-                      {...register("is_active")}
-                    />
-                    <label htmlFor="inactive">Inactive</label>
-                  </div>
                 </div>
-                {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
-                )}
-              </div>
+                {/* Status */}
+                <div className="mb-0">
+                  <label className="col-form-label">Active status</label>
+                  <div className="d-flex align-items-center">
+                    <div className="me-2">
+                      <input
+                        type="radio"
+                        className="status-radio"
+                        id="active"
+                        value="Y"
+                        {...register("is_active", {
+                          required: "Status is required.",
+                        })}
+                      />
+                      <label htmlFor="active">Active</label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        className="status-radio"
+                        id="inactive"
+                        value="N"
+                        {...register("is_active")}
+                      />
+                      <label htmlFor="inactive">Inactive</label>
+                    </div>
+                  </div>
+                  {errors.is_active && (
+                    <small className="text-danger">
+                      {errors.is_active.message}
+                    </small>
+                  )}
+                </div>
               </div>
             </div>
             <div className="d-flex align-items-center justify-content-end">

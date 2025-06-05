@@ -40,7 +40,7 @@ const ManageEmployeeSuggestion = ({
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -56,7 +56,7 @@ const ManageEmployeeSuggestion = ({
             updateEmployeeSuggestion({
               id: employeeSuggestion.id,
               employeeSuggestionData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createEmployeeSuggestion({ ...data })).unwrap();
       closeButton.click();
@@ -75,12 +75,12 @@ const ManageEmployeeSuggestion = ({
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -125,7 +125,7 @@ const ManageEmployeeSuggestion = ({
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

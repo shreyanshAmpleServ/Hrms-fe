@@ -45,7 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updaterating_scale({
           id: initialData.id,
           rating_scaleData: finalData,
-        })
+        }),
       );
     }
     reset();

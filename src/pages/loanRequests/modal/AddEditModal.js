@@ -2,7 +2,10 @@ import React, { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { addloan_requests, updateloan_requests } from "../../../redux/loanRequests";
+import {
+  addloan_requests,
+  updateloan_requests,
+} from "../../../redux/loanRequests";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchloan_type } from "../../../redux/loneType"; // assume you have fetchloan_type redux
 import moment from "moment";
@@ -36,22 +39,22 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.first_name + " " + (item.last_name || ""),
       })) || [],
-    [employee]
+    [employee],
   );
 
   const LoanTypeList = useMemo(
     () =>
       loan_type?.data?.map((item) => ({
         value: item.id,
-        label: item.loan_name
+        label: item.loan_name,
       })) || [],
-    [loan_type]
+    [loan_type],
   );
   const Status = [
     { label: "Pending", value: "pending" },
     { label: "Approved", value: "approved" },
     { label: "Rejected", value: "rejected" },
-  ];;
+  ];
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -64,7 +67,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         request_date: initialData.request_date
           ? new Date(initialData.request_date).toISOString().split("T")[0]
           : "",
-
       });
     } else {
       reset({
@@ -95,7 +97,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateloan_requests({
           id: initialData.id,
           loan_requestsData: formattedData,
-        })
+        }),
       );
     }
 
@@ -103,10 +105,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     closeButton?.click();
   };
 
-
   // console.log("Employee : ", EmployeeList)
   // console.log("LoanTypeList : ", LoanTypeList)
-
 
   return (
     <div
@@ -115,7 +115,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       id="add_edit_loan_requests_modal"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{mode === "add" ? "Add New" : "Update"} Loan Request</h5>
+        <h5 className="fw-semibold">
+          {mode === "add" ? "Add New" : "Update"} Loan Request
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -127,7 +129,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       </div>
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
-
           {/* Employee */}
           <div className="col-md-6 mb-3">
             <label className="col-form-label">
@@ -145,12 +146,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   isDisabled={!EmployeeList.length}
                   classNamePrefix="react-select"
                   onChange={(option) => field.onChange(option?.value || "")}
-                  value={EmployeeList.find((option) => option.value === watch("employee_id"))}
+                  value={EmployeeList.find(
+                    (option) => option.value === watch("employee_id"),
+                  )}
                 />
               )}
             />
             {errors.employee_id && (
-              <small className="text-danger">{errors.employee_id.message}</small>
+              <small className="text-danger">
+                {errors.employee_id.message}
+              </small>
             )}
           </div>
 
@@ -171,12 +176,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   isDisabled={!LoanTypeList.length}
                   classNamePrefix="react-select"
                   onChange={(option) => field.onChange(option?.value || "")}
-                  value={LoanTypeList.find((option) => option.value === watch("loan_type_id"))}
+                  value={LoanTypeList.find(
+                    (option) => option.value === watch("loan_type_id"),
+                  )}
                 />
               )}
             />
             {errors.loan_type_id && (
-              <small className="text-danger">{errors.loan_type_id.message}</small>
+              <small className="text-danger">
+                {errors.loan_type_id.message}
+              </small>
             )}
           </div>
 
@@ -189,9 +198,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               type="number"
               placeholder="Amount"
               className="form-control"
-              {...register("amount", { required: "Amount is required", min: 1 })}
+              {...register("amount", {
+                required: "Amount is required",
+                min: 1,
+              })}
             />
-            {errors.amount && <small className="text-danger">{errors.amount.message}</small>}
+            {errors.amount && (
+              <small className="text-danger">{errors.amount.message}</small>
+            )}
           </div>
 
           {/* EMI Months */}
@@ -203,7 +217,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               type="number"
               placeholder="EMI Months"
               className="form-control"
-              {...register("emi_months", { required: "EMI months is required", min: 1 })}
+              {...register("emi_months", {
+                required: "EMI months is required",
+                min: 1,
+              })}
             />
             {errors.emi_months && (
               <small className="text-danger">{errors.emi_months.message}</small>
@@ -217,7 +234,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             </label>
             <Controller
               name="request_date"
-
               control={control}
               rules={{ required: "Date is required" }}
               render={({ field }) => (
@@ -228,7 +244,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   }
                   selected={field.value ? new Date(field.value) : null}
                   onChange={(date) => {
-                    field.onChange(date)
+                    field.onChange(date);
                   }}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
@@ -237,7 +253,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               )}
             />
             {errors.request_date && (
-              <small className="text-danger">{errors.request_date.message}</small>
+              <small className="text-danger">
+                {errors.request_date.message}
+              </small>
             )}
           </div>
 
@@ -250,7 +268,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               rules={{ required: "Approved Status is required" }}
               render={({ field }) => {
                 const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value
+                  (employee) => employee.value === field.value,
                 );
                 return (
                   <Select
@@ -276,14 +294,27 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
 
           <div className="col-md-12 text-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? (mode === "add" ? "Creating..." : "Updating...") : mode === "add" ? "Create" : "Update"}
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              {loading
+                ? mode === "add"
+                  ? "Creating..."
+                  : "Updating..."
+                : mode === "add"
+                  ? "Create"
+                  : "Update"}
             </button>
           </div>
-
         </form>
       </div>
     </div>

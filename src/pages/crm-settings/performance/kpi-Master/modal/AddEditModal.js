@@ -38,7 +38,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatekpi({
           id: initialData.id,
           kpiData: data,
-        })
+        }),
       );
     }
     reset();

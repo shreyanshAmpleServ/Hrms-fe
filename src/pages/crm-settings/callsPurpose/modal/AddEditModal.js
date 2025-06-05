@@ -2,8 +2,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addCallPurpose, updateCallPurpose } from "../../../../redux/callPurpose";
-
+import {
+  addCallPurpose,
+  updateCallPurpose,
+} from "../../../../redux/callPurpose";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.callPurposes);
@@ -52,7 +54,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(
         updateCallPurpose({
           id: initialData.id,
-          callPurposeData: { name: data.name, description: data.description, is_active: data.is_active },
+          callPurposeData: {
+            name: data.name,
+            description: data.description,
+            is_active: data.is_active,
+          },
         }),
       );
     }
@@ -91,7 +97,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "Call status name is required.",
                     minLength: {
                       value: 3,
-                      message: "Call status name must be at least 3 characters.",
+                      message:
+                        "Call status name must be at least 3 characters.",
                     },
                   })}
                 />
@@ -101,9 +108,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
               {/* Call Purpose Description */}
               <div className="mb-3">
-                <label className="col-form-label">
-                  Description
-                </label>
+                <label className="col-form-label">Description</label>
                 <textarea
                   type="text"
                   rows="4"
@@ -117,7 +122,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   })}
                 />
                 {errors.name && (
-                  <small className="text-danger">{errors.description.message}</small>
+                  <small className="text-danger">
+                    {errors.description.message}
+                  </small>
                 )}
               </div>
 

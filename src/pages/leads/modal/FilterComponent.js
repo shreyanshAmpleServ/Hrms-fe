@@ -10,7 +10,7 @@ const FilterComponent = ({ applyFilters }) => {
   const [selectedPriority, setSelectedPriorty] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null); // Change to a single status
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const resetFilters = () => {
     setSelectedPriorty(null);
@@ -22,12 +22,12 @@ const FilterComponent = ({ applyFilters }) => {
     applyFilters(filters);
   };
 
-    React.useEffect(() => {
-      dispatch(fetchLostReasons());
-    },[])
-const { lostReasons } = useSelector((state) => state.lostReasons);
+  React.useEffect(() => {
+    dispatch(fetchLostReasons());
+  }, []);
+  const { lostReasons } = useSelector((state) => state.lostReasons);
 
-const status = lostReasons?.map((i)=>({label:i?.name,value:i?.id}))
+  const status = lostReasons?.map((i) => ({ label: i?.name, value: i?.id }));
 
   const handleFilter = () => {
     const filters = {

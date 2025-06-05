@@ -27,8 +27,6 @@ import { fetchUsers } from "../../../redux/manage-user";
 import { fetchProjects } from "../../../redux/projects";
 import { StatusOptions } from "../../../components/common/selectoption/selectoption";
 
-
-
 const ActivitiesModal = ({ setActivity, activity }) => {
   const [searchValue, setSearchValue] = useState("");
   const [searchProjectValue, setSearchProjectValue] = useState("");
@@ -74,7 +72,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   } = useForm({
     defaultValues: {
       title: "",
-      status:"",
+      status: "",
       is_reminder: "N",
       type_id: null,
       due_date: new Date(),
@@ -136,10 +134,10 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       }
     },
     [activity],
-    reset
+    reset,
   );
   React.useEffect(() => {
-    dispatch(fetchContacts({search:searchValue}));
+    dispatch(fetchContacts({ search: searchValue }));
   }, [dispatch, searchValue]);
   React.useEffect(() => {
     dispatch(fetchProjects(searchProjectValue));
@@ -201,7 +199,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                 ...finalData,
                 due_date: new Date(finalData.due_date),
               },
-            })
+            }),
           ).unwrap()
         : await dispatch(addActivities(finalData)).unwrap();
       closeButton.click();
@@ -228,12 +226,12 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -321,7 +319,6 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                           </div>
                         </li>
                       ))}
-                      
                     </ul>
                   </div>
                 </div>
@@ -407,45 +404,53 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                   <label className="col-form-label">
                     Status <span className="text-danger">*</span>
                   </label>
-                
+
                   <Controller
-                      name="status"
-                      control={control}
-                      rules={{ required: "Status is required" }} // Validation rule
-                      render={({ field }) => {
-                        const selectedDeal = deals?.data?.find(
-                          (deal) => deal.id === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={StatusOptions}
-                            classNamePrefix="react-select"
-                            value={StatusOptions?.find(
-                              (option) =>
-                                option.value === watch("status")) || ""}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            } // Store only value
-                            getOptionLabel={(option) => (
-                              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <span
-                                  style={{
-                                    width: "10px",
-                                    height: "10px",
-                                    borderRadius: "50%",
-                                    backgroundColor: option.color || "black", // Use color property from options
-                                    display: "inline-block",
-                                  }}
-                                />
-                                {option.label}
-                              </div>
-                            )}
-                          />
-                        );
-                      }}
-                    />
+                    name="status"
+                    control={control}
+                    rules={{ required: "Status is required" }} // Validation rule
+                    render={({ field }) => {
+                      const selectedDeal = deals?.data?.find(
+                        (deal) => deal.id === field.value,
+                      );
+                      return (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={StatusOptions}
+                          classNamePrefix="react-select"
+                          value={
+                            StatusOptions?.find(
+                              (option) => option.value === watch("status"),
+                            ) || ""
+                          }
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption.value)
+                          } // Store only value
+                          getOptionLabel={(option) => (
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor: option.color || "black", // Use color property from options
+                                  display: "inline-block",
+                                }}
+                              />
+                              {option.label}
+                            </div>
+                          )}
+                        />
+                      );
+                    }}
+                  />
                   {errors.status && (
                     <small className="text-danger">
                       {errors.status.message}
@@ -512,7 +517,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                               options={options1}
                               classNamePrefix="react-select"
                               value={options1?.find(
-                                (option) => option.value === field.value
+                                (option) => option.value === field.value,
                               )} // Ensure default selection
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption.value)
@@ -539,7 +544,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       rules={{ required: "Owner is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedDeal = users?.data?.find(
-                          (owner) => owner.id === field.value
+                          (owner) => owner.id === field.value,
                         );
                         return (
                           <Select
@@ -583,7 +588,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       rules={{ required: "Priority is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedDeal = options2?.find(
-                          (owner) => owner.value === field.value
+                          (owner) => owner.value === field.value,
                         );
                         return (
                           <Select
@@ -647,7 +652,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       rules={{ required: "Deal is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedDeal = deals?.data?.find(
-                          (deal) => deal.id === field.value
+                          (deal) => deal.id === field.value,
                         );
                         return (
                           <Select
@@ -689,7 +694,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       rules={{ required: "Contact is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedValue = contacts?.data?.find(
-                          (contact) => contact.id === field.value
+                          (contact) => contact.id === field.value,
                         );
                         return (
                           <Select
@@ -723,7 +728,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       </small>
                     )}
                   </div>
-               
+
                   <div className="mb-3">
                     <div className="d-flex align-items-center justify-content-between">
                       <label className="col-form-label">Companies</label>
@@ -734,7 +739,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       rules={{ required: "Company is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedCompany = companies?.data?.find(
-                          (company) => company.id === field.value
+                          (company) => company.id === field.value,
                         );
                         return (
                           <Select
@@ -776,7 +781,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       // rules={{ required: "Contact is required" }} // Validation rule
                       render={({ field }) => {
                         const selectedValue = projects?.data?.find(
-                          (contact) => contact.id === field.value
+                          (contact) => contact.id === field.value,
                         );
                         return (
                           <Select

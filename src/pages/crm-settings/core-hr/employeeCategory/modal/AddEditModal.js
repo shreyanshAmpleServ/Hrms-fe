@@ -35,14 +35,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "Close_edit_employee_category_modal"
+      "Close_edit_employee_category_modal",
     );
     if (mode === "add") {
       dispatch(
         addemployee_category({
           category_name: data.name,
           is_active: data.is_active,
-        })
+        }),
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -52,7 +52,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             category_name: data.name,
             is_active: data.is_active,
           },
-        })
+        }),
       );
     }
     reset();

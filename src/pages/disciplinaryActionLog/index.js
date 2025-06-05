@@ -24,7 +24,7 @@ const DisciplinaryActionLog = () => {
   const dispatch = useDispatch();
 
   const { disciplinryAction, loading } = useSelector(
-    (state) => state.disciplinryAction || {}
+    (state) => state.disciplinryAction || {},
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const DisciplinaryActionLog = () => {
       fetchdisciplinryAction({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const DisciplinaryActionLog = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const DisciplinaryActionLog = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
+    (i) => i?.module_name === "Time Sheet Entry",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

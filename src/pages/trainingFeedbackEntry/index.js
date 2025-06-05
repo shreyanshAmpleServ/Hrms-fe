@@ -24,7 +24,7 @@ const TrainingFeedbackEntry = () => {
   const dispatch = useDispatch();
 
   const { trainingFeedback, loading } = useSelector(
-    (state) => state.trainingFeedback || {}
+    (state) => state.trainingFeedback || {},
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const TrainingFeedbackEntry = () => {
       fetchtrainingFeedback({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const TrainingFeedbackEntry = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -65,7 +65,7 @@ const TrainingFeedbackEntry = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
+    (i) => i?.module_name === "Time Sheet Entry",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

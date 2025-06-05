@@ -27,7 +27,7 @@ const Employee_TypeList = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Employee Type"
+    (i) => i?.module_name === "Employee Type",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -117,7 +117,7 @@ const Employee_TypeList = () => {
   ];
 
   const { employmentType, loading, error, success } = useSelector(
-    (state) => state.employmentType
+    (state) => state.employmentType,
   );
 
   React.useEffect(() => {
@@ -143,7 +143,7 @@ const Employee_TypeList = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -156,11 +156,11 @@ const Employee_TypeList = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

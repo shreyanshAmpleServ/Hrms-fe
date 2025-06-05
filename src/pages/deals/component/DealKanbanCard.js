@@ -1,7 +1,7 @@
 // DealKanbanCard.js
 import React from "react";
 import { Link } from "react-router-dom";
-import moment from "moment"
+import moment from "moment";
 
 const DealKanbanCard = ({ deal, stage, dealContainerID }) => {
   return (
@@ -36,7 +36,9 @@ const DealKanbanCard = ({ deal, stage, dealContainerID }) => {
               <img src="assets/img/profiles/avatar-19.jpg" alt="" />
             </Link>
             <Link to="#" className="text-default">
-             {deal?.contact?.[0]?.contact?.firstName+ " "+deal?.contact?.[0]?.contact?.lastName}
+              {deal?.contact?.[0]?.contact?.firstName +
+                " " +
+                deal?.contact?.[0]?.contact?.lastName}
             </Link>
           </div>
           <span className="badge badge-sm text-white bg-blue">
@@ -46,7 +48,8 @@ const DealKanbanCard = ({ deal, stage, dealContainerID }) => {
         </div>
         <div className="d-flex align-items-center justify-content-between border-top pt-3 mt-3">
           <span>
-            <i className="ti ti-calendar-due" />{moment(deal?.ceatedDate).format("LL")}
+            <i className="ti ti-calendar-due" />
+            {moment(deal?.ceatedDate).format("LL")}
           </span>
           <div className="icons-social d-flex align-items-center">
             <Link

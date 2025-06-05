@@ -15,7 +15,7 @@ import { fetchCountries } from "../../../redux/country";
 import { fetchMappedStates } from "../../../redux/mappedState";
 import { fetchCurrencies } from "../../../redux/currency";
 
-const AddLeadModal = ({setSelectedLead,selectedLead}) => {
+const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
   const {
     control,
     handleSubmit,
@@ -63,7 +63,7 @@ const AddLeadModal = ({setSelectedLead,selectedLead}) => {
     },
   });
 
-React.useEffect(() => {
+  React.useEffect(() => {
     if (selectedLead) {
       reset({
         lead_owner: selectedLead?.crms_m_user?.id || null,
@@ -75,7 +75,7 @@ React.useEffect(() => {
         email: selectedLead?.email || "",
         phone: selectedLead?.phone || "",
         fax: selectedLead?.fax || "",
-        mobile: selectedLead?.mobile || "", 
+        mobile: selectedLead?.mobile || "",
         website: selectedLead?.website || "",
         lead_source: selectedLead?.crms_m_sources?.id || null,
         lead_status: selectedLead?.crms_m_lost_reasons?.id || null,
@@ -83,7 +83,7 @@ React.useEffect(() => {
         no_of_employees: selectedLead?.no_of_employees || null,
         annual_revenue: selectedLead?.annual_revenue || null,
         revenue_currency: selectedLead?.revenue_currency || "",
-        rating: selectedLead?.rating || "", 
+        rating: selectedLead?.rating || "",
         tags: selectedLead?.tags || "",
         email_opt_out: selectedLead?.email_opt_out || "N",
         secondary_email: selectedLead?.secondary_email || "",
@@ -92,7 +92,7 @@ React.useEffect(() => {
         twitter_ac: selectedLead?.twitter_ac || "",
         linked_in_ac: selectedLead?.linked_in_ac || "",
         whatsapp_ac: selectedLead?.whatsapp_ac || "",
-        instagram_ac: selectedLead?.instagram_ac || "", 
+        instagram_ac: selectedLead?.instagram_ac || "",
         street: selectedLead?.street || "",
         city: selectedLead?.city || "",
         state: selectedLead?.state || "",
@@ -100,7 +100,7 @@ React.useEffect(() => {
         country: selectedLead?.country || "",
         description: selectedLead?.description || "",
         is_active: selectedLead?.is_active || "Y",
- });
+      });
     } else {
       reset({
         lead_owner: null,
@@ -141,7 +141,6 @@ React.useEffect(() => {
     }
   }, [selectedLead]);
 
-
   const dispatch = useDispatch();
 
   const [selectedLogo, setSelectedLogo] = useState(null);
@@ -150,7 +149,7 @@ React.useEffect(() => {
   const { industries } = useSelector((state) => state.industries);
   const { users } = useSelector((state) => state.users);
   const { companies } = useSelector((state) => state.companies);
-  const { currencies } = useSelector( (state) => state.currency);  
+  const { currencies } = useSelector((state) => state.currency);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -165,27 +164,36 @@ React.useEffect(() => {
     dispatch(fetchUsers());
     dispatch(fetchCompanies());
     dispatch(fetchCountries());
-    dispatch(fetchCurrencies())
+    dispatch(fetchCurrencies());
   }, [dispatch]);
-  
-  const country_id = watch("country")
-    React.useEffect(() => {
-      country_id  &&  dispatch(fetchMappedStates(country_id));
-    }, [dispatch, country_id]);
-    
-    const { countries } = useSelector( (state) => state.countries  );
-    const { mappedStates,loading:loadingState } = useSelector( (state) => state.mappedStates );
-  
-    const currencyLists = currencies?.map(i => i?.is_active === "Y" ? ({label:`${i?.code} - ${i?.name}`,value:i?.code}) : null).filter(Boolean) || [];
-  
-    const countryList = countries.map((emnt) => ({
-      value: emnt.id,
-      label: emnt.code + emnt.name,
-    }));
-    const stateList = mappedStates?.data?.map((emnt) => ({
-      value: emnt.id,
-      label:emnt.name,
-    }));
+
+  const country_id = watch("country");
+  React.useEffect(() => {
+    country_id && dispatch(fetchMappedStates(country_id));
+  }, [dispatch, country_id]);
+
+  const { countries } = useSelector((state) => state.countries);
+  const { mappedStates, loading: loadingState } = useSelector(
+    (state) => state.mappedStates,
+  );
+
+  const currencyLists =
+    currencies
+      ?.map((i) =>
+        i?.is_active === "Y"
+          ? { label: `${i?.code} - ${i?.name}`, value: i?.code }
+          : null,
+      )
+      .filter(Boolean) || [];
+
+  const countryList = countries.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.code + emnt.name,
+  }));
+  const stateList = mappedStates?.data?.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.name,
+  }));
   const lostReasonsList = lostReasons.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
@@ -202,9 +210,7 @@ React.useEffect(() => {
     value: emnt.id,
     label: emnt.full_name,
   }));
-  
 
- 
   //   { value: "Choose", label: "Choose" },
   //   { value: "India", label: "India" },
   //   { value: "USA", label: "USA" },
@@ -213,7 +219,7 @@ React.useEffect(() => {
   // ];
 
   // Initialize React Hook Form
- 
+
   const { loading } = useSelector((state) => state.leads);
   // Submit Handler
   const onSubmit = async (data) => {
@@ -234,35 +240,38 @@ React.useEffect(() => {
     //   formData.append("id", selectedLead.id);
     // }
     try {
-      selectedLead ? await dispatch(updateLead({ id: selectedLead.id, leadData: formData })).unwrap() : await dispatch(createLead(formData)).unwrap();
+      selectedLead
+        ? await dispatch(
+            updateLead({ id: selectedLead.id, leadData: formData }),
+          ).unwrap()
+        : await dispatch(createLead(formData)).unwrap();
       closeButton.click();
     } catch (error) {
       closeButton.click();
-    }
-    finally{
-      setSelectedLogo(null)
+    } finally {
+      setSelectedLogo(null);
       setSelectedLead();
     }
   };
   React.useEffect(() => {
-        const offcanvasElement = document.getElementById("offcanvas_add_lead");
-        if (offcanvasElement) {
-          const handleModalClose = () => {
-            setSelectedLogo(null)
-            setSelectedLead();
-          };
-          offcanvasElement.addEventListener(
-            "hidden.bs.offcanvas",
-            handleModalClose
-          );
-          return () => {
-            offcanvasElement.removeEventListener(
-              "hidden.bs.offcanvas",
-              handleModalClose
-            );
-          };
-        }
-      }, []);
+    const offcanvasElement = document.getElementById("offcanvas_add_lead");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setSelectedLogo(null);
+        setSelectedLead();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -270,7 +279,9 @@ React.useEffect(() => {
       id="offcanvas_add_lead"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{selectedLead ? "Update" : "Add New"} Leads</h5>
+        <h5 className="fw-semibold">
+          {selectedLead ? "Update" : "Add New"} Leads
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -323,18 +334,17 @@ React.useEffect(() => {
                                 alt="Company Logo"
                                 className="preview"
                               />
-                            )
-                          : selectedLead ?   
-                          <img
-                          src={selectedLead?.company_icon}
-                          alt="Company Logo"
-                          className="preview w-100 h-100 object-fit-cover"
-                        />
-                          : (
-                            <span>
-                              <i className="ti ti-photo" />
-                            </span>
-                          )}
+                            ) : selectedLead ? (
+                              <img
+                                src={selectedLead?.company_icon}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <span>
+                                <i className="ti ti-photo" />
+                              </span>
+                            )}
                             <button
                               type="button"
                               className={`profile-remove `}
@@ -415,7 +425,7 @@ React.useEffect(() => {
                           // rules={{ required: "Company is required" }} // Validation rule
                           render={({ field }) => {
                             const selectedCompany = companies?.data?.find(
-                              (company) => company.id === field.value
+                              (company) => company.id === field.value,
                             );
                             return (
                               <Select
@@ -443,10 +453,10 @@ React.useEffect(() => {
                         />
                       </div>
                       {errors.company_id && (
-                          <small className="text-danger">
-                            {errors.company_id.message}
-                          </small>
-                        )}
+                        <small className="text-danger">
+                          {errors.company_id.message}
+                        </small>
+                      )}
                     </div>
                     {/* <div className="col-md-12">
                       <div className="mb-3">
@@ -810,38 +820,37 @@ React.useEffect(() => {
                         )}
                       </div>
                     </div> */}
-                
-                    <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="col-form-label">
-                            Currency <span className="text-danger">*</span>
-                          </label>
-                          <Controller
-                            name="revenue_currency"
-                            rules={{ required: "Currency is required" }} // Validation rule
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={currencyLists}
-                                placeholder="Choose"
-                                classNamePrefix="react-select"
-                                onChange={(selectedOption) =>
-                                  field.onChange(selectedOption.value)
-                                }
-                                value={currencyLists?.find(
-                                  (option) => option.value === field.value
-                                )}
-                              />
-                            )}
-                          />
 
-                          {errors.revenue_currency && (
-                            <small className="text-danger">
-                              {errors.revenue_currency.message}
-                            </small>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Currency <span className="text-danger">*</span>
+                        </label>
+                        <Controller
+                          name="revenue_currency"
+                          rules={{ required: "Currency is required" }} // Validation rule
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={currencyLists}
+                              placeholder="Choose"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption.value)
+                              }
+                              value={currencyLists?.find(
+                                (option) => option.value === field.value,
+                              )}
+                            />
                           )}
-                    
+                        />
+
+                        {errors.revenue_currency && (
+                          <small className="text-danger">
+                            {errors.revenue_currency.message}
+                          </small>
+                        )}
                       </div>
                       {/* <div className="mb-3">
                         <label className="col-form-label">
@@ -925,87 +934,89 @@ React.useEffect(() => {
                         )}
                       </div>
                     </div>
-                            {/* Billing Country */}
-            <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                 Country
-                  </label>
-                  <Controller
-                    name="country"
-                    control={control}
-                    rules={{ required: "Country is required" }} // Validation rule
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={countryList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>{
-                          field.onChange(selectedOption?.value || null)
-                          setValue("state",null)
-                        }} // Send only value
-                        value={watch("country") && countryList?.find(
-                          (option) => option.value === watch("country")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                {errors.country && (
+                    {/* Billing Country */}
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">Country</label>
+                        <Controller
+                          name="country"
+                          control={control}
+                          rules={{ required: "Country is required" }} // Validation rule
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={countryList}
+                              placeholder="Choose"
+                              className="select2"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                                setValue("state", null);
+                              }} // Send only value
+                              value={
+                                watch("country") &&
+                                countryList?.find(
+                                  (option) => option.value === watch("country"),
+                                )
+                              }
+                              styles={{
+                                menu: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                                }),
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.country && (
                           <small className="text-danger">
                             {errors.country.message}
                           </small>
                         )}
-                </div>
-              </div>
+                      </div>
+                    </div>
 
-            {/* Billing State */}
-            <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    State
-                  </label>
-                  <Controller
-                    name="state"
-                    control={control}
-                       rules={{ required: "State is required" }} // Validation rule
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        isLoading={loadingState}
-                        options={stateList}
-                        placeholder="Choose"
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } 
-                        value={ watch("state") && stateList?.find(
-                          (option) => option.value === watch("state")
-                        )}
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                      {errors.state && (
+                    {/* Billing State */}
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">State</label>
+                        <Controller
+                          name="state"
+                          control={control}
+                          rules={{ required: "State is required" }} // Validation rule
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              isLoading={loadingState}
+                              options={stateList}
+                              placeholder="Choose"
+                              className="select2"
+                              classNamePrefix="react-select"
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption?.value || null)
+                              }
+                              value={
+                                watch("state") &&
+                                stateList?.find(
+                                  (option) => option.value === watch("state"),
+                                )
+                              }
+                              styles={{
+                                menu: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                                }),
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.state && (
                           <small className="text-danger">
                             {errors.state.message}
                           </small>
                         )}
-                </div>
-              </div>
+                      </div>
+                    </div>
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">City </label>
@@ -1249,25 +1260,25 @@ React.useEffect(() => {
               className="btn btn-primary"
               disabled={loading}
             >
-                {selectedLead
-                          ? loading
-                            ? "Updating..."
-                            : "Update"
-                          : loading
-                            ? "Creating..."
-                            : "Create"}
-                        {loading && (
-                          <div
-                            style={{
-                              height: "15px",
-                              width: "15px",
-                            }}
-                            className="spinner-border ml-3 text-light"
-                            role="status"
-                          >
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
-                        )}
+              {selectedLead
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-3 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

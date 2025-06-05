@@ -28,7 +28,7 @@ const EditDealModal = ({ deal }) => {
   React.useEffect(() => {
     dispatch(fetchContacts());
     dispatch(fetchPipelines());
-    dispatch(fetchCurrencies())
+    dispatch(fetchCurrencies());
   }, [dispatch]);
   const [tags, setTags] = useState([]);
   const [dueDate, setDueDate] = useState(new Date());
@@ -37,14 +37,21 @@ const EditDealModal = ({ deal }) => {
   const { loading } = useSelector((state) => state.deals);
   const { contacts } = useSelector((state) => state.contacts);
   const [stages, setStages] = useState([]); // Local state for stages
-  const { currencies } = useSelector( (state) => state.currency);
-    
-  const currencyLists = currencies?.map(i => i?.is_active === "Y" ? ({label:i?.code,value:i?.code}) : null).filter(Boolean) || [];
-   
-  const {   pipelines : pipelineLists } = useSelector((state) => state.pipelines);
- 
-  const pipelines = pipelineLists?.data?.map(i => i?.is_active === "Y" ? i : null).filter(Boolean) || [];
+  const { currencies } = useSelector((state) => state.currency);
 
+  const currencyLists =
+    currencies
+      ?.map((i) =>
+        i?.is_active === "Y" ? { label: i?.code, value: i?.code } : null,
+      )
+      .filter(Boolean) || [];
+
+  const { pipelines: pipelineLists } = useSelector((state) => state.pipelines);
+
+  const pipelines =
+    pipelineLists?.data
+      ?.map((i) => (i?.is_active === "Y" ? i : null))
+      .filter(Boolean) || [];
 
   // Memoize contactlist to avoid unnecessary recalculations
   const contactlist = useMemo(
@@ -95,7 +102,8 @@ const EditDealModal = ({ deal }) => {
     [pipelines],
   );
   const stageList = useMemo(() => {
-    return pipelines?.find((p) => p.id === deal?.pipelineId)
+    return pipelines
+      ?.find((p) => p.id === deal?.pipelineId)
       ?.stages.map((s) => ({
         value: s.id,
         label: s.name,
@@ -104,7 +112,7 @@ const EditDealModal = ({ deal }) => {
 
   // Dynamically reset form values when deal changes
   React.useEffect(() => {
-    if (deal){
+    if (deal) {
       const preSelectedContacts = deal?.DealContacts?.map((cnt) =>
         contactlist?.find((contact) => contact.value === cnt.contactId),
       );
@@ -552,17 +560,17 @@ const EditDealModal = ({ deal }) => {
             >
               {loading ? "Updating.." : "Update"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

@@ -6,10 +6,16 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
-import { createdisciplinryAction, updatedisciplinryAction } from "../../../redux/disciplinaryActionLog";
-import { fetchdisciplinary_penalty } from "../../../redux/disciplinaryPenalty"
+import {
+  createdisciplinryAction,
+  updatedisciplinryAction,
+} from "../../../redux/disciplinaryActionLog";
+import { fetchdisciplinary_penalty } from "../../../redux/disciplinaryPenalty";
 
-const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) => {
+const ManagedisciplinryAction = ({
+  setdisciplinryAction,
+  disciplinryAction,
+}) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -36,12 +42,14 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
     if (disciplinryAction) {
       reset({
         employee_id: disciplinryAction.employee_id || "",
-        incident_date: disciplinryAction.incident_date || new Date().toISOString(),
+        incident_date:
+          disciplinryAction.incident_date || new Date().toISOString(),
         incident_description: disciplinryAction.incident_description || "",
         action_taken: disciplinryAction.action_taken || "",
         committee_notes: disciplinryAction.committee_notes || "",
         penalty_type: disciplinryAction.penalty_type || "",
-        effective_from: disciplinryAction.effective_from || new Date().toISOString(),
+        effective_from:
+          disciplinryAction.effective_from || new Date().toISOString(),
         status: disciplinryAction.status || "Pending",
       });
     } else {
@@ -64,12 +72,12 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const { disciplinary_penalty, loading: diciplinaryloading } = useSelector(
-    (state) => state.disciplinary_penalty || {});
-
+    (state) => state.disciplinary_penalty || {},
+  );
 
   const employees = employee?.data?.map((i) => ({
     label: i?.full_name,
@@ -81,20 +89,16 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
     value: p?.id,
   }));
 
-
-
-
-
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       disciplinryAction
         ? await dispatch(
-          updatedisciplinryAction({
-            id: disciplinryAction.id,
-            disciplinryActionData: { ...data },
-          })
-        ).unwrap()
+            updatedisciplinryAction({
+              id: disciplinryAction.id,
+              disciplinryActionData: { ...data },
+            }),
+          ).unwrap()
         : await dispatch(createdisciplinryAction({ ...data })).unwrap();
       closeButton?.click();
       reset();
@@ -110,9 +114,15 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
       const handleModalClose = () => {
         setdisciplinryAction(null);
       };
-      offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
       return () => {
-        offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
       };
     }
   }, [setdisciplinryAction]);
@@ -126,7 +136,9 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{disciplinryAction ? "Update " : "Add New "} Disciplinary Action Log</h4>
+          <h4>
+            {disciplinryAction ? "Update " : "Add New "} Disciplinary Action Log
+          </h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -145,13 +157,17 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
             <div>
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Employee <span className="text-danger">*</span></label>
+                  <label className="col-form-label">
+                    Employee <span className="text-danger">*</span>
+                  </label>
                   <Controller
                     name="employee_id"
                     control={control}
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
-                      const selectedEmployee = employees?.find(emp => emp.value === field.value);
+                      const selectedEmployee = employees?.find(
+                        (emp) => emp.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -163,22 +179,33 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                           value={selectedEmployee || null}
                           onInputChange={setSearchValue}
                           onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{ menu: provided => ({ ...provided, zIndex: 9999 }) }}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
                         />
                       );
                     }}
                   />
-                  {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+                  {errors.employee_id && (
+                    <small className="text-danger">
+                      {errors.employee_id.message}
+                    </small>
+                  )}
                 </div>
 
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label"> Penalty Type<span className="text-danger">*</span></label>
+                  <label className="col-form-label">
+                    {" "}
+                    Penalty Type<span className="text-danger">*</span>
+                  </label>
                   <Controller
                     name="penalty_type"
                     control={control}
                     rules={{ required: "disciplinary penalty is required" }}
                     render={({ field }) => {
-                      const selected = (penaltyOptions || []).find(opt => opt.value === field.value);
+                      const selected = (penaltyOptions || []).find(
+                        (opt) => opt.value === field.value,
+                      );
                       return (
                         <Select
                           {...field}
@@ -192,12 +219,17 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                       );
                     }}
                   />
-                  {errors.penalty_type && <small className="text-danger">{errors.penalty_type.message}</small>}
+                  {errors.penalty_type && (
+                    <small className="text-danger">
+                      {errors.penalty_type.message}
+                    </small>
+                  )}
                 </div>
 
-
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Incident Date <span className="text-danger">*</span></label>
+                  <label className="col-form-label">
+                    Incident Date <span className="text-danger">*</span>
+                  </label>
                   <Controller
                     name="incident_date"
                     control={control}
@@ -206,11 +238,13 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                       <DatePicker
                         {...field}
                         value={
-                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : ""
                         }
                         selected={field.value ? new Date(field.value) : null}
                         onChange={(date) => {
-                          field.onChange(date)
+                          field.onChange(date);
                         }}
                         className="form-control"
                         dateFormat="dd-MM-yyyy"
@@ -220,21 +254,20 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                   />
                 </div>
 
-
-
-
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Action Taken</label>
                   <Controller
                     name="action_taken"
                     control={control}
                     render={({ field }) => (
-                      <input {...field} className="form-control" placeholder="e.g., Verbal warning" />
+                      <input
+                        {...field}
+                        className="form-control"
+                        placeholder="e.g., Verbal warning"
+                      />
                     )}
                   />
                 </div>
-
-
 
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Effective From</label>
@@ -245,11 +278,13 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                       <DatePicker
                         {...field}
                         value={
-                          field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : ""
                         }
                         selected={field.value ? new Date(field.value) : null}
                         onChange={(date) => {
-                          field.onChange(date)
+                          field.onChange(date);
                         }}
                         className="form-control"
                         dateFormat="dd-MM-yyyy"
@@ -258,8 +293,6 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                     )}
                   />
                 </div>
-
-
 
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
@@ -277,7 +310,9 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                         placeholder="Select Status"
                         classNamePrefix="react-select"
                         value={
-                          field.value ? { label: field.value, value: field.value } : null
+                          field.value
+                            ? { label: field.value, value: field.value }
+                            : null
                         }
                         onChange={(opt) => field.onChange(opt.value)}
                       />
@@ -315,7 +350,6 @@ const ManagedisciplinryAction = ({ setdisciplinryAction, disciplinryAction }) =>
                   />
                 </div>
               </div>
-
             </div>
             <div className="d-flex align-items-center justify-content-end">
               <button

@@ -24,13 +24,15 @@ import AddButton from "../../../components/datatable/AddButton";
 const ContactStagesList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
 
-  const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Contact Stage")?.[0]?.permissions
- const isAdmin = localStorage.getItem("role")?.includes("admin")
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("permissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Contact Stage",
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
@@ -69,48 +71,56 @@ const ContactStagesList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-   ...((isUpdate || isDelete) ? [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-            {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_contact_stage_modal"
-              onClick={() => {
-                setSelectedContactStage(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteContactStage(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_contact_stage_modal"
+                      onClick={() => {
+                        setSelectedContactStage(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteContactStage(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { contactStages, loading, error, success } = useSelector(
-    (state) => state.contactStages
+    (state) => state.contactStages,
   );
 
   React.useEffect(() => {
@@ -132,17 +142,17 @@ const ContactStagesList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
+            .includes(searchText.toLowerCase()),
+        ),
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;
@@ -188,7 +198,9 @@ const ContactStagesList = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Contact Stages
-                    <span className="count-title">{contactStages?.length || 0}</span>
+                    <span className="count-title">
+                      {contactStages?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -206,13 +218,15 @@ const ContactStagesList = () => {
                     handleSearch={handleSearch}
                     label="Search Contact Stages"
                   />
-                  {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add Contact Stages"
-                      id="add_edit_contact_stage_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add Contact Stages"
+                        id="add_edit_contact_stage_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">

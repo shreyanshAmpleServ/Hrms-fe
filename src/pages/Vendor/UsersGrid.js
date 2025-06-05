@@ -76,11 +76,11 @@ const UsersGrid = ({ data }) => {
                       </h6>
                       {/* <p className="text-default">{user.role || "N/A"}</p> */}
                       <div className="d-flex align-items-center">
-                      {/* <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
+                        {/* <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-map-pin" />
                       </span> */}
-                      <p>{`${user?.billing_street} ${user?.billing_city} ${user?.state?.name} ${user?.country.name} ${user?.billing_zipcode && "( "+ user?.billing_zipcode+" )"}`}</p>
-                    </div>
+                        <p>{`${user?.billing_street} ${user?.billing_city} ${user?.state?.name} ${user?.country.name} ${user?.billing_zipcode && "( " + user?.billing_zipcode + " )"}`}</p>
+                      </div>
                     </div>
                   </div>
                   {/* Actions Dropdown */}
@@ -129,7 +129,7 @@ const UsersGrid = ({ data }) => {
                     </p>
                     <p className="text-default d-inline-flex align-items-center">
                       <i className="ti ti-map-pin text-dark me-1" />
-                      {`${user?.billing_street} ${user?.billing_city} ${user?.state?.name} ${user?.country.name} ${user?.billing_zipcode && "( "+ user?.billing_zipcode+" )"}`}
+                      {`${user?.billing_street} ${user?.billing_city} ${user?.state?.name} ${user?.country.name} ${user?.billing_zipcode && "( " + user?.billing_zipcode + " )"}`}
                     </p>
                   </div>
                 </div>

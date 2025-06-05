@@ -103,7 +103,6 @@ const VendorDetail = () => {
                       <ul>
                         <li>
                           <Link to={route.vendorDetails}>
-                     
                             <i className="ti ti-chevron-left" />
                           </Link>
                         </li>
@@ -139,11 +138,11 @@ const VendorDetail = () => {
                       <div>
                         <h5 className="mb-1">{vendorDetail?.name}</h5>
                         <div className="d-flex align-items-center mb-3">
-                      <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
-                        <i className="ti ti-map-pin" />
-                      </span>
-                      <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( "+ vendorDetail?.billing_zipcode+" )"}`}</p>
-                    </div>
+                          <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
+                            <i className="ti ti-map-pin" />
+                          </span>
+                          <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( " + vendorDetail?.billing_zipcode + " )"}`}</p>
+                        </div>
                       </div>
                     </div>
                     <div className="contacts-action">
@@ -190,7 +189,9 @@ const VendorDetail = () => {
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-mail" />
                       </span>
-                      <p style={{lineHeight:"1.2"}} className="text-break">{vendorDetail?.email}</p>
+                      <p style={{ lineHeight: "1.2" }} className="text-break">
+                        {vendorDetail?.email}
+                      </p>
                     </div>
                     <div className="d-flex align-items-center mb-3">
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
@@ -202,13 +203,13 @@ const VendorDetail = () => {
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-map-pin" />
                       </span>
-                      <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( "+ vendorDetail?.billing_zipcode+" )"}`}</p>
+                      <p>{`${vendorDetail?.billing_street} ${vendorDetail?.billing_city} ${vendorDetail?.state?.name} ${vendorDetail?.country.name} ${vendorDetail?.billing_zipcode && "( " + vendorDetail?.billing_zipcode + " )"}`}</p>
                     </div>
                     <div className="d-flex align-items-center mb-3">
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-calendar-exclamation" />
                       </span>
-                      <p>Created at  {DateFormat(vendorDetail?.createdate)}</p>
+                      <p>Created at {DateFormat(vendorDetail?.createdate)}</p>
                     </div>
                   </div>
                   <hr />
@@ -217,7 +218,7 @@ const VendorDetail = () => {
             </div>
             {/* /User Sidebar */}
             {/* User Activities */}
-            <UserActivities  vendor={vendorDetail?.name}/>
+            <UserActivities vendor={vendorDetail?.name} />
             {/* /User Activities */}
           </div>
         </div>

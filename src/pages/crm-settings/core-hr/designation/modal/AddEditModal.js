@@ -40,7 +40,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         adddesignation({
           designation_name: data.name,
           is_active: data.is_active,
-        })
+        }),
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -50,7 +50,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             designation_name: data.name,
             is_active: data.is_active,
           },
-        })
+        }),
       );
     }
     reset();

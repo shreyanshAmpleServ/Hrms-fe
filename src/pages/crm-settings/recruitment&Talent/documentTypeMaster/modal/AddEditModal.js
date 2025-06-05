@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatedocument_type({
           id: initialData.id,
           document_typeData: data,
-        })
+        }),
       );
     }
     reset();

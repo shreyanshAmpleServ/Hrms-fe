@@ -28,7 +28,7 @@ const LostReasonsList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Lead Status"
+    (i) => i?.module_name === "Lead Status",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -121,7 +121,7 @@ const LostReasonsList = () => {
 
   const navigate = useNavigate();
   const { lostReasons, loading, error, success } = useSelector(
-    (state) => state.lostReasons
+    (state) => state.lostReasons,
   );
 
   React.useEffect(() => {
@@ -143,17 +143,17 @@ const LostReasonsList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
+            .includes(searchText.toLowerCase()),
+        ),
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

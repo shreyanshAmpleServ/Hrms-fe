@@ -22,7 +22,9 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
   } = useForm();
 
   const { loading } = useSelector((state) => state.Notifications || {});
-  const { employee, loading: employeeLoading } = useSelector((state) => state.employee || {});
+  const { employee, loading: employeeLoading } = useSelector(
+    (state) => state.employee || {},
+  );
 
   const statusOptions = [
     { value: "sent", label: "Sent" },
@@ -47,7 +49,9 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
       message_title: Notifications?.message_title || "",
       message_body: Notifications?.message_body || "",
       channel: Notifications?.channel || "",
-      sent_on: Notifications?.sent_on ? new Date(Notifications.sent_on) : new Date(),
+      sent_on: Notifications?.sent_on
+        ? new Date(Notifications.sent_on)
+        : new Date(),
       status: Notifications?.status || "",
     });
   }, [Notifications, reset]);
@@ -60,7 +64,12 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       Notifications
-        ? await dispatch(updateNotifications({ id: Notifications.id, NotificationsData: data })).unwrap()
+        ? await dispatch(
+            updateNotifications({
+              id: Notifications.id,
+              NotificationsData: data,
+            }),
+          ).unwrap()
         : await dispatch(createNotifications(data)).unwrap();
       closeButton.click();
       reset();
@@ -71,7 +80,11 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
   };
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large" tabIndex={-1} id="offcanvas_add">
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
+      tabIndex={-1}
+      id="offcanvas_add"
+    >
       <div className="offcanvas-header border-bottom">
         <h4>{Notifications ? "Update" : "Add New"} Notifications</h4>
         <button
@@ -100,7 +113,9 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selectedEmployee = employees?.find((emp) => emp.value === field.value);
+                  const selectedEmployee = employees?.find(
+                    (emp) => emp.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -112,12 +127,18 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                       onInputChange={(inputValue) => setSearchValue(inputValue)}
                       value={selectedEmployee || null}
                       onChange={(option) => field.onChange(option.value)}
-                      styles={{ menu: (provided) => ({ ...provided, zIndex: 9999 }) }}
+                      styles={{
+                        menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                      }}
                     />
                   );
                 }}
               />
-              {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+              {errors.employee_id && (
+                <small className="text-danger">
+                  {errors.employee_id.message}
+                </small>
+              )}
             </div>
 
             <div className="col-md-6 mb-3">
@@ -140,7 +161,9 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                   />
                 )}
               />
-              {errors.channel && <small className="text-danger">{errors.channel.message}</small>}
+              {errors.channel && (
+                <small className="text-danger">{errors.channel.message}</small>
+              )}
             </div>
 
             <div className="col-md-6 mb-3">
@@ -163,7 +186,9 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                   />
                 )}
               />
-              {errors.status && <small className="text-danger">{errors.status.message}</small>}
+              {errors.status && (
+                <small className="text-danger">{errors.status.message}</small>
+              )}
             </div>
 
             <div className="col-md-6 mb-3">
@@ -185,7 +210,9 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                   />
                 )}
               />
-              {errors.sent_on && <small className="text-danger">{errors.sent_on.message}</small>}
+              {errors.sent_on && (
+                <small className="text-danger">{errors.sent_on.message}</small>
+              )}
             </div>
 
             <div className="col-md-6 mb-3">
@@ -204,7 +231,11 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                   />
                 )}
               />
-              {errors.message_title && <small className="text-danger">{errors.message_title.message}</small>}
+              {errors.message_title && (
+                <small className="text-danger">
+                  {errors.message_title.message}
+                </small>
+              )}
             </div>
 
             <div className="col-md-12 mb-3">
@@ -224,12 +255,20 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                   />
                 )}
               />
-              {errors.message_body && <small className="text-danger">{errors.message_body.message}</small>}
+              {errors.message_body && (
+                <small className="text-danger">
+                  {errors.message_body.message}
+                </small>
+              )}
             </div>
           </div>
 
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
               Cancel
             </button>
             <button type="submit" className="btn btn-primary">

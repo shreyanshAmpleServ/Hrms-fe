@@ -29,8 +29,6 @@
 // import { fetchLeads } from "../../../redux/leads";
 // import { createCampaign, updateCampaign } from "../../../redux/campaign";
 
-
-
 // const ActivitiesModal = ({ setCampaign, campaign }) => {
 //   const [searchValue, setSearchValue] = useState("");
 //   const [selectedType, setSelectedType] = useState();

@@ -25,7 +25,7 @@ const LoanRequests = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Manufacturer",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,7 +42,7 @@ const LoanRequests = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.loan_req_employee?.full_name || "").localeCompare(
-          b.loan_req_employee?.full_name || ""
+          b.loan_req_employee?.full_name || "",
         ),
     },
     {
@@ -51,7 +51,7 @@ const LoanRequests = () => {
       render: (value) => <div>{value?.loan_name || "—"}</div>, // assuming loan_types is an object with loan_name
       sorter: (a, b) =>
         (a.loan_types?.loan_name || "").localeCompare(
-          b.loan_type?.loan_name || ""
+          b.loan_type?.loan_name || "",
         ),
     },
     {
@@ -125,7 +125,7 @@ const LoanRequests = () => {
   ];
 
   const { loan_requests, loading, error, success } = useSelector(
-    (state) => state.loan_requests
+    (state) => state.loan_requests,
   );
 
   React.useEffect(() => {
@@ -151,7 +151,7 @@ const LoanRequests = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -164,11 +164,11 @@ const LoanRequests = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

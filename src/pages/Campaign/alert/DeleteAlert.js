@@ -6,7 +6,7 @@ const DeleteAlert = ({ showModal, setShowModal, selectedCampaign }) => {
   const dispatch = useDispatch();
   const handleDeleteContact = () => {
     if (selectedCampaign) {
-      dispatch(deleteCampaign(selectedCampaign)); 
+      dispatch(deleteCampaign(selectedCampaign));
       setShowModal(false); // Close the modal
     }
   };
@@ -14,7 +14,12 @@ const DeleteAlert = ({ showModal, setShowModal, selectedCampaign }) => {
   return (
     <>
       {showModal && (
-        <div className="modal fade show" id="delete_campaign" role="dialog" style={{ display: "block" }}>
+        <div
+          className="modal fade show"
+          id="delete_campaign"
+          role="dialog"
+          style={{ display: "block" }}
+        >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-body">
@@ -24,7 +29,8 @@ const DeleteAlert = ({ showModal, setShowModal, selectedCampaign }) => {
                   </div>
                   <h4 className="mb-2">Remove Campaign?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the contact you selected?
+                    Are you sure you want to remove <br /> the contact you
+                    selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button

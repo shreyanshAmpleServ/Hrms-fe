@@ -55,7 +55,7 @@ const ManageArrearAdjustments = ({
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -84,7 +84,7 @@ const ManageArrearAdjustments = ({
             updateArrearAdjustments({
               id: arrearAdjustments.id,
               arrearAdjustmentsData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createArrearAdjustments({ ...data })).unwrap();
       closeButton.click();
@@ -103,12 +103,12 @@ const ManageArrearAdjustments = ({
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -154,7 +154,7 @@ const ManageArrearAdjustments = ({
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select
@@ -269,7 +269,7 @@ const ManageArrearAdjustments = ({
                           placeholder="Select Adjustment Type"
                           classNamePrefix="react-select"
                           value={adjustmentTypes.find(
-                            (x) => x.value === field.value
+                            (x) => x.value === field.value,
                           )}
                           onChange={(option) => field.onChange(option.value)}
                         />

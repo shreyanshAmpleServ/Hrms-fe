@@ -23,7 +23,7 @@ const KPIProgress = () => {
   const dispatch = useDispatch();
 
   const { kpiProgress, loading } = useSelector(
-    (state) => state.kpiProgress || {}
+    (state) => state.kpiProgress || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const KPIProgress = () => {
       fetchKPIProgress({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const KPIProgress = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const KPIProgress = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "KPI Progress"
+    (i) => i?.module_name === "KPI Progress",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

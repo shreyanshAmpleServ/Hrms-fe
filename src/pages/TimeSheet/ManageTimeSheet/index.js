@@ -54,7 +54,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -74,7 +74,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
             updateTimeSheet({
               id: timeSheet.id,
               timeSheetData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createTimeSheet({ ...data })).unwrap();
       closeButton.click();
@@ -93,12 +93,12 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -142,7 +142,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

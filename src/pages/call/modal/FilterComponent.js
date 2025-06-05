@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { category, DocumentRelatedType } from "../../../components/common/selectoption/selectoption";
+import {
+  category,
+  DocumentRelatedType,
+} from "../../../components/common/selectoption/selectoption";
 const FilterComponent = ({ applyFilters }) => {
   const [selectedType, setSelectedType] = useState(null);
-  const [selectedCategory,setSelectedCategory] = useState()
+  const [selectedCategory, setSelectedCategory] = useState();
   const [selectedStatus, setSelectedStatus] = useState(null); // Change to a single status
 
   const { callStatuses } = useSelector((state) => state.callStatuses);
@@ -17,7 +20,7 @@ const FilterComponent = ({ applyFilters }) => {
     setSelectedStatus(null); // Reset selected status
     const filters = {
       type: null,
-      category:"",
+      category: "",
       status: null, // Pass selected status as a single value
     };
     applyFilters(filters);
@@ -26,20 +29,22 @@ const FilterComponent = ({ applyFilters }) => {
   const handleFilter = () => {
     const filters = {
       type: selectedType,
-      category:selectedCategory,
+      category: selectedCategory,
       status: selectedStatus, // Pass selected status as a single value
     };
     applyFilters(filters); // Call parent or API to apply the filters
   };
 
-  const callTypeList = [{
-    label:"Completed",
-    value:"Completed"
-  },
-{
-  label:"Scheduled",
-  value:"Scheduled"
-}]
+  const callTypeList = [
+    {
+      label: "Completed",
+      value: "Completed",
+    },
+    {
+      label: "Scheduled",
+      value: "Scheduled",
+    },
+  ];
 
   return (
     <div className="form-sorts dropdown me-2">
@@ -102,47 +107,49 @@ const FilterComponent = ({ applyFilters }) => {
 
             {/* Call Categories */}
             <div className="filter-set-content">
-                                      <div className="filter-set-content-head">
-                                        <Link
-                                          to="#"
-                                          className="collapsed"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target="#Categories"
-                                          aria-expanded="false"
-                                          aria-controls="Categories"
-                                        >
-                                          Call Category
-                                        </Link>
-                                      </div>
-                                      <div
-                                        className="filter-set-contents accordion-collapse collapse"
-                                        id="Categories"
-                                        data-bs-parent="#accordionDealFilter"
-                                      >
-                                        <div className="filter-content-list">
-                                          <ul className="d-flex flex-wrap"  >
-                                            {DocumentRelatedType.map((type, index) => {
-                                              return (
-                                                <li key={type?.value} className="col-md-4">
-                                                  <div className="filter-checks">
-                                                    <label className="checkboxs">
-                                                      <input
-                                                        name="call_type"
-                                                        type="radio" // Use radio for single selection
-                                                        checked={selectedCategory === type?.value} // Only one status can be selected
-                                                        onChange={() => setSelectedCategory(type?.value)} // Set the selected status key
-                                                      />
-                                                      <span className="checkmarks" />
-                                                      {type?.label}{" "}
-                                                    </label>
-                                                  </div>
-                                                </li>
-                                              );
-                                            })}
-                                          </ul>
-                                        </div>
-                                      </div>
-                                    </div>
+              <div className="filter-set-content-head">
+                <Link
+                  to="#"
+                  className="collapsed"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#Categories"
+                  aria-expanded="false"
+                  aria-controls="Categories"
+                >
+                  Call Category
+                </Link>
+              </div>
+              <div
+                className="filter-set-contents accordion-collapse collapse"
+                id="Categories"
+                data-bs-parent="#accordionDealFilter"
+              >
+                <div className="filter-content-list">
+                  <ul className="d-flex flex-wrap">
+                    {DocumentRelatedType.map((type, index) => {
+                      return (
+                        <li key={type?.value} className="col-md-4">
+                          <div className="filter-checks">
+                            <label className="checkboxs">
+                              <input
+                                name="call_type"
+                                type="radio" // Use radio for single selection
+                                checked={selectedCategory === type?.value} // Only one status can be selected
+                                onChange={() =>
+                                  setSelectedCategory(type?.value)
+                                } // Set the selected status key
+                              />
+                              <span className="checkmarks" />
+                              {type?.label}{" "}
+                            </label>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            </div>
 
             {/* Status Filter */}
             <div className="filter-set-content">

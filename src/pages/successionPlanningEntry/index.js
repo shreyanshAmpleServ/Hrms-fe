@@ -24,7 +24,7 @@ const SuccessionPlanningEntry = () => {
   const dispatch = useDispatch();
 
   const { successionPlanning, loading } = useSelector(
-    (state) => state.successionPlanning || {}
+    (state) => state.successionPlanning || {},
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const SuccessionPlanningEntry = () => {
       fetchsuccessionPlanning({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const SuccessionPlanningEntry = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -65,7 +65,7 @@ const SuccessionPlanningEntry = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
+    (i) => i?.module_name === "Time Sheet Entry",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

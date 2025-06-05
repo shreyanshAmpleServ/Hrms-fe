@@ -28,7 +28,7 @@ const ResumeUpload = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "Manufacturer",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -45,7 +45,7 @@ const ResumeUpload = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.resume_employee?.full_name || "").localeCompare(
-          b.resume_employee?.full_name || ""
+          b.resume_employee?.full_name || "",
         ),
     },
     // {
@@ -145,7 +145,7 @@ const ResumeUpload = () => {
   ];
 
   const { resume_upload, loading, error, success } = useSelector(
-    (state) => state.resume_upload
+    (state) => state.resume_upload,
   );
 
   React.useEffect(() => {
@@ -171,7 +171,7 @@ const ResumeUpload = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -184,11 +184,11 @@ const ResumeUpload = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

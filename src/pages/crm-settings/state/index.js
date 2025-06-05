@@ -28,7 +28,7 @@ const StatesList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "State"
+    (i) => i?.module_name === "State",
   )?.[0]?.permissions;
   const isView = allPermissions?.view;
   const isCreate = allPermissions?.create;
@@ -50,7 +50,7 @@ const StatesList = () => {
       render: (text) => text.name,
       sorter: (a, b) =>
         (a.country_details?.name || "").localeCompare(
-          b.country_details?.name || ""
+          b.country_details?.name || "",
         ),
     },
     {
@@ -134,7 +134,7 @@ const StatesList = () => {
         country_id: countryId?.value,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -153,11 +153,11 @@ const StatesList = () => {
     let data = states?.data || [];
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
       );
     }
     return data;

@@ -3,7 +3,6 @@ import React from "react";
 const DeleteAlert = ({ showModal, setShowModal, onDelete, label }) => {
   return (
     <>
-
       {showModal && (
         <div
           className="modal fade show"

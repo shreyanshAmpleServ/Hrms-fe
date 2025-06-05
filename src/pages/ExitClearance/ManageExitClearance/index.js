@@ -43,7 +43,7 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -59,7 +59,7 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
             updateExitClearance({
               id: exitClearance.id,
               exitClearanceData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createExitClearance({ ...data })).unwrap();
       closeButton.click();
@@ -78,12 +78,12 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -126,7 +126,7 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

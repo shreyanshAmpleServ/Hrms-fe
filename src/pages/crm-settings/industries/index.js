@@ -27,7 +27,7 @@ const IndustryList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Industry"
+    (i) => i?.module_name === "Industry",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -121,7 +121,7 @@ const IndustryList = () => {
 
   const navigate = useNavigate();
   const { industries, loading, error, success } = useSelector(
-    (state) => state.industries
+    (state) => state.industries,
   );
 
   React.useEffect(() => {
@@ -143,17 +143,17 @@ const IndustryList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
+            .includes(searchText.toLowerCase()),
+        ),
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

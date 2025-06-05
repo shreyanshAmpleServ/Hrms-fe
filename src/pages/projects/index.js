@@ -46,7 +46,7 @@ const ProjectList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Projects"
+    (i) => i?.module_name === "Projects",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -166,7 +166,7 @@ const ProjectList = () => {
     dispatch(fetchProjects({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
   const { projects, loading, error, success } = useSelector(
-    (state) => state.projects
+    (state) => state.projects,
   );
   React.useEffect(() => {
     setPaginationData({
@@ -189,7 +189,7 @@ const ProjectList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
   // Memoized handlers
@@ -244,7 +244,7 @@ const ProjectList = () => {
             return moment(row.dueDate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

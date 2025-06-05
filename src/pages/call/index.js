@@ -43,7 +43,7 @@ const LeadList = () => {
   const [paginationData, setPaginationData] = useState();
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Calls"
+    (i) => i?.module_name === "Calls",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -204,7 +204,7 @@ const LeadList = () => {
       : []),
   ];
   const { calls, loading, error, success } = useSelector(
-    (state) => state.calls
+    (state) => state.calls,
   );
 
   // Show FlashMessage when success or error changes
@@ -238,7 +238,7 @@ const LeadList = () => {
         callType: selectedType,
         category: selectedCategory,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchText, selectedType, selectedCategory, selectedDateRange]);
 
@@ -265,7 +265,7 @@ const LeadList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -348,7 +348,7 @@ const LeadList = () => {
     doc.autoTable({
       head: [columns.map((col) => col.title)],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || "")
+        columns.map((col) => row[col.dataIndex] || ""),
       ),
       startY: 20,
     });

@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addresume_upload, updateresume_upload } from "../../../redux/resumeUpload";
+import {
+  addresume_upload,
+  updateresume_upload,
+} from "../../../redux/resumeUpload";
 import { fetchEmployee } from "../../../redux/Employee";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
@@ -35,7 +38,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.first_name, // or item.full_name or item.employee_name, depending on your API
       })) || [],
-    [employee]
+    [employee],
   );
 
   // Prefill form in edit mode
@@ -81,14 +84,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateresume_upload({
           id: initialData.id,
           resume_uploadData: formData,
-        })
+        }),
       );
     }
 
     reset();
     closeButton?.click();
   };
-
 
   return (
     <div className="modal fade" id="add_edit_resume_upload_modal" role="dialog">
@@ -113,7 +115,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
               {/* Resume Upload Name */}
 
-
               {/* Employee ID */}
               <div className="md-3">
                 <label className="col-form-label">
@@ -133,15 +134,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       className="select2"
                       onChange={(option) => field.onChange(option?.value || "")}
                       value={EmployeeList.find(
-                        (option) => option.value === watch("employee_id")
+                        (option) => option.value === watch("employee_id"),
                       )}
                     />
                   )}
                 />
                 {errors.employee_id && (
-                  <small className="text-danger">{errors.employee_id.message}</small>
+                  <small className="text-danger">
+                    {errors.employee_id.message}
+                  </small>
                 )}
-
               </div>
 
               {/* Resume Path */}
@@ -155,18 +157,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "Resume file is required.",
                     validate: {
                       isPdf: (files) =>
-                        files[0]?.type === "application/pdf" || "Only PDF files are allowed.",
+                        files[0]?.type === "application/pdf" ||
+                        "Only PDF files are allowed.",
                     },
                   })}
                 />
                 {errors.resume_path && (
-                  <small className="text-danger">{errors.resume_path.message}</small>
+                  <small className="text-danger">
+                    {errors.resume_path.message}
+                  </small>
                 )}
               </div>
-
-
-
-
 
               {/* Uploaded On */}
               <div className="mb-3">
@@ -179,11 +180,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     <DatePicker
                       {...field}
                       value={
-                        field.value ? moment(field.value).format("DD-MM-YYYY") : ""
+                        field.value
+                          ? moment(field.value).format("DD-MM-YYYY")
+                          : ""
                       }
                       selected={field.value ? new Date(field.value) : null}
                       onChange={(date) => {
-                        field.onChange(date)
+                        field.onChange(date);
                       }}
                       className="form-control"
                       dateFormat="dd-MM-yyyy"
@@ -192,10 +195,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   )}
                 />
                 {errors.uploaded_on && (
-                  <small className="text-danger">{errors.uploaded_on.message}</small>
+                  <small className="text-danger">
+                    {errors.uploaded_on.message}
+                  </small>
                 )}
               </div>
-
             </div>
 
             {/* Footer */}

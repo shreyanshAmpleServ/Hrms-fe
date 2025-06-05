@@ -37,7 +37,7 @@ const Product = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Products"
+    (i) => i?.module_name === "Products",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -165,7 +165,7 @@ const Product = () => {
     dispatch(fetchProducts({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
   const { products, loading, error, success } = useSelector(
-    (state) => state.products
+    (state) => state.products,
   );
   useEffect(() => {
     setPaginationData({
@@ -188,7 +188,7 @@ const Product = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -246,7 +246,7 @@ const Product = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        })
+        }),
       ),
       startY: 20,
     });

@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatelatter_type({
           id: initialData.id,
           latter_typeData: data,
-        })
+        }),
       );
     }
     reset();

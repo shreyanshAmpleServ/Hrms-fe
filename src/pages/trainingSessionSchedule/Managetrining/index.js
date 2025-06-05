@@ -62,7 +62,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
 
   // ✅ Get employee state from Redux
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   // ✅ Format for react-select
@@ -80,7 +80,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
           updatetrainingSession({
             id: trainingSession.id,
             trainingSessionData: { ...data },
-          })
+          }),
         ).unwrap();
       } else {
         await dispatch(createtrainingSession(data)).unwrap();
@@ -102,12 +102,12 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -172,7 +172,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
                   const selectedEmployee = employees.find(
-                    (emp) => emp.value === field.value
+                    (emp) => emp.value === field.value,
                   );
                   return (
                     <Select

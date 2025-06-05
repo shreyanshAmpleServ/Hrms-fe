@@ -23,7 +23,7 @@ import { SelectWithImage2 } from "../../components/common/selectWithImage2";
 import { fetchDealById } from "../../redux/deals";
 import FilesDetails from "../../components/common/detailPages/UserDetails/FilesDetails";
 import ImageWithDatabase from "../../components/common/ImageFromDatabase";
-const DealDetail = ({deal_name}) => {
+const DealDetail = ({ deal_name }) => {
   const { id } = useParams();
   const route = all_routes;
   const [openModal, setOpenModal] = useState(false);
@@ -56,7 +56,7 @@ const DealDetail = ({deal_name}) => {
     <>
       {/* Page Wrapper */}
       <div className="page-wrapper">
-      {loading ? (
+        {loading ? (
           <div
             style={{
               zIndex: 9999,
@@ -65,7 +65,7 @@ const DealDetail = ({deal_name}) => {
               width: "100%",
               marginLeft: "0%",
               minHeight: "100vh",
-              marginTop:"59px",
+              marginTop: "59px",
               backgroundColor: "rgba(255, 255, 255,.5)",
             }}
             className=" position-fixed  w-screen  top-0   bg-gray  "
@@ -77,159 +77,161 @@ const DealDetail = ({deal_name}) => {
               <span className="visually-hidden">Loading...</span>
             </div>
           </div>
-        ) :
-        <div className="content">
-          <div className="row">
-            <div className="col-md-12">
-              {/* Page Header */}
-              <div className="page-header">
-                <div className="row align-items-center">
-                  <div className="col-8">
-                    <h4 className="page-title">Deals Overview </h4>
-                  </div>
-                  <div className="col-4 text-end">
-                    <div className="head-icons">
-                      <CollapseHeader />
+        ) : (
+          <div className="content">
+            <div className="row">
+              <div className="col-md-12">
+                {/* Page Header */}
+                <div className="page-header">
+                  <div className="row align-items-center">
+                    <div className="col-8">
+                      <h4 className="page-title">Deals Overview </h4>
+                    </div>
+                    <div className="col-4 text-end">
+                      <div className="head-icons">
+                        <CollapseHeader />
+                      </div>
                     </div>
                   </div>
                 </div>
+                {/* /Page Header */}
               </div>
-              {/* /Page Header */}
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-12">
-              {/* Deals User */}
-              <div className="contact-head">
-                <div className="row align-items-center">
-                  <div className="col-sm-8">
-                    <ul className="contact-breadcrumb">
-                      <li>
-                        <Link to={route.deals}>
-                          <i className="ti ti-arrow-narrow-left" />
-                          Deals
-                        </Link>
-                      </li>
-                      <li>{dealDetail?.dealName}</li>
-                    </ul>
+            <div className="row">
+              <div className="col-md-12">
+                {/* Deals User */}
+                <div className="contact-head">
+                  <div className="row align-items-center">
+                    <div className="col-sm-8">
+                      <ul className="contact-breadcrumb">
+                        <li>
+                          <Link to={route.deals}>
+                            <i className="ti ti-arrow-narrow-left" />
+                            Deals
+                          </Link>
+                        </li>
+                        <li>{dealDetail?.dealName}</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="card">
-                <div className="card-body pb-2">
-                  <div className="d-flex align-items-center justify-content-between flex-wrap">
-                    <div className="d-flex align-items-center mb-2">
-                      <div className="avatar avatar-xxl me-3 flex-shrink-0 border p-2">
-                        <h6 className="text-default fw-medium">{dealDetail?.dealName}</h6>
-                      </div>
-                      <div>
-                        <h5 className="mb-1">
-                          {dealDetail?.dealName}{" "}
-                          <span className="star-icon">
-                            <i className="fa-solid fa-star" />
-                          </span>
-                        </h5>
-                       
-                        {/* <p className="mb-0">
+                <div className="card">
+                  <div className="card-body pb-2">
+                    <div className="d-flex align-items-center justify-content-between flex-wrap">
+                      <div className="d-flex align-items-center mb-2">
+                        <div className="avatar avatar-xxl me-3 flex-shrink-0 border p-2">
+                          <h6 className="text-default fw-medium">
+                            {dealDetail?.dealName}
+                          </h6>
+                        </div>
+                        <div>
+                          <h5 className="mb-1">
+                            {dealDetail?.dealName}{" "}
+                            <span className="star-icon">
+                              <i className="fa-solid fa-star" />
+                            </span>
+                          </h5>
+
+                          {/* <p className="mb-0">
                           <i className="ti ti-map-pin-pin" />{" "}
                           {`${dealDetail?.DealContacts?.[0]?.contact?.streetAddress}, ${dealDetail?.DealContacts?.[0]?.contact?.city}, ${dealDetail?.DealContacts?.[0]?.contact?.state}, ${dealDetail?.DealContacts?.[0]?.contact?.country}, ${dealDetail?.DealContacts?.[0]?.contact?.zipcode}`}
                         </p> */}
+                        </div>
                       </div>
-                    </div>
-                    <div className="contacts-action">
-                      <span className="badge badge-light">
-                        <i className="ti ti-lock" />
-                        Private
-                      </span>
-                      <div className="dropdown mb-2">
-                        <Link
-                          to="#"
-                          className={`text-white ${dealDetail?.status === "Won" ? "bg-success" : "bg-danger"} py-1 px-2 d-inline-flex align-items-center`}
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          {dealDetail?.status === "Won" ? (
-                            <i className="ti ti-thumb-up me-2" />
-                          ) : (
-                            <i className="ti ti-thumb-down me-2" />
-                          )}
-                          {dealDetail?.status}
-                          <i className="ti ti-chevron-down ms-2" />
-                        </Link>
-                        <div className="dropdown-menu dropdown-menu-right">
-                          <Link className="dropdown-item" to="#">
-                            <span>Won</span>
+                      <div className="contacts-action">
+                        <span className="badge badge-light">
+                          <i className="ti ti-lock" />
+                          Private
+                        </span>
+                        <div className="dropdown mb-2">
+                          <Link
+                            to="#"
+                            className={`text-white ${dealDetail?.status === "Won" ? "bg-success" : "bg-danger"} py-1 px-2 d-inline-flex align-items-center`}
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            {dealDetail?.status === "Won" ? (
+                              <i className="ti ti-thumb-up me-2" />
+                            ) : (
+                              <i className="ti ti-thumb-down me-2" />
+                            )}
+                            {dealDetail?.status}
+                            <i className="ti ti-chevron-down ms-2" />
                           </Link>
-                          <Link className="dropdown-item" to="#">
-                            <span>Lost</span>
-                          </Link>
+                          <div className="dropdown-menu dropdown-menu-right">
+                            <Link className="dropdown-item" to="#">
+                              <span>Won</span>
+                            </Link>
+                            <Link className="dropdown-item" to="#">
+                              <span>Lost</span>
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                {/* /Deals User */}
               </div>
-              {/* /Deals User */}
-            </div>
-            {/* Deals Sidebar */}
-            <div className="col-xl-3 theiaStickySidebar">
-              <div className="card">
-                <div className="card-body p-3">
-                  <h6 className="mb-3 fw-semibold">Deal Information</h6>
-                  <ul>
-                    <li className="row mb-3">
-                      <span className="col-6">Created At</span>
-                      <span className="col-6 " style={{ fontSize: "13px" }}>
-                        {moment(dealDetail?.createdDate).format(
-                          "DD-MM-YYYY HH:mm A"
-                        )}
-                      </span>
-                    </li>
-                    <li className="row mb-3">
-                      <span className="col-6">Value</span>
-                      <span className="col-6 " style={{ fontSize: "13px" }}>
-                        {dealDetail?.currency} {dealDetail?.dealValue}
-                      </span>
-                    </li>
-                    <li className="row mb-3">
-                      <span className="col-6">Due Date</span>
-                      <span className="col-6 " style={{ fontSize: "13px" }}>
-                        {moment(dealDetail?.dueDate).format(
-                          "DD-MM-YYYY HH:mm A"
-                        )}
-                      </span>
-                    </li>
-                    <li className="row mb-3">
-                      <span className="col-6">Period</span>
-                      <span className="col-6 " style={{ fontSize: "13px" }}>
-                        {dealDetail?.periodValue + " " + dealDetail?.period}
-                      </span>
-                    </li>
-                    <li className="row mb-3">
-                      <span className="col-6">Expected Close Date</span>
-                      <span className="col-6 " style={{ fontSize: "13px" }}>
-                        {moment(dealDetail?.expectedCloseDate).format(
-                          "DD-MM-YYYY HH:mm A"
-                        )}
-                      </span>
-                    </li>
-                    <li className="row mb-3">
-                      <span className="col-6">Follow Up</span>
-                      <span className="col-6 " style={{ fontSize: "13px" }}>
-                        {moment(dealDetail?.followUpDate).format(
-                          "DD-MM-YYYY HH:mm A"
-                        )}
-                      </span>
-                    </li>
-                    <li className="row mb-3">
-                      <span className="col-6">Source</span>
-                      <span className="col-6 " style={{ fontSize: "13px" }}>
-                        {dealDetail?.source || " - - "}
-                      </span>
-                    </li>
-                  </ul>
-                  <hr />
-                  {/* <div className="d-flex align-items-center justify-content-between flex-wrap">
+              {/* Deals Sidebar */}
+              <div className="col-xl-3 theiaStickySidebar">
+                <div className="card">
+                  <div className="card-body p-3">
+                    <h6 className="mb-3 fw-semibold">Deal Information</h6>
+                    <ul>
+                      <li className="row mb-3">
+                        <span className="col-6">Created At</span>
+                        <span className="col-6 " style={{ fontSize: "13px" }}>
+                          {moment(dealDetail?.createdDate).format(
+                            "DD-MM-YYYY HH:mm A",
+                          )}
+                        </span>
+                      </li>
+                      <li className="row mb-3">
+                        <span className="col-6">Value</span>
+                        <span className="col-6 " style={{ fontSize: "13px" }}>
+                          {dealDetail?.currency} {dealDetail?.dealValue}
+                        </span>
+                      </li>
+                      <li className="row mb-3">
+                        <span className="col-6">Due Date</span>
+                        <span className="col-6 " style={{ fontSize: "13px" }}>
+                          {moment(dealDetail?.dueDate).format(
+                            "DD-MM-YYYY HH:mm A",
+                          )}
+                        </span>
+                      </li>
+                      <li className="row mb-3">
+                        <span className="col-6">Period</span>
+                        <span className="col-6 " style={{ fontSize: "13px" }}>
+                          {dealDetail?.periodValue + " " + dealDetail?.period}
+                        </span>
+                      </li>
+                      <li className="row mb-3">
+                        <span className="col-6">Expected Close Date</span>
+                        <span className="col-6 " style={{ fontSize: "13px" }}>
+                          {moment(dealDetail?.expectedCloseDate).format(
+                            "DD-MM-YYYY HH:mm A",
+                          )}
+                        </span>
+                      </li>
+                      <li className="row mb-3">
+                        <span className="col-6">Follow Up</span>
+                        <span className="col-6 " style={{ fontSize: "13px" }}>
+                          {moment(dealDetail?.followUpDate).format(
+                            "DD-MM-YYYY HH:mm A",
+                          )}
+                        </span>
+                      </li>
+                      <li className="row mb-3">
+                        <span className="col-6">Source</span>
+                        <span className="col-6 " style={{ fontSize: "13px" }}>
+                          {dealDetail?.source || " - - "}
+                        </span>
+                      </li>
+                    </ul>
+                    <hr />
+                    {/* <div className="d-flex align-items-center justify-content-between flex-wrap">
                     <h6 className="mb-3 fw-semibold">Owner</h6>
                     <Link
                       to="#"
@@ -241,7 +243,7 @@ const DealDetail = ({deal_name}) => {
                       Add New
                     </Link>
                   </div> */}
-                  {/* <div className="d-flex align-items-center mb-3">
+                    {/* <div className="d-flex align-items-center mb-3">
                     <div className="avatar avatar-md me-2">
                       <ImageWithBasePath
                         src="assets/img/profiles/avatar-21.jpg"
@@ -250,7 +252,7 @@ const DealDetail = ({deal_name}) => {
                     </div>
                     <p>Vaughan</p>
                   </div> */}
-                  {/* <div className="d-flex align-items-center mb-0">
+                    {/* <div className="d-flex align-items-center mb-0">
                     <div className="avatar avatar-md me-2">
                       <ImageWithBasePath
                         src="assets/img/profiles/avatar-01.jpg"
@@ -259,20 +261,21 @@ const DealDetail = ({deal_name}) => {
                     </div>
                     <p>Jessica</p>
                   </div> */}
-                  {/* <hr /> */}
-                  <h6 className="mb-2 fw-semibold">Tags</h6>
-                  {dealDetail?.tags ?
-                    dealDetail.tags.split(",").map((tag, index) => (
-                      <Link
-                        key={index}
-                        to="#"
-                        className={`badge ${index % 3 == 0 ? "badge-soft-success" : index % 3 == 1 ? "badge-soft-danger" : index % 3 == 2 ? "badge-soft-info" : "badge-soft-warning"} fw-medium me-2`}
-                      >
-                        {tag.trim()} {/* Trim to remove extra spaces */}
-                      </Link>
-                    )) : " -- "}
-                  <hr />
-                  {/* <h6 className="mb-3 fw-semibold">Projects</h6>
+                    {/* <hr /> */}
+                    <h6 className="mb-2 fw-semibold">Tags</h6>
+                    {dealDetail?.tags
+                      ? dealDetail.tags.split(",").map((tag, index) => (
+                          <Link
+                            key={index}
+                            to="#"
+                            className={`badge ${index % 3 == 0 ? "badge-soft-success" : index % 3 == 1 ? "badge-soft-danger" : index % 3 == 2 ? "badge-soft-info" : "badge-soft-warning"} fw-medium me-2`}
+                          >
+                            {tag.trim()} {/* Trim to remove extra spaces */}
+                          </Link>
+                        ))
+                      : " -- "}
+                    <hr />
+                    {/* <h6 className="mb-3 fw-semibold">Projects</h6>
                   <Link
                     to="#"
                     className="badge bg-light-300 text-default me-2 mb-2"
@@ -282,16 +285,18 @@ const DealDetail = ({deal_name}) => {
                   <Link to="#" className="badge bg-light-300 text-default mb-2">
                     Margrate Design
                   </Link> */}
-                  {/* <hr /> */}
-                  <h6 className="mb-3 fw-semibold">Priority</h6>
-                  <div className="priority-info">
-                  <span className={`${dealDetail?.priority === "Low" ? "bg-success" : "badge-soft-danger"}`}>
-                          <i
-                            className={`ti ti-square-rounded-filled me-1 ${dealDetail?.priority === "Low" ? "text-success" : "text-danger"} circle`}
-                          />
-                          {dealDetail?.priority}
-                        </span>
-                    {/* <div className="dropdown">
+                    {/* <hr /> */}
+                    <h6 className="mb-3 fw-semibold">Priority</h6>
+                    <div className="priority-info">
+                      <span
+                        className={`${dealDetail?.priority === "Low" ? "bg-success" : "badge-soft-danger"}`}
+                      >
+                        <i
+                          className={`ti ti-square-rounded-filled me-1 ${dealDetail?.priority === "Low" ? "text-success" : "text-danger"} circle`}
+                        />
+                        {dealDetail?.priority}
+                      </span>
+                      {/* <div className="dropdown">
                       <Link
                         to="#"
                         className="dropdown-toggle"
@@ -321,11 +326,11 @@ const DealDetail = ({deal_name}) => {
                         </Link>
                       </div>
                     </div> */}
-                  </div>
-                  <hr />
-                  <div className="d-flex align-items-center justify-content-between flex-wrap">
-                    <h6 className="mb-3 fw-semibold">Contacts</h6>
-                    {/* <Link
+                    </div>
+                    <hr />
+                    <div className="d-flex align-items-center justify-content-between flex-wrap">
+                      <h6 className="mb-3 fw-semibold">Contacts</h6>
+                      {/* <Link
                       to="#"
                       className="link-purple mb-3 fw-medium"
                       data-bs-toggle="modal"
@@ -334,32 +339,35 @@ const DealDetail = ({deal_name}) => {
                       <i className="ti ti-circle-plus me-1" />
                       Add New
                     </Link> */}
-                  </div>
-                  {dealDetail?.Dealcontacts?.data?.map((item) => (
-                    <div className="d-flex align-items-center mb-3">
-                      <div className="avatar avatar-md me-2">
-                        <ImageWithDatabase
-                          src={item?.contact?.image    || "assets/img/profiles/avatar-21.jpg"}
-                          alt="Image"
-                        />
-                      </div>
-                      <p>
-                        {item?.contact?.firstName +
-                          " " +
-                          item?.contact?.lastName || ""}
-                      </p>
                     </div>
-                  ))}
+                    {dealDetail?.Dealcontacts?.data?.map((item) => (
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="avatar avatar-md me-2">
+                          <ImageWithDatabase
+                            src={
+                              item?.contact?.image ||
+                              "assets/img/profiles/avatar-21.jpg"
+                            }
+                            alt="Image"
+                          />
+                        </div>
+                        <p>
+                          {item?.contact?.firstName +
+                            " " +
+                            item?.contact?.lastName || ""}
+                        </p>
+                      </div>
+                    ))}
 
-                  <hr />
-                  <ul>
-                    <li className="row mb-3">
-                      <span className="col-6">Last Modified</span>
-                      <span className="col-6">
-                        {moment(dealDetail?.updatedDate).format("lll")}
-                      </span>
-                    </li>
-                    {/* <li className="row mb-0">
+                    <hr />
+                    <ul>
+                      <li className="row mb-3">
+                        <span className="col-6">Last Modified</span>
+                        <span className="col-6">
+                          {moment(dealDetail?.updatedDate).format("lll")}
+                        </span>
+                      </li>
+                      {/* <li className="row mb-0">
                       <span className="col-6">Modified By</span>
                       <span className="col-6">
                         <span className="avatar avatar-xs me-1">
@@ -372,56 +380,56 @@ const DealDetail = ({deal_name}) => {
                        {dealDetail?.updatedBy || "- -"}
                       </span>
                     </li> */}
-                  </ul>
-                </div>
-              </div>
-            </div>
-            {/* /Deals Sidebar */}
-            {/* Deals Details */}
-            <div className="col-xl-9">
-              <div className="card mb-3">
-                <div className="card-body pb-0">
-                  <h4 className="fw-semibold mb-3">Deal Pipeline Status</h4>
-                  <div className="pipeline-list">
-                    <ul>
-                      <li>
-                        <Link to="#" className="bg-pending">
-                          Quality To Buy
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#" className="bg-info">
-                          Contact Made
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#" className="bg-warning">
-                          Presentation
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#" className="bg-pink">
-                          Proposal Made
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#">Appointment</Link>
-                      </li>
                     </ul>
                   </div>
-                  <ul className="nav nav-tabs nav-tabs-bottom" role="tablist">
-                    <li className="nav-item" role="presentation">
-                      <Link
-                        to="#"
-                        data-bs-toggle="tab"
-                        data-bs-target="#activities"
-                        className="nav-link active"
-                      >
-                        <i className="ti ti-alarm-minus me-1" />
-                        Activities
-                      </Link>
-                    </li>
-                    {/* <li className="nav-item" role="presentation">
+                </div>
+              </div>
+              {/* /Deals Sidebar */}
+              {/* Deals Details */}
+              <div className="col-xl-9">
+                <div className="card mb-3">
+                  <div className="card-body pb-0">
+                    <h4 className="fw-semibold mb-3">Deal Pipeline Status</h4>
+                    <div className="pipeline-list">
+                      <ul>
+                        <li>
+                          <Link to="#" className="bg-pending">
+                            Quality To Buy
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="#" className="bg-info">
+                            Contact Made
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="#" className="bg-warning">
+                            Presentation
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="#" className="bg-pink">
+                            Proposal Made
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="#">Appointment</Link>
+                        </li>
+                      </ul>
+                    </div>
+                    <ul className="nav nav-tabs nav-tabs-bottom" role="tablist">
+                      <li className="nav-item" role="presentation">
+                        <Link
+                          to="#"
+                          data-bs-toggle="tab"
+                          data-bs-target="#activities"
+                          className="nav-link active"
+                        >
+                          <i className="ti ti-alarm-minus me-1" />
+                          Activities
+                        </Link>
+                      </li>
+                      {/* <li className="nav-item" role="presentation">
                       <Link
                         to="#"
                         data-bs-toggle="tab"
@@ -432,29 +440,29 @@ const DealDetail = ({deal_name}) => {
                         Notes
                       </Link>
                     </li> */}
-                    <li className="nav-item" role="presentation">
-                      <Link
-                        to="#"
-                        data-bs-toggle="tab"
-                        data-bs-target="#calls"
-                        className="nav-link"
-                      >
-                        <i className="ti ti-phone me-1" />
-                        Calls
-                      </Link>
-                    </li>
-                    <li className="nav-item" role="presentation">
-                      <Link
-                        to="#"
-                        data-bs-toggle="tab"
-                        data-bs-target="#files"
-                        className="nav-link"
-                      >
-                        <i className="ti ti-file me-1" />
-                        Files
-                      </Link>
-                    </li>
-                    {/* <li className="nav-item" role="presentation">
+                      <li className="nav-item" role="presentation">
+                        <Link
+                          to="#"
+                          data-bs-toggle="tab"
+                          data-bs-target="#calls"
+                          className="nav-link"
+                        >
+                          <i className="ti ti-phone me-1" />
+                          Calls
+                        </Link>
+                      </li>
+                      <li className="nav-item" role="presentation">
+                        <Link
+                          to="#"
+                          data-bs-toggle="tab"
+                          data-bs-target="#files"
+                          className="nav-link"
+                        >
+                          <i className="ti ti-file me-1" />
+                          Files
+                        </Link>
+                      </li>
+                      {/* <li className="nav-item" role="presentation">
                       <Link
                         to="#"
                         data-bs-toggle="tab"
@@ -465,16 +473,16 @@ const DealDetail = ({deal_name}) => {
                         Email
                       </Link>
                     </li> */}
-                  </ul>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-              {/* Tab Content */}
-              <div className="tab-content pt-0">
-                {/* Activities */}
-                <ActivityDetailOfUser deal_id={id} />
-                
-                {/* Notes */}
-                {/* <div className="tab-pane fade" id="notes">
+                {/* Tab Content */}
+                <div className="tab-content pt-0">
+                  {/* Activities */}
+                  <ActivityDetailOfUser deal_id={id} />
+
+                  {/* Notes */}
+                  {/* <div className="tab-pane fade" id="notes">
                   <div className="card">
                     <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
                       <h4 className="fw-semibold">Notes</h4>
@@ -822,19 +830,22 @@ const DealDetail = ({deal_name}) => {
                   </div>
                 </div> */}
 
-                {/* Calls */}
-                <CallsDetailsOfUser />
+                  {/* Calls */}
+                  <CallsDetailsOfUser />
 
-                {/* Files */}
-                  <FilesDetails type={"Deals"} type_id={id} type_name={dealDetail?.dealName}/>
-
-              
+                  {/* Files */}
+                  <FilesDetails
+                    type={"Deals"}
+                    type_id={id}
+                    type_name={dealDetail?.dealName}
+                  />
+                </div>
+                {/* /Tab Content */}
               </div>
-              {/* /Tab Content */}
+              {/* /Deals Details */}
             </div>
-            {/* /Deals Details */}
           </div>
-        </div>}
+        )}
       </div>
       {/* /Page Wrapper */}
       {/* Create Contact */}

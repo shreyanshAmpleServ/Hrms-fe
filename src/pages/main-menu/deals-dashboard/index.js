@@ -46,7 +46,7 @@ const DealsDashboard = () => {
         lostDealFilter: lostDealFilter?.id || null,
         wonDealFilter: wonDealFilter?.id || null,
         monthlyDealFilter: monthlyDealFilter?.id || null,
-      })
+      }),
     ).finally(() => {
       setIsFetching(false); // Finish API call
     });
@@ -63,7 +63,7 @@ const DealsDashboard = () => {
   // Deals By Stage
   const chartRef = useRef(null);
   const { dashboard, loading, error, success } = useSelector(
-    (state) => state.dashboard
+    (state) => state.dashboard,
   );
   useEffect(() => {
     (whoChange === "DealStage" || whoChange === "" || !dashboardData?.length) &&

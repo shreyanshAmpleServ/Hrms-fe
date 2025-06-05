@@ -7,7 +7,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
-import { createprobationReview, updateprobationReview } from "../../../redux/ProbationReview";
+import {
+  createprobationReview,
+  updateprobationReview,
+} from "../../../redux/ProbationReview";
 
 const ManageProbationReview = ({ setprobationReview, probationReview }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -70,10 +73,12 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       if (probationReview) {
-        await dispatch(updateprobationReview({
-          id: probationReview.id,
-          probationReviewData: { ...data },
-        })).unwrap();
+        await dispatch(
+          updateprobationReview({
+            id: probationReview.id,
+            probationReviewData: { ...data },
+          }),
+        ).unwrap();
       } else {
         await dispatch(createprobationReview({ ...data })).unwrap();
       }
@@ -87,7 +92,11 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
   };
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large" tabIndex={-1} id="offcanvas_add">
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
+      tabIndex={-1}
+      id="offcanvas_add"
+    >
       <div className="offcanvas-header border-bottom">
         <h4>{probationReview ? "Update" : "Add New"} Probation Review</h4>
         <button
@@ -105,13 +114,17 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
           <div className="row">
             {/* Employee */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Employee<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Employee<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="employee_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = employeeOptions?.find(opt => opt.value === field.value);
+                  const selected = employeeOptions?.find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -125,12 +138,18 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   );
                 }}
               />
-              {errors.employee_id && <small className="text-danger">{errors.employee_id.message}</small>}
+              {errors.employee_id && (
+                <small className="text-danger">
+                  {errors.employee_id.message}
+                </small>
+              )}
             </div>
 
             {/* Probation End Date */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Probation End Date<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Probation End Date<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="probation_end_date"
                 control={control}
@@ -145,18 +164,26 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   />
                 )}
               />
-              {errors.probation_end_date && <small className="text-danger">{errors.probation_end_date.message}</small>}
+              {errors.probation_end_date && (
+                <small className="text-danger">
+                  {errors.probation_end_date.message}
+                </small>
+              )}
             </div>
 
             {/* Confirmation Status */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Confirmation Status<span className="text-danger">*</span></label>
+              <label className="col-form-label">
+                Confirmation Status<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="confirmation_status"
                 control={control}
                 rules={{ required: "Status is required" }}
                 render={({ field }) => {
-                  const selected = statusOptions.find(opt => opt.value === field.value);
+                  const selected = statusOptions.find(
+                    (opt) => opt.value === field.value,
+                  );
                   return (
                     <Select
                       {...field}
@@ -169,7 +196,11 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   );
                 }}
               />
-              {errors.confirmation_status && <small className="text-danger">{errors.confirmation_status.message}</small>}
+              {errors.confirmation_status && (
+                <small className="text-danger">
+                  {errors.confirmation_status.message}
+                </small>
+              )}
             </div>
 
             {/* Confirmation Date */}
@@ -197,7 +228,10 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                 name="review_notes"
                 control={control}
                 render={({ field }) => (
-                  <DefaultEditor value={field.value} onChange={field.onChange} />
+                  <DefaultEditor
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 )}
               />
             </div>
@@ -205,12 +239,24 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
 
           {/* Submit/Cancel Buttons */}
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
               Cancel
             </button>
             <button type="submit" className="btn btn-primary">
-              {probationReview ? (loading ? "Updating..." : "Update") : loading ? "Creating..." : "Create"}
-              {loading && <div className="spinner-border spinner-border-sm ms-2" />}
+              {probationReview
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <div className="spinner-border spinner-border-sm ms-2" />
+              )}
             </button>
           </div>
         </form>

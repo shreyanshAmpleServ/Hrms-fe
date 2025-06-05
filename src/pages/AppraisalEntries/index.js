@@ -23,7 +23,7 @@ const AppraisalEntries = () => {
   const dispatch = useDispatch();
 
   const { appraisalEntries, loading } = useSelector(
-    (state) => state.appraisalEntries || {}
+    (state) => state.appraisalEntries || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const AppraisalEntries = () => {
       fetchAppraisalEntries({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const AppraisalEntries = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const AppraisalEntries = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Appraisal Entries"
+    (i) => i?.module_name === "Appraisal Entries",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -78,7 +78,7 @@ const AppraisalEntries = () => {
       render: (text) => text?.appraisal_employee?.full_name || "-",
       sorter: (a, b) =>
         a.appraisal_employee.full_name.localeCompare(
-          b.appraisal_employee.full_name
+          b.appraisal_employee.full_name,
         ),
     },
     {

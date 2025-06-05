@@ -23,7 +23,7 @@ const CallResultList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Call Types"
+    (i) => i?.module_name === "Call Types",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role") === "Admin";
   const isView = isAdmin ? true : allPermissions?.view;
@@ -122,7 +122,7 @@ const CallResultList = () => {
   ];
 
   const { callTypes, loading, error, success } = useSelector(
-    (state) => state.callTypes
+    (state) => state.callTypes,
   );
 
   React.useEffect(() => {
@@ -144,17 +144,17 @@ const CallResultList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
+            .includes(searchText.toLowerCase()),
+        ),
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
       );
     }
     return data;

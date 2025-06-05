@@ -12,7 +12,7 @@ import EditStage from "./EditStage";
 const EditPipelineModal = ({ pipeline }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.pipelines);
-console.log("Pipeline",pipeline)
+  console.log("Pipeline", pipeline);
   const {
     register,
     handleSubmit,

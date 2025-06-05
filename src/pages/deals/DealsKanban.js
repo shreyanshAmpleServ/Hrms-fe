@@ -56,7 +56,7 @@ const DealsKanban = ({ data }) => {
   const drakeInstance = useRef(null);
 
   const addContainerRef = (ref) => {
-    console.log("ContainerRefs ",drakeInstance, containerRefs , ref)
+    console.log("ContainerRefs ", drakeInstance, containerRefs, ref);
     if (ref && !containerRefs.current.includes(ref)) {
       containerRefs.current.push(ref);
     }

@@ -64,7 +64,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -80,7 +80,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
             updateAdvancePayment({
               id: advancePayment.id,
               advancePaymentData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createAdvancePayment({ ...data })).unwrap();
       closeButton.click();
@@ -99,12 +99,12 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -148,7 +148,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select
@@ -200,7 +200,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                           placeholder="Select Approval Status"
                           classNamePrefix="react-select"
                           value={statusOptions.find(
-                            (x) => x.value === field.value
+                            (x) => x.value === field.value,
                           )}
                           onChange={(option) => field.onChange(option.value)}
                         />

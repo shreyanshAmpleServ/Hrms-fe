@@ -26,7 +26,7 @@ const EmployeeDetail = () => {
   }, [id, dispatch]);
 
   const { employeeDetail, loading: employeeLoading } = useSelector(
-    (state) => state.employee
+    (state) => state.employee,
   );
 
   const route = all_routes;
@@ -39,7 +39,7 @@ const EmployeeDetail = () => {
     createElement.setAttribute("data-bs-toggle", "modal");
     createElement.setAttribute(
       "data-bs-target",
-      "#update_profile_picture_modal"
+      "#update_profile_picture_modal",
     );
     document.body.appendChild(createElement);
     setImage(file);
@@ -52,7 +52,7 @@ const EmployeeDetail = () => {
     formData.append("id", id);
     dispatch(updateEmployee(formData));
     const closeModal = document.getElementById(
-      "close_btn_update_profile_picture_modal"
+      "close_btn_update_profile_picture_modal",
     );
     closeModal.click();
     setImage(null);
@@ -236,7 +236,7 @@ const EmployeeDetail = () => {
                           <span className="text-black fw-semibold">
                             {employeeDetail?.join_date
                               ? moment(employeeDetail?.join_date).format(
-                                  "DD-MM-YYYY"
+                                  "DD-MM-YYYY",
                                 )
                               : "N/A"}
                           </span>
@@ -266,7 +266,7 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           {employeeDetail?.date_of_birth
                             ? moment(employeeDetail?.date_of_birth).format(
-                                "DD-MM-YYYY"
+                                "DD-MM-YYYY",
                               )
                             : "N/A"}
                         </p>
@@ -397,7 +397,7 @@ const EmployeeDetail = () => {
                               </p>
                               <p className="m-0">
                                 {moment(education?.start_from).format(
-                                  "DD-MM-YYYY"
+                                  "DD-MM-YYYY",
                                 )}{" "}
                                 -{" "}
                                 {moment(education?.end_to).format("DD-MM-YYYY")}
@@ -439,12 +439,12 @@ const EmployeeDetail = () => {
                               <p className="m-0">{experience?.position}</p>
                               <p className="m-0">
                                 {moment(experience?.start_from).format(
-                                  "DD-MM-YYYY"
+                                  "DD-MM-YYYY",
                                 )}{" "}
                                 -{" "}
                                 {experience?.end_to
                                   ? moment(experience?.end_to).format(
-                                      "DD-MM-YYYY"
+                                      "DD-MM-YYYY",
                                     )
                                   : "Present"}
                               </p>
@@ -548,7 +548,7 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           {employeeDetail?.passport_issue_date
                             ? moment(
-                                employeeDetail?.passport_issue_date
+                                employeeDetail?.passport_issue_date,
                               ).format("DD-MM-YYYY")
                             : "N/A"}
                         </p>
@@ -560,7 +560,7 @@ const EmployeeDetail = () => {
                         <p className="m-0">
                           {employeeDetail?.passport_expiry_date
                             ? moment(
-                                employeeDetail?.passport_expiry_date
+                                employeeDetail?.passport_expiry_date,
                               ).format("DD-MM-YYYY")
                             : "N/A"}
                         </p>

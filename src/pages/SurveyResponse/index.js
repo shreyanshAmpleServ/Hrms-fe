@@ -23,7 +23,7 @@ const SurveyResponse = () => {
   const dispatch = useDispatch();
 
   const { surveyResponse, loading } = useSelector(
-    (state) => state.surveyResponse || {}
+    (state) => state.surveyResponse || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const SurveyResponse = () => {
       fetchSurveyResponse({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const SurveyResponse = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const SurveyResponse = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Survey Response"
+    (i) => i?.module_name === "Survey Response",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

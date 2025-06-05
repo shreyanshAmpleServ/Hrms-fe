@@ -4,16 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import { fetchCurrencies } from "../../../redux/currency";
-import {
-  fetchProducts
-} from "../../../redux/products";
+import { fetchProducts } from "../../../redux/products";
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
 
 const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
   const dispatch = useDispatch();
   const formatNumber = (num) => {
     if (num === 0 || isNaN(num)) {
-      return '0';
+      return "0";
     }
     const number = parseFloat(num);
     if (Number.isInteger(number)) {
@@ -21,7 +19,6 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
     }
     return number.toFixed(2);
   };
-
 
   const addNewColumn = () => {
     setItemNumber((prev) => [
@@ -41,7 +38,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
         tax_per: 0.0,
         line_tax: 0,
         total_bef_disc: 0,
-        total_amount: 0
+        total_amount: 0,
       },
     ]);
   };
@@ -69,10 +66,10 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
 
   const { products } = useSelector((state) => state.products);
   const { manufacturers, loading: loadingTax } = useSelector(
-    (state) => state.manufacturers
+    (state) => state.manufacturers,
   );
   const { currencies, loading: loadingCurrency } = useSelector(
-    (state) => state.currencies
+    (state) => state.currencies,
   );
   const { taxs, loading: loadingTAx } = useSelector((state) => state.taxs);
 
@@ -92,7 +89,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
   const TaxList = taxs.map((emnt) => ({
     value: emnt.id,
     label: emnt.name + " (" + emnt.rate + "%)",
-    tax: emnt.rate
+    tax: emnt.rate,
   }));
 
   //   const onSubmit = async (data) => {
@@ -168,25 +165,54 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
                             className="select2"
                             classNamePrefix="react-select"
                             onChange={(selectedOption) => {
-                              let rate = selectedOption?.unit_price * i?.quantity || 0;
-                              let disc_amount = (rate * i.disc_prcnt) / 100
-                              let total_bef_disc = rate - disc_amount
-                              let line_tax = (total_bef_disc * i?.tax_per) / 100 || 0;
-                              updateItem(index, "item_id", selectedOption?.value || null);
-                              updateItem(index, "item_name", selectedOption?.label || null);
-                              updateItem(index, "unit_price", selectedOption?.unit_price || 0);
+                              let rate =
+                                selectedOption?.unit_price * i?.quantity || 0;
+                              let disc_amount = (rate * i.disc_prcnt) / 100;
+                              let total_bef_disc = rate - disc_amount;
+                              let line_tax =
+                                (total_bef_disc * i?.tax_per) / 100 || 0;
+                              updateItem(
+                                index,
+                                "item_id",
+                                selectedOption?.value || null,
+                              );
+                              updateItem(
+                                index,
+                                "item_name",
+                                selectedOption?.label || null,
+                              );
+                              updateItem(
+                                index,
+                                "unit_price",
+                                selectedOption?.unit_price || 0,
+                              );
                               updateItem(index, "rate", rate);
                               updateItem(index, "line_tax", line_tax);
-                              updateItem(index, "total_bef_disc", total_bef_disc);
-                              updateItem(index, "total_amount", total_bef_disc + line_tax);
+                              updateItem(
+                                index,
+                                "total_bef_disc",
+                                total_bef_disc,
+                              );
+                              updateItem(
+                                index,
+                                "total_amount",
+                                total_bef_disc + line_tax,
+                              );
                               updateItem(index, "disc_amount", disc_amount);
                               field.onChange(selectedOption?.value || null);
                             }}
-                            value={productList?.find((option) => option.value === i?.item_id) || ""}
+                            value={
+                              productList?.find(
+                                (option) => option.value === i?.item_id,
+                              ) || ""
+                            }
                             // value={i?.item_id}
                             styles={{
                               menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                              menu: (provided) => ({ ...provided, zIndex: 9999, }),
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
                             }}
                             menuPortalTarget={document.body}
                           />
@@ -207,16 +233,25 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
                             value = value.replace(/^0+/, "");
                             if (value === "") value = "0";
                           }
-                          let rate = i?.unit_price * value || 0
-                          let disc_amount = (rate * i.disc_prcnt) / 100
-                          let total_bef_disc = rate - disc_amount || 0
-                          let line_tax = (total_bef_disc * i?.tax_per) / 100 || 0;
-                          updateItem(index, "total_amount", total_bef_disc - line_tax);
+                          let rate = i?.unit_price * value || 0;
+                          let disc_amount = (rate * i.disc_prcnt) / 100;
+                          let total_bef_disc = rate - disc_amount || 0;
+                          let line_tax =
+                            (total_bef_disc * i?.tax_per) / 100 || 0;
+                          updateItem(
+                            index,
+                            "total_amount",
+                            total_bef_disc - line_tax,
+                          );
                           updateItem(index, "disc_amount", disc_amount);
                           updateItem(index, "quantity", value || 0);
                           updateItem(index, "rate", rate);
                           updateItem(index, "line_tax", line_tax);
-                          updateItem(index, "total_bef_disc", total_bef_disc || 0);
+                          updateItem(
+                            index,
+                            "total_bef_disc",
+                            total_bef_disc || 0,
+                          );
                         }}
                       />
                     </div>
@@ -241,27 +276,41 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
 
                   <td>
                     <div className="input-table">
-                      <input name="disc_prcnt" type="number" value={i?.disc_prcnt} onChange={(e) => {
-                        let value = Number(e.target.value);
-                        if (value < 0) value = 0;
-                        if (value > 100) value = i.disc_prcnt;
-                        e.target.value = value;
+                      <input
+                        name="disc_prcnt"
+                        type="number"
+                        value={i?.disc_prcnt}
+                        onChange={(e) => {
+                          let value = Number(e.target.value);
+                          if (value < 0) value = 0;
+                          if (value > 100) value = i.disc_prcnt;
+                          e.target.value = value;
 
-                        let disc_amount = (i.rate * e.target.value) / 100
-                        let total_bef_disc = i.rate - disc_amount
-                        let line_tax = (total_bef_disc * i?.tax_per) / 100 || 0;
-                        updateItem(index, "total_amount", total_bef_disc + line_tax);
-                        updateItem(index, "disc_amount", disc_amount);
-                        updateItem(index, "disc_prcnt", e.target.value || 0);
-                        updateItem(index, "total_bef_disc", total_bef_disc);
-                        updateItem(index, "line_tax", line_tax);
-
-                      }} />
+                          let disc_amount = (i.rate * e.target.value) / 100;
+                          let total_bef_disc = i.rate - disc_amount;
+                          let line_tax =
+                            (total_bef_disc * i?.tax_per) / 100 || 0;
+                          updateItem(
+                            index,
+                            "total_amount",
+                            total_bef_disc + line_tax,
+                          );
+                          updateItem(index, "disc_amount", disc_amount);
+                          updateItem(index, "disc_prcnt", e.target.value || 0);
+                          updateItem(index, "total_bef_disc", total_bef_disc);
+                          updateItem(index, "line_tax", line_tax);
+                        }}
+                      />
                     </div>
                   </td>
                   <td>
                     <div className="input-table">
-                      <input name="total_bef_disc" type="number" value={i?.total_bef_disc} disabled />
+                      <input
+                        name="total_bef_disc"
+                        type="number"
+                        value={i?.total_bef_disc}
+                        disabled
+                      />
                     </div>
                   </td>
                   <td>
@@ -277,18 +326,38 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
                             className="select2"
                             classNamePrefix="react-select"
                             onChange={(selectedOption) => {
-
-                              let line_tax = (i.total_bef_disc * selectedOption?.tax) / 100 || 0;
-                              updateItem(index, "total_amount", i.total_bef_disc + line_tax);
-                              updateItem(index, "tax_id", selectedOption?.value || null);
+                              let line_tax =
+                                (i.total_bef_disc * selectedOption?.tax) /
+                                  100 || 0;
+                              updateItem(
+                                index,
+                                "total_amount",
+                                i.total_bef_disc + line_tax,
+                              );
+                              updateItem(
+                                index,
+                                "tax_id",
+                                selectedOption?.value || null,
+                              );
                               updateItem(index, "line_tax", line_tax);
-                              updateItem(index, "tax_per", selectedOption?.tax || 0);
+                              updateItem(
+                                index,
+                                "tax_per",
+                                selectedOption?.tax || 0,
+                              );
                               field.onChange(selectedOption?.value || null);
                             }}
-                            value={TaxList?.find((option) => option.value === i?.tax_id) || ""}
+                            value={
+                              TaxList?.find(
+                                (option) => option.value === i?.tax_id,
+                              ) || ""
+                            }
                             styles={{
                               menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                              menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
                             }}
                             menuPortalTarget={document.body}
                           />
@@ -298,12 +367,22 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber }) => {
                   </td>
                   <td>
                     <div className="input-table">
-                      <input name="line_tax" type="text" value={formatNumber(i?.line_tax)} disabled />
+                      <input
+                        name="line_tax"
+                        type="text"
+                        value={formatNumber(i?.line_tax)}
+                        disabled
+                      />
                     </div>
                   </td>
                   <td style={{ width: "auto" }}>
                     <div className="input-table">
-                      <input width={{ width: "auto" }} type="text" value={formatNumber(i?.total_amount)} disabled />
+                      <input
+                        width={{ width: "auto" }}
+                        type="text"
+                        value={formatNumber(i?.total_amount)}
+                        disabled
+                      />
                     </div>
                   </td>
                   <td>

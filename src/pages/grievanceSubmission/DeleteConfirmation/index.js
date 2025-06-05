@@ -1,7 +1,11 @@
 import { useDispatch } from "react-redux";
 import { deletegrievanceSubmission } from "../../../redux/grievanceSubmission";
 
-const DeleteConfirmation = ({ showModal, setShowModal, grievanceSubmissionId }) => {
+const DeleteConfirmation = ({
+  showModal,
+  setShowModal,
+  grievanceSubmissionId,
+}) => {
   const dispatch = useDispatch();
   const handleDeletegrievanceSubmission = () => {
     if (grievanceSubmissionId) {
@@ -28,8 +32,8 @@ const DeleteConfirmation = ({ showModal, setShowModal, grievanceSubmissionId }) 
                   </div>
                   <h4 className="mb-2">Remove Grievance Submission?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the Grievance Submission
-                    you selected?
+                    Are you sure you want to remove <br /> the Grievance
+                    Submission you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button

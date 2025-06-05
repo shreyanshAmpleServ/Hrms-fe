@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.department_name,
       })) || [],
-    [department]
+    [department],
   );
 
   const DesignationList = useMemo(
@@ -44,7 +44,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         value: item.id,
         label: item.designation_name,
       })) || [],
-    [designation]
+    [designation],
   );
 
   useEffect(() => {
@@ -100,7 +100,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (mode === "add") {
       dispatch(addjob_posting(formattedData));
     } else {
-      dispatch(updatejob_posting({ id: initialData.id, job_postingData: formattedData }));
+      dispatch(
+        updatejob_posting({
+          id: initialData.id,
+          job_postingData: formattedData,
+        }),
+      );
     }
 
     reset();
@@ -108,13 +113,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   };
 
   useEffect(() => {
-    const offcanvasElement = document.getElementById("add_edit_job_posting_modal");
+    const offcanvasElement = document.getElementById(
+      "add_edit_job_posting_modal",
+    );
     if (offcanvasElement) {
       const handleClose = () => {
         // optional: clean state if needed
       };
       offcanvasElement.addEventListener("hidden.bs.offcanvas", handleClose);
-      return () => offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleClose);
+      return () =>
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleClose,
+        );
     }
   }, []);
 
@@ -162,7 +173,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 />
               )}
             />
-            {errors.department_id && <small className="text-danger">{errors.department_id.message}</small>}
+            {errors.department_id && (
+              <small className="text-danger">
+                {errors.department_id.message}
+              </small>
+            )}
           </div>
 
           {/* Designation */}
@@ -187,7 +202,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 />
               )}
             />
-            {errors.designation_id && <small className="text-danger">{errors.designation_id.message}</small>}
+            {errors.designation_id && (
+              <small className="text-danger">
+                {errors.designation_id.message}
+              </small>
+            )}
           </div>
 
           {/* Job Title */}
@@ -199,7 +218,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               className="form-control"
               {...register("job_title", { required: "Job title is required" })}
             />
-            {errors.job_title && <small className="text-danger">{errors.job_title.message}</small>}
+            {errors.job_title && (
+              <small className="text-danger">{errors.job_title.message}</small>
+            )}
           </div>
 
           {/* Required Experience */}
@@ -209,9 +230,15 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               type="text"
               placeholder="Required Experience"
               className="form-control"
-              {...register("required_experience", { required: "Experience is required" })}
+              {...register("required_experience", {
+                required: "Experience is required",
+              })}
             />
-            {errors.required_experience && <small className="text-danger">{errors.required_experience.message}</small>}
+            {errors.required_experience && (
+              <small className="text-danger">
+                {errors.required_experience.message}
+              </small>
+            )}
           </div>
 
           {/* Posting Date */}
@@ -232,7 +259,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 />
               )}
             />
-            {errors.posting_date && <small className="text-danger">{errors.posting_date.message}</small>}
+            {errors.posting_date && (
+              <small className="text-danger">
+                {errors.posting_date.message}
+              </small>
+            )}
           </div>
 
           {/* Closing Date */}
@@ -253,7 +284,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 />
               )}
             />
-            {errors.closing_date && <small className="text-danger">{errors.closing_date.message}</small>}
+            {errors.closing_date && (
+              <small className="text-danger">
+                {errors.closing_date.message}
+              </small>
+            )}
           </div>
 
           {/* Is Internal */}
@@ -261,13 +296,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <label className="form-label">Is Internal?</label>
             <select
               className="form-select"
-              {...register("is_internal", { required: "Internal status is required" })}
+              {...register("is_internal", {
+                required: "Internal status is required",
+              })}
             >
               <option value="">Select</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
-            {errors.is_internal && <small className="text-danger">{errors.is_internal.message}</small>}
+            {errors.is_internal && (
+              <small className="text-danger">
+                {errors.is_internal.message}
+              </small>
+            )}
           </div>
 
           {/* Description */}
@@ -277,16 +318,38 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               className="form-control"
               placeholder="Description"
               rows={3}
-              {...register("description", { required: "Description is required" })}
+              {...register("description", {
+                required: "Description is required",
+              })}
             ></textarea>
-            {errors.description && <small className="text-danger">{errors.description.message}</small>}
+            {errors.description && (
+              <small className="text-danger">
+                {errors.description.message}
+              </small>
+            )}
           </div>
 
           {/* Actions */}
           <div className="col-md-12 text-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? (mode === "add" ? "Creating..." : "Updating...") : mode === "add" ? "Create" : "Update"}
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              {loading
+                ? mode === "add"
+                  ? "Creating..."
+                  : "Updating..."
+                : mode === "add"
+                  ? "Create"
+                  : "Update"}
             </button>
           </div>
         </form>

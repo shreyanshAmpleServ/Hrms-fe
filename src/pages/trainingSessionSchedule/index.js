@@ -23,7 +23,7 @@ const TrainingSessionSchedule = () => {
   const dispatch = useDispatch();
 
   const { trainingSession, loading } = useSelector(
-    (state) => state.trainingSession || {}
+    (state) => state.trainingSession || {},
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const TrainingSessionSchedule = () => {
       fetchtrainingSession({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const TrainingSessionSchedule = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -64,7 +64,7 @@ const TrainingSessionSchedule = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
+    (i) => i?.module_name === "Time Sheet Entry",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

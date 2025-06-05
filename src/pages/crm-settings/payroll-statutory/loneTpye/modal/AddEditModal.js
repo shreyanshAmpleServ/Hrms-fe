@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updateloan_type({
           id: initialData.id,
           loan_typeData: finalData,
-        })
+        }),
       );
     }
     reset();

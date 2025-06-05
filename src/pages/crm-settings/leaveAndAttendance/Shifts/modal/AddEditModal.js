@@ -38,7 +38,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_shift_modal"
+      "close_btn_add_edit_shift_modal",
     );
     if (mode === "add") {
       dispatch(
@@ -46,7 +46,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           shift_name: data.shift_name,
           start_time: data.start_time,
           end_time: data.end_time,
-        })
+        }),
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -57,7 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             start_time: data.start_time,
             end_time: data.end_time,
           },
-        })
+        }),
       );
     }
     reset();

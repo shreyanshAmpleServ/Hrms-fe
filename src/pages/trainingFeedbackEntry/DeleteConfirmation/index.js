@@ -1,7 +1,11 @@
 import { useDispatch } from "react-redux";
 import { deletetrainingFeedback } from "../../../redux/trainingFeedbackEntry";
 
-const DeleteConfirmation = ({ showModal, setShowModal, trainingFeedbackId }) => {
+const DeleteConfirmation = ({
+  showModal,
+  setShowModal,
+  trainingFeedbackId,
+}) => {
   const dispatch = useDispatch();
   const handleDeletetrainingFeedback = () => {
     if (trainingFeedbackId) {

@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updategrievance_type({
           id: initialData.id,
           grievance_typeData: data,
-        })
+        }),
       );
     }
     reset();

@@ -44,7 +44,7 @@ const AddEditModal = ({
           module_name: data.module_name,
           description: data.description,
           is_active: data.is_active,
-        })
+        }),
       );
     } else if (mode === "edit" && initialData) {
       dispatch(
@@ -55,7 +55,7 @@ const AddEditModal = ({
             description: data.description,
             is_active: data.is_active,
           },
-        })
+        }),
       );
     }
 

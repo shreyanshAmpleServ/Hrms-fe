@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { addContactStage, updateContactStage } from "../../../../redux/contact-stages"; // Adjust as per your redux actions
+import {
+  addContactStage,
+  updateContactStage,
+} from "../../../../redux/contact-stages"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
@@ -87,7 +90,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "Contact stage name is required.",
                     minLength: {
                       value: 3,
-                      message: "Contact stage name must be at least 3 characters.",
+                      message:
+                        "Contact stage name must be at least 3 characters.",
                     },
                   })}
                 />

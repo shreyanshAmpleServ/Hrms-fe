@@ -43,7 +43,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updateprovident_fund({
           id: initialData.id,
           provident_fundData: data,
-        })
+        }),
       );
     }
     reset();

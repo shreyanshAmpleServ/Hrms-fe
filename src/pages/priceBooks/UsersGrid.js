@@ -46,7 +46,10 @@ const UsersGrid = ({ data }) => {
     <>
       <div className="row p-2">
         {data.slice(0, visibleItems).map((product, index) => (
-          <div className="col-xxl-4 col-xl-4 col-md-6" key={product.id || index}>
+          <div
+            className="col-xxl-4 col-xl-4 col-md-6"
+            key={product.id || index}
+          >
             <div className="card border" style={{ height: "auto" }}>
               <div className="card-body pb-1">
                 {/* product Details Header */}
@@ -79,11 +82,11 @@ const UsersGrid = ({ data }) => {
                       </h6>
                       {/* <p className="text-default">{product.code || "N/A"}</p> */}
                       <div className="d-flex align-items-center">
-                      {/* <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
+                        {/* <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-map-pin" />
                       </span> */}
-                      <p>{`${product?.code}`}</p>
-                    </div>
+                        <p>{`${product?.code}`}</p>
+                      </div>
                     </div>
                   </div>
                   {/* Actions Dropdown */}
@@ -122,20 +125,23 @@ const UsersGrid = ({ data }) => {
                 {/* product Additional Details */}
                 <div className="d-block">
                   <div className="d-flex flex-column mb-3">
-                    
                     <p className="text-default d-inline-flex align-items-center mb-2">
                       <i className="ti ti-user-filled text-dark me-1" />
                       <span className="d-flex gap-3">
-                        <span className="text-black fw-medium">Manufacturer</span>
-                        <span>   {product.manufacturer?.name || "No Manufacturer"}</span>
+                        <span className="text-black fw-medium">
+                          Manufacturer
+                        </span>
+                        <span>
+                          {" "}
+                          {product.manufacturer?.name || "No Manufacturer"}
+                        </span>
                       </span>
-                   
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
                       <i className="ti ti-user-filled text-dark me-1" />
                       <span className="d-flex gap-3">
                         <span className="text-black fw-medium">Vendor</span>
-                        <span>  {product?.vendor?.name || "No Vendor"}</span>
+                        <span> {product?.vendor?.name || "No Vendor"}</span>
                       </span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
@@ -149,36 +155,37 @@ const UsersGrid = ({ data }) => {
                       <i className="ti ti-receipt-dollar text-dark me-1" />
                       <span className="d-flex gap-3">
                         <span className="text-black fw-medium">Currency</span>
-                        <span>  {product.Currency.code ||  "N/A"}</span>
+                        <span> {product.Currency.code || "N/A"}</span>
                       </span>
-
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
                       <i className="ti ti-receipt text-black me-1" />
                       <span className="d-flex gap-3">
                         <span className="text-black fw-medium">OnHand</span>
-                        <span>  {product.onhand ||  "N/A"}</span>
+                        <span> {product.onhand || "N/A"}</span>
                       </span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
                       <i className="ti ti-cash text-dark me-1" />
                       <span className="d-flex gap-3">
                         <span className="text-black fw-medium">Ordered</span>
-                        <span>  {product.ordered ||  "N/A"}</span>
+                        <span> {product.ordered || "N/A"}</span>
                       </span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
                       <i className="ti ti-cash text-dark me-1" />
                       <span className="d-flex gap-3">
                         <span className="text-black fw-medium">Commited</span>
-                        <span>  {product.commited ||  "N/A"}</span>
+                        <span> {product.commited || "N/A"}</span>
                       </span>
                     </p>
                     <p className="text-default d-inline-flex align-items-center mb-2">
                       <i className="ti ti-cash text-dark me-1" />
                       <span className="d-flex gap-3">
-                        <span className="text-black fw-medium">Reorder Level</span>
-                        <span>  {product.reorder_level ||  "N/A"}</span>
+                        <span className="text-black fw-medium">
+                          Reorder Level
+                        </span>
+                        <span> {product.reorder_level || "N/A"}</span>
                       </span>
                       {product.reorder_level || "No Code"}
                     </p>
@@ -186,9 +193,8 @@ const UsersGrid = ({ data }) => {
                       <i className="ti ti-calendar-time text-dark me-1" />
                       <span className="d-flex gap-3">
                         <span className="text-black fw-medium">Created at</span>
-                        <span>  {moment(product.createdate).format("ll") }</span>
+                        <span> {moment(product.createdate).format("ll")}</span>
                       </span>
-                     
                     </p>
                   </div>
                 </div>
@@ -212,7 +218,10 @@ const UsersGrid = ({ data }) => {
         </div>
       )}
       {/* Modals */}
-       <AddProductModal product={selectedProduct} setProduct={setSelectedProduct} />
+      <AddProductModal
+        product={selectedProduct}
+        setProduct={setSelectedProduct}
+      />
       {/* <EditUserModal user={selectedProduct} /> */}
       <DeleteAlert
         label="User"

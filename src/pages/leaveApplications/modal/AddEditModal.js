@@ -2,7 +2,10 @@ import React, { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { addleave_application, updateleave_application } from "../../../redux/leaveApplication";
+import {
+  addleave_application,
+  updateleave_application,
+} from "../../../redux/leaveApplication";
 import { fetchLeaveType } from "../../../redux/LeaveType";
 import { fetchEmployee } from "../../../redux/Employee";
 import moment from "moment";
@@ -38,7 +41,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         value: item.id,
         label: item.full_name,
       })) || [],
-    [employee]
+    [employee],
   );
 
   // Leave Type dropdown list
@@ -48,14 +51,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         value: item.id,
         label: item.leave_type,
       })) || [],
-    [leaveType]
+    [leaveType],
   );
 
   const Status = [
     { label: "Pending", value: "pending" },
     { label: "Approved", value: "approved" },
     { label: "Rejected", value: "rejected" },
-  ];;
+  ];
 
   // Reset values on edit or add
   useEffect(() => {
@@ -101,7 +104,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         updateleave_application({
           id: initialData.id,
           leave_applicationData: formattedData,
-        })
+        }),
       );
     }
 
@@ -109,26 +112,37 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     closeButton?.click();
   };
 
-
   useEffect(() => {
-    const offcanvasElement = document.getElementById("add_edit_leave_application_modal");
+    const offcanvasElement = document.getElementById(
+      "add_edit_leave_application_modal",
+    );
     if (offcanvasElement) {
       const handleModalClose = () => {
         // Clean up state if needed
       };
-      offcanvasElement.addEventListener("hidden.bs.offcanvas", handleModalClose);
-      return () => offcanvasElement.removeEventListener("hidden.bs.offcanvas", handleModalClose);
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose,
+      );
+      return () =>
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose,
+        );
     }
   }, []);
 
   return (
-    <div className="offcanvas offcanvas-end offcanvas-large"
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
       tabIndex={-1}
       id="add_edit_leave_application_modal"
-    // aria-labelledby="offcanvasLabel"
+      // aria-labelledby="offcanvasLabel"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{contact ? "Update" : "Add New"}  Leave Applications</h5>
+        <h5 className="fw-semibold">
+          {contact ? "Update" : "Add New"} Leave Applications
+        </h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -160,13 +174,15 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id")
+                    (option) => option.value === watch("employee_id"),
                   )}
                 />
               )}
             />
             {errors.employee_id && (
-              <small className="text-danger">{errors.employee_id.message}</small>
+              <small className="text-danger">
+                {errors.employee_id.message}
+              </small>
             )}
           </div>
 
@@ -189,13 +205,15 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
                   value={LeaveTypeList.find(
-                    (option) => option.value === watch("leave_type_id")
+                    (option) => option.value === watch("leave_type_id"),
                   )}
                 />
               )}
             />
             {errors.leave_type_id && (
-              <small className="text-danger">{errors.leave_type_id.message}</small>
+              <small className="text-danger">
+                {errors.leave_type_id.message}
+              </small>
             )}
           </div>
 
@@ -214,7 +232,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   }
                   selected={field.value ? new Date(field.value) : null}
                   onChange={(date) => {
-                    field.onChange(date)
+                    field.onChange(date);
                   }}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
@@ -242,7 +260,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   }
                   selected={field.value ? new Date(field.value) : null}
                   onChange={(date) => {
-                    field.onChange(date)
+                    field.onChange(date);
                   }}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
@@ -277,7 +295,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               rules={{ required: "Approved Status is required" }}
               render={({ field }) => {
                 const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value
+                  (employee) => employee.value === field.value,
                 );
                 return (
                   <Select
@@ -305,12 +323,26 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-
-
           <div className="col-md-12 text-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? (mode === "add" ? "Creating..." : "Updating...") : mode === "add" ? "Create" : "Update"}
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              {loading
+                ? mode === "add"
+                  ? "Creating..."
+                  : "Updating..."
+                : mode === "add"
+                  ? "Create"
+                  : "Update"}
             </button>
           </div>
         </form>

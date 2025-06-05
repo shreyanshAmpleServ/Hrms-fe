@@ -124,7 +124,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>

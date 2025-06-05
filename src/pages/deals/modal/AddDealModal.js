@@ -30,7 +30,7 @@ const AddDealModel = () => {
   React.useEffect(() => {
     dispatch(fetchContacts());
     dispatch(fetchPipelines());
-    dispatch(fetchCurrencies())
+    dispatch(fetchCurrencies());
   }, [dispatch]);
   const [tags, setTags] = useState([]);
   const [dueDate, setDueDate] = useState(new Date());
@@ -38,13 +38,21 @@ const AddDealModel = () => {
   const [followUpDate, setFollowUpDate] = useState(new Date());
   const { loading: dealsLoading } = useSelector((state) => state.deals);
   const { contacts } = useSelector((state) => state.contacts);
-   const { currencies } = useSelector( (state) => state.currency);
-  
-  const currencyLists = currencies?.map(i => i?.is_active === "Y" ? ({label:i?.code,value:i?.code}) : null).filter(Boolean) || [];
-  
-   const {   pipelines : pipelineLists } = useSelector((state) => state.pipelines);
-  
-   const pipelines = pipelineLists?.data?.map(i => i?.is_active === "Y" ? i : null).filter(Boolean) || [];
+  const { currencies } = useSelector((state) => state.currency);
+
+  const currencyLists =
+    currencies
+      ?.map((i) =>
+        i?.is_active === "Y" ? { label: i?.code, value: i?.code } : null,
+      )
+      .filter(Boolean) || [];
+
+  const { pipelines: pipelineLists } = useSelector((state) => state.pipelines);
+
+  const pipelines =
+    pipelineLists?.data
+      ?.map((i) => (i?.is_active === "Y" ? i : null))
+      .filter(Boolean) || [];
 
   const contactlist = contacts?.data?.map((contact) => ({
     value: contact.id,
@@ -85,7 +93,7 @@ const AddDealModel = () => {
     },
   });
   const [stages, setStages] = useState([]); // Local state for stages
-  const {loading} = useSelector((state) => state.pipelines);
+  const { loading } = useSelector((state) => state.pipelines);
 
   const onPipelineChange = async (selectedPipeline) => {
     setValue("pipelineId", selectedPipeline); // Set selected pipeline in the form
@@ -492,17 +500,17 @@ const AddDealModel = () => {
             >
               {dealsLoading ? "Creating..." : "Create"}
               {dealsLoading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

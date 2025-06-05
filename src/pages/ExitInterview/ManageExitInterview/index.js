@@ -47,7 +47,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+    (state) => state.employee || {},
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -63,7 +63,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
             updateExitInterview({
               id: exitInterview.id,
               exitInterviewData: { ...data },
-            })
+            }),
           ).unwrap()
         : await dispatch(createExitInterview({ ...data })).unwrap();
       closeButton.click();
@@ -82,12 +82,12 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose
+        handleModalClose,
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleModalClose,
         );
       };
     }
@@ -130,7 +130,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                          (employee) => employee.value === field.value,
                         );
                         return (
                           <Select

@@ -24,7 +24,7 @@ const WorkLifeEventLog = () => {
   const dispatch = useDispatch();
 
   const { workLifeEventLog, loading } = useSelector(
-    (state) => state.workLifeEventLog || {}
+    (state) => state.workLifeEventLog || {},
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const WorkLifeEventLog = () => {
       fetchWorkLifeEventLog({
         search: searchValue,
         ...selectedDateRange,
-      })
+      }),
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const WorkLifeEventLog = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      })
+      }),
     );
   };
 
@@ -65,7 +65,7 @@ const WorkLifeEventLog = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Work Life Event Log"
+    (i) => i?.module_name === "Work Life Event Log",
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -79,7 +79,7 @@ const WorkLifeEventLog = () => {
       render: (text) => text?.work_life_event_employee?.full_name || "-",
       sorter: (a, b) =>
         a.work_life_event_employee.full_name.localeCompare(
-          b.work_life_event_employee.full_name
+          b.work_life_event_employee.full_name,
         ),
     },
     {
@@ -87,7 +87,7 @@ const WorkLifeEventLog = () => {
       render: (text) => text?.work_life_event_type?.event_type_name || "-",
       sorter: (a, b) =>
         a.work_life_event_type.event_type_name.localeCompare(
-          b.work_life_event_type.event_type_name
+          b.work_life_event_type.event_type_name,
         ),
     },
     {

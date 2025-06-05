@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import LeadKanbanCard from "./LeadsKanbanCard";
 import AddEditModal from "../../crm-settings/lost-reasons/modal/AddEditModal";
-import {
-  deleteLostReason,
-} from "../../../redux/lostReasons";
+import { deleteLostReason } from "../../../redux/lostReasons";
 import { fetchLeadStatuses } from "../../../redux/leads";
 // Redux actions and reducers for lostReasons
 import { useDispatch, useSelector } from "react-redux";
@@ -19,13 +17,14 @@ const KanbanListItem = ({ leadStatus, addContainerRef }) => {
   };
   const deleteData = () => {
     if (selectedLostReason) {
-      dispatch(deleteLostReason(selectedLostReason.id)).then(() => {
-        // Once update is successful, fetch the lead statuses again
-        dispatch(fetchLeadStatuses());
-      })
+      dispatch(deleteLostReason(selectedLostReason.id))
+        .then(() => {
+          // Once update is successful, fetch the lead statuses again
+          dispatch(fetchLeadStatuses());
+        })
         .catch((error) => {
           console.error("Failed to update lead:", error);
-        });;
+        });
       setShowDeleteModal(false);
     }
   };
@@ -73,7 +72,6 @@ const KanbanListItem = ({ leadStatus, addContainerRef }) => {
                     onClick={() => {
                       setSelectedLostReason(leadStatus);
                     }}
-
                   >
                     <i className="fa-solid fa-pencil text-blue" /> Edit
                   </Link>
@@ -103,7 +101,11 @@ const KanbanListItem = ({ leadStatus, addContainerRef }) => {
           />
         ))}
       </div>
-      <AddEditModal mode="edit" initialData={selectedLostReason} sourcePage="leads-kanban" />
+      <AddEditModal
+        mode="edit"
+        initialData={selectedLostReason}
+        sourcePage="leads-kanban"
+      />
       <DeleteAlert
         sourcePage="leads-kanban"
         label="Lost Reason"
