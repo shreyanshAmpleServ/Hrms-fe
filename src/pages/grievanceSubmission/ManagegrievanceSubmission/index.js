@@ -76,7 +76,7 @@ const ManagegrievanceSubmission = ({
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const { grievance_type } = useSelector((state) => state.grievanceType || {});
@@ -99,7 +99,7 @@ const ManagegrievanceSubmission = ({
           updategrievanceSubmission({
             id: grievanceSubmission.id,
             grievanceSubmissionData: { ...data },
-          }),
+          })
         ).unwrap();
       } else {
         await dispatch(creategrievanceSubmission({ ...data })).unwrap();
@@ -121,12 +121,12 @@ const ManagegrievanceSubmission = ({
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -171,7 +171,7 @@ const ManagegrievanceSubmission = ({
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
                       const selectedEmployee = employees?.find(
-                        (emp) => emp.value === field.value,
+                        (emp) => emp.value === field.value
                       );
                       return (
                         <Select
@@ -235,7 +235,7 @@ const ManagegrievanceSubmission = ({
                     rules={{ required: "Grievance type is required" }}
                     render={({ field }) => {
                       const selectedGrievance = grievanceTypeOptions?.find(
-                        (gt) => gt.value === field.value,
+                        (gt) => gt.value === field.value
                       );
                       return (
                         <Select
@@ -313,7 +313,7 @@ const ManagegrievanceSubmission = ({
                     control={control}
                     render={({ field }) => {
                       const selectedUser = employees?.find(
-                        (emp) => emp.value === field.value,
+                        (emp) => emp.value === field.value
                       );
                       return (
                         <Select
@@ -353,18 +353,36 @@ const ManagegrievanceSubmission = ({
 
                 {/* Resolution Notes */}
                 <div className="col-12 mb-3">
-                  <label className="col-form-label">Resolution Notes</label>
+                  <label className="col-form-label">
+                    Resolution Notes{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <Controller
                     name="resolution_notes"
                     control={control}
+                    rules={{
+                      required: "Description is required!",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Description must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter Resolution Notes"
                       />
                     )}
                   />
+                  {/* {errors.resolution_notes && (
+                    <small className="text-danger">
+                      {errors.resolution_notes.message}
+                    </small>
+                  )} */}
                 </div>
 
                 {/* Description */}
@@ -373,14 +391,29 @@ const ManagegrievanceSubmission = ({
                   <Controller
                     name="description"
                     control={control}
+                    rules={{
+                      required: "Description is required!",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Description must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter description"
                       />
                     )}
                   />
+                  {errors.description && (
+                    <small className="text-danger">
+                      {errors.description.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

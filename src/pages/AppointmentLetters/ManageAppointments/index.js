@@ -270,7 +270,8 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
 
                 <div className="col-md-12 mb-3">
                   <label className="col-form-label">
-                    Terms Summary <span className="text-danger">*</span>
+                    Terms Summary{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <Controller
                     name="terms_summary"
@@ -293,11 +294,11 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                       />
                     )}
                   />
-                  {errors.terms_summary && (
+                  {/* {errors.terms_summary && (
                     <small className="text-danger">
                       {errors.terms_summary.message}
                     </small>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

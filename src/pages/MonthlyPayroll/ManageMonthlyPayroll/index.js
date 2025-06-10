@@ -387,17 +387,29 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
                   )}
                 </div>
                 <div className="col-md-12">
-                  <label className="col-form-label">Remarks</label>
+                  <label className="col-form-label">
+                    Remarks{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"
                       control={control}
+                      rules={{
+                        required: "Remarks is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Description must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
                           {...field}
+                          rows={3}
+                          maxLength={255}
                           className="form-control"
-                          placeholder="Enter Remarks"
-                          rows={2}
+                          placeholder="Enter Remarks "
                         />
                       )}
                     />

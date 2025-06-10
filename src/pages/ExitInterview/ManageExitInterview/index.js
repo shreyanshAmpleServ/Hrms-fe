@@ -47,7 +47,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -63,7 +63,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
             updateExitInterview({
               id: exitInterview.id,
               exitInterviewData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createExitInterview({ ...data })).unwrap();
       closeButton.click();
@@ -82,12 +82,12 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -100,7 +100,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{exitInterview ? "Update " : "Add New "} Exit Interview</h4>
+          <h4>{exitInterview ? "Update " : "Add"} Exit Interview</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -130,7 +130,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -206,7 +206,7 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                     <Controller
                       name="reason_for_leaving"
                       control={control}
-                      rules={{ required: "Reason for leaving is required!" }}
+                      rules={{ required: "Reason  is required!" }}
                       render={({ field }) => (
                         <textarea
                           rows={2}
@@ -228,58 +228,70 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Feedback<span className="text-danger">*</span>
+                    Feedback{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="feedback"
                       control={control}
-                      rules={{ required: "Feedback is required!" }}
+                      rules={{
+                        required: "Feedback is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Feedback must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
-                          rows={2}
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.feedback ? "is-invalid" : ""}`}
-                          placeholder="Enter Feedback"
-                          value={field.value}
-                          onChange={field.onChange}
+                          rows={3}
+                          maxLength={255}
+                          className="form-control"
+                          placeholder="Enter Feedback "
                         />
                       )}
                     />
-                    {errors.feedback && (
+                    {/* {errors.feedback && (
                       <small className="text-danger">
                         {errors.feedback.message}
                       </small>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Suggestions<span className="text-danger">*</span>
+                    Suggestions{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="suggestions"
                       control={control}
-                      rules={{ required: "Suggestions is required!" }}
+                      rules={{
+                        required: "Suggestions is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Suggestions must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
-                          rows={2}
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.suggestions ? "is-invalid" : ""}`}
-                          placeholder="Enter Suggestions"
-                          value={field.value}
-                          onChange={field.onChange}
+                          rows={3}
+                          maxLength={255}
+                          className="form-control"
+                          placeholder="Enter Suggestions "
                         />
                       )}
                     />
-                    {errors.suggestions && (
+                    {/* {errors.suggestions && (
                       <small className="text-danger">
                         {errors.suggestions.message}
                       </small>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

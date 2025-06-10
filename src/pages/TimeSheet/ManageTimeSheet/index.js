@@ -1,10 +1,8 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchLeaveType } from "../../../redux/LeaveType";
 import { createTimeSheet, updateTimeSheet } from "../../../redux/TimeSheet";
@@ -244,19 +242,21 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                     <Controller
                       name="work_date"
                       control={control}
-                      rules={{ required: "Work date is required!" }}
+                      rules={{
+                        required: "Work date is required",
+                        validate: (value) =>
+                          new Date(value) > new Date()
+                            ? "Date cannot be in future"
+                            : true,
+                      }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
-                          className="form-control"
                           selected={field.value}
-                          value={
-                            field.value
-                              ? moment(field.value).format("DD-MM-YYYY")
-                              : null
-                          }
                           onChange={field.onChange}
-                          dateFormat="DD-MM-YYYY"
+                          maxDate={new Date()} // future date disable
+                          dateFormat="dd-MM-yyyy"
+                          className="form-control"
                         />
                       )}
                     />
@@ -270,17 +270,18 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
 
                 <div className="col-md-12 mb-3">
                   <label className="col-form-label">
-                    Work Date <span className="text-danger">*</span>
+                    Descriptionk{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <Controller
-                    name="work_date"
+                    name="description"
                     control={control}
                     rules={{
-                      required: "work_date is required!",
+                      required: "Description is required!",
                       maxLength: {
                         value: 255,
                         message:
-                          "work_date must be less than or equal to 255 characters",
+                          "Description must be less than or equal to 255 characters",
                       },
                     }}
                     render={({ field }) => (
@@ -289,15 +290,15 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                         rows={3}
                         maxLength={255}
                         className="form-control"
-                        placeholder="Enter work_date "
+                        placeholder="Enter Description "
                       />
                     )}
                   />
-                  {errors.work_date && (
+                  {/* {errors.description && (
                     <small className="text-danger">
-                      {errors.work_date.message}
+                      {errors.description.message}
                     </small>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

@@ -221,16 +221,28 @@ const ManageRecognitionAwards = ({
 
             {/* Description */}
             <div className="col-12 mb-3">
-              <label className="col-form-label">Description</label>
+              <label className="col-form-label">
+                Description{" "}
+                <small className="text-muted">(Max 255 characters)</small>
+              </label>
               <Controller
                 name="description"
                 control={control}
+                rules={{
+                  required: "Description is required!",
+                  maxLength: {
+                    value: 255,
+                    message:
+                      "Description must be less than or equal to 255 characters",
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
-                    className="form-control"
-                    rows={4}
-                    placeholder="Enter Description"
                     {...field}
+                    rows={3}
+                    maxLength={255}
+                    className="form-control"
+                    placeholder="Enter Description "
                   />
                 )}
               />

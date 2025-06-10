@@ -258,19 +258,32 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
 
             {/* Remarks */}
             <div className="col-md-12 mb-3">
-              <label className="col-form-label">Remarks</label>
+              <label className="col-form-label">
+                Remarks <span className="text-muted">(max 255 characters)</span>
+              </label>
               <Controller
                 name="remarks"
                 control={control}
+                rules={{
+                  maxLength: {
+                    value: 255,
+                    message:
+                      "Remarks must be less than or equal to 255 characters",
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
                     className="form-control"
                     placeholder="Enter Remarks"
                     rows={3}
+                    maxLength={255}
                   />
                 )}
               />
+              {errors.remarks && (
+                <small className="text-danger">{errors.remarks.message}</small>
+              )}
             </div>
           </div>
 

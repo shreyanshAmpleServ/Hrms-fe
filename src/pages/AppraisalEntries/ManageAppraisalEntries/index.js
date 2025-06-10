@@ -245,17 +245,28 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="col-form-label">Reviewer Comments</label>
+                  <label className="col-form-label">
+                    Reviewer Comments{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <Controller
                     name="reviewer_comments"
                     control={control}
+                    rules={{
+                      required: "Reviewer Comments is required!",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Reviewer Comments must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
-                        className="summernote"
-                        placeholder="Write Comments"
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(content) => field.onChange(content)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter Reviewer Comments "
                       />
                     )}
                   />

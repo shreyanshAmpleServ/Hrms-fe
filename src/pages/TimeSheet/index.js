@@ -73,7 +73,7 @@ const TimeSheet = () => {
   const columns = [
     {
       title: "Employee Name",
-      render: (text) => text?.time_sheet_employee?.full_name || "-",
+      render: (text) => text?.hrms_time_sheets_approved?.full_name || "-",
       sorter: (a, b) =>
         a.time_sheet_employee.full_name.localeCompare(
           b.time_sheet_employee.full_name

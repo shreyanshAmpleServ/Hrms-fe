@@ -23,7 +23,7 @@ const ExitInterview = () => {
   const dispatch = useDispatch();
 
   const { exitInterview, loading } = useSelector(
-    (state) => state.exitInterview || {},
+    (state) => state.exitInterview || {}
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const ExitInterview = () => {
       fetchExitInterview({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -56,7 +56,7 @@ const ExitInterview = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -64,7 +64,7 @@ const ExitInterview = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Exit Interview",
+    (i) => i?.module_name === "Exit Interview"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -210,7 +210,7 @@ const ExitInterview = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Exit Interview
+                            Add Exit Interview
                           </Link>
                         </div>
                       </div>

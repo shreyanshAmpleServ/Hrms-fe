@@ -55,7 +55,7 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
 
   const { employee } = useSelector((state) => state.employee || {});
   const { trainingSession } = useSelector(
-    (state) => state.trainingSession || {},
+    (state) => state.trainingSession || {}
   );
   const { loading } = useSelector((state) => state.trainingFeedback || {});
 
@@ -82,7 +82,7 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
           updatetrainingFeedback({
             id: trainingFeedback.id,
             trainingFeedbackData: { ...data },
-          }),
+          })
         ).unwrap();
       } else {
         await dispatch(createtrainingFeedback({ ...data })).unwrap();
@@ -103,7 +103,7 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{trainingFeedback ? "Update" : "Add New"} Training Feedback</h4>
+        <h4>{trainingFeedback ? "Update" : "Add "} Training Feedback</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1"
@@ -128,7 +128,7 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
                   const selected = (employeeOptions || []).find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -161,7 +161,7 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                 rules={{ required: "Training is required" }}
                 render={({ field }) => {
                   const selected = (trainingOptions || []).find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -221,14 +221,29 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
             </div>
             {/* Feedback */}
             <div className="col-12 mb-3">
-              <label className="col-form-label">Feedback</label>
+              <label className="form-label">
+                Feedback{" "}
+                <small className="text-muted">(Max 255 characters)</small>
+              </label>
+
               <Controller
                 name="feedback_text"
                 control={control}
+                rules={{
+                  required: "feedback is required!",
+                  maxLength: {
+                    value: 255,
+                    message:
+                      "Description must be less than or equal to 255 characters",
+                  },
+                }}
                 render={({ field }) => (
-                  <DefaultEditor
-                    value={field.value}
-                    onChange={field.onChange}
+                  <textarea
+                    {...field}
+                    rows={3}
+                    maxLength={255}
+                    className="form-control"
+                    placeholder="Enter Feedback Text"
                   />
                 )}
               />

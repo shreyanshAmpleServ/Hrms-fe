@@ -43,7 +43,7 @@ const ManageRelievingLetter = ({ setRelievingLetter, relievingLetter }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -59,7 +59,7 @@ const ManageRelievingLetter = ({ setRelievingLetter, relievingLetter }) => {
             updateRelievingLetter({
               id: relievingLetter.id,
               relievingLetterData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createRelievingLetter({ ...data })).unwrap();
       closeButton.click();
@@ -78,12 +78,12 @@ const ManageRelievingLetter = ({ setRelievingLetter, relievingLetter }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -96,7 +96,7 @@ const ManageRelievingLetter = ({ setRelievingLetter, relievingLetter }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{relievingLetter ? "Update " : "Add New "} Relieving Letter</h4>
+          <h4>{relievingLetter ? "Update " : "Add "} Relieving Letter</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -126,7 +126,7 @@ const ManageRelievingLetter = ({ setRelievingLetter, relievingLetter }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -196,30 +196,36 @@ const ManageRelievingLetter = ({ setRelievingLetter, relievingLetter }) => {
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Remarks<span className="text-danger">*</span>
+                    Remarks{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"
                       control={control}
-                      rules={{ required: "Remarks is required!" }}
+                      rules={{
+                        required: "Remarks is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Remarks must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
-                          rows={3}
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.remarks ? "is-invalid" : ""}`}
-                          placeholder="Enter Remarks"
-                          value={field.value}
-                          onChange={field.onChange}
+                          rows={3}
+                          maxLength={255}
+                          className="form-control"
+                          placeholder="Enter Remarks "
                         />
                       )}
                     />
-                    {errors.remarks && (
+                    {/* {errors.remarks && (
                       <small className="text-danger">
                         {errors.remarks.message}
                       </small>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

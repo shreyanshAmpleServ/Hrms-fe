@@ -339,18 +339,28 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
 
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Reason<span className="text-danger">*</span>
+                    Reason{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="reason"
                       control={control}
+                      rules={{
+                        required: "Reason is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Reason must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
-                          rows={4}
                           {...field}
-                          className={`form-control ${errors.reason ? "is-invalid" : ""}`}
-                          placeholder="Enter Reason"
+                          rows={3}
+                          maxLength={255}
+                          className="form-control"
+                          placeholder="Enter Reason "
                         />
                       )}
                     />

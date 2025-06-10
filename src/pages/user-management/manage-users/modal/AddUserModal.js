@@ -1,24 +1,32 @@
+// Required imports
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import { addUser } from "../../../../redux/manage-user";
 import { fetchRoles } from "../../../../redux/roles";
+import { fetchEmployee } from "../../../../redux/Employee";
+import Search from "antd/es/transfer/search";
 
 const AddUserModal = () => {
   const dispatch = useDispatch();
 
-  // Access roles and user creation state from Redux
   const { roles, loading: rolesLoading } = useSelector((state) => state.roles);
   const { loading } = useSelector((state) => state.users);
+  const { employee, loading: employeeLoading } = useSelector(
+    (state) => state.employee || {}
+  );
 
-  const [selectedAvatar, setSelectedAvatar] = useState(null); // For profile image upload
+  const [showEmployeeDetails, setShowEmployeeDetails] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
     setValue,
+    control,
     reset,
     watch,
     formState: { errors },
@@ -38,63 +46,57 @@ const AddUserModal = () => {
 
   useEffect(() => {
     dispatch(fetchRoles());
+    dispatch(fetchEmployee());
   }, [dispatch]);
+  useEffect(() => {
+    searchValue && dispatch(fetchEmployee({ Search: searchValue }));
+  }, [dispatch, searchValue]);
 
-  // Handle avatar upload
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedAvatar(file);
+  useEffect(() => {
+    if (showEmployeeDetails && selectedEmployee) {
+      console.log("Selected Employee:", selectedEmployee);
+      setValue("full_name", `${selectedEmployee.full_name || ""}`);
+      setValue("email", selectedEmployee.email || "");
+      setValue("phone", selectedEmployee.phone_number || "");
+      setValue("address", selectedEmployee.address || "");
     }
-  };
+  }, [showEmployeeDetails, selectedEmployee, setValue]);
 
-  // Map roles for react-select
   const roleOptions = roles?.map((role) => ({
     value: role.id,
     label: role.role_name,
   }));
 
+  const employees = employee?.data?.map((i) => ({
+    label: `${i?.full_name || ""} (${i?.employee_code || ""})`, // name + code
+    value: i?.id,
+    data: i, // full employee object for later use
+  }));
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setSelectedAvatar(file);
+  };
+
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_add_user");
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-      if (data[key] !== null) {
-        formData.append(key, data[key]);
-      }
+      if (data[key] !== null) formData.append(key, data[key]);
     });
-
-    if (selectedAvatar) {
-      formData.append("profile_img", selectedAvatar);
-    }
-
+    if (selectedAvatar) formData.append("profile_img", selectedAvatar);
     try {
       await dispatch(addUser(formData)).unwrap();
       closeButton.click();
       reset();
+      setSelectedEmployee(null);
       setSelectedAvatar(null);
     } catch (error) {
+      setSelectedEmployee(null);
       closeButton.click();
     }
   };
-  // useEffect(() => {
-  //   const offcanvasElement = document.getElementById("offcanvas_add_user");
-  //   if (offcanvasElement) {
-  //     const handleModalClose = () => {
-  //       reset();
-  //       setSelectedAvatar(null);
-  //     };
-  //     offcanvasElement.addEventListener(
-  //       "hidden.bs.offcanvas",
-  //       handleModalClose
-  //     );
-  //     return () => {
-  //       offcanvasElement.removeEventListener(
-  //         "hidden.bs.offcanvas",
-  //         handleModalClose
-  //       );
-  //     };
-  //   }
-  // }, []);
+
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -121,8 +123,7 @@ const AddUserModal = () => {
             {...register("username", { value: watch("email") })}
           />
           <div className="row">
-            {/* Profile Image Upload */}
-            <div className="col-md-12">
+            <div className="col-md-4">
               <div className="profile-pic-upload">
                 <div className="profile-pic">
                   {selectedAvatar ? (
@@ -145,8 +146,7 @@ const AddUserModal = () => {
                       onChange={handleAvatarChange}
                     />
                     <span>
-                      <i className="ti ti-file-broken" />
-                      Upload File
+                      <i className="ti ti-file-broken" /> Upload File
                     </span>
                   </div>
                   <p>JPG, GIF, or PNG. Max size of 800K</p>
@@ -154,50 +154,93 @@ const AddUserModal = () => {
               </div>
             </div>
 
-            {/* Full Name */}
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Full Name <span className="text-danger">*</span>
-                </label>
+            <div className="col-md-4 offset-md-4">
+              <div className="form-check m-3">
                 <input
-                  type="text"
-                  className="form-control"
-                  {...register("full_name", {
-                    required: "Full Name is required",
-                  })}
+                  type="checkbox"
+                  className="form-check-input"
+                  id="use_employee_data"
+                  checked={showEmployeeDetails}
+                  onChange={(e) => setShowEmployeeDetails(e.target.checked)}
                 />
-                {errors.full_name && (
-                  <small className="text-danger">
-                    {errors.full_name.message}
-                  </small>
-                )}
+                <label
+                  className="form-check-label fw-semibold"
+                  htmlFor="use_employee_data"
+                >
+                  By Employee
+                </label>
               </div>
             </div>
 
-            {/* Username */}
-            {/* <div className="col-md-6">
-              <div className="mb-3">
+            {showEmployeeDetails ? (
+              <div className="col-md-6 mb-3">
                 <label className="col-form-label">
-                  Username <span className="text-danger">*</span>
+                  Employee <span className="text-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  {...register("username", {
-                    required: "Username is required",
-                  })}
+                <Controller
+                  name="employee_id"
+                  control={control}
+                  rules={
+                    showEmployeeDetails && { required: "Employee is required" }
+                  }
+                  render={({ field }) => {
+                    const selectedEmployee = employees?.find(
+                      (emp) => emp.value === field.value
+                    );
+                    return (
+                      <Select
+                        options={employees}
+                        isLoading={employeeLoading}
+                        onChange={(empOption) => {
+                          // const fullEmployee = employee?.data?.find(
+                          //   (e) => e.id === empOption.value
+                          // );
+                          setValue("full_name", empOption?.data?.full_name);
+                          setValue("employee_id", empOption?.value);
+                          setSelectedEmployee(empOption.data);
+                        }}
+                        placeholder="Choose Employee"
+                        className="employee_id"
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        }}
+                      />
+                    );
+                  }}
                 />
-                {errors.username && (
+                {errors.employee_id && (
                   <small className="text-danger">
-                    {errors.username.message}
+                    {errors.employee_id.message}
                   </small>
                 )}
               </div>
-            </div> */}
+            ) : (
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="col-form-label">
+                    Full Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    {...register(
+                      "full_name",
+                      !showEmployeeDetails && {
+                        required: "Full Name is required",
+                      }
+                    )}
+                    readOnly={showEmployeeDetails}
+                  />
+                  {errors.full_name && (
+                    <small className="text-danger">
+                      {errors.full_name.message}
+                    </small>
+                  )}
+                </div>
+              </div>
+            )}
 
-            {/* Email */}
-            {/* {console.log("errors", errors)} */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -206,7 +249,9 @@ const AddUserModal = () => {
                 <input
                   type="text"
                   className="form-control"
+                  disabled={showEmployeeDetails}
                   {...register("email", { required: "Email is required" })}
+                  readOnly={showEmployeeDetails}
                 />
                 {errors.email && (
                   <small className="text-danger">{errors.email.message}</small>
@@ -214,7 +259,6 @@ const AddUserModal = () => {
               </div>
             </div>
 
-            {/* Role */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -239,7 +283,6 @@ const AddUserModal = () => {
               </div>
             </div>
 
-            {/* Phone */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -248,9 +291,11 @@ const AddUserModal = () => {
                 <input
                   type="text"
                   className="form-control"
+                  disabled={showEmployeeDetails}
                   {...register("phone", {
                     required: "Phone number is required",
                   })}
+                  readOnly={showEmployeeDetails}
                 />
                 {errors.phone && (
                   <small className="text-danger">{errors.phone.message}</small>
@@ -258,7 +303,6 @@ const AddUserModal = () => {
               </div>
             </div>
 
-            {/* Password */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -279,7 +323,6 @@ const AddUserModal = () => {
               </div>
             </div>
 
-            {/* Repeat Password */}
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -302,7 +345,6 @@ const AddUserModal = () => {
               </div>
             </div>
 
-            {/* Address */}
             <div className="col-md-12">
               <div className="mb-3">
                 <label className="col-form-label">Address</label>
@@ -314,7 +356,6 @@ const AddUserModal = () => {
               </div>
             </div>
 
-            {/* Status */}
             <div className="col-md-6">
               <div className="radio-wrap">
                 <label className="col-form-label">Status</label>
@@ -361,10 +402,7 @@ const AddUserModal = () => {
               {loading ? "Creating..." : "Create"}
               {loading && (
                 <div
-                  style={{
-                    height: "15px",
-                    width: "15px",
-                  }}
+                  style={{ height: "15px", width: "15px" }}
                   className="spinner-border ml-2 text-light"
                   role="status"
                 >

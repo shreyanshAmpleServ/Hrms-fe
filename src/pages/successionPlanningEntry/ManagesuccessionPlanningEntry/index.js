@@ -80,7 +80,7 @@ const ManagesuccessionPlanning = ({
           updatesuccessionPlanning({
             id: successionPlanning.id,
             successionPlanningData: { ...data },
-          }),
+          })
         ).unwrap();
       } else {
         await dispatch(createsuccessionPlanning({ ...data })).unwrap();
@@ -101,7 +101,7 @@ const ManagesuccessionPlanning = ({
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{successionPlanning ? "Update" : "Add New"} Succession Planning</h4>
+        <h4>{successionPlanning ? "Update" : "Add "} Succession Planning</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1"
@@ -126,7 +126,7 @@ const ManagesuccessionPlanning = ({
                 rules={{ required: "Current holder is required" }}
                 render={({ field }) => {
                   const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -159,7 +159,7 @@ const ManagesuccessionPlanning = ({
                 rules={{ required: "Potential successor is required" }}
                 render={({ field }) => {
                   const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -214,7 +214,7 @@ const ManagesuccessionPlanning = ({
                 rules={{ required: "Readiness level is required" }}
                 render={({ field }) => {
                   const selected = readinessOptions.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select

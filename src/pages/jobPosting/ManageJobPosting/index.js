@@ -274,7 +274,8 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
             </div>
             <div className="col-md-12 mb-3">
               <label className="col-form-label">
-                Description <span className="text-danger">*</span>
+                Description{" "}
+                <small className="text-muted">(Max 255 characters)</small>
               </label>
               <Controller
                 name="description"
@@ -297,11 +298,11 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                   />
                 )}
               />
-              {errors.description && (
+              {/* {errors.description && (
                 <small className="text-danger">
                   {errors.description.message}
                 </small>
-              )}
+              )} */}
             </div>
 
             <div className="col-md-12 mb-3 form-check ms-3 ">

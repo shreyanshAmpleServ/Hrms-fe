@@ -240,26 +240,35 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
 
             <div className="col-md-12 mb-3">
               <label className="col-form-label">
-                Message Body <span className="text-danger">*</span>
+                Message Body{" "}
+                <small className="text-muted">(Max 255 characters)</small>
               </label>
               <Controller
                 name="message_body"
                 control={control}
-                rules={{ required: "Message body is required" }}
+                rules={{
+                  required: " Message Body is required!",
+                  maxLength: {
+                    value: 255,
+                    message:
+                      " Message Body must be less than or equal to 255 characters",
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
                     {...field}
-                    className={`form-control ${errors.message_body ? "is-invalid" : ""}`}
-                    rows={4}
-                    placeholder="Enter Message Body"
+                    rows={3}
+                    maxLength={255}
+                    className="form-control"
+                    placeholder="Enter  Message Body "
                   />
                 )}
               />
-              {errors.message_body && (
+              {/* {errors.message_body && (
                 <small className="text-danger">
                   {errors.message_body.message}
                 </small>
-              )}
+              )} */}
             </div>
           </div>
 

@@ -273,19 +273,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-          {/* reason */}
-          <div className="col-md-12 mb-3">
-            <label className="form-label">Reason</label>
-            <textarea
-              className="form-control"
-              rows={3}
-              {...register("reason", { required: "reason is required" })}
-            />
-            {errors.reason && (
-              <small className="text-danger">{errors.reason.message}</small>
-            )}
-          </div>
-
           {/* Status */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Status</label>
@@ -321,6 +308,37 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             {errors.status && (
               <small className="text-danger">{errors.status.message}</small>
             )}
+          </div>
+
+          {/* reason */}
+          <div className="col-md-12 mb-3">
+            <label className="form-label">
+              Reason <small className="text-muted">(Max 255 characters)</small>
+            </label>
+            <Controller
+              name="reason"
+              control={control}
+              rules={{
+                required: "reason is required!",
+                maxLength: {
+                  value: 255,
+                  message:
+                    "reason must be less than or equal to 255 characters",
+                },
+              }}
+              render={({ field }) => (
+                <textarea
+                  {...field}
+                  rows={3}
+                  maxLength={255}
+                  className="form-control"
+                  placeholder="Enter reason "
+                />
+              )}
+            />
+            {/* {errors.reason && (
+              <small className="text-danger">{errors.reason.message}</small>
+            )} */}
           </div>
 
           <div className="col-md-12 text-end">

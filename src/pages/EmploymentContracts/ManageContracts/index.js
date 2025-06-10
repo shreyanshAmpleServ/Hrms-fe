@@ -322,7 +322,8 @@ const ManageContracts = ({ setContract, contract }) => {
 
                 <div className="col-md-12 mb-3">
                   <label className="col-form-label">
-                    Description <span className="text-danger">*</span>
+                    Description{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <Controller
                     name="description"
@@ -341,15 +342,15 @@ const ManageContracts = ({ setContract, contract }) => {
                         rows={3}
                         maxLength={255}
                         className="form-control"
-                        placeholder="Enter Description (max 255 characters)"
+                        placeholder="Enter Description "
                       />
                     )}
                   />
-                  {errors.description && (
+                  {/* {errors.description && (
                     <small className="text-danger">
                       {errors.description.message}
                     </small>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

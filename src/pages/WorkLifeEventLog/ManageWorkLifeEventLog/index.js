@@ -49,7 +49,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -62,7 +62,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
   }, [dispatch, searchValue]);
 
   const { work_life, loading: workLifeEventTypeLoading } = useSelector(
-    (state) => state.workLifeEvent || {},
+    (state) => state.workLifeEvent || {}
   );
 
   const workLifeEventTypes = work_life?.data?.map((i) => ({
@@ -78,7 +78,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
             updateWorkLifeEventLog({
               id: workLifeEventLog.id,
               workLifeEventLogData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createWorkLifeEventLog({ ...data })).unwrap();
       closeButton.click();
@@ -97,12 +97,12 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -115,9 +115,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>
-            {workLifeEventLog ? "Update " : "Add New "} Work Life Event Log
-          </h4>
+          <h4>{workLifeEventLog ? "Update " : "Add "} Work Life Event Log</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -147,7 +145,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -194,7 +192,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                       render={({ field }) => {
                         const selectedDeal = workLifeEventTypes?.find(
                           (workLifeEventType) =>
-                            workLifeEventType.value === field.value,
+                            workLifeEventType.value === field.value
                         );
                         return (
                           <Select
@@ -278,19 +276,29 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                   <label className="col-form-label">Requires Follow Up</label>
                 </div>
                 <div className="col-md-12">
-                  <label className="col-form-label">Notes</label>
+                  <label className="col-form-label">
+                    Notes{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <div className="mb-3">
                     <Controller
                       name="notes"
                       control={control}
+                      rules={{
+                        required: "Notes is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Notes must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
                           {...field}
-                          type="text"
+                          rows={3}
+                          maxLength={255}
                           className="form-control"
-                          placeholder="Enter Notes"
-                          value={field.value}
-                          onChange={field.onChange}
+                          placeholder="Enter Notes "
                         />
                       )}
                     />

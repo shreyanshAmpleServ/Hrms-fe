@@ -27,6 +27,7 @@ const DisciplinaryActionLog = () => {
     (state) => state.disciplinryAction || {}
   );
 
+  console.log("print : ", disciplinryAction);
   React.useEffect(() => {
     dispatch(
       fetchdisciplinryAction({

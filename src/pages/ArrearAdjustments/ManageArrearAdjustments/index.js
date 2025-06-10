@@ -282,34 +282,58 @@ const ManageArrearAdjustments = ({
                 </div>
 
                 <div className="col-md-12">
-                  <label className="col-form-label">Arrear Reason</label>
+                  <label className="col-form-label">
+                    Arrear Reason{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <div className="mb-3">
                     <Controller
                       name="arrear_reason"
                       control={control}
+                      rules={{
+                        required: "Arrear Reason is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Description must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
                           {...field}
+                          rows={3}
+                          maxLength={255}
                           className="form-control"
-                          placeholder="Enter Arrear Reason"
-                          rows={2}
+                          placeholder="Enter Arrear Reason "
                         />
                       )}
                     />
                   </div>
                 </div>
                 <div className="col-md-12">
-                  <label className="col-form-label">Remarks</label>
+                  <label className="col-form-label">
+                    Remarks{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"
                       control={control}
+                      rules={{
+                        required: "Remarksis required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Description must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
                           {...field}
+                          rows={3}
+                          maxLength={255}
                           className="form-control"
                           placeholder="Enter Remarks"
-                          rows={2}
                         />
                       )}
                     />

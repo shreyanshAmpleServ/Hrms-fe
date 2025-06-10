@@ -121,7 +121,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{trainingSession ? "Update " : "Add New "} Training Session</h4>
+        <h4>{trainingSession ? "Update " : "Add  "} Training Session</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"

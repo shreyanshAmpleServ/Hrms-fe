@@ -24,7 +24,7 @@ const CompetencyTracking = () => {
   const dispatch = useDispatch();
 
   const { competencyTracking, loading } = useSelector(
-    (state) => state.competencyTracking || {},
+    (state) => state.competencyTracking || {}
   );
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const CompetencyTracking = () => {
       fetchCompetencyTracking({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -57,7 +57,7 @@ const CompetencyTracking = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -65,7 +65,7 @@ const CompetencyTracking = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Competency Tracking",
+    (i) => i?.module_name === "Competency Tracking"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -201,7 +201,7 @@ const CompetencyTracking = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add New Competency Tracking
+                            Add Competency Tracking
                           </Link>
                         </div>
                       </div>

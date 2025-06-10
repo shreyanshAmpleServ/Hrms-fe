@@ -43,7 +43,7 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {},
+    (state) => state.employee || {}
   );
 
   const employees = employee?.data?.map((i) => ({
@@ -59,7 +59,7 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
             updateExitClearance({
               id: exitClearance.id,
               exitClearanceData: { ...data },
-            }),
+            })
           ).unwrap()
         : await dispatch(createExitClearance({ ...data })).unwrap();
       closeButton.click();
@@ -78,12 +78,12 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -96,7 +96,7 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{exitClearance ? "Update " : "Add New "} Exit Clearance</h4>
+          <h4>{exitClearance ? "Update " : "Add "} Exit Clearance</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -126,7 +126,7 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
                         const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value,
+                          (employee) => employee.value === field.value
                         );
                         return (
                           <Select
@@ -196,30 +196,36 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Remarks <span className="text-danger">*</span>
+                    Remarks{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"
                       control={control}
-                      rules={{ required: "Remarks is required!" }}
+                      rules={{
+                        required: "Remarks is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Remarks must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
-                          rows={3}
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.remarks ? "is-invalid" : ""}`}
-                          placeholder="Enter Remarks"
-                          value={field.value}
-                          onChange={field.onChange}
+                          rows={3}
+                          maxLength={255}
+                          className="form-control"
+                          placeholder="Enter Remarks "
                         />
                       )}
                     />
-                    {errors.remarks && (
+                    {/* {errors.remarks && (
                       <small className="text-danger">
                         {errors.remarks.message}
                       </small>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

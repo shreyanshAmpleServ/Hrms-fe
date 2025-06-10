@@ -337,7 +337,10 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                 </div>
 
                 <div className="col-md-12">
-                  <label className="col-form-label">Remarks</label>
+                  <label className="col-form-label">
+                    Remarks{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"

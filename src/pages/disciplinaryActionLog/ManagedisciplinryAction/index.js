@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
 import {
   createdisciplinryAction,
@@ -47,7 +46,10 @@ const ManagedisciplinryAction = ({
         incident_description: disciplinryAction.incident_description || "",
         action_taken: disciplinryAction.action_taken || "",
         committee_notes: disciplinryAction.committee_notes || "",
-        penalty_type: disciplinryAction.penalty_type || "",
+        penalty_type:
+          penaltyOptions.find(
+            (opt) => opt.value === disciplinryAction.penalty_type
+          )?.value || "",
         effective_from:
           disciplinryAction.effective_from || new Date().toISOString(),
         status: disciplinryAction.status || "Pending",
@@ -195,11 +197,10 @@ const ManagedisciplinryAction = ({
 
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">
-                    {" "}
                     Penalty Type<span className="text-danger">*</span>
                   </label>
                   <Controller
-                    name="id"
+                    name="penalty_type"
                     control={control}
                     rules={{ required: "disciplinary penalty is required" }}
                     render={({ field }) => {
@@ -219,8 +220,10 @@ const ManagedisciplinryAction = ({
                       );
                     }}
                   />
-                  {errors.id && (
-                    <small className="text-danger">{errors.id.message}</small>
+                  {errors.penalty_type && (
+                    <small className="text-danger">
+                      {errors.penalty_type.message}
+                    </small>
                   )}
                 </div>
 
@@ -319,33 +322,65 @@ const ManagedisciplinryAction = ({
                 </div>
 
                 <div className="col-12 mb-3">
-                  <label className="col-form-label">Committee Notes</label>
+                  <label className="col-form-label">
+                    Committee Notes{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <Controller
                     name="committee_notes"
                     control={control}
+                    rules={{
+                      required: "Committee Notes is required!",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Description must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter Committee Notes"
                       />
                     )}
                   />
                 </div>
 
                 <div className="col-12 mb-3">
-                  <label className="col-form-label">Incident Description</label>
+                  <label className="col-form-label">
+                    Incident Description{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
                   <Controller
                     name="incident_description"
                     control={control}
+                    rules={{
+                      required: "Incident Description is required!",
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Description must be less than or equal to 255 characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <DefaultEditor
+                      <textarea
                         {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e)}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter Incident Description"
                       />
                     )}
                   />
+
+                  {errors.incident_description && (
+                    <small className="text-danger">
+                      {errors.incident_description.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

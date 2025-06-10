@@ -338,32 +338,6 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                   )}
                 </div>
 
-                <div className="col-md-12">
-                  <label className="col-form-label">
-                    Description<span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="description"
-                      control={control}
-                      rules={{ required: "Description is required!" }}
-                      render={({ field }) => (
-                        <textarea
-                          rows={3}
-                          {...field}
-                          className={`form-control ${errors.description ? "is-invalid" : ""}`}
-                          placeholder="Enter Description"
-                        />
-                      )}
-                    />
-                    {errors.description && (
-                      <small className="text-danger">
-                        {errors.description.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
@@ -406,6 +380,32 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                       </small>
                     )}
                   </div>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <label className="col-form-label">
+                  Description{" "}
+                  <small className="text-muted">(Max 255 characters)</small>
+                </label>
+                <div className="mb-3">
+                  <Controller
+                    name="description"
+                    control={control}
+                    rules={{ required: "Description is required!" }}
+                    render={({ field }) => (
+                      <textarea
+                        rows={3}
+                        {...field}
+                        className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                        placeholder="Enter Description"
+                      />
+                    )}
+                  />
+                  {errors.description && (
+                    <small className="text-danger">
+                      {errors.description.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

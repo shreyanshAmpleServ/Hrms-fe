@@ -77,7 +77,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
           updateprobationReview({
             id: probationReview.id,
             probationReviewData: { ...data },
-          }),
+          })
         ).unwrap();
       } else {
         await dispatch(createprobationReview({ ...data })).unwrap();
@@ -98,7 +98,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
       id="offcanvas_add"
     >
       <div className="offcanvas-header border-bottom">
-        <h4>{probationReview ? "Update" : "Add New"} Probation Review</h4>
+        <h4>{probationReview ? "Update" : "Add"} Probation Review</h4>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1"
@@ -123,7 +123,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
                   const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -182,7 +182,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                 rules={{ required: "Status is required" }}
                 render={({ field }) => {
                   const selected = statusOptions.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -223,14 +223,28 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
 
             {/* Review Notes */}
             <div className="col-12 mb-3">
-              <label className="col-form-label">Review Notes</label>
+              <label className="col-form-label">
+                Review Notes{" "}
+                <small className="text-muted">(Max 255 characters)</small>
+              </label>
               <Controller
                 name="review_notes"
                 control={control}
+                rules={{
+                  required: " Review Notes is required!",
+                  maxLength: {
+                    value: 255,
+                    message:
+                      " Review Notes must be less than or equal to 255 characters",
+                  },
+                }}
                 render={({ field }) => (
-                  <DefaultEditor
-                    value={field.value}
-                    onChange={field.onChange}
+                  <textarea
+                    {...field}
+                    rows={3}
+                    maxLength={255}
+                    className="form-control"
+                    placeholder="Enter  Review Notes "
                   />
                 )}
               />
