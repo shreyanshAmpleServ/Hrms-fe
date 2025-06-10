@@ -188,6 +188,12 @@ export const SidebarData = [
             showSubRoute: false,
             submenu: false,
           },
+          {
+            label: "Warning Letters",
+            link: route.warningLetters,
+            showSubRoute: false,
+            submenu: false,
+          },
         ],
       },
       {

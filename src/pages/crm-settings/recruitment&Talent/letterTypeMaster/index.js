@@ -52,7 +52,8 @@ const LetterTypeMaster = () => {
       title: "Created Date",
       dataIndex: "createdate",
       render: (text) => moment(text).format("DD-MM-YYYY"),
-      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
+      sorter: (a, b) =>
+        moment(a.createdate).unix() - moment(b.createdate).unix(),
     },
     ...(isUpdate || isDelete
       ? [

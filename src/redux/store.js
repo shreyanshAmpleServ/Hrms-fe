@@ -111,6 +111,8 @@ import ArrearAdjustmentsReducer from "./ArrearAdjustments";
 import DailyAttendanceReducer from "./dailyAttendance";
 import GoalSheetReducer from "./GoalSheetAssignment";
 import KPIProgressReducer from "./KPIProgress";
+import WarningLettersReducer from "./WarningLetters";
+
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -225,6 +227,7 @@ const store = configureStore({
     dailyAttendance: DailyAttendanceReducer,
     goalSheet: GoalSheetReducer,
     kpiProgress: KPIProgressReducer,
+    warningLetters: WarningLettersReducer,
   },
 });
 
