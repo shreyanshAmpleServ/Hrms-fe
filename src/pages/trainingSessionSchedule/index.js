@@ -80,8 +80,8 @@ const TrainingSessionSchedule = () => {
     },
     {
       title: "Trainer Name",
-      dataIndex: "trainer_name",
-      render: (text) => text || "-",
+      dataIndex: "training_session_employee",
+      render: (value) => <div>{value?.full_name}</div>,
     },
     {
       title: "Training Date",
@@ -99,6 +99,67 @@ const TrainingSessionSchedule = () => {
       dataIndex: "training_type",
       render: (text) => text || "-",
     },
+    {
+      title: "Training Objective",
+      dataIndex: "training_objective",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Department",
+      dataIndex: "department_id",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Audience Level",
+      dataIndex: "audience_level",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Participant Limit",
+      dataIndex: "participant_limit",
+      render: (text) => (text !== undefined && text !== null ? text : "-"),
+    },
+
+    {
+      title: "Duration (Hours)",
+      dataIndex: "duration_hours",
+      render: (text) => (text !== undefined && text !== null ? text : "-"),
+    },
+
+    {
+      title: "Training Material",
+      dataIndex: "training_material_path",
+      render: (_text, record) => (
+        <a
+          href={record.training_material_path}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          className="d-inline-flex align-items-center gap-2 text-decoration-none"
+          title="View or Download PDF"
+        >
+          <i className="ti ti-file-type-pdf fs-5"></i>
+          <span>View </span>
+        </a>
+      ),
+    },
+
+    {
+      title: "Evaluation Required",
+      dataIndex: "evaluation_required",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Feedback Required",
+      dataIndex: "feedback_required",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Training Status",
+      dataIndex: "training_status",
+      render: (text) => text || "-",
+    },
+
     ...(isDelete || isUpdate
       ? [
           {

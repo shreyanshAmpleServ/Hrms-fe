@@ -74,18 +74,38 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           : "",
         reason: initialData.reason || "",
         status: initialData.status || "",
+
+        // New fields
+        contact_details_during_leave:
+          initialData.contact_details_during_leave || "",
+        approval_date: initialData.approval_date
+          ? new Date(initialData.approval_date).toISOString().split("T")[0]
+          : "",
+        document_attachment: initialData.document_attachment || null,
+        rejection_reason: initialData.rejection_reason || "",
+        backup_person_id: initialData.backup_person_id || "",
+        approver_id: initialData.approver_id || "",
       });
     } else {
       reset({
         employee_id: "",
         leave_type_id: "",
-        start_date: "",
-        end_date: "",
+        start_date: new Date().toISOString().split("T")[0],
+        end_date: new Date().toISOString().split("T")[0],
         reason: "",
         status: "",
+
+        // New fields default
+        contact_details_during_leave: "",
+        approval_date: new Date(),
+        document_attachment: null,
+        rejection_reason: "",
+        backup_person_id: "",
+        approver_id: "",
       });
     }
   }, [mode, initialData, reset]);
+  console.log("initialData", initialData);
 
   // Submit handler
   const onSubmit = (data) => {
@@ -273,6 +293,111 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
+          {/* 1. Contact Details During Leave */}
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Contact During Leave</label>
+            <Controller
+              name="contact_details_during_leave"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  className="form-control"
+                  placeholder="Enter contact details"
+                />
+              )}
+            />
+          </div>
+
+          {/* 2. Approval Date */}
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Approval Date</label>
+            <Controller
+              name="approval_date"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(date) => field.onChange(date)}
+                  className="form-control"
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText="Select Approval Date"
+                />
+              )}
+            />
+          </div>
+
+          {/* 3. Document Attachment */}
+
+          <div className="col-md-6 mb-3">
+            <label className="col-form-label">Document Attachment</label>
+            <input
+              type="file"
+              className={`form-control ${errors.document_attachment ? "is-invalid" : ""}`}
+              accept=".pdf"
+              {...register("document_attachment", {
+                required: "Resume file is required.",
+                validate: {
+                  isPdf: (files) =>
+                    files[0]?.type === "application/pdf" ||
+                    "Only PDF files are allowed.",
+                },
+              })}
+            />
+            {errors.document_attachment && (
+              <small className="text-danger">
+                {errors.document_attachment.message}
+              </small>
+            )}
+          </div>
+
+          {/* 5. Backup Person */}
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Backup Person</label>
+            <Controller
+              name="backup_person_id"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={EmployeeList}
+                  placeholder="Choose Backup Person"
+                  isDisabled={!EmployeeList.length}
+                  classNamePrefix="react-select"
+                  className="select2"
+                  onChange={(option) => field.onChange(option?.value || "")}
+                  value={EmployeeList.find(
+                    (option) => option.value === watch("backup_person_id")
+                  )}
+                />
+              )}
+            />
+          </div>
+
+          {/* 6. Approver */}
+          <div className="col-md-6 mb-3">
+            <label className="form-label">Approver</label>
+            <Controller
+              name="approver_id"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={EmployeeList}
+                  placeholder="Choose Approver"
+                  isDisabled={!EmployeeList.length}
+                  classNamePrefix="react-select"
+                  className="select2"
+                  onChange={(option) => field.onChange(option?.value || "")}
+                  value={EmployeeList.find(
+                    (option) => option.value === watch("approver_id")
+                  )}
+                />
+              )}
+            />
+          </div>
+
           {/* Status */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Status</label>
@@ -339,6 +464,25 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             {/* {errors.reason && (
               <small className="text-danger">{errors.reason.message}</small>
             )} */}
+          </div>
+          {/* 4. Rejection Reason */}
+          <div className="col-md-12 mb-3">
+            <label className="form-label">
+              Rejection Reason
+              <small className="text-muted">(Max 255 characters)</small>
+            </label>
+            <Controller
+              name="rejection_reason"
+              control={control}
+              render={({ field }) => (
+                <textarea
+                  {...field}
+                  rows={3}
+                  className="form-control"
+                  placeholder="Enter rejection reason"
+                />
+              )}
+            />
           </div>
 
           <div className="col-md-12 text-end">

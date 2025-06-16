@@ -1,54 +1,44 @@
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { addpayslip, updatepayslip } from "../../../redux/payslipViewer";
-import { fetchEmployee } from "../../../redux/Employee";
-import { Controller } from "react-hook-form";
-import Select from "react-select";
-import React, { useEffect, useMemo } from "react";
 import moment from "moment";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-// import { Modal, Button } from 'react-bootstrap';
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
+import { createpayslip, updatepayslip } from "../../../redux/payslipViewer";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.payslip);
+import { fetchEmployee } from "../../../redux/Employee";
+
+const AddEditModal = ({ setpayslip, payslip }) => {
+  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
-
   const {
-    register,
-    handleSubmit,
-    watch,
     control,
-    formState: { errors },
+    handleSubmit,
     reset,
+    watch,
+    register,
+    formState: { errors },
   } = useForm();
 
-  useEffect(() => {
-    dispatch(fetchEmployee());
-  }, [dispatch]);
+  const { loading } = useSelector((state) => state.payslip || {});
 
-  const employee = useSelector((state) => state.employee.employee);
-
-  const EmployeeList = useMemo(
-    () =>
-      employee?.data?.map((item) => ({
-        value: item.id,
-        label: item.first_name, // or item.full_name or item.employee_name, depending on your API
-      })) || [],
-    [employee]
-  );
-
-  // Prefill form in edit mode
-  useEffect(() => {
-    console.log("InitialData:", initialData); // Check what's coming
-    if (mode === "edit" && initialData) {
+  React.useEffect(() => {
+    if (payslip) {
       reset({
-        employee_id: initialData?.employee_id || "",
-        month: initialData?.month || "",
-        year: initialData?.year || "", // check if this is getting value
-        net_salary: initialData?.net_salary || "",
-        uploaded_on: initialData?.uploaded_on
-          ? new Date(initialData.uploaded_on).toISOString().split("T")[0]
+        employee_id: payslip?.employee_id || "",
+        month: payslip?.month || "",
+        year: payslip?.year || "",
+        net_salary: payslip?.net_salary || "",
+        gross_salary: payslip?.gross_salary || "",
+        total_earnings: payslip?.total_earnings || "",
+        total_deductions: payslip?.total_deductions || "",
+        pay_component_summary: payslip?.pay_component_summary || "",
+        tax_deductions: payslip?.tax_deductions || "",
+        loan_deductions: payslip?.loan_deductions || "",
+        other_adjustments: payslip?.other_adjustments || "",
+        remarks: payslip?.remarks || "",
+        uploaded_on: payslip?.uploaded_on
+          ? new Date(payslip.uploaded_on).toISOString().split("T")[0]
           : new Date().toISOString().split("T")[0],
       });
     } else {
@@ -58,261 +48,416 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         month: "",
         year: "",
         net_salary: "",
+        gross_salary: "",
+        total_earnings: "",
+        total_deductions: "",
+        pay_component_summary: "",
+        tax_deductions: "",
+        loan_deductions: "",
+        other_adjustments: "",
+        remarks: "",
         uploaded_on: new Date().toISOString().split("T")[0],
       });
     }
-  }, [mode, initialData, reset]);
+  }, [payslip, reset]);
 
-  const onSubmit = (data) => {
-    const closeButton = document.getElementById("close_payslip_modal");
-    const pdfFile = data.pdf_path?.[0];
+  React.useEffect(() => {
+    dispatch(fetchEmployee({ searchValue }));
+  }, [dispatch, searchValue]);
 
-    if (!pdfFile) {
-      alert("Please upload PDF file.");
-      return;
+  const { employee, loading: employeeLoading } = useSelector(
+    (state) => state.employee || {}
+  );
+
+  const employees = employee?.data?.map((i) => ({
+    label: i?.full_name,
+    value: i?.id,
+  }));
+
+  const adjustmentTypes = [
+    { value: "Bonus", label: "Bonus" },
+    { value: "Incentive", label: "Incentive" },
+    { value: "Overtime", label: "Overtime" },
+    { value: "Leave Encashment", label: "Leave Encashment" },
+    { value: "Salary Advance", label: "Salary Advance" },
+    { value: "Loan Deduction", label: "Loan Deduction" },
+    { value: "Tax Adjustment", label: "Tax Adjustment" },
+    { value: "Reimbursement", label: "Reimbursement" },
+    { value: "Correction", label: "Correction" },
+    { value: "Other", label: "Other" },
+  ];
+
+  const onSubmit = async (data) => {
+    const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    try {
+      payslip
+        ? await dispatch(
+            updatepayslip({
+              id: payslip.id,
+              payslipData: { ...data },
+            })
+          ).unwrap()
+        : await dispatch(createpayslip({ ...data })).unwrap();
+      closeButton.click();
+      reset();
+      setpayslip(null);
+    } catch (error) {
+      closeButton.click();
     }
-
-    const formData = new FormData();
-    formData.append("employee_id", data.employee_id || "");
-    formData.append("month", data.month || "");
-    formData.append("year", data.year || ""); // ✅ Year added here
-    formData.append("net_salary", data.net_salary || "");
-    formData.append("uploaded_on", new Date(data.uploaded_on).toISOString());
-    formData.append("pdf_path", pdfFile);
-
-    if (mode === "add") {
-      dispatch(addpayslip(formData));
-    } else if (mode === "edit" && initialData) {
-      dispatch(updatepayslip({ id: initialData.id, payslipData: formData }));
-    }
-
-    reset();
-    closeButton?.click();
   };
 
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setpayslip(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setpayslip]);
+
   return (
-    <div className="modal fade" id="add_edit_payslip_modal" role="dialog">
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">
-              {mode === "add" ? "Add Goal Category " : "Edit Goal Category"}
-            </h5>
-            <button
-              className="btn-close custom-btn-close border p-1 me-0 text-dark"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              id="close_payslip_modal"
-            >
-              <i className="ti ti-x" />
-            </button>
-          </div>
+    <>
+      <div
+        className="offcanvas offcanvas-end offcanvas-large"
+        tabIndex={-1}
+        id="offcanvas_add"
+      >
+        <div className="offcanvas-header border-bottom">
+          <h4>{payslip ? "Update " : "Add"} Payslip</h4>
+          <button
+            type="button"
+            className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+            onClick={() => {
+              setpayslip(null);
+              reset();
+            }}
+          >
+            <i className="ti ti-x" />
+          </button>
+        </div>
+        <div className="offcanvas-body">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="modal-body">
-              {/* Employee ID */}
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Employee <span className="text-danger">*</span>
-                </label>
-                <Controller
-                  name="employee_id"
-                  control={control}
-                  rules={{ required: "Employee is required" }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={EmployeeList}
-                      placeholder="Choose Employee"
-                      isDisabled={!EmployeeList.length}
-                      classNamePrefix="react-select"
-                      className="select2"
-                      onChange={(option) => field.onChange(option?.value || "")}
-                      value={EmployeeList.find(
-                        (option) => option.value === watch("employee_id")
-                      )}
-                    />
-                  )}
-                />
-                {errors.employee_id && (
-                  <small className="text-danger">
-                    {errors.employee_id.message}
-                  </small>
-                )}
-              </div>
-
-              {/* Month */}
-              {/* <div className="mb-3">
-                <label className="col-form-label">
-                  Month <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="month"
-                  className={`form-control ${errors.month ? "is-invalid" : ""}`}
-                  {...register("month", { required: "Month is required" })}
-                />
-                {errors.month && <small className="text-danger">{errors.month.message}</small>}
-              </div> */}
-
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Month <span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-control ${errors.month ? "is-invalid" : ""}`}
-                  {...register("month", { required: "Month is required" })}
-                >
-                  <option value="">Select Month</option>
-                  {[
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August",
-                    "September",
-                    "October",
-                    "November",
-                    "December",
-                  ].map((month) => (
-                    <option key={month} value={month}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
-                {errors.month && (
-                  <small className="text-danger">{errors.month.message}</small>
-                )}
-              </div>
-
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Year <span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-control ${errors.year ? "is-invalid" : ""}`}
-                  {...register("year", { required: "Year is required" })}
-                >
-                  <option value="">Select Year</option>
-                  {Array.from({ length: 110 }, (_, i) => 1990 + i).map(
-                    (year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    )
-                  )}
-                </select>
-                {errors.year && (
-                  <small className="text-danger">{errors.year.message}</small>
-                )}
-              </div>
-
-              {/* Net Salary */}
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Net Salary <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  className={`form-control ${errors.net_salary ? "is-invalid" : ""}`}
-                  {...register("net_salary", {
-                    required: "Net salary is required",
-                  })}
-                />
-                {errors.net_salary && (
-                  <small className="text-danger">
-                    {errors.net_salary.message}
-                  </small>
-                )}
-              </div>
-
-              {/* PDF Path (Upload PDF) */}
-              <div className="mb-3">
-                <label className="col-form-label">Payslip PDF (Only PDF)</label>
-                <input
-                  type="file"
-                  className={`form-control ${errors.pdf_path ? "is-invalid" : ""}`}
-                  accept=".pdf"
-                  {...register("pdf_path", {
-                    required: "PDF file is required.",
-                    validate: {
-                      isPdf: (files) =>
-                        files[0]?.type === "application/pdf" ||
-                        "Only PDF files are allowed.",
-                    },
-                  })}
-                />
-                {errors.pdf_path && (
-                  <small className="text-danger">
-                    {errors.pdf_path.message}
-                  </small>
-                )}
-              </div>
-
-              {/* Uploaded On */}
-              <div className="mb-3">
-                <label className="col-form-label">Uploaded On</label>
-                <Controller
-                  name="uploaded_on"
-                  control={control}
-                  rules={{ required: "Date is required" }}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...field}
-                      value={
-                        field.value
-                          ? moment(field.value).format("DD-MM-YYYY")
-                          : ""
-                      }
-                      selected={field.value ? new Date(field.value) : null}
-                      onChange={(date) => {
-                        field.onChange(date);
+            <div>
+              <div className="row">
+                <div className="col-md-6 ">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Employee
+                      <span className="text-danger"> *</span>
+                    </label>
+                    <Controller
+                      name="employee_id"
+                      control={control}
+                      rules={{ required: "Employee is required" }}
+                      render={({ field }) => {
+                        const selectedEmployee = employees?.find(
+                          (employee) => employee.value === field.value
+                        );
+                        return (
+                          <Select
+                            {...field}
+                            className="select"
+                            options={employees}
+                            placeholder="Select Employee"
+                            classNamePrefix="react-select"
+                            isLoading={employeeLoading}
+                            onInputChange={(inputValue) =>
+                              setSearchValue(inputValue)
+                            }
+                            value={selectedEmployee || null}
+                            onChange={(selectedOption) =>
+                              field.onChange(selectedOption.value)
+                            }
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999,
+                              }),
+                            }}
+                          />
+                        );
                       }}
-                      className="form-control"
-                      dateFormat="dd-MM-yyyy"
-                      placeholderText="Select Uploaded Date"
                     />
+                    {errors.employee_id && (
+                      <small className="text-danger">
+                        {errors.employee_id.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">
+                    Month <span className="text-danger">*</span>
+                  </label>
+                  <select
+                    className={`form-control ${errors.month ? "is-invalid" : ""}`}
+                    {...register("month", { required: "Month is required" })}
+                  >
+                    <option value="">Select Month</option>
+                    {[
+                      "January",
+                      "February",
+                      "March",
+                      "April",
+                      "May",
+                      "June",
+                      "July",
+                      "August",
+                      "September",
+                      "October",
+                      "November",
+                      "December",
+                    ].map((month) => (
+                      <option key={month} value={month}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.month && (
+                    <small className="text-danger">
+                      {errors.month.message}
+                    </small>
                   )}
-                />
-                {errors.uploaded_on && (
-                  <small className="text-danger">
-                    {errors.uploaded_on.message}
-                  </small>
-                )}
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">
+                    Year <span className="text-danger">*</span>
+                  </label>
+                  <select
+                    className={`form-control ${errors.year ? "is-invalid" : ""}`}
+                    {...register("year", { required: "Year is required" })}
+                  >
+                    <option value="">Select Year</option>
+                    {Array.from({ length: 110 }, (_, i) => 1990 + i).map(
+                      (year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      )
+                    )}
+                  </select>
+                  {errors.year && (
+                    <small className="text-danger">{errors.year.message}</small>
+                  )}
+                </div>
+
+                {/* Net Salary */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">
+                    Net Salary <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className={`form-control ${errors.net_salary ? "is-invalid" : ""}`}
+                    placeholder="Net Salary"
+                    {...register("net_salary", {
+                      required: "Net salary is required",
+                    })}
+                  />
+                  {errors.net_salary && (
+                    <small className="text-danger">
+                      {errors.net_salary.message}
+                    </small>
+                  )}
+                </div>
+
+                {/* PDF Path (Upload PDF) */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Payslip PDF</label>
+                  <input
+                    type="file"
+                    className={`form-control ${errors.pdf_path ? "is-invalid" : ""}`}
+                    accept=".pdf"
+                    {...register("pdf_path", {
+                      required: "PDF file is required.",
+                      validate: {
+                        isPdf: (files) =>
+                          files[0]?.type === "application/pdf" ||
+                          "Only PDF files are allowed.",
+                      },
+                    })}
+                  />
+                  {errors.pdf_path && (
+                    <small className="text-danger">
+                      {errors.pdf_path.message}
+                    </small>
+                  )}
+                </div>
+                {/* Gross Salary */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Gross Salary</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    placeholder="Gross Salary"
+                    {...register("gross_salary")}
+                  />
+                </div>
+
+                {/* Total Earnings */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Total Earnings</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    placeholder="Total Earnings"
+                    {...register("total_earnings")}
+                  />
+                </div>
+
+                {/* Total Deductions */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Total Deductions</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    placeholder="Total Deductions"
+                    {...register("total_deductions")}
+                  />
+                </div>
+
+                {/* Tax Deductions */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Tax Deductions</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    placeholder="Tax Deductions"
+                    {...register("tax_deductions")}
+                  />
+                </div>
+
+                {/* Loan Deductions */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Loan Deductions</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    placeholder="Loan Deductions"
+                    {...register("loan_deductions")}
+                  />
+                </div>
+
+                {/* Other Adjustments */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Other Adjustments</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    placeholder="Other Adjustments"
+                    {...register("other_adjustments")}
+                  />
+                </div>
+
+                {/* Uploaded On */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Uploaded On</label>
+                  <Controller
+                    name="uploaded_on"
+                    control={control}
+                    rules={{ required: "Date is required" }}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        value={
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : ""
+                        }
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={(date) => {
+                          field.onChange(date);
+                        }}
+                        className="form-control"
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText="Select Uploaded Date"
+                      />
+                    )}
+                  />
+                  {errors.uploaded_on && (
+                    <small className="text-danger">
+                      {errors.uploaded_on.message}
+                    </small>
+                  )}
+                </div>
+                {/* Remarks */}
+                <div className="md-3">
+                  <label className="col-form-label">Remarks</label>
+                  <textarea
+                    className="form-control"
+                    rows="2"
+                    placeholder="Remarks"
+                    {...register("remarks")}
+                  ></textarea>
+                </div>
+                {/* Remarks */}
+                <div className="md-3">
+                  <label className="col-form-label">
+                    Pay Component Summary
+                  </label>
+                  <textarea
+                    className="form-control"
+                    rows="2"
+                    placeholder="Pay Component Summary"
+                    {...register("pay_component_summary")}
+                  ></textarea>
+                </div>
               </div>
             </div>
-
-            {/* Footer */}
-            <div className="modal-footer">
-              <div className="d-flex align-items-center justify-content-end m-0">
-                <Link
-                  to="#"
-                  className="btn btn-light me-2"
-                  data-bs-dismiss="modal"
-                >
-                  Cancel
-                </Link>
-                <button
-                  disabled={loading}
-                  type="submit"
-                  className="btn btn-primary"
-                >
-                  {loading
-                    ? mode === "add"
-                      ? "Creating..."
-                      : "Updating..."
-                    : mode === "add"
-                      ? "Create"
-                      : "Update"}
-                </button>
-              </div>
+            <div className="d-flex align-items-center justify-content-end">
+              <button
+                type="button"
+                data-bs-dismiss="offcanvas"
+                className="btn btn-light me-2"
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-primary">
+                {payslip
+                  ? loading
+                    ? "Updating..."
+                    : "Update"
+                  : loading
+                    ? "Creating..."
+                    : "Create"}
+                {loading && (
+                  <div
+                    style={{
+                      height: "15px",
+                      width: "15px",
+                    }}
+                    className="spinner-border ml-2 text-light"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                )}
+              </button>
             </div>
           </form>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

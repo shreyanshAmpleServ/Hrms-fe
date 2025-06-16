@@ -84,9 +84,54 @@ const SuccessionPlanningEntry = () => {
         record?.succession_potentialSuccessor?.full_name || "-",
     },
     {
+      title: "Development",
+      dataIndex: "development_plan",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Successor Rank",
+      dataIndex: "successor_rank",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Expected Transition",
+      dataIndex: "expected_transition_date",
+      render: (text) => (text ? new Date(text).toLocaleDateString() : "-"),
+    },
+    {
+      title: "Risk Loss",
+      dataIndex: "risk_of_loss",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Retention Plan",
+      dataIndex: "retention_plan",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Last Update By HR",
+      dataIndex: "succession_updateByHR",
+      render: (record) => record?.full_name || "-",
+    },
+    {
+      title: "Evaluated By",
+      dataIndex: "succession_evaluatedBy",
+      render: (record) => record?.full_name || "-",
+    },
+    {
+      title: "Role",
+      dataIndex: "succession_role",
+      render: (record) => record?.role_name || "-",
+    },
+    {
+      title: "Last Review Date",
+      dataIndex: "last_review_date",
+      render: (text) => (text ? new Date(text).toLocaleDateString() : "-"),
+    },
+    {
       title: "Critical Position",
       dataIndex: "critical_position",
-      render: (text) => (text ? "Yes" : "No"),
+      render: (text) => text || "-",
     },
     {
       title: "Readiness Level",
@@ -96,6 +141,11 @@ const SuccessionPlanningEntry = () => {
     {
       title: "Planned Date",
       dataIndex: "plan_date",
+      render: (text) => (text ? new Date(text).toLocaleDateString() : "-"),
+    },
+    {
+      title: "Evaluation Date",
+      dataIndex: "evaluation_date",
       render: (text) => (text ? new Date(text).toLocaleDateString() : "-"),
     },
 

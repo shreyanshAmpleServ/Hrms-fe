@@ -64,7 +64,7 @@ const RelievingLetter = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Relieving Letter"
+    (i) => i?.module_name === "Relieving Letter Generation"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

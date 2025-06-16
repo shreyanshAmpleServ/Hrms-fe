@@ -64,7 +64,7 @@ const MonthlyPayroll = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Monthly Payroll"
+    (i) => i?.module_name === "Monthly Payroll Processing"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

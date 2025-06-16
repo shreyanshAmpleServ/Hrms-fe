@@ -144,11 +144,11 @@ const ManageUsers = () => {
           ]
         : []),
     ],
-    [isUpdate, isDelete],
+    [isUpdate, isDelete]
   );
 
   const { users, loading, error, success } = useSelector(
-    (state) => state.users,
+    (state) => state.users
   );
 
   React.useEffect(() => {
@@ -176,7 +176,7 @@ const ManageUsers = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -239,7 +239,7 @@ const ManageUsers = () => {
     doc.autoTable({
       head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ),
       startY: 20,
     });

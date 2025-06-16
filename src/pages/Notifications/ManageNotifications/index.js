@@ -44,16 +44,29 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
   }));
 
   useEffect(() => {
-    reset({
-      employee_id: Notifications?.employee_id || "",
-      message_title: Notifications?.message_title || "",
-      message_body: Notifications?.message_body || "",
-      channel: Notifications?.channel || "",
-      sent_on: Notifications?.sent_on
-        ? new Date(Notifications.sent_on)
-        : new Date(),
-      status: Notifications?.status || "",
-    });
+    if (Notifications) {
+      // Edit mode
+      reset({
+        employee_id: Notifications.employee_id || "",
+        message_title: Notifications.message_title || "",
+        message_body: Notifications.message_body || "",
+        channel: Notifications.channel || "",
+        sent_on: Notifications.sent_on
+          ? new Date(Notifications.sent_on)
+          : new Date(),
+        status: Notifications.status || "",
+      });
+    } else {
+      // Add mode
+      reset({
+        employee_id: "",
+        message_title: "",
+        message_body: "",
+        channel: "",
+        sent_on: new Date(),
+        status: "",
+      });
+    }
   }, [Notifications, reset]);
 
   useEffect(() => {
@@ -78,6 +91,24 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
       closeButton.click();
     }
   };
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setNotifications(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setNotifications]);
 
   return (
     <div

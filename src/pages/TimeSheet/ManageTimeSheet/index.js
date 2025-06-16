@@ -6,6 +6,7 @@ import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchLeaveType } from "../../../redux/LeaveType";
 import { createTimeSheet, updateTimeSheet } from "../../../redux/TimeSheet";
+import moment from "moment";
 
 const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -231,39 +232,34 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                     </small>
                   )}
                 </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Work Date<span className="text-danger"> *</span>
-                  </label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <Controller
-                      name="work_date"
-                      control={control}
-                      rules={{
-                        required: "Work date is required",
-                        validate: (value) =>
-                          new Date(value) > new Date()
-                            ? "Date cannot be in future"
-                            : true,
-                      }}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          selected={field.value}
-                          onChange={field.onChange}
-                          maxDate={new Date()} // future date disable
-                          dateFormat="dd-MM-yyyy"
-                          className="form-control"
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.encashment_date && (
+
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label"> Work Date</label>
+                  <Controller
+                    name="work_date"
+                    control={control}
+                    rules={{ required: "Date is required" }}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        value={
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : ""
+                        }
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={(date) => {
+                          field.onChange(date);
+                        }}
+                        className="form-control"
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText="Select Uploaded Date"
+                      />
+                    )}
+                  />
+                  {errors.work_date && (
                     <small className="text-danger">
-                      {errors.encashment_date.message}
+                      {errors.work_date.message}
                     </small>
                   )}
                 </div>

@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deleteHelpdeskTicket } from "../../../redux/HelpdeskTicket";
+import { deleteAdvancePayment } from "../../../redux/AdvancePayment";
 
-const DeleteConfirmation = ({ showModal, setShowModal, helpdeskTicketId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, advancePaymentId }) => {
   const dispatch = useDispatch();
   const handleDeleteHelpdeskTicket = () => {
-    if (helpdeskTicketId) {
-      dispatch(deleteHelpdeskTicket(helpdeskTicketId));
+    if (advancePaymentId) {
+      dispatch(deleteAdvancePayment(advancePaymentId));
       setShowModal(false);
     }
   };
@@ -26,9 +26,9 @@ const DeleteConfirmation = ({ showModal, setShowModal, helpdeskTicketId }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove Helpdesk Ticket?</h4>
+                  <h4 className="mb-2">Remove Advance Payment?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the helpdesk ticket
+                    Are you sure you want to remove <br /> the Advance Payment
                     you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">

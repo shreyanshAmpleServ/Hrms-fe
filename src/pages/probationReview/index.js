@@ -78,6 +78,10 @@ const ProbationReview = () => {
       render: (record) => record?.probation_review_employee?.full_name || "-",
     },
     {
+      title: "probation Reviewer",
+      render: (record) => record?.probation_reviewer?.full_name || "-",
+    },
+    {
       title: "Probation End Date",
       dataIndex: "probation_end_date",
       render: (date) => (date ? new Date(date).toLocaleDateString() : "-"),
@@ -96,6 +100,47 @@ const ProbationReview = () => {
       title: "Confirmation Date",
       dataIndex: "confirmation_date",
       render: (date) => (date ? new Date(date).toLocaleDateString() : "-"),
+    },
+    {
+      title: "Review Meeting Date",
+      dataIndex: "review_meeting_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        new Date(a.review_meeting_date) - new Date(b.review_meeting_date),
+    },
+    {
+      title: "Performance Rating",
+      dataIndex: "performance_rating",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Extension Required",
+      dataIndex: "extension_required",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Extension Reason",
+      dataIndex: "extension_reason",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Extended Till Date",
+      dataIndex: "extended_till_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        new Date(a.extended_till_date) - new Date(b.extended_till_date),
+    },
+    {
+      title: "Next Review Date",
+      dataIndex: "next_review_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        new Date(a.next_review_date) - new Date(b.next_review_date),
+    },
+    {
+      title: "Final Remarks",
+      dataIndex: "final_remarks",
+      render: (text) => text || "-",
     },
 
     ...(isDelete || isUpdate

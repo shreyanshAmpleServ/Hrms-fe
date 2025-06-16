@@ -48,16 +48,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         // resume_upload_name: initialData.resume_upload_name || "",
         employee_id: initialData.employee_id || "",
         resume_path: initialData.resume_path || "",
-        uploaded_on: initialData.uploaded_on
-          ? new Date(initialData.uploaded_on).toISOString().split("T")[0]
-          : "",
+        uploaded_on: initialData.uploaded_on || new Date().toISOString(),
       });
     } else {
       reset({
         // resume_upload_name: "",
         employee_id: "",
         resume_path: "",
-        uploaded_on: new Date().toISOString().split("T")[0], // today
+        uploaded_on: new Date().toISOString(), // today
       });
     }
   }, [mode, initialData, reset]);
@@ -74,7 +72,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     // If you use resume_upload_name, make sure to add it to the form
     // formData.append("resume_upload_name", data.resume_upload_name);
     formData.append("employee_id", data.employee_id || "");
-    formData.append("uploaded_on", new Date(data.uploaded_on).toISOString());
+    formData.append(
+      "uploaded_on",
+      data.uploaded_on || new Date().toISOString()
+    );
     formData.append("resume_path", resumeFile);
 
     if (mode === "add") {
@@ -173,24 +174,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               <div className="mb-3">
                 <label className="col-form-label">Uploaded On</label>
                 <Controller
-                  name="offer_date"
+                  name="uploaded_on"
                   control={control}
-                  rules={{ required: "Date is required" }}
+                  rules={{ required: "End date is required" }}
                   render={({ field }) => (
                     <DatePicker
-                      {...field}
-                      value={
-                        field.value
-                          ? moment(field.value).format("DD-MM-YYYY")
-                          : ""
-                      }
-                      selected={field.value ? new Date(field.value) : null}
-                      onChange={(date) => {
-                        field.onChange(date);
-                      }}
                       className="form-control"
+                      selected={field.value ? new Date(field.value) : null}
+                      onChange={(date) => field.onChange(date)}
                       dateFormat="dd-MM-yyyy"
-                      placeholderText="Select Date"
+                      placeholderText="Select End Date"
                     />
                   )}
                 />

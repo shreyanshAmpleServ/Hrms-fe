@@ -25,7 +25,7 @@ const LeaveApplications = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer",
+    (i) => i?.module_name === "Manufacturer"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,7 +42,7 @@ const LeaveApplications = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.leave_employee?.full_name || "").localeCompare(
-          b.leave_employee?.full_name || "",
+          b.leave_employee?.full_name || ""
         ),
     },
     {
@@ -51,7 +51,7 @@ const LeaveApplications = () => {
       render: (value) => <div>{value?.leave_type}</div>,
       sorter: (a, b) =>
         (a.leave_types?.leave_type || "").localeCompare(
-          b.leave_types?.leave_type || "",
+          b.leave_types?.leave_type || ""
         ),
     },
     {
@@ -65,6 +65,63 @@ const LeaveApplications = () => {
       dataIndex: "end_date",
       render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
       sorter: (a, b) => new Date(a.end_date) - new Date(b.end_date),
+    },
+    {
+      title: "Contact During Leave",
+      dataIndex: "contact_details_during_leave",
+      render: (text) => <div>{text || "-"}</div>,
+    },
+
+    // 2. Approval Date
+    {
+      title: "Approval Date",
+      dataIndex: "approval_date",
+      render: (text) =>
+        text ? <div>{moment(text).format("DD-MM-YYYY")}</div> : "-",
+      sorter: (a, b) =>
+        new Date(a.approval_date || 0) - new Date(b.approval_date || 0),
+    },
+
+    // 3. Document Attachment
+
+    {
+      title: "Attachment",
+      dataIndex: "document_attachment",
+      render: (_text, record) => (
+        <a
+          href={record.resume_path}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          className="d-inline-flex align-items-center gap-2 text-decoration-none"
+          title="View or Download PDF"
+        >
+          <i className="ti ti-file-type-pdf fs-5"></i>
+          <span>View </span>
+        </a>
+      ),
+    },
+
+    // 4. Rejection Reason
+    {
+      title: "Rejection Reason",
+      dataIndex: "rejection_reason",
+      sorter: (a, b) =>
+        (a.rejection_reason || "").localeCompare(b.rejection_reason || ""),
+    },
+
+    // 5. Backup Person
+    {
+      title: "Backup Person",
+      dataIndex: "leave_backup_person_id",
+      render: (value) => <div>{value?.full_name || "-"}</div>,
+    },
+
+    // 6. Approver
+    {
+      title: "Approver",
+      dataIndex: "leave_approver",
+      render: (value) => <div>{value?.full_name || "-"}</div>,
     },
     {
       title: "Reason",
@@ -127,9 +184,8 @@ const LeaveApplications = () => {
   ];
 
   const { leave_application, loading, error, success } = useSelector(
-    (state) => state.leave_Applications,
+    (state) => state.leave_Applications
   );
-
   React.useEffect(() => {
     dispatch(fetchleave_application({ search: searchText }));
   }, [dispatch, searchText]);
@@ -153,7 +209,7 @@ const LeaveApplications = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -166,11 +222,11 @@ const LeaveApplications = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

@@ -32,6 +32,9 @@ const ManagedisciplinryAction = ({
       penalty_type: "",
       effective_from: new Date().toISOString(),
       status: "Pending",
+      remarks: "",
+      review_date: new Date().toISOString(),
+      reviewed_by: "",
     },
   });
 
@@ -64,6 +67,9 @@ const ManagedisciplinryAction = ({
         penalty_type: "",
         effective_from: new Date().toISOString(),
         status: "Pending",
+        remarks: "",
+        review_date: new Date().toISOString(),
+        reviewed_by: "",
       });
     }
   }, [disciplinryAction, reset]);
@@ -295,6 +301,71 @@ const ManagedisciplinryAction = ({
                   />
                 </div>
 
+                {/* Review Date */}
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">Review Date</label>
+                  <Controller
+                    name="review_date"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        value={
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : ""
+                        }
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={(date) => {
+                          field.onChange(date);
+                        }}
+                        className="form-control"
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText="Select Date"
+                      />
+                    )}
+                  />
+                </div>
+
+                {/* Reviewed By */}
+
+                <div className="col-md-6 mb-3">
+                  <label className="col-form-label">
+                    Reviewed By <span className="text-danger">*</span>
+                  </label>
+                  <Controller
+                    name="reviewed_by"
+                    control={control}
+                    rules={{ required: "Employee is required" }}
+                    render={({ field }) => {
+                      const selectedEmployee = employees?.find(
+                        (emp) => emp.value === field.value
+                      );
+                      return (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={employees}
+                          placeholder="Select Employee"
+                          isLoading={employeeLoading}
+                          classNamePrefix="react-select"
+                          value={selectedEmployee || null}
+                          onInputChange={setSearchValue}
+                          onChange={(opt) => field.onChange(opt?.value)}
+                          styles={{
+                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                  {errors.reviewed_by && (
+                    <small className="text-danger">
+                      {errors.reviewed_by.message}
+                    </small>
+                  )}
+                </div>
+
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
                   <Controller
@@ -381,6 +452,33 @@ const ManagedisciplinryAction = ({
                       {errors.incident_description.message}
                     </small>
                   )}
+                </div>
+                {/* Remarks */}
+                <div className="col-12 mb-3">
+                  <label className="col-form-label">
+                    Remarks{" "}
+                    <small className="text-muted">(Max 255 characters)</small>
+                  </label>
+                  <Controller
+                    name="remarks"
+                    control={control}
+                    rules={{
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Remarks must be less than or equal to 255 characters",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <textarea
+                        {...field}
+                        rows={3}
+                        maxLength={255}
+                        className="form-control"
+                        placeholder="Enter Remarks"
+                      />
+                    )}
+                  />
                 </div>
               </div>
             </div>

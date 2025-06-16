@@ -9,6 +9,7 @@ import {
   updatesuccessionPlanning,
 } from "../../../redux/successionPlanningEntry";
 import DatePicker from "react-datepicker";
+import { fetchRoles } from "../../../redux/roles";
 
 const ManagesuccessionPlanning = ({
   setsuccessionPlanning,
@@ -21,19 +22,33 @@ const ManagesuccessionPlanning = ({
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
       current_holder_id: "",
       potential_successor_id: "",
-      critical_position: false,
+      critical_position: "",
       readiness_level: "",
-      plan_date: "",
+      plan_date: new Date().toISOString(),
+      development_plan: "",
+      successor_rank: "",
+      expected_transition_date: new Date().toISOString(),
+      risk_of_loss: "",
+      retention_plan: "",
+      last_updated_by_hr: "",
+      last_review_date: new Date().toISOString(),
+      evaluated_by: "",
+      role_id: "",
+      evaluation_date: new Date().toISOString(),
+      training_date: new Date().toISOString(),
+      evaluation_date: new Date().toISOString(),
     },
   });
 
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchRoles({ searchValue }));
   }, [dispatch, searchValue]);
 
   useEffect(() => {
@@ -43,17 +58,51 @@ const ManagesuccessionPlanning = ({
         potential_successor_id: successionPlanning.potential_successor_id || "",
         critical_position: successionPlanning.critical_position || false,
         readiness_level: successionPlanning.readiness_level || "",
-        plan_date: successionPlanning.plan_date
-          ? moment(successionPlanning.plan_date).format("YYYY-MM-DD")
-          : "",
+        plan_date: successionPlanning.plan_date || "",
+        development_plan: successionPlanning.development_plan || "",
+        successor_rank: successionPlanning.successor_rank || "",
+        expected_transition_date:
+          successionPlanning.expected_transition_date ||
+          new Date().toISOString(),
+        risk_of_loss: successionPlanning.risk_of_loss || "",
+        evaluated_by: successionPlanning.evaluated_by || "",
+        retention_plan: successionPlanning.retention_plan || "",
+        last_updated_by_hr: successionPlanning.last_updated_by_hr || "",
+        last_review_date:
+          successionPlanning.last_review_date || new Date().toISOString(),
+        role_id: successionPlanning.role_id || "",
+        evaluation_date:
+          successionPlanning?.evaluation_date || new Date().toISOString(),
+        expected_transition_date:
+          successionPlanning?.expected_transition_date ||
+          new Date().toISOString(),
+        plan_date: successionPlanning?.plan_date || new Date().toISOString(),
+        last_review_date:
+          successionPlanning?.last_review_date || new Date().toISOString(),
+        training_date:
+          successionPlanning.training_date || new Date().toISOString(),
+        evaluation_date:
+          successionPlanning.evaluation_date || new Date().toISOString(),
       });
     } else {
       reset({
         current_holder_id: "",
         potential_successor_id: "",
-        critical_position: false,
+        critical_position: "",
         readiness_level: "",
-        plan_date: "",
+        plan_date: new Date().toISOString(),
+        development_plan: "",
+        successor_rank: "",
+        expected_transition_date: new Date().toISOString(),
+        risk_of_loss: "",
+        retention_plan: "",
+        last_updated_by_hr: "",
+        last_review_date: new Date().toISOString(),
+        evaluated_by: "",
+        role_id: "",
+        evaluation_date: new Date().toISOString(),
+        training_date: new Date().toISOString(),
+        evaluation_date: new Date().toISOString(),
       });
     }
   }, [successionPlanning, reset]);
@@ -65,7 +114,12 @@ const ManagesuccessionPlanning = ({
     label: emp.full_name,
     value: emp.id,
   }));
+  const { roles, loading: rolesLoading } = useSelector((state) => state.roles);
 
+  const roleOptions = roles?.map((role) => ({
+    value: role.id,
+    label: role.role_name,
+  }));
   const readinessOptions = [
     { label: "Ready Now", value: "Ready Now" },
     { label: "Ready in 1 Year", value: "Ready in 1 Year" },
@@ -182,23 +236,19 @@ const ManagesuccessionPlanning = ({
             </div>
 
             {/* Critical Position */}
+
             <div className="col-md-6 mb-3">
-              <label className="col-form-label d-block">
-                Is Critical Position?
-              </label>
+              <label className="col-form-label">Critical Position</label>
               <Controller
                 name="critical_position"
                 control={control}
                 render={({ field }) => (
-                  <div className="form-check form-switch">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="critical_position"
-                      checked={field.value}
-                      onChange={(e) => field.onChange(e.target.checked)}
-                    />
-                  </div>
+                  <input
+                    {...field}
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter critical_position"
+                  />
                 )}
               />
             </div>
@@ -234,7 +284,38 @@ const ManagesuccessionPlanning = ({
                 </small>
               )}
             </div>
-
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">
+                Evaluation Date <span className="text-danger">*</span>
+              </label>
+              <Controller
+                name="evaluation_date"
+                control={control}
+                rules={{ required: "Date is required" }}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : ""
+                    }
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) => {
+                      field.onChange(date);
+                    }}
+                    className="form-control"
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="Select Offer Date"
+                  />
+                )}
+              />
+              {errors.evaluation_date && (
+                <small className="text-danger">
+                  {errors.evaluation_date.message}
+                </small>
+              )}
+            </div>
             {/* Plan Date */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
@@ -267,6 +348,254 @@ const ManagesuccessionPlanning = ({
                   {errors.plan_date.message}
                 </small>
               )}
+            </div>
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">
+                Training Date <span className="text-danger">*</span>
+              </label>
+              <Controller
+                name="training_date"
+                control={control}
+                rules={{ required: "Date is required" }}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : ""
+                    }
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) => {
+                      field.onChange(date);
+                    }}
+                    className="form-control"
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="Select Date"
+                  />
+                )}
+              />
+              {errors.training_date && (
+                <small className="text-danger">
+                  {errors.training_date.message}
+                </small>
+              )}
+            </div>
+
+            {/* Development Plan */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Development Plan</label>
+              <Controller
+                name="development_plan"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Development Plan"
+                  />
+                )}
+              />
+            </div>
+
+            {/* Successor Rank */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Successor Rank</label>
+              <Controller
+                name="successor_rank"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter Successor Rank"
+                  />
+                )}
+              />
+            </div>
+
+            {/* Expected Transition Date */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Expected Transition Date</label>
+              <Controller
+                name="expected_transition_date"
+                control={control}
+                rules={{ required: "Date is required" }}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : ""
+                    }
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) => {
+                      field.onChange(date);
+                    }}
+                    className="form-control"
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="Select Offer Date"
+                  />
+                )}
+              />
+            </div>
+
+            {/* Risk of Loss */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Risk of Loss</label>
+              <Controller
+                name="risk_of_loss"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={[
+                      { label: "Low", value: "Low" },
+                      { label: "Medium", value: "Medium" },
+                      { label: "High", value: "High" },
+                    ]}
+                    placeholder="Select Risk Level"
+                    value={
+                      [
+                        { label: "Low", value: "Low" },
+                        { label: "Medium", value: "Medium" },
+                        { label: "High", value: "High" },
+                      ].find((opt) => opt.value === field.value) || null
+                    }
+                    onChange={(opt) => field.onChange(opt?.value)}
+                    classNamePrefix="react-select"
+                  />
+                )}
+              />
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Role <span className="text-danger">*</span>
+                </label>
+                <Select
+                  className="react-select"
+                  options={roleOptions}
+                  isLoading={rolesLoading}
+                  onChange={(selectedOption) =>
+                    setValue("role_id", selectedOption?.value)
+                  }
+                  placeholder="Select Role"
+                  menuPortalTarget={document.body}
+                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+                />
+                {errors.role_id && (
+                  <small className="text-danger">
+                    {errors.role_id.message}
+                  </small>
+                )}
+              </div>
+            </div>
+            {/* Retention Plan */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Retention Plan</label>
+              <Controller
+                name="retention_plan"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Retention Plan"
+                  />
+                )}
+              />
+            </div>
+
+            {/* Last Updated by HR */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Last Updated By HR</label>
+              <Controller
+                name="last_updated_by_hr"
+                control={control}
+                rules={{ required: "Last Updated By HR is required" }}
+                render={({ field }) => {
+                  const selected = employeeOptions?.find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={employeeOptions}
+                      placeholder="Select Employee"
+                      value={selected || null}
+                      onInputChange={setSearchValue}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  );
+                }}
+              />
+              {errors.last_updated_by_hr && (
+                <small className="text-danger">
+                  {errors.last_updated_by_hr.message}
+                </small>
+              )}
+            </div>
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Evaluated By</label>
+              <Controller
+                name="evaluated_by"
+                control={control}
+                rules={{ required: "Evaluated By is required" }}
+                render={({ field }) => {
+                  const selected = employeeOptions?.find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={employeeOptions}
+                      placeholder="Select Employee"
+                      value={selected || null}
+                      onInputChange={setSearchValue}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  );
+                }}
+              />
+              {errors.evaluated_by && (
+                <small className="text-danger">
+                  {errors.evaluated_by.message}
+                </small>
+              )}
+            </div>
+
+            {/* Last Review Date */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Last Review Date</label>
+              <Controller
+                name="last_review_date"
+                control={control}
+                rules={{ required: "Date is required" }}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : ""
+                    }
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) => {
+                      field.onChange(date);
+                    }}
+                    className="form-control"
+                    dateFormat="dd-MM-yyyy"
+                    placeholderText="Select Offer Date"
+                  />
+                )}
+              />
             </div>
           </div>
 

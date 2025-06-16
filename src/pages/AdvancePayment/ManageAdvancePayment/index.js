@@ -37,10 +37,8 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
         amount_approved: advancePayment?.amount_approved,
         approval_status: advancePayment?.approval_status || "pending",
         reason: advancePayment?.reason,
-        approval_date:
-          advancePayment?.approval_status === "approved"
-            ? advancePayment?.approval_date || moment().toISOString()
-            : null,
+        approval_date: advancePayment.approval_date || moment().toISOString(),
+
         repayment_schedule:
           advancePayment?.repayment_schedule ||
           moment().add(1, "month").toISOString(),
@@ -53,7 +51,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
         amount_requested: "",
         amount_approved: "",
         reason: "",
-        approval_date: null,
+        approval_date: moment().toISOString(),
         employee_id: "",
       });
     }
@@ -297,6 +295,41 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                   {errors.request_date && (
                     <small className="text-danger">
                       {errors.request_date.message}
+                    </small>
+                  )}
+                </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Approval Date<span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
+                    <Controller
+                      name="approval_date"
+                      control={control}
+                      rules={{ required: "Request date is required!" }}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          placeholderText="Select Request Date"
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={(date) => field.onChange(date)}
+                          dateFormat="DD-MM-YYYY"
+                        />
+                      )}
+                    />
+                  </div>
+                  {errors.approval_date && (
+                    <small className="text-danger">
+                      {errors.approval_date.message}
                     </small>
                   )}
                 </div>

@@ -95,7 +95,25 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
       closeButton?.click();
     }
   };
-
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        settrainingFeedback(null);
+        reset();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [settrainingFeedback, reset]);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"

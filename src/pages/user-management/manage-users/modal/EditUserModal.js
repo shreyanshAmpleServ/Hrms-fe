@@ -4,18 +4,23 @@ import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import { updateUser } from "../../../../redux/manage-user";
 import { fetchRoles } from "../../../../redux/roles";
+import { fetchEmployee } from "../../../../redux/Employee";
 
 const EditUserModal = ({ user }) => {
   const dispatch = useDispatch();
   const [isChangePassword, setIsChangePassword] = useState("N");
+  const [useEmployeeData, setUseEmployeeData] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
 
-  // Access roles and user update state from Redux
   const { roles, loading: rolesLoading } = useSelector((state) => state.roles);
+  const { employee, loading: employeeLoading } = useSelector(
+    (state) => state.employee || {}
+  );
   const { loading } = useSelector((state) => state.users);
 
-  const [selectedAvatar, setSelectedAvatar] = useState(null); // For profile image upload
+  const [showEmployeeDetails, setShowEmployeeDetails] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-  // React Hook Form setup
   const {
     register,
     control,
@@ -35,60 +40,70 @@ const EditUserModal = ({ user }) => {
       address: user?.address || "",
       role_id: user?.role_id || null,
       is_active: user?.is_active || "Y",
+      employee_id: null,
     },
   });
 
   useEffect(() => {
     dispatch(fetchRoles());
-    // Pre-fill form values with user data
-    if (user) {
-      Object.keys(user).forEach((key) => {
-        setValue(key, user[key]);
-      });
-    }
-  }, [dispatch, user, setValue]);
+    dispatch(fetchEmployee());
+  }, [dispatch]);
 
-  // Handle avatar upload
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedAvatar(file);
-    }
-  };
+  // Set user data once employee data is ready
   useEffect(() => {
-    if (user) {
+    if (user && employee?.data?.length) {
       reset({
-        username: user?.username || "",
-        email: user?.email || "",
+        username: user.username || "",
+        email: user.email || "",
         password: "",
         repeatPassword: "",
-        full_name: user?.full_name || "",
-        phone: user?.phone || "",
-        address: user?.address || "",
-        role_id: user?.role_id || null,
-        is_active: user?.is_active || "Y",
+        full_name: user.full_name || "",
+        phone: user.phone || "",
+        address: user.address || "",
+        role_id: user.role_id || null,
+        is_active: user.is_active || "Y",
+        employee_id: user.employee_id || null,
       });
+
+      const found = employee?.data?.find((e) => e.id === user.employee_id);
+      if (found) {
+        setSelectedEmployee(found);
+        setShowEmployeeDetails(true); // ✅ ensure checkbox is checked
+      } else {
+        setShowEmployeeDetails(false);
+      }
     }
-  }, [user, reset]);
-  // Map roles for react-select
-  const roleOptions = roles?.map((role) => ({
-    value: role.id,
-    label: role.role_name,
-  }));
+  }, [user, employee, reset]);
+
+  useEffect(() => {
+    if (showEmployeeDetails && selectedEmployee) {
+      setValue("full_name", `${selectedEmployee.full_name || ""}`);
+      setValue("email", selectedEmployee.email || "");
+      setValue("phone", selectedEmployee.phone_number || "");
+      setValue("address", selectedEmployee.address || "");
+    }
+    if (!showEmployeeDetails) {
+      setSelectedEmployee(null);
+      setValue("full_name", "");
+      setValue("email", "");
+      setValue("phone", "");
+      setValue("address", "");
+      setValue("employee_id", null);
+    }
+  }, [showEmployeeDetails, selectedEmployee, setValue]);
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setSelectedAvatar(file);
+  };
 
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_edit_user");
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-      if (data[key] !== null) {
-        formData.append(key, data[key]);
-      }
+      if (data[key] !== null) formData.append(key, data[key]);
     });
-
-    if (selectedAvatar) {
-      formData.append("profile_img", selectedAvatar);
-    }
-
+    if (selectedAvatar) formData.append("profile_img", selectedAvatar);
     try {
       await dispatch(updateUser({ id: user.id, userData: formData })).unwrap();
       closeButton.click();
@@ -98,25 +113,16 @@ const EditUserModal = ({ user }) => {
       closeButton.click();
     }
   };
-  useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_edit_user");
-    if (offcanvasElement) {
-      const handleModalClose = () => {
-        reset();
-        setSelectedAvatar(null);
-      };
-      offcanvasElement.addEventListener(
-        "hidden.bs.offcanvas",
-        handleModalClose,
-      );
-      return () => {
-        offcanvasElement.removeEventListener(
-          "hidden.bs.offcanvas",
-          handleModalClose,
-        );
-      };
-    }
-  }, [reset]);
+
+  const roleOptions = roles.map((role) => ({
+    value: role.id,
+    label: role.role_name,
+  }));
+  const employees = employee?.data?.map((i) => ({
+    label: `${i?.full_name || ""} (${i?.employee_code || ""})`, // name + code
+    value: i?.id,
+    data: i, // full employee object for later use
+  }));
 
   return (
     <div
@@ -142,7 +148,7 @@ const EditUserModal = ({ user }) => {
           <input type="hidden" {...register("username", { value: "sjsdj" })} />
           <div className="row">
             {/* Profile Image Upload */}
-            <div className="col-md-12">
+            <div className="col-md-4">
               <div className="profile-pic-upload">
                 <div className="profile-pic">
                   {selectedAvatar ? (
@@ -179,48 +185,90 @@ const EditUserModal = ({ user }) => {
                 </div>
               </div>
             </div>
-
-            {/* Full Name */}
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Full Name <span className="text-danger">*</span>
-                </label>
+            <div className="col-md-4 offset-md-4">
+              <div className="form-check m-3">
                 <input
-                  type="text"
-                  className="form-control"
-                  {...register("full_name", {
-                    required: "Full Name is required",
-                  })}
+                  type="checkbox"
+                  className="form-check-input"
+                  id="use_employee_data"
+                  checked={showEmployeeDetails}
+                  onChange={(e) => setShowEmployeeDetails(e.target.checked)}
                 />
-                {errors.full_name && (
-                  <small className="text-danger">
-                    {errors.full_name.message}
-                  </small>
-                )}
+                <label
+                  className="form-check-label fw-semibold"
+                  htmlFor="use_employee_data"
+                >
+                  By Employee
+                </label>
               </div>
             </div>
-
-            {/* Username */}
-            {/* <div className="col-md-6">
-              <div className="mb-3">
+            {showEmployeeDetails ? (
+              <div className="col-md-6 mb-3">
                 <label className="col-form-label">
-                  Username <span className="text-danger">*</span>
+                  Employee <span className="text-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  {...register("username", {
-                    required: "Username is required",
-                  })}
+                <Controller
+                  name="employee_id"
+                  control={control}
+                  rules={
+                    showEmployeeDetails && { required: "Employee is required" }
+                  }
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        options={employees}
+                        isLoading={employeeLoading}
+                        onChange={(empOption) => {
+                          setValue("employee_id", empOption?.value); // 👈 this sets form field
+                          setSelectedEmployee(empOption?.data); // 👈 this is for autofill
+                        }}
+                        value={
+                          employees?.find(
+                            (e) => e.value === watch("employee_id")
+                          ) || null // 👈 pre-select employee
+                        }
+                        placeholder="Choose Employee"
+                        className="employee_id"
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        }}
+                      />
+                    );
+                  }}
                 />
-                {errors.username && (
+                {errors.employee_id && (
                   <small className="text-danger">
-                    {errors.username.message}
+                    {errors.employee_id.message}
                   </small>
                 )}
               </div>
-            </div> */}
+            ) : (
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="col-form-label">
+                    Full Name <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Full Name"
+                    {...register(
+                      "full_name",
+                      !showEmployeeDetails && {
+                        required: "Full Name is required",
+                      }
+                    )}
+                    readOnly={showEmployeeDetails}
+                  />
+                  {errors.full_name && (
+                    <small className="text-danger">
+                      {errors.full_name.message}
+                    </small>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Email */}
             <div className="col-md-6">
@@ -231,6 +279,8 @@ const EditUserModal = ({ user }) => {
                 <input
                   type="text"
                   className="form-control"
+                  placeholder="Email"
+                  disabled={showEmployeeDetails}
                   {...register("email", { required: "Email is required" })}
                 />
                 {errors.email && (
@@ -256,7 +306,7 @@ const EditUserModal = ({ user }) => {
                   }}
                   value={
                     roleOptions?.find(
-                      (option) => option.value === watch("role_id"),
+                      (option) => option.value === watch("role_id")
                     ) || ""
                   }
                   placeholder="Select Role"
@@ -276,8 +326,10 @@ const EditUserModal = ({ user }) => {
                   Phone <span className="text-danger">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="form-control"
+                  disabled={showEmployeeDetails}
+                  placeholder="Phone Number"
                   {...register("phone", {
                     required: "Phone number is required",
                   })}
@@ -368,6 +420,7 @@ const EditUserModal = ({ user }) => {
                 <input
                   type="text"
                   className="form-control"
+                  placeholder="Address"
                   {...register("address")}
                 />
               </div>

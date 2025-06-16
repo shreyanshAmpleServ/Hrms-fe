@@ -1,12 +1,21 @@
-import React from "react";
+import { useDispatch } from "react-redux";
+import { deletepayslip } from "../../../redux/payslipViewer";
 
-const DeleteAlert = ({ showModal, setShowModal, onDelete, label }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, payslipId }) => {
+  const dispatch = useDispatch();
+  const handleDeletepayslip = () => {
+    if (payslipId) {
+      dispatch(deletepayslip(payslipId));
+      setShowModal(false);
+    }
+  };
+
   return (
     <>
       {showModal && (
         <div
           className="modal fade show"
-          id="delete_contact"
+          id="delete_arrear_adjustments"
           role="dialog"
           style={{ display: "block" }}
         >
@@ -17,19 +26,22 @@ const DeleteAlert = ({ showModal, setShowModal, onDelete, label }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove {label}?</h4>
+                  <h4 className="mb-2">Remove payslip?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the {label} you
-                    selected?
+                    Are you sure you want to remove <br /> the payslip
+                    adjustments you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button
                       className="btn btn-light me-2"
-                      onClick={() => setShowModal(false)} // Close the modal without deleting
+                      onClick={() => setShowModal(false)}
                     >
                       Cancel
                     </button>
-                    <button className="btn btn-danger" onClick={onDelete}>
+                    <button
+                      className="btn btn-danger"
+                      onClick={handleDeletepayslip}
+                    >
                       Yes, Delete it
                     </button>
                   </div>
@@ -43,4 +55,4 @@ const DeleteAlert = ({ showModal, setShowModal, onDelete, label }) => {
   );
 };
 
-export default DeleteAlert;
+export default DeleteConfirmation;

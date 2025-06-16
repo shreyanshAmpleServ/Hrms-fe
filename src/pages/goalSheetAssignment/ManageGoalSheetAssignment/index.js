@@ -64,17 +64,35 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   }, [dispatch, searchValue]);
 
   useEffect(() => {
-    reset({
-      employee_id: goalSheet?.employee_id || "",
-      appraisal_cycle_id: goalSheet?.appraisal_cycle_id || "",
-      goal_category_id: goalSheet?.goal_category_id || "",
-      goal_description: goalSheet?.goal_description || "",
-      weightage: goalSheet?.weightage || "",
-      target_value: goalSheet?.target_value || "",
-      measurement_criteria: goalSheet?.measurement_criteria || "",
-      due_date: goalSheet?.due_date ? new Date(goalSheet.due_date) : new Date(),
-      status: goalSheet?.status || "",
-    });
+    if (goalSheet) {
+      // Edit mode
+      reset({
+        employee_id: goalSheet.employee_id || "",
+        appraisal_cycle_id: goalSheet.appraisal_cycle_id || "",
+        goal_category_id: goalSheet.goal_category_id || "",
+        goal_description: goalSheet.goal_description || "",
+        weightage: goalSheet.weightage || "",
+        target_value: goalSheet.target_value || "",
+        measurement_criteria: goalSheet.measurement_criteria || "",
+        due_date: goalSheet.due_date
+          ? new Date(goalSheet.due_date)
+          : new Date(),
+        status: goalSheet.status || "",
+      });
+    } else {
+      // Add mode
+      reset({
+        employee_id: "",
+        appraisal_cycle_id: "",
+        goal_category_id: "",
+        goal_description: "",
+        weightage: "",
+        target_value: "",
+        measurement_criteria: "",
+        due_date: new Date(),
+        status: "",
+      });
+    }
   }, [goalSheet, reset]);
 
   const onSubmit = async (data) => {
@@ -90,7 +108,24 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
       closeBtn.click();
     }
   };
-
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setgoalSheet(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setgoalSheet]);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"

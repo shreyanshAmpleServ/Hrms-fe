@@ -54,11 +54,18 @@ const AddUserModal = () => {
 
   useEffect(() => {
     if (showEmployeeDetails && selectedEmployee) {
-      console.log("Selected Employee:", selectedEmployee);
       setValue("full_name", `${selectedEmployee.full_name || ""}`);
       setValue("email", selectedEmployee.email || "");
       setValue("phone", selectedEmployee.phone_number || "");
       setValue("address", selectedEmployee.address || "");
+    }
+    if (!showEmployeeDetails) {
+      setSelectedEmployee(null);
+      setValue("full_name", "");
+      setValue("email", "");
+      setValue("phone", "");
+      setValue("address", "");
+      setValue("employee_id", null);
     }
   }, [showEmployeeDetails, selectedEmployee, setValue]);
 
@@ -184,18 +191,11 @@ const AddUserModal = () => {
                     showEmployeeDetails && { required: "Employee is required" }
                   }
                   render={({ field }) => {
-                    const selectedEmployee = employees?.find(
-                      (emp) => emp.value === field.value
-                    );
                     return (
                       <Select
                         options={employees}
                         isLoading={employeeLoading}
                         onChange={(empOption) => {
-                          // const fullEmployee = employee?.data?.find(
-                          //   (e) => e.id === empOption.value
-                          // );
-                          setValue("full_name", empOption?.data?.full_name);
                           setValue("employee_id", empOption?.value);
                           setSelectedEmployee(empOption.data);
                         }}
@@ -224,6 +224,7 @@ const AddUserModal = () => {
                   <input
                     type="text"
                     className="form-control"
+                    placeholder="Full Name"
                     {...register(
                       "full_name",
                       !showEmployeeDetails && {
@@ -249,6 +250,7 @@ const AddUserModal = () => {
                 <input
                   type="text"
                   className="form-control"
+                  placeholder="Email"
                   disabled={showEmployeeDetails}
                   {...register("email", { required: "Email is required" })}
                   readOnly={showEmployeeDetails}
@@ -289,8 +291,9 @@ const AddUserModal = () => {
                   Phone <span className="text-danger">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="form-control"
+                  placeholder="Phone Number"
                   disabled={showEmployeeDetails}
                   {...register("phone", {
                     required: "Phone number is required",
@@ -311,6 +314,7 @@ const AddUserModal = () => {
                 <input
                   type="password"
                   className="form-control"
+                  placeholder="password"
                   {...register("password", {
                     required: "Password is required",
                   })}
@@ -331,6 +335,7 @@ const AddUserModal = () => {
                 <input
                   type="password"
                   className="form-control"
+                  placeholder="  Confirm Password"
                   {...register("repeatPassword", {
                     required: "Repeat password is required",
                     validate: (value) =>
@@ -350,6 +355,7 @@ const AddUserModal = () => {
                 <label className="col-form-label">Address</label>
                 <input
                   type="text"
+                  placeholder="Address"
                   className="form-control"
                   {...register("address")}
                 />

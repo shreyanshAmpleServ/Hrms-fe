@@ -112,6 +112,7 @@ import DailyAttendanceReducer from "./dailyAttendance";
 import GoalSheetReducer from "./GoalSheetAssignment";
 import KPIProgressReducer from "./KPIProgress";
 import WarningLettersReducer from "./WarningLetters";
+import AttendaceSummaryByReducer from "./AttendanceByEmployee";
 
 const store = configureStore({
   reducer: {
@@ -228,6 +229,7 @@ const store = configureStore({
     goalSheet: GoalSheetReducer,
     kpiProgress: KPIProgressReducer,
     warningLetters: WarningLettersReducer,
+    AttendaceSummarys: AttendaceSummaryByReducer,
   },
 });
 

@@ -101,7 +101,7 @@ const DisciplinaryActionLog = () => {
     },
     {
       title: "Penalty Type",
-      render: (text) => text?.disciplinary_penalty?.description ?? "-",
+      render: (text) => text?.disciplinary_penalty?.penalty_type ?? "-",
     },
     {
       title: "Effective From",
@@ -113,6 +113,22 @@ const DisciplinaryActionLog = () => {
       title: "Status",
       dataIndex: "status",
       render: (text) => text || "-",
+    },
+    {
+      title: "Remarks",
+      dataIndex: "remarks",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Review Date",
+      dataIndex: "review_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) => new Date(a.review_date) - new Date(b.review_date),
+    },
+    {
+      title: "Reviewed By",
+      dataIndex: "disciplinary_reviewed_by",
+      render: (text) => text?.full_name ?? "-",
     },
 
     ...(isDelete || isUpdate

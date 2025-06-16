@@ -38,17 +38,25 @@ const ManageRecognitionAwards = ({
 
   useEffect(() => {
     if (recognitionAwards) {
+      // Edit mode
       reset({
         employee_id: recognitionAwards.employee_id || "",
         award_title: recognitionAwards.award_title || "",
         description: recognitionAwards.description || "",
-        award_date: recognitionAwards?.award_date
+        award_date: recognitionAwards.award_date
           ? new Date(recognitionAwards.award_date)
           : new Date(),
         nominated_by: recognitionAwards.nominated_by || "",
       });
     } else {
-      reset();
+      // Add mode
+      reset({
+        employee_id: "",
+        award_title: "",
+        description: "",
+        award_date: new Date(),
+        nominated_by: "",
+      });
     }
   }, [recognitionAwards, reset]);
 
@@ -80,6 +88,24 @@ const ManageRecognitionAwards = ({
       console.error("Error in submission", error);
     }
   };
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setrecognitionAwards(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setrecognitionAwards]);
 
   return (
     <div

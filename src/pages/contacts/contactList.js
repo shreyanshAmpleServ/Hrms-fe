@@ -40,7 +40,7 @@ const ContactList = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Contacts",
+    (i) => i?.module_name === "Contacts"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -239,12 +239,12 @@ const ContactList = () => {
   // Fetch contacts on component mount
   useEffect(() => {
     dispatch(
-      fetchContacts({ search: searchText, ...selectedDateRange }),
+      fetchContacts({ search: searchText, ...selectedDateRange })
     ).unwrap();
   }, [dispatch, searchText, selectedDateRange]);
 
   const { contacts, loading, error, success } = useSelector(
-    (state) => state.contacts,
+    (state) => state.contacts
   );
   useEffect(() => {
     setPaginationData({
@@ -267,7 +267,7 @@ const ContactList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
   // Show FlashMessage when success or error changes
@@ -369,7 +369,7 @@ const ContactList = () => {
     doc.autoTable({
       head: [
         columns.map((col) =>
-          col.title !== "Actions" && col.title !== "Contact" ? col.title : "",
+          col.title !== "Actions" && col.title !== "Contact" ? col.title : ""
         ),
       ], // Extract column headers
       body: filteredData.map((row) =>
@@ -386,7 +386,7 @@ const ContactList = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        }),
+        })
       ),
       startY: 20,
     });

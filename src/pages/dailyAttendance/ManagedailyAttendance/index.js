@@ -29,9 +29,10 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
   );
 
   const statusOptions = [
-    { value: "present", label: "Present" },
-    { value: "absent", label: "Absent" },
-    { value: "leave", label: "Leave" },
+    { value: "Present", label: "Present" },
+    { value: "Absent", label: "Absent" },
+    { value: "Half Day", label: "Half Day" },
+    { value: "Late", label: "Late" },
   ];
 
   const employees = employee?.data?.map((i) => ({
@@ -39,23 +40,37 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
     value: i?.id,
   }));
 
-  useEffect(() => {
-    reset({
-      employee_id: dailyAttendance?.employee_id || "",
-      attendance_date: dailyAttendance?.attendance_date
-        ? new Date(dailyAttendance.attendance_date)
-        : new Date(),
-      check_in_time: dailyAttendance?.check_in_time
-        ? new Date(dailyAttendance.check_in_time)
-        : null,
-      check_out_time: dailyAttendance?.check_out_time
-        ? new Date(dailyAttendance.check_out_time)
-        : null,
-      status:
-        statusOptions.find((opt) => opt.value === dailyAttendance?.status) ||
-        null,
-      remarks: dailyAttendance?.remarks || "",
-    });
+  React.useEffect(() => {
+    if (dailyAttendance) {
+      // Edit mode
+      reset({
+        employee_id: dailyAttendance?.employee_id || "",
+        attendance_date: dailyAttendance?.attendance_date
+          ? new Date(dailyAttendance.attendance_date)
+          : new Date(),
+        check_in_time: dailyAttendance?.check_in_time
+          ? new Date(dailyAttendance.check_in_time)
+          : null,
+        check_out_time: dailyAttendance?.check_out_time
+          ? new Date(dailyAttendance.check_out_time)
+          : null,
+        // status:
+        //   statusOptions.find((opt) => opt.value === dailyAttendance?.status) ||
+        //   null,
+        status: dailyAttendance.status || "",
+        remarks: dailyAttendance?.remarks || "",
+      });
+    } else {
+      // Add mode – blank form
+      reset({
+        employee_id: "",
+        attendance_date: new Date(),
+        check_in_time: null,
+        check_out_time: null,
+        status: "",
+        remarks: "",
+      });
+    }
   }, [dailyAttendance, reset]);
 
   useEffect(() => {
@@ -80,7 +95,24 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
       closeButton.click();
     }
   };
-
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setAttendance(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setAttendance]);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"

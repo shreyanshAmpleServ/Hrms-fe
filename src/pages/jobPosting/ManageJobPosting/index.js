@@ -42,21 +42,36 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
     [designation]
   );
 
-  useEffect(() => {
-    reset({
-      department_id: JobPosting?.department_id || "",
-      designation_id: JobPosting?.designation_id || "",
-      job_title: JobPosting?.job_title || "",
-      description: JobPosting?.description || "",
-      required_experience: JobPosting?.required_experience || "",
-      posting_date: JobPosting?.posting_date
-        ? new Date(JobPosting.posting_date)
-        : new Date(),
-      closing_date: JobPosting?.closing_date
-        ? new Date(JobPosting.closing_date)
-        : new Date(),
-      is_internal: JobPosting?.is_internal || false,
-    });
+  React.useEffect(() => {
+    if (JobPosting) {
+      // Edit Mode
+      reset({
+        department_id: JobPosting.department_id || "",
+        designation_id: JobPosting.designation_id || "",
+        job_title: JobPosting.job_title || "",
+        description: JobPosting.description || "",
+        required_experience: JobPosting.required_experience || "",
+        posting_date: JobPosting.posting_date
+          ? new Date(JobPosting.posting_date)
+          : new Date(),
+        closing_date: JobPosting.closing_date
+          ? new Date(JobPosting.closing_date)
+          : new Date(),
+        is_internal: JobPosting.is_internal || false,
+      });
+    } else {
+      // Add Mode
+      reset({
+        department_id: "",
+        designation_id: "",
+        job_title: "",
+        description: "",
+        required_experience: "",
+        posting_date: new Date(),
+        closing_date: new Date(),
+        is_internal: false,
+      });
+    }
   }, [JobPosting, reset]);
 
   useEffect(() => {
@@ -79,7 +94,24 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
       closeButton.click();
     }
   };
-
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setJobPosting(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setJobPosting]);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
