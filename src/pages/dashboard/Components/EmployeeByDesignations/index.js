@@ -11,14 +11,14 @@ import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Title);
 
-export const EmployeeDept = ({ data }) => {
+export const EmployeeByDesignations = ({ data }) => {
   const chartData = {
     labels: data?.labels || [],
     datasets: [
       {
         label: "Employees",
         data: data?.values || [],
-        backgroundColor: "#f97316", // Tailwind orange-500
+        backgroundColor: "#0000ff",
         borderRadius: 4,
         barThickness: 10,
         categoryPercentage: 0.5,
@@ -28,7 +28,7 @@ export const EmployeeDept = ({ data }) => {
   };
 
   const options = {
-    indexAxis: "y", // Horizontal Bar
+    indexAxis: "y",
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -65,11 +65,11 @@ export const EmployeeDept = ({ data }) => {
           <div className="card shadow-sm w-100">
             <div className="d-flex flex-column">
               <div className="row align-items-center p-3">
-                <h5 className="col-10 fw-semibold">Employee By Department</h5>
+                <h5 className="col-10 fw-semibold">Employee By Designations</h5>
               </div>
               <hr className="border-secondary my-1" />
               <div className="mb-3 flex-grow-1 p-2">
-                <div style={{ minHeight: "350px" }}>
+                <div style={{ minHeight: "400px" }}>
                   <Bar data={chartData} options={options} />
                 </div>
               </div>

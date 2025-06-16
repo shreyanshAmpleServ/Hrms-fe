@@ -113,7 +113,10 @@ import GoalSheetReducer from "./GoalSheetAssignment";
 import KPIProgressReducer from "./KPIProgress";
 import WarningLettersReducer from "./WarningLetters";
 import AttendaceSummaryByReducer from "./AttendanceByEmployee";
-
+import DashboardsCountReducer from "./Dashboards/DashboardsCount";
+import EmployeeByDepartmentReducer from "./Dashboards/EmployeeByDepartment";
+import EmployeeByDesignationsReducer from "./Dashboards/EmployeeByDesignations";
+import EmployeeByStatusReducer from "./Dashboards/EmployeeByStatus";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -230,6 +233,10 @@ const store = configureStore({
     kpiProgress: KPIProgressReducer,
     warningLetters: WarningLettersReducer,
     AttendaceSummarys: AttendaceSummaryByReducer,
+    dashboardsCount: DashboardsCountReducer,
+    employeeByDepartment: EmployeeByDepartmentReducer,
+    employeeByDesignations: EmployeeByDesignationsReducer,
+    employeeByStatus: EmployeeByStatusReducer,
   },
 });
 

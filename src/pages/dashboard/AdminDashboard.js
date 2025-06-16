@@ -1,38 +1,87 @@
-import React from "react";
 import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  ProgressBar,
-  Table,
-  Badge,
-} from "react-bootstrap";
-import { Bar, Doughnut, Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
+  ArcElement,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
-  ArcElement,
 } from "chart.js";
+import React, { useEffect } from "react";
+import { Pie } from "react-chartjs-2";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import ImageWithBasePath from "../../components/common/imageWithBasePath";
-import { all_routes } from "../../routes/all_routes";
-import CollapseHeader from "../../components/common/collapse-header";
-import { IoMdHome } from "react-icons/io";
 import image1 from "../../assets/avatar1.webp";
-import { Doughnutptions } from "../../components/common/Chats";
+import CollapseHeader from "../../components/common/collapse-header";
+import { all_routes } from "../../routes/all_routes";
 import { ActBirth } from "./Components/Activities&Birthday";
-import { Attendance } from "./Components/Attendance";
 import { EmployeeDept } from "./Components/EmpDept";
-import SalesOverview from "./Components/SalesOverview";
-import Invoices from "./Components/InvoiceOverview";
+import { EmployeeByDesignations } from "./Components/EmployeeByDesignations";
+import { EmployeeByStatus } from "./Components/EmployeeByStatus";
+import { useDispatch } from "react-redux";
+import { fetchEmployeeAttendanceCount } from "../../redux/Dashboards/DashboardsCount";
+import { useSelector } from "react-redux";
+import { fetchEmployeeByDepartment } from "../../redux/Dashboards/EmployeeByDepartment";
+import { fetchEmployeeByDesignations } from "../../redux/Dashboards/EmployeeByDesignations";
+import { fetchEmployeeByStatus } from "../../redux/Dashboards/EmployeeByStatus";
+
+const notifications = [
+  {
+    image: "image1.jpg",
+    name: "Matt Morgan",
+    project: "Added new project HRMS Dashboard",
+    time: "5:30 PM",
+  },
+  {
+    image: "image2.jpg",
+    name: "John Doe",
+    project: "Completed the Marketing Plan",
+    time: "3:00 PM",
+  },
+  {
+    image: "image3.jpg",
+    name: "Jane Smith",
+    project: "Reviewed User Stories for the App",
+    time: "1:15 PM",
+  },
+  {
+    image: "image1.jpg",
+    name: "Matt Morgan",
+    project: "Added new project HRMS Dashboard",
+    time: "5:30 PM",
+  },
+  {
+    image: "image2.jpg",
+    name: "John Doe",
+    project: "Completed the Marketing Plan",
+    time: "3:00 PM",
+  },
+  {
+    image: "image3.jpg",
+    name: "Jane Smith",
+    project: "Reviewed User Stories for the App",
+    time: "1:15 PM",
+  },
+  {
+    image: "image1.jpg",
+    name: "Matt Morgan",
+    project: "Added new project HRMS Dashboard",
+    time: "5:30 PM",
+  },
+  {
+    image: "image2.jpg",
+    name: "John Doe",
+    project: "Completed the Marketing Plan",
+    time: "3:00 PM",
+  },
+  {
+    image: "image3.jpg",
+    name: "Jane Smith",
+    project: "Reviewed User Stories for the App",
+    time: "1:15 PM",
+  },
+];
 
 ChartJS.register(
   CategoryScale,
@@ -41,30 +90,29 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement,
+  ArcElement
 );
-// import FlashMessage from "../../components/common/modals/FlashMessage";
 
 const AdminDashboard = () => {
-  const route = all_routes;
-  const barData = {
-    labels: [
-      "HR",
-      "Marketing",
-      "Accounting",
-      "Development",
-      "Marketing",
-      "Accounting",
-      "Design",
-    ],
-    datasets: [
-      {
-        label: "Employees",
-        data: [20, 40, 35, 25, 43, 65, 30],
-        backgroundColor: "#0d6efd",
-      },
-    ],
-  };
+  const dispatch = useDispatch();
+
+  const { attendanceCount } = useSelector((state) => state.dashboardsCount);
+  const { employeeByDepartment } = useSelector(
+    (state) => state.employeeByDepartment
+  );
+  const { employeeByDesignations } = useSelector(
+    (state) => state.employeeByDesignations
+  );
+  const { employeeByStatus } = useSelector((state) => state.employeeByStatus);
+
+  console.log({ employeeByStatus });
+
+  useEffect(() => {
+    dispatch(fetchEmployeeAttendanceCount());
+    dispatch(fetchEmployeeByDepartment());
+    dispatch(fetchEmployeeByDesignations());
+    dispatch(fetchEmployeeByStatus());
+  }, []);
 
   const doughnutData = {
     labels: ["Present", "Late", "Half Day", "Absent"],
@@ -73,79 +121,53 @@ const AdminDashboard = () => {
         label: "Attendance",
         data: [75, 10, 5, 10],
         backgroundColor: ["#198754", "#ffc107", "#0dcaf0", "#dc3545"],
-        // borderWidth: 2,
-        // cutout: '70%',
       },
     ],
   };
 
-  const taskData = {
-    labels: ["Completed", "In Progress", "Pending"],
+  const departmentData = {
+    labels: employeeByDepartment?.labels || [],
     datasets: [
       {
-        label: "Tasks",
-        data: [124, 16, 40],
-        backgroundColor: ["#198754", "#ffc107", "#dc3545"],
+        label: "Attendance",
+        data: employeeByDepartment?.values || [],
+        backgroundColor: [
+          "#198754",
+          "#ffc107",
+          "#dc3545",
+          "#0dcaf0",
+          "#ffc107",
+          "#dc3545",
+          "#0dcaf0",
+        ],
       },
     ],
   };
 
   const numberData = [
     {
-      title: "Attendance",
-      value: "92.99%",
-      status: "+2.1%",
+      title: "Total Employees",
+      value: attendanceCount?.total_employees || 0,
       color: "bg-dark text-white",
-      icon: "ti-calendar-check",
+      icon: "ti-users",
     },
     {
-      title: "Total Projects",
-      value: "50/94",
-      status: "-2.1%",
+      title: "Absent Employees",
+      value: attendanceCount?.absent || 0,
       color: "bg-secondary text-white",
-      icon: "ti-layout-dashboard",
+      icon: "ti-users",
     },
     {
-      title: "Total Clients",
-      value: "69/86",
-      status: "+1.1%",
+      title: "Present Employees",
+      value: attendanceCount?.present || 0,
       color: "bg-primary text-white",
       icon: "ti-users",
     },
     {
-      title: "Total Tasks",
-      value: "25/28",
-      status: "+2.1%",
+      title: "WFH Employees",
+      value: attendanceCount?.work_from_home || 0,
       color: "bg-success text-white",
-      icon: "ti-list-check",
-    },
-    {
-      title: "Earnings",
-      value: "$2144",
-      status: "+2.6%",
-      color: "bg-warning text-dark",
-      icon: "ti-currency-dollar",
-    },
-    {
-      title: "Profit This Week",
-      value: "$5544",
-      status: "+2.4%",
-      color: "bg-danger text-white",
-      icon: "ti-chart-bar",
-    },
-    {
-      title: "Avg. Task Time",
-      value: "1h 32m",
-      status: "-0.6%",
-      color: "bg-info text-dark",
-      icon: "ti-clock-hour-4",
-    },
-    {
-      title: "New Signups",
-      value: "124",
-      status: "+3.8%",
-      color: "bg-danger text-white",
-      icon: "ti-user-plus",
+      icon: "ti-users",
     },
   ];
 
@@ -157,26 +179,10 @@ const AdminDashboard = () => {
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
-          {/* {error && (
-              <FlashMessage
-                type="error"
-                message={error}
-                onClose={() => dispatch(clearMessages())}
-              />
-            )}
-            {success && (
-              <FlashMessage
-                type="success"
-                message={success}
-                onClose={() => dispatch(clearMessages())}
-              />
-            )} */}
-
           <div className="row">
             <div className="col-md-12">
-              <Container fluid className="p-4 pt-0">
+              <div className="">
                 <div className="col-md-12">
-                  {/* Page Header */}
                   <div className="page-header mb-0">
                     <div className="row align-items-center">
                       <div className="col-sm-4">
@@ -191,65 +197,23 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                   </div>
-                  {/* /Page Header */}
                 </div>
-                {/* Contact User */}
-                <div className="contact-head mt-n1">
-                  <div className="row align-items-center">
-                    <div className="col-sm-6">
-                      <ul
-                        className="contact-breadcrumb"
-                        style={{ marginTop: "-3px", fontSize: "13px" }}
-                      >
-                        <li>
-                          <Link to={route.contactGrid}>
-                            <IoMdHome /> / Dashboard
-                          </Link>
-                        </li>
-                        <li>Admin Dashboard</li>
-                      </ul>
-                    </div>
-                    <div className="col-sm-6 text-sm-end">
-                      {/* <div className="contact-pagination">
-                      <ul>
-                        <li>
-                          <Link to={route.contactDetails}>
-                            <i className="ti ti-chevron-left" />
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to={route.contactDetails}>
-                            <i className="ti ti-chevron-right" />
-                          </Link>
-                        </li>
-                      </ul>
-                    </div> */}
-                    </div>
-                  </div>
-                </div>
-                <div className="card shadow-xl border">
-                  <div className="card-body pb-2">
+
+                <div className="card shadow-sm">
+                  <div className="card-body">
                     <div className="d-flex align-items-center justify-content-between flex-wrap">
                       <div className="d-flex align-items-center mb-2">
                         <div className="avatar avatar-xl rounded online online-sm me-3 flex-shrink-0">
-                          {/* {companyDetail?.logo ? (
-                          <img
-                            src={companyDetail?.logo} 
-                            alt="Company Logo"
-                            className="preview"
-                          />
-                        ) : ( */}
                           <img
                             src={image1}
                             alt="Company Logo"
                             className="preview rounded-circle"
                           />
-                          {/* )} */}
                           <span className="status online" />
                         </div>
                         <div>
                           <h4 className="mb-2 text-capitalize">
-                            Welcome Back , Admin
+                            Welcome Back, Admin
                           </h4>
                           <p
                             style={{ fontSize: "14px" }}
@@ -259,124 +223,114 @@ const AdminDashboard = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="contacts-action">
-                        <Link
-                          to="#"
-                          className="btn btn-danger"
-                          data-bs-toggle="offcanvas"
-                          data-bs-target="#offcanvas_add_deal"
-                        >
-                          <i className="ti ti-circle-plus" />
-                          Add Project
-                        </Link>
-                        <Link
-                          to="#"
-                          className="btn-icon"
-                          data-bs-toggle="offcanvas"
-                          data-bs-target="#offcanvas_edit_company"
-                        >
-                          <i className="ti ti-edit-circle" />
-                        </Link>
-                        <div className="act-dropdown">
-                          <Link
-                            to="#"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                          >
-                            <i className="ti ti-dots-vertical" />
-                          </Link>
-                          <div className="dropdown-menu dropdown-menu-right">
-                            <Link
-                              className="dropdown-item"
-                              to="#"
-                              // onClick={() => handleDeleteCompany(true)}
-                            >
-                              <i className="ti ti-trash text-danger" />
-                              Delete
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
-                {/* Top Cards */}
-                <Row className=" mb-4">
+                <div className="row">
                   {numberData.map((item, i) => (
-                    <Col key={i} md={6} lg={3} className="mb-3 h-100">
-                      <Card className="shadow-lg">
-                        <Card.Body>
+                    <div key={i} className="col-md-6 col-lg-3 h-100">
+                      <div className="card shadow-sm">
+                        <div className="p-3">
                           <div
-                            className={`p-2 text-center rounded-circle ${item.color} h-25 w-25`}
+                            className={`p-2 d-flex bg-white align-items-center justify-content-center text-center rounded-circle ${item.color}`}
+                            style={{ width: "40px", height: "40px" }}
                           >
                             <i className={`ti ${item.icon}`} />
                           </div>
                           <h3 className="small h5 my-2 text-muted">
                             {item.title}
                           </h3>
-                          <div className="d-flex gap-2  mb-3">
+                          <div className="d-flex gap-2 mb-3">
                             <h5>{item.value}</h5>
-                            <small className="text-success">
-                              {item.status}
-                            </small>
                           </div>
-                          <div className="small text-muted"> View All</div>
-                        </Card.Body>
-                      </Card>
-                    </Col>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </Row>
+                </div>
 
-                {/* Employee by Department */}
-                <EmployeeDept />
-                {/* <Row className="mb-4">
-        <Col>
-          <Card className="shadow-sm">
-            <Card.Body>
-              <Card.Title>Employees by Department</Card.Title>
-              <Bar data={barData} options={{ responsive: true }} height={100} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row> */}
+                <EmployeeDept data={employeeByDepartment} />
+                <EmployeeByDesignations data={employeeByDesignations} />
+                <EmployeeByStatus data={employeeByStatus} />
 
-                {/* Status & Attendance */}
-                <Row className="mb-4">
-                  <Col md={6}>
-                    <Card className="shadow-sm">
-                      <Card.Body>
-                        <Card.Title>Attendance Overview</Card.Title>
-                        <Doughnut
-                          data={doughnutData}
-                          options={Doughnutptions}
-                        />
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col md={6}>
-                    <Card className="shadow-sm">
-                      <Card.Body>
-                        <Card.Title>Task Statistics</Card.Title>
-                        <Pie data={taskData} />
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                </Row>
-                <div className="row d-flex">
-                  <div className="col-lg-6 d-flex min-vh-50">
-                    <div className=" card shadow-lg w-100">
-                      <SalesOverview />
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="card shadow-sm">
+                      <div className="d-flex flex-column">
+                        <div className="row align-items-center p-3">
+                          <h5 className="col-10 fw-semibold">
+                            Attendance Overview
+                          </h5>
+                        </div>
+                        <hr className="border-secondary my-1" />
+                        <div className="mb-3 flex-grow-1 p-2">
+                          <div style={{ minHeight: "350px" }}>
+                            <Pie data={doughnutData} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="col-lg-6 d-flex min-vh-50">
-                    <div className="card shadow-lg w-100">
-                      <Invoices />
+                  <div className="col-md-6">
+                    <div className="card shadow-sm">
+                      <div className="d-flex flex-column">
+                        <div className="row align-items-center p-3">
+                          <h5 className="col-10 fw-semibold">
+                            Department Overview
+                          </h5>
+                        </div>
+                        <hr className="border-secondary my-1" />
+                        <div className="mb-3 flex-grow-1 p-2">
+                          <div style={{ minHeight: "350px" }}>
+                            <Pie data={departmentData} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <Attendance />
+
+                {/* <Attendance /> */}
                 <ActBirth />
-              </Container>
+                <div className="col-lg-12">
+                  <div className="card shadow-sm w-100">
+                    <div className="d-flex flex-column">
+                      <div className="row d-flex align-items-center p-3">
+                        <h5 className="col-10 fw-semibold">
+                          Recent Activities
+                        </h5>
+                        <Link to="#" className="text-end col-2">
+                          View All
+                        </Link>
+                      </div>
+                      <hr className="border-secondary my-1" />
+                      <div className="flex-grow-1">
+                        {notifications.map((notification, index) => (
+                          <div key={index} className="row px-3 py-2">
+                            <div className="col-10 align-items-center gap-2 d-flex">
+                              <img
+                                src={image1}
+                                alt="Logo"
+                                style={{ height: "2.5rem", width: "2.5rem" }}
+                                className="preview rounded-circle"
+                              />
+                              <div>
+                                <div className="h6">{notification.name}</div>
+                                <div style={{ fontSize: ".7rem" }}>
+                                  {notification.project}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-2 p-0 text-nowrap fw-bolder mt-2">
+                              {notification.time}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
