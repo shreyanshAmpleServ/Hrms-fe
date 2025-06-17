@@ -89,7 +89,7 @@ const LeaveApplications = () => {
       dataIndex: "document_attachment",
       render: (_text, record) => (
         <a
-          href={record.resume_path}
+          href={record.document_attachment}
           target="_blank"
           rel="noopener noreferrer"
           download
@@ -101,7 +101,6 @@ const LeaveApplications = () => {
         </a>
       ),
     },
-
     // 4. Rejection Reason
     {
       title: "Rejection Reason",
