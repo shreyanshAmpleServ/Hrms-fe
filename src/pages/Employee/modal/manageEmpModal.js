@@ -489,13 +489,13 @@ const ManageEmpModal = ({ employeeData }) => {
                         </label>
                         <Controller
                           name="gender"
-                          rules={{ required: "DepartmBnaent is required" }}
+                          rules={{ required: "Gender is required" }}
                           control={control}
                           render={({ field }) => (
                             <Select
                               {...field}
                               options={genderOptions}
-                              placeholder="Choose Gender"
+                              placeholder="Select Gender"
                               classNamePrefix="react-select"
                               value={
                                 genderOptions?.find(
