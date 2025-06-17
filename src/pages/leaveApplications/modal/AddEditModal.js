@@ -110,20 +110,33 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   // Submit handler
   const onSubmit = (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    const resumeFile = data.training_material_path?.[0];
 
-    const formattedData = {
-      ...data,
-      start_date: data.start_date ? new Date(data.start_date) : null,
-      end_date: data.end_date ? new Date(data.end_date) : null,
-    };
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => {
+      if (data[key] !== null && data[key] !== undefined) {
+        if (key === "document_attachment") {
+          formData.append(key, resumeFile); // Append the actual file
+        } else if (data[key] instanceof Date) {
+          formData.append(key, new Date(data[key]).toISOString());
+        } else {
+          formData.append(
+            key,
+            typeof data[key] === "object"
+              ? JSON.stringify(data[key])
+              : data[key]
+          );
+        }
+      }
+    });
 
     if (mode === "add") {
-      dispatch(addleave_application(formattedData));
+      dispatch(addleave_application(formData));
     } else if (mode === "edit" && initialData) {
       dispatch(
         updateleave_application({
           id: initialData.id,
-          leave_applicationData: formattedData,
+          leave_applicationData: formData,
         })
       );
     }
