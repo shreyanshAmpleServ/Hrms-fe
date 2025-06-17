@@ -4,7 +4,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
-import { fetchUsers } from "../../../redux/manage-user";
 import {
   createtravelReimbursement,
   updatetravelReimbursement,
@@ -21,37 +20,53 @@ const ManagetravelReimbursement = ({
   const {
     control,
     handleSubmit,
+    register,
     reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
       employee_id: "",
       travel_purpose: "",
-      start_date: "",
-      end_date: "",
+      start_date: new Date(),
+      end_date: new Date(),
       destination: "",
       total_amount: "",
       approved_by: "",
       approval_status: "",
+      travel_mode: "",
+      advance_amount: "",
+      expense_breakdown: "",
+      attachment_path: "",
+      currency: "",
+      exchange_rate: "",
+      final_approved_amount: "",
+      remarks: "",
     },
   });
 
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
-    dispatch(fetchUsers({ searchValue }));
   }, [dispatch, searchValue]);
 
   useEffect(() => {
     if (travelReimbursement) {
       reset({
-        employee_id: travelReimbursement.employee_id || "",
-        travel_purpose: travelReimbursement.travel_purpose || "",
-        start_date: travelReimbursement.start_date || "",
-        end_date: travelReimbursement.end_date || "",
-        destination: travelReimbursement.destination || "",
-        total_amount: travelReimbursement.total_amount || "",
-        approved_by: travelReimbursement.approved_by || "",
-        approval_status: travelReimbursement.approval_status || "",
+        employee_id: travelReimbursement?.employee_id || "",
+        travel_purpose: travelReimbursement?.travel_purpose || "",
+        start_date: travelReimbursement?.start_date || "",
+        end_date: travelReimbursement?.end_date || "",
+        destination: travelReimbursement?.destination || "",
+        total_amount: travelReimbursement?.total_amount || "",
+        approved_by: travelReimbursement?.approved_by || "",
+        approval_status: travelReimbursement?.approval_status || "",
+        travel_mode: travelReimbursement?.travel_mode || "",
+        advance_amount: travelReimbursement?.advance_amount || "",
+        expense_breakdown: travelReimbursement?.expense_breakdown || "",
+        attachment_path: travelReimbursement?.attachment_path || "",
+        currency: travelReimbursement?.currency || "",
+        exchange_rate: travelReimbursement?.exchange_rate || "",
+        final_approved_amount: travelReimbursement?.final_approved_amount || "",
+        remarks: travelReimbursement?.remarks || "",
       });
     } else {
       reset();
@@ -59,7 +74,8 @@ const ManagetravelReimbursement = ({
   }, [travelReimbursement, reset]);
 
   const { employee } = useSelector((state) => state.employee || {});
-  const { users } = useSelector((state) => state.users || {});
+  // const { users } = useSelector((state) => state.users || {});
+
   const { loading } = useSelector((state) => state.travelReimbursement || {});
 
   const employeeOptions = employee?.data?.map((emp) => ({
@@ -67,10 +83,10 @@ const ManagetravelReimbursement = ({
     value: emp.id,
   }));
 
-  const userOptions = users?.data?.map((u) => ({
-    label: u.full_name,
-    value: u.id,
-  }));
+  // const userOptions = users?.data?.map((u) => ({
+  //   label: u.full_name,
+  //   value: u.id,
+  // }));
 
   const statusOptions = [
     { label: "Pending", value: "Pending" },
@@ -81,16 +97,31 @@ const ManagetravelReimbursement = ({
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
+      const formData = new FormData();
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "attachment_path") {
+          if (value && value.length > 0) {
+            formData.append("attachment_path", value[0]); // Append only the first file
+          }
+        } else if (value instanceof Date) {
+          formData.append(key, value.toISOString());
+        } else {
+          formData.append(key, value ?? "");
+        }
+      });
+
       if (travelReimbursement) {
         await dispatch(
           updatetravelReimbursement({
             id: travelReimbursement.id,
-            travelReimbursementData: data,
-          }),
+            travelReimbursementData: formData,
+          })
         ).unwrap();
       } else {
-        await dispatch(createtravelReimbursement(data)).unwrap();
+        await dispatch(createtravelReimbursement(formData)).unwrap();
       }
+
       closeButton?.click();
       reset();
       settravelReimbursement(null);
@@ -131,7 +162,7 @@ const ManagetravelReimbursement = ({
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
                   const selected = (employeeOptions || []).find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -161,16 +192,16 @@ const ManagetravelReimbursement = ({
               <Controller
                 name="approved_by"
                 control={control}
-                rules={{ required: "Approver is required" }}
+                rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = (userOptions || []).find(
-                    (opt) => opt.value === field.value,
+                  const selected = (employeeOptions || []).find(
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
                       {...field}
-                      options={userOptions}
-                      placeholder="Select Approver"
+                      options={employeeOptions}
+                      placeholder="Select Employee"
                       value={selected || null}
                       onInputChange={setSearchValue}
                       onChange={(opt) => field.onChange(opt?.value)}
@@ -184,6 +215,145 @@ const ManagetravelReimbursement = ({
                   {errors.approved_by.message}
                 </small>
               )}
+            </div>
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">
+                Created By<span className="text-danger">*</span>
+              </label>
+              <Controller
+                name="created_by"
+                control={control}
+                rules={{ required: "Employee is required" }}
+                render={({ field }) => {
+                  const selected = (employeeOptions || []).find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={employeeOptions}
+                      placeholder="Select Employee"
+                      value={selected || null}
+                      onInputChange={setSearchValue}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  );
+                }}
+              />
+              {errors.created_by && (
+                <small className="text-danger">
+                  {errors.created_by.message}
+                </small>
+              )}
+            </div>
+            {/* Travel Mode */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Travel Mode</label>
+              <Controller
+                name="travel_mode"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Travel Mode"
+                    {...field}
+                  />
+                )}
+              />
+            </div>
+
+            {/* Advance Amount */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Advance Amount</label>
+              <Controller
+                name="advance_amount"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter Advance Amount"
+                    {...field}
+                  />
+                )}
+              />
+            </div>
+
+            {/* Attachment Path */}
+
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Attachment</label>
+              <input
+                type="file"
+                className={`form-control ${errors.attachment_path ? "is-invalid" : ""}`}
+                accept=".pdf"
+                {...register("attachment_path", {
+                  required: "Attachment file is required.",
+                  validate: {
+                    isPdf: (files) =>
+                      files[0]?.type === "application/pdf" ||
+                      "Only PDF files are allowed.",
+                  },
+                })}
+              />
+              {errors.attachment_path && (
+                <small className="text-danger">
+                  {errors.attachment_path.message}
+                </small>
+              )}
+            </div>
+
+            {/* Currency */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Currency</label>
+              <Controller
+                name="currency"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Currency (e.g., INR, USD)"
+                    {...field}
+                  />
+                )}
+              />
+            </div>
+
+            {/* Exchange Rate */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Exchange Rate</label>
+              <Controller
+                name="exchange_rate"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter Exchange Rate"
+                    {...field}
+                  />
+                )}
+              />
+            </div>
+
+            {/* Final Approved Amount */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Final Approved Amount</label>
+              <Controller
+                name="final_approved_amount"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter Approved Amount"
+                    {...field}
+                  />
+                )}
+              />
             </div>
 
             {/* Travel Purpose */}
@@ -330,7 +500,7 @@ const ManagetravelReimbursement = ({
                 rules={{ required: "Status is required" }}
                 render={({ field }) => {
                   const selected = statusOptions.find(
-                    (opt) => opt.value === field.value,
+                    (opt) => opt.value === field.value
                   );
                   return (
                     <Select
@@ -349,6 +519,38 @@ const ManagetravelReimbursement = ({
                   {errors.approval_status.message}
                 </small>
               )}
+            </div>
+            {/* Expense Breakdown */}
+            <div className="col-md-12 mb-3">
+              <label className="col-form-label">Expense Breakdown</label>
+              <Controller
+                name="expense_breakdown"
+                control={control}
+                render={({ field }) => (
+                  <textarea
+                    className="form-control"
+                    rows={3}
+                    placeholder="Enter Expense Details"
+                    {...field}
+                  />
+                )}
+              />
+            </div>
+            {/* Remarks */}
+            <div className="col-md-12 mb-3">
+              <label className="col-form-label">Remarks</label>
+              <Controller
+                name="remarks"
+                control={control}
+                render={({ field }) => (
+                  <textarea
+                    className="form-control"
+                    rows={3}
+                    placeholder="Enter Remarks"
+                    {...field}
+                  />
+                )}
+              />
             </div>
           </div>
 

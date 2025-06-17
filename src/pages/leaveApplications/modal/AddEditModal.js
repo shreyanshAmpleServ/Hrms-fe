@@ -252,7 +252,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* Start Date */}
           <div className="col-md-6 mb-3 mt-2">
-            <label className="form-label">Start Date</label>
+            <label className="form-label">
+              Start Date
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="start_date"
               control={control}
@@ -280,7 +283,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* End Date */}
           <div className="col-md-6 mb-3 mt-2">
-            <label className="form-label">End Date</label>
+            <label className="form-label">
+              End Date
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="end_date"
               control={control}
@@ -308,7 +314,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 1. Contact Details During Leave */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Contact During Leave</label>
+            <label className="form-label">
+              Contact During Leave
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="contact_details_during_leave"
               control={control}
@@ -316,7 +325,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                 <input
                   {...field}
                   className="form-control"
-                  placeholder="Enter contact details"
+                  placeholder="Enter Contact Details"
                 />
               )}
             />
@@ -324,7 +333,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 2. Approval Date */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Approval Date</label>
+            <label className="form-label">
+              Approval Date
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="approval_date"
               control={control}
@@ -344,7 +356,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           {/* 3. Document Attachment */}
 
           <div className="col-md-6 mb-3">
-            <label className="col-form-label">Document Attachment</label>
+            <label className="col-form-label">
+              Document Attachment
+              <span className="text-danger">*</span>
+            </label>
             <input
               type="file"
               className={`form-control ${errors.document_attachment ? "is-invalid" : ""}`}
@@ -367,7 +382,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 5. Backup Person */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Backup Person</label>
+            <label className="form-label">
+              Backup Person
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="backup_person_id"
               control={control}
@@ -390,7 +408,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 6. Approver */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Approver</label>
+            <label className="form-label">
+              Approver
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="approver_id"
               control={control}
@@ -470,7 +491,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   rows={3}
                   maxLength={255}
                   className="form-control"
-                  placeholder="Enter reason "
+                  placeholder="Enter Reason "
                 />
               )}
             />
@@ -492,7 +513,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   {...field}
                   rows={3}
                   className="form-control"
-                  placeholder="Enter rejection reason"
+                  placeholder="Enter Rejection Reason"
                 />
               )}
             />

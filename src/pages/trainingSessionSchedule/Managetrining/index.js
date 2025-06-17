@@ -128,12 +128,8 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
-    const resumeFile = data.training_material_path?.[0];
 
-    if (!resumeFile) {
-      alert("Please upload resume file.");
-      return;
-    }
+    const resumeFile = data.training_material_path?.[0];
 
     const formData = new FormData();
 

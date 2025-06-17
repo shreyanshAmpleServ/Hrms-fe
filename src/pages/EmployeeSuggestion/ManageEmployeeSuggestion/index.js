@@ -235,31 +235,32 @@ const ManageEmployeeSuggestion = ({
                   )}
                 </div>
                 <div className="col-md-12">
-                  <label className="col-form-label">
-                    Suggestions<span className="text-danger">*</span>
-                  </label>
+                  <label className="col-form-label">Suggestions</label>
+                  <small className="text-muted">(Max 255 characters)</small>
+
                   <div className="mb-3">
                     <Controller
                       name="suggestion_text"
                       control={control}
-                      rules={{ required: "Suggestion text is required!" }}
+                      rules={{
+                        required: "Feedback Required  is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Description must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
-                          rows={3}
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.suggestion_text ? "is-invalid" : ""}`}
+                          rows={3}
+                          maxLength={255}
+                          className="form-control"
+                          onChange={(option) => field.onChange(option)}
                           placeholder="Enter Suggestions"
-                          value={field.value}
-                          onChange={field.onChange}
                         />
                       )}
                     />
-                    {errors.suggestion_text && (
-                      <small className="text-danger">
-                        {errors.suggestion_text.message}
-                      </small>
-                    )}
                   </div>
                 </div>
               </div>

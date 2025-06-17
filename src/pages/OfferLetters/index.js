@@ -241,7 +241,7 @@ const OfferLetters = () => {
                   </div>
 
                   {/* Add Offer Letter button aligned to the right at the end */}
-                  <div className="col-sm-2 ms-auto">
+                  <div className="col-sm-4 ms-auto text-sm-end">
                     <Link
                       to=""
                       className="btn btn-primary"
