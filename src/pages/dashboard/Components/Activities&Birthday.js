@@ -1,107 +1,59 @@
 import { Link } from "react-router-dom";
 import image1 from "../../../assets/avatar1.webp";
+import { Avatar } from "antd";
+import { Placeholder } from "react-bootstrap";
 
-export const ActBirth = () => {
-  const data = [
-    {
-      date: "Today",
-      notifications: [
-        {
-          name: "Matt Morgan",
-          jobTitle: "Project Manager",
-          image: "image1.jpg",
-        },
-        {
-          name: "John Doe",
-          jobTitle: "Marketing Specialist",
-          image: "image2.jpg",
-        },
-      ],
-    },
-    {
-      date: "Tomorrow",
-      notifications: [
-        {
-          name: "Jane Smith",
-          jobTitle: "UX Designer",
-          image: "image3.jpg",
-        },
-        {
-          name: "Jane Smith",
-          jobTitle: "UX Designer",
-          image: "image3.jpg",
-        },
-        {
-          name: "Chris White",
-          jobTitle: "Software Engineer",
-          image: "image4.jpg",
-        },
-      ],
-    },
-    {
-      date: "25 Jan 2025",
-      notifications: [
-        {
-          name: "Jane Smith",
-          jobTitle: "UX Designer",
-          image: "image3.jpg",
-        },
-        {
-          name: "Chris White",
-          jobTitle: "Software Engineer",
-          image: "image4.jpg",
-        },
-      ],
-    },
-  ];
-  const anniversaries = [
-    {
-      date: "Today",
-      notifications: [
-        {
-          name: "John Doe",
-          jobTitle: "Marketing Specialist",
-          image: "image1.jpg",
-        },
-        {
-          name: "Jane Smith",
-          jobTitle: "UX Designer",
-          image: "image2.jpg",
-        },
-      ],
-    },
-    {
-      date: "Tomorrow",
-      notifications: [
-        {
-          name: "Chris White",
-          jobTitle: "Software Engineer",
-          image: "image3.jpg",
-        },
-        {
-          name: "Matt Morgan",
-          jobTitle: "Project Manager",
-          image: "image3.jpg",
-        },
-        {
-          name: "John Doe",
-          jobTitle: "Marketing Specialist",
-          image: "image4.jpg",
-        },
-      ],
-    },
-    {
-      date: "25 Jan 2025",
-      notifications: [
-        {
-          name: "Matt Morgan",
-          jobTitle: "Project Manager",
-          image: "image4.jpg",
-        },
-      ],
-    },
-  ];
+export const ActBirth = ({ upcomingBirthdays, upcomingAnniversaries }) => {
+  const renderSkeleton = () => {
+    return (
+      <>
+        <div className="mb-3">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <>
+              <Placeholder
+                as="h6"
+                animation="glow"
+                className="my-2 rounded-3 ms-1"
+              >
+                <Placeholder xs={4} />
+              </Placeholder>{" "}
+              <div
+                key={index}
+                style={{ background: "rgba(0,27,177, .1)" }}
+                className="row mb-2 py-1 align-items-center rounded-2 mx-1"
+              >
+                <div className="col-10 align-items-center gap-2 d-flex">
+                  <Placeholder
+                    as="div"
+                    animation="glow"
+                    style={{ height: "2.5rem", width: "2.5rem" }}
+                    className="rounded-circle"
+                  />
+                  <div>
+                    <Placeholder as="div" animation="glow">
+                      <Placeholder xs={6} />
+                    </Placeholder>
+                    <Placeholder as="div" animation="glow">
+                      <Placeholder xs={4} />
+                    </Placeholder>
+                  </div>
+                </div>
+                <div className="col-2">
+                  <Placeholder.Button
+                    animation="glow"
+                    xs={12}
+                    className="p-2 px-1"
+                  />
+                </div>
+              </div>
+            </>
+          ))}
+        </div>
+      </>
+    );
+  };
 
+  console.log(upcomingAnniversaries);
   return (
     <>
       <div className="row d-flex">
@@ -116,42 +68,54 @@ export const ActBirth = () => {
               </div>
               <hr className="border-secondary my-1" />
               <div className="flex-grow-1 px-2">
-                {data?.map((item, index) => (
-                  <div key={index}>
-                    <h6 className="my-2 ms-1">{item.date}</h6>
-                    {item?.notifications.map((notification, index) => (
-                      <div
-                        key={index}
-                        style={{ background: "rgba(0,27,177, .1)" }}
-                        className="row mb-2 py-1 align-items-center rounded-2 mx-1"
-                      >
-                        <div className="col-10 align-items-center gap-2 d-flex">
-                          <img
-                            src={image1}
-                            alt="Logo"
-                            style={{ height: "2.5rem", width: "2.5rem" }}
-                            className="preview rounded-circle"
-                          />
-                          <div>
-                            <div className="fw-bolder">{notification.name}</div>
-                            <div style={{ fontSize: ".7rem" }}>
-                              {notification.jobTitle}
+                {!upcomingAnniversaries
+                  ? renderSkeleton()
+                  : upcomingAnniversaries &&
+                    Object.keys(upcomingAnniversaries)?.map((item, index) => (
+                      <div key={index}>
+                        <h6 className="my-2 text-capitalize ms-1">{item}</h6>
+                        {upcomingAnniversaries[item]?.map(
+                          (anniversary, index) => (
+                            <div
+                              key={index}
+                              style={{ background: "rgba(0,27,177, .1)" }}
+                              className="row mb-2 py-1 align-items-center rounded-2 mx-1"
+                            >
+                              <div className="col-10 align-items-center gap-2 d-flex">
+                                <Avatar
+                                  src={anniversary.profile_pic}
+                                  alt={anniversary.name}
+                                  style={{ height: "2.5rem", width: "2.5rem" }}
+                                  className="fs-5 bg-primary"
+                                >
+                                  {anniversary.name?.charAt(0)?.toUpperCase()}
+                                </Avatar>
+                                <div>
+                                  <div className="fw-bolder text-capitalize">
+                                    {anniversary.name}
+                                  </div>
+                                  <div style={{ fontSize: ".7rem" }}>
+                                    {anniversary.designation}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-2">
+                                <Link
+                                  to="#"
+                                  className="btn btn-dark text-nowrap p-0 px-1"
+                                >
+                                  <i className="ti ti-cake" />
+                                  <span style={{ fontSize: "10px" }}>
+                                    {" "}
+                                    Send
+                                  </span>
+                                </Link>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                        <div className="col-2">
-                          <Link
-                            to="#"
-                            className="btn btn-dark text-nowrap p-0 px-1"
-                          >
-                            <i className="ti ti-cake" />
-                            <span style={{ fontSize: "10px" }}> Send</span>
-                          </Link>
-                        </div>
+                          )
+                        )}
                       </div>
-                    ))}
-                  </div>
-                ))}
+                    ))}{" "}
               </div>
             </div>
           </div>
@@ -167,42 +131,49 @@ export const ActBirth = () => {
               </div>
               <hr className="border-secondary my-1" />
               <div className="flex-grow-1 px-2">
-                {anniversaries?.map((item, index) => (
-                  <div key={index}>
-                    <h6 className="my-2 ms-1">{item.date}</h6>
-                    {item?.notifications.map((notification, index) => (
-                      <div
-                        key={index}
-                        style={{ background: "rgba(0,27,177, .1)" }}
-                        className="row mb-2 py-1 align-items-center rounded-2 mx-1"
-                      >
-                        <div className="col-10 align-items-center gap-2 d-flex">
-                          <img
-                            src={image1}
-                            alt="Logo"
-                            style={{ height: "2.5rem", width: "2.5rem" }}
-                            className="preview rounded-circle"
-                          />
-                          <div>
-                            <div className="fw-bolder">{notification.name}</div>
-                            <div style={{ fontSize: ".7rem" }}>
-                              {notification.jobTitle}
+                {!upcomingBirthdays
+                  ? renderSkeleton()
+                  : upcomingBirthdays &&
+                    Object.keys(upcomingBirthdays)?.map((item, index) => (
+                      <div key={index}>
+                        <h6 className="my-2 text-capitalize ms-1">{item}</h6>
+                        {upcomingBirthdays[item]?.map((birthday, index) => (
+                          <div
+                            key={index}
+                            style={{ background: "rgba(0,27,177, .1)" }}
+                            className="row mb-2 py-1 align-items-center rounded-2 mx-1"
+                          >
+                            <div className="col-10 align-items-center gap-2 d-flex">
+                              <Avatar
+                                src={birthday.profile_pic}
+                                alt={birthday.name}
+                                style={{ height: "2.5rem", width: "2.5rem" }}
+                                className="fs-5 bg-primary"
+                              >
+                                {birthday.name?.charAt(0)?.toUpperCase()}
+                              </Avatar>
+                              <div>
+                                <div className="fw-bolder text-capitalize">
+                                  {birthday.name}
+                                </div>
+                                <div style={{ fontSize: ".7rem" }}>
+                                  {birthday.designation}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-2">
+                              <Link
+                                to="#"
+                                className="btn btn-dark text-nowrap p-0 px-1"
+                              >
+                                <i className="ti ti-cake" />
+                                <span style={{ fontSize: "10px" }}> Send</span>
+                              </Link>
                             </div>
                           </div>
-                        </div>
-                        <div className="col-2">
-                          <Link
-                            to="#"
-                            className="btn btn-dark text-nowrap p-0 px-1"
-                          >
-                            <i className="ti ti-cake" />
-                            <span style={{ fontSize: "10px" }}> Send</span>
-                          </Link>
-                        </div>
+                        ))}
                       </div>
                     ))}
-                  </div>
-                ))}
               </div>
             </div>
           </div>

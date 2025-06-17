@@ -25,6 +25,9 @@ import { useSelector } from "react-redux";
 import { fetchEmployeeByDepartment } from "../../redux/Dashboards/EmployeeByDepartment";
 import { fetchEmployeeByDesignations } from "../../redux/Dashboards/EmployeeByDesignations";
 import { fetchEmployeeByStatus } from "../../redux/Dashboards/EmployeeByStatus";
+import { fetchUpcomingBirthdays } from "../../redux/Dashboards/UpcomingBirthdays";
+import { fetchUpcomingAnniversaries } from "../../redux/Dashboards/UpcomingAnniversaries";
+import { fetchAttendanceOverview } from "../../redux/Dashboards/AttendanceOverview";
 
 const notifications = [
   {
@@ -104,23 +107,32 @@ const AdminDashboard = () => {
     (state) => state.employeeByDesignations
   );
   const { employeeByStatus } = useSelector((state) => state.employeeByStatus);
-
-  console.log({ employeeByStatus });
-
+  const { upcomingBirthdays } = useSelector((state) => state.upcomingBirthdays);
+  const { upcomingAnniversaries } = useSelector(
+    (state) => state.upcomingAnniversaries
+  );
+  const { attendanceOverview } = useSelector(
+    (state) => state.attendanceOverview
+  );
   useEffect(() => {
     dispatch(fetchEmployeeAttendanceCount());
     dispatch(fetchEmployeeByDepartment());
     dispatch(fetchEmployeeByDesignations());
     dispatch(fetchEmployeeByStatus());
+    dispatch(fetchUpcomingBirthdays());
+    dispatch(fetchUpcomingAnniversaries());
+    dispatch(fetchAttendanceOverview());
   }, []);
 
+  console.log(attendanceOverview);
+
   const doughnutData = {
-    labels: ["Present", "Late", "Half Day", "Absent"],
+    labels: attendanceOverview?.labels || [],
     datasets: [
       {
-        label: "Attendance",
-        data: [75, 10, 5, 10],
-        backgroundColor: ["#198754", "#ffc107", "#0dcaf0", "#dc3545"],
+        label: " Employees",
+        data: attendanceOverview?.values || [],
+        backgroundColor: ["#198754", "#dc3545", "#0dcaf0", "#ffc107"],
       },
     ],
   };
@@ -129,16 +141,16 @@ const AdminDashboard = () => {
     labels: employeeByDepartment?.labels || [],
     datasets: [
       {
-        label: "Attendance",
+        label: " Employees",
         data: employeeByDepartment?.values || [],
         backgroundColor: [
-          "#198754",
-          "#ffc107",
-          "#dc3545",
-          "#0dcaf0",
-          "#ffc107",
-          "#dc3545",
-          "#0dcaf0",
+          "#FF6B6B",
+          "#4ECDC4",
+          "#45B7D1",
+          "#96CEB4",
+          "#FFEEAD",
+          "#D4A5A5",
+          "#9B59B6",
         ],
       },
     ],
@@ -291,7 +303,10 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* <Attendance /> */}
-                <ActBirth />
+                <ActBirth
+                  upcomingBirthdays={upcomingBirthdays?.data}
+                  upcomingAnniversaries={upcomingAnniversaries?.data}
+                />
                 <div className="col-lg-12">
                   <div className="card shadow-sm w-100">
                     <div className="d-flex flex-column">
