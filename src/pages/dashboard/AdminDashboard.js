@@ -300,7 +300,6 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                {/* <Attendance /> */}
                 <ActBirth
                   upcomingBirthdays={upcomingBirthdays}
                   upcomingAnniversaries={upcomingAnniversaries}

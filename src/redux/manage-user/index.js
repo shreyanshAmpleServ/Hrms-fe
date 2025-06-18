@@ -195,17 +195,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.users?.data?.findIndex(
-          (user) => user.id === action.payload.data.id
-        );
-        if (index !== -1) {
-          state.users.data[index] = action.payload.data;
-        } else {
-          state.users = {
-            ...state.users,
-            data: [...state.users, action.payload.data],
-          };
-        }
+        state.userDetail = action.payload.data;
         state.success = action.payload.message;
       })
       .addCase(updateUser.rejected, (state, action) => {

@@ -86,8 +86,10 @@ export const EmployeeByDesignations = ({ data }) => {
               ></div>
               <span className="text-muted">
                 No of Employees increased by{" "}
-                <span className="text-success fw-bold">+20%</span> from last
-                Week
+                <span className="text-success fw-bold">
+                  +{data?.total_growth_last_week || 0}%
+                </span>{" "}
+                from last Week
               </span>
             </div>
           </div>

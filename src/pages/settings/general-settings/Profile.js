@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
 import { fetchUserByToken, updateUser } from "../../../redux/manage-user";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -52,65 +53,23 @@ const Profile = () => {
     formData.append("is_active", userDetail?.is_active);
     formData.append(
       "role_id",
-      userDetail?.crms_d_user_role?.[0]?.crms_m_role?.id,
+      userDetail?.crms_d_user_role?.[0]?.crms_m_role?.id
     );
     if (selectedAvatar) {
       formData.append("profile_img", selectedAvatar);
     }
-    console.log("FormData : ", ...formData);
     try {
       await dispatch(
-        updateUser({ id: userDetail.id, userData: formData }),
+        updateUser({ id: userDetail.id, userData: formData })
       ).unwrap();
-      //   closeButton.click();
       setSelectedAvatar(null);
     } catch (error) {
-      //   closeButton.click();
+      toast.error(error.message || "Something went wrong!");
     }
   };
 
-  // const renderNavTabs = () => (
-  //     <ul className="nav nav-tabs nav-tabs-bottom">
-  //         {[
-  //             { to: route.profile, icon: "ti-settings-cog", text: "General Settings", active: true },
-  //             { to: route.companySettings, icon: "ti-world-cog", text: "Website Settings" },
-  //             { to: route.invoiceSettings, icon: "ti-apps", text: "App Settings" },
-  //             { to: route.emailSettings, icon: "ti-device-laptop", text: "System Settings" },
-  //             { to: route.paymentGateways, icon: "ti-moneybag", text: "Financial Settings" },
-  //             { to: route.storage, icon: "ti-flag-cog", text: "Other Settings" },
-  //         ].map((tab, index) => (
-  //             <li className="nav-item me-3" key={index}>
-  //                 <Link to={tab.to} className={`nav-link px-0 ${tab.active ? "active" : ""}`}>
-  //                     <i className={`ti ${tab.icon}`} /> {tab.text}
-  //                 </Link>
-  //             </li>
-  //         ))}
-  //     </ul>
-  // );
-
-  // const renderSidebarLinks = () => (
-  //     <div className="list-group list-group-flush settings-sidebar">
-  //         {[
-  //             { to: route.profile, text: "Profile", active: true },
-  //             { to: route.security, text: "Security" },
-  //             { to: route.notification, text: "Notifications" },
-  //             { to: route.connectedApps, text: "Connected Apps" },
-  //         ].map((link, index) => (
-  //             <Link
-  //                 to={link.to}
-  //                 key={index}
-  //                 className={`fw-medium ${link.active ? "active" : ""}`}
-  //             >
-  //                 {link.text}
-  //             </Link>
-  //         ))}
-  //     </div>
-  // );
-
   const renderProfileForm = () => (
     <form onSubmit={handleSubmit}>
-      {/* Employee Info */}
-      {/* <SectionHeader title="Employee Information" description="Provide the information below" /> */}
       <div className="mb-3">
         <div className="profile-upload ">
           {selectedAvatar ? (
@@ -172,7 +131,6 @@ const Profile = () => {
               value: name,
               onChanges: (e) => {
                 setName(e.target.value);
-                console.log("Hiiii: ", e);
               },
             },
             {

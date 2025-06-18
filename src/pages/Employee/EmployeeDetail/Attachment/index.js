@@ -4,13 +4,13 @@ import {
   FileImageFilled,
   FilePdfFilled,
   FileWordFilled,
-  PlusOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, Table, Tooltip } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import usePermissions from "../../../../components/common/Permissions.js/index.js";
 import UnauthorizedImage from "../../../../components/common/UnAuthorized.js";
 import { fetchEmployeeAttachment } from "../../../../redux/EmployeeAttachment";
@@ -18,6 +18,7 @@ import DeleteConfirmation from "./DeleteConfirmation";
 import ManageEmployeeAttachment from "./ManageEmployeeAttachment";
 
 const EmployeeAttachment = () => {
+  const { id } = useParams();
   const [selectedEmployeeAttachment, setSelectedEmployeeAttachment] =
     useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -29,8 +30,8 @@ const EmployeeAttachment = () => {
   );
 
   React.useEffect(() => {
-    dispatch(fetchEmployeeAttachment({}));
-  }, [dispatch]);
+    dispatch(fetchEmployeeAttachment({ employeeId: id }));
+  }, [dispatch, id]);
 
   React.useEffect(() => {
     setPaginationData({
@@ -51,6 +52,7 @@ const EmployeeAttachment = () => {
       fetchEmployeeAttachment({
         page: currentPage,
         size: pageSize,
+        employeeId: id,
       })
     );
   };
@@ -68,8 +70,8 @@ const EmployeeAttachment = () => {
         label: (
           <Link
             to="#"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvas_add"
+            data-bs-toggle="modal"
+            data-bs-target="#update_attachment_modal"
             onClick={() => setSelectedEmployeeAttachment(record)}
           >
             <i className="ti ti-edit text-blue" /> Edit
@@ -189,14 +191,14 @@ const EmployeeAttachment = () => {
           selectedDateRange={selectedDateRange}
           setSelectedDateRange={setSelectedDateRange}
         /> */}
-        <h4>Employee Documents</h4>
-        <Tooltip title="Add Document">
+        <h4>Employee Attachments</h4>
+        <Tooltip title="Add Attachment">
           <Button
             variant="filled"
             shape="circle"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvas_add"
-            icon={<PlusOutlined />}
+            data-bs-toggle="modal"
+            data-bs-target="#update_attachment_modal"
+            icon={<i className="fa-solid fa-plus"></i>}
           />
         </Tooltip>
       </div>

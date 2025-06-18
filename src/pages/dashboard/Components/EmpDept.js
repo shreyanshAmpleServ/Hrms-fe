@@ -18,7 +18,7 @@ export const EmployeeDept = ({ data }) => {
       {
         label: "Employees",
         data: data?.values || [],
-        backgroundColor: "#f97316", // Tailwind orange-500
+        backgroundColor: "#f97316",
         borderRadius: 4,
         barThickness: 10,
         categoryPercentage: 0.5,
@@ -28,35 +28,18 @@ export const EmployeeDept = ({ data }) => {
   };
 
   const options = {
-    indexAxis: "y", // Horizontal Bar
+    indexAxis: "y",
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
+    plugins: { legend: { display: false } },
     scales: {
       x: {
-        ticks: {
-          beginAtZero: true,
-          stepSize: 20,
-          color: "#1e293b",
-        },
-        grid: {
-          drawOnChartArea: false,
-        },
+        ticks: { beginAtZero: true, stepSize: 20, color: "#1e293b" },
+        grid: { drawOnChartArea: false },
       },
-      y: {
-        ticks: {
-          color: "#1e293b",
-        },
-        grid: {
-          drawBorder: false,
-        },
-      },
+      y: { ticks: { color: "#1e293b" }, grid: { drawBorder: false } },
     },
-    animation: {
-      duration: 1000,
-    },
+    animation: { duration: 1000 },
   };
   return (
     <>
@@ -73,22 +56,6 @@ export const EmployeeDept = ({ data }) => {
                   <Bar data={chartData} options={options} />
                 </div>
               </div>
-            </div>
-            <div className="mt-3 d-flex ps-4 mb-3 align-items-center">
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#f97316",
-                  marginRight: "8px",
-                }}
-              ></div>
-              <span className="text-muted">
-                No of Employees increased by{" "}
-                <span className="text-success fw-bold">+20%</span> from last
-                Week
-              </span>
             </div>
           </div>
         </div>

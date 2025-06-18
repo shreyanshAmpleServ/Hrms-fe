@@ -11,11 +11,13 @@ export const fetchEmployeeAttachment = createAsyncThunk(
     try {
       const params = {
         search: datas?.search || "",
+        employeeId: datas?.employeeId || "",
         page: datas?.page || "",
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
         endDate: datas?.endDate?.toISOString() || "",
       };
+
       const response = await apiClient.get("/v1/document-upload", {
         params,
       });
