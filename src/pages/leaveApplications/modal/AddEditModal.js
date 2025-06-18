@@ -10,7 +10,6 @@ import {
   updateleave_application,
 } from "../../../redux/leaveApplication";
 import { fetchLeaveType } from "../../../redux/LeaveType";
-import ManageStatus from "../ManageStatus";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.leave_Applications);
@@ -68,7 +67,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           ? new Date(initialData.end_date).toISOString().split("T")[0]
           : "",
         reason: initialData.reason || "",
-        status: initialData.status || "Pending",
+        status: initialData.status || "P",
         contact_details_during_leave:
           initialData.contact_details_during_leave || "",
         approval_date: initialData.approval_date || "",
@@ -84,7 +83,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         start_date: new Date().toISOString().split("T")[0],
         end_date: new Date().toISOString().split("T")[0],
         reason: "",
-        status: "Pending",
+        status: "P",
         contact_details_during_leave: "",
         approval_date: "",
         document_attachment: null,
@@ -280,7 +279,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   }}
                   className="form-control"
                   dateFormat="dd-MM-yyyy"
-                  placeholderText="Select  End Date"
+                  placeholderText="Select End Date"
                 />
               )}
             />
@@ -291,10 +290,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 1. Contact Details During Leave */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">
-              Contact During Leave
-              <span className="text-danger">*</span>
-            </label>
+            <label className="form-label">Contact During Leave</label>
             <Controller
               name="contact_details_during_leave"
               control={control}
@@ -336,10 +332,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 5. Backup Person */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">
-              Backup Person
-              <span className="text-danger">*</span>
-            </label>
+            <label className="form-label">Backup Person</label>
             <Controller
               name="backup_person_id"
               control={control}
@@ -425,7 +418,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           {/* reason */}
           <div className="col-md-12 mb-3">
             <label className="form-label">
-              Reason <small className="text-muted">(Max 255 characters)</small>{" "}
+              Reason <small className="text-muted"> (Max 255 characters)</small>{" "}
               <span className="text-danger">*</span>
             </label>
             <Controller
@@ -454,7 +447,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-          <div className="col-md-12 mb-3">
+          {/* <div className="col-md-12 mb-3">
             <label className="form-label">
               Rejection Reason
               <small className="text-muted">(Max 255 characters)</small>
@@ -491,7 +484,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                 {errors.rejection_reason.message}
               </small>
             )}
-          </div>
+          </div> */}
 
           <div className="col-md-12 text-end">
             <button

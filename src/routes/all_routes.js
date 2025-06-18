@@ -77,7 +77,7 @@ export const all_routes = {
   appointmentLetter: "/appointment-letters",
   offerLetters: "/offerLetters",
   resumeUpload: "/resumeUpload",
-  leaveApplications: "/leaveApplications",
+  leaveApplications: "/leave-applications",
   payslipViewer: "/payslipViewer",
   loanRequests: "/loanRequests",
   loneType: "loneType",

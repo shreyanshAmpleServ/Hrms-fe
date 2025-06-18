@@ -63,19 +63,11 @@ const LeaveApplications = () => {
       sorter: (a, b) => new Date(a.end_date) - new Date(b.end_date),
     },
     {
-      title: "Contact During Leave",
-      dataIndex: "contact_details_during_leave",
-      render: (text) => <div>{text || "-"}</div>,
+      title: "Reason",
+      dataIndex: "reason",
+      render: (text) => <div>{text || "—"}</div>,
+      sorter: (a, b) => (a.reason || "").localeCompare(b.reason || ""),
     },
-    {
-      title: "Approval Date",
-      dataIndex: "approval_date",
-      render: (text) =>
-        text ? <div>{moment(text).format("DD-MM-YYYY")}</div> : "-",
-      sorter: (a, b) =>
-        new Date(a.approval_date || 0) - new Date(b.approval_date || 0),
-    },
-
     {
       title: "Attachment",
       dataIndex: "document_attachment",
@@ -93,20 +85,34 @@ const LeaveApplications = () => {
             <span>View </span>
           </a>
         ) : (
-          "---"
+          "--"
         ),
     },
     {
-      title: "Rejection Reason",
-      dataIndex: "rejection_reason",
-      sorter: (a, b) =>
-        (a.rejection_reason || "").localeCompare(b.rejection_reason || ""),
+      title: "Status",
+      dataIndex: "status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${value === "P" ? "bg-warning" : value === "A" ? "bg-success" : "bg-danger"}`}
+        >
+          {value === "P"
+            ? "Pending"
+            : value === "A"
+              ? "Approved"
+              : value === "R"
+                ? "Rejected"
+                : "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
     },
-
     {
-      title: "Backup Person",
-      dataIndex: "leave_backup_person_id",
-      render: (value) => <div>{value?.full_name || "-"}</div>,
+      title: "Approval Date",
+      dataIndex: "approval_date",
+      render: (text) =>
+        text ? <div>{moment(text).format("DD-MM-YYYY")}</div> : "-",
+      sorter: (a, b) =>
+        new Date(a.approval_date || 0) - new Date(b.approval_date || 0),
     },
 
     {
@@ -114,23 +120,24 @@ const LeaveApplications = () => {
       dataIndex: "leave_approver",
       render: (value) => <div>{value?.full_name || "-"}</div>,
     },
+
     {
-      title: "Reason",
-      dataIndex: "reason",
-      render: (text) => <div>{text || "—"}</div>,
-      sorter: (a, b) => (a.reason || "").localeCompare(b.reason || ""),
+      title: "Rejection Reason",
+      dataIndex: "rejection_reason",
+      render: (text) => text || "--",
+      sorter: (a, b) =>
+        (a.rejection_reason || "").localeCompare(b.rejection_reason || ""),
+    },
+
+    {
+      title: "Backup Person",
+      dataIndex: "leave_backup_person_id",
+      render: (value) => <div>{value?.full_name || "--"}</div>,
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      render: (value) => (
-        <div
-          className={`text-capitalize badge ${value === "Pending" ? "bg-warning" : value === "Approved" ? "bg-success" : "bg-danger"}`}
-        >
-          {value || "—"}
-        </div>
-      ),
-      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+      title: "Contact During Leave",
+      dataIndex: "contact_details_during_leave",
+      render: (text) => <div>{text || "-"}</div>,
     },
 
     ...(isUpdate || isDelete

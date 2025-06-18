@@ -94,6 +94,26 @@ export const deleteleave_application = createAsyncThunk(
   }
 );
 
+export const updateLeaveStatus = createAsyncThunk(
+  "leave_application/updateLeaveStatus",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const response = await toast.promise(
+        apiClient.patch(`/v1/leave-application/${id}/status`, data),
+        {
+          loading: "Updating leave application status...",
+          success: "Leave application status updated successfully",
+          error: "Failed to update leave application status",
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to update leave_application_status"
+      );
+    }
+  }
+);
 const leave_applicationSlice = createSlice({
   name: "leave_application",
   initialState: {
@@ -177,6 +197,24 @@ const leave_applicationSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(deleteleave_application.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(updateLeaveStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateLeaveStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.leave_application?.data?.findIndex(
+          (data) => data.id === action.payload.data.id
+        );
+        if (index !== -1) {
+          state.leave_application.data[index] = action.payload.data;
+        }
+        state.success = action.payload.message;
+      })
+      .addCase(updateLeaveStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

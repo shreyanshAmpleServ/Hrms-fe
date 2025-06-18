@@ -3,12 +3,12 @@ import { Button, CloseButton, Modal } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import Select from "react-select";
-import { updateleave_application } from "../../../redux/leaveApplication";
+import { updateLeaveStatus } from "../../../redux/leaveApplication";
 
 const statusOptions = [
-  { label: "Pending", value: "Pending" },
-  { label: "Approved", value: "Approved" },
-  { label: "Rejected", value: "Rejected" },
+  { label: "Pending", value: "P" },
+  { label: "Approved", value: "A" },
+  { label: "Rejected", value: "R" },
 ];
 const ManageStatus = ({ open, setOpen, selected }) => {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
     formState: { isSubmitting },
   } = useForm({
     defaultValues: {
-      status: selected?.status || "Pending",
+      status: selected?.status || "P",
       rejection_reason: selected?.rejection_reason || "",
     },
   });
@@ -36,10 +36,9 @@ const ManageStatus = ({ open, setOpen, selected }) => {
 
   const onSubmit = (data) => {
     dispatch(
-      updateleave_application({
+      updateLeaveStatus({
         id: selected.id,
-        leave_applicationData: {
-          ...selected,
+        data: {
           status: data.status,
           rejection_reason: data.rejection_reason,
         },
@@ -104,7 +103,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                 )}
               </div>
             </div>
-            {watch("status") === "Rejected" && (
+            {watch("status") === "R" && (
               <div className="row">
                 <div className="col-md-12">
                   <label className="form-label">
@@ -115,7 +114,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                     control={control}
                     rules={{
                       required:
-                        watch("status") === "Rejected"
+                        watch("status") === "R"
                           ? "Rejection Reason is required"
                           : false,
                     }}

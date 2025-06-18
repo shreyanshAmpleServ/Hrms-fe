@@ -25,7 +25,6 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
     defaultValues: {
       trainer_id: "",
       training_title: "",
-      trainer_id: "",
       training_date: new Date().toISOString(),
       location: "",
       training_type: "",
@@ -67,7 +66,6 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
       reset({
         trainer_id: "",
         training_title: "",
-        trainer_id: "",
         training_date: new Date().toISOString(),
         location: "",
         training_type: "",

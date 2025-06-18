@@ -1,13 +1,12 @@
 import moment from "moment";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import DatePicker from "react-datepicker";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchdepartment } from "../../../redux/department"; // Update path as needed
 import { fetchdesignation } from "../../../redux/designation";
 import { createJobPosting, updateJobPosting } from "../../../redux/JobPosting"; // You need to create this
-import { useWatch } from "react-hook-form";
 
 const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
   const dispatch = useDispatch();

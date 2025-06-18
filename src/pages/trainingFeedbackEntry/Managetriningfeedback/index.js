@@ -1,16 +1,13 @@
-// imports remain unchanged
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DefaultEditor from "react-simple-wysiwyg";
 import { fetchEmployee } from "../../../redux/Employee";
-import { fetchtrainingSession } from "../../../redux/trainingSessionSchedule";
 import {
   createtrainingFeedback,
   updatetrainingFeedback,
 } from "../../../redux/trainingFeedbackEntry";
+import { fetchtrainingSession } from "../../../redux/trainingSessionSchedule";
 
 const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -67,11 +64,6 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   const trainingOptions = trainingSession?.data?.map((t) => ({
     label: t.training_title,
     value: t.id,
-  }));
-
-  const ratingOptions = [1, 2, 3, 4, 5].map((num) => ({
-    label: `${num} Star${num > 1 ? "s" : ""}`,
-    value: num,
   }));
 
   const onSubmit = async (data) => {
