@@ -96,6 +96,61 @@ const TravelReimbursement = () => {
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
+      title: "Travel Mode",
+      dataIndex: "travel_mode",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Advance Amount",
+      dataIndex: "advance_amount",
+      render: (text) => (text ? `₹${text}` : "-"),
+    },
+    {
+      title: "Expense Breakdown",
+      dataIndex: "expense_breakdown",
+      render: (text) => text || "-",
+    },
+
+    {
+      title: "Attachment",
+      dataIndex: "attachment_path",
+      render: (_text, record) => (
+        <a
+          href={record.attachment_path}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          className="d-inline-flex align-items-center gap-2 text-decoration-none"
+          title="View or Download PDF"
+        >
+          <i className="ti ti-file-type-pdf fs-5"></i>
+          <span>View </span>
+        </a>
+      ),
+    },
+
+    {
+      title: "Currency",
+      dataIndex: "currency",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Exchange Rate",
+      dataIndex: "exchange_rate",
+      render: (text) => (text ? Number(text).toFixed(2) : "-"),
+    },
+    {
+      title: "Final Approved Amount",
+      dataIndex: "final_approved_amount",
+      render: (text) => (text ? `₹${text}` : "-"),
+    },
+    {
+      title: "Remarks",
+      dataIndex: "remarks",
+      render: (text) => text || "-",
+    },
+
+    {
       title: "Destination",
       dataIndex: "destination",
       render: (text) => text || "-",

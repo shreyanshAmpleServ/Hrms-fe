@@ -256,30 +256,32 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Response Text<span className="text-danger">*</span>
+                    Response Text
+                    <small className="text-muted">(Max 255 characters)</small>
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="response_text"
                       control={control}
-                      rules={{ required: "Response text is required!" }}
+                      rules={{
+                        required: "Feedback Required  is required!",
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Description must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
-                          rows={3}
                           {...field}
-                          type="text"
-                          className={`form-control ${errors.response_text ? "is-invalid" : ""}`}
+                          rows={3}
+                          maxLength={255}
+                          className="form-control"
+                          onChange={(option) => field.onChange(option)}
                           placeholder="Enter Response Text"
-                          value={field.value}
-                          onChange={field.onChange}
                         />
                       )}
                     />
-                    {errors.response_text && (
-                      <small className="text-danger">
-                        {errors.response_text.message}
-                      </small>
-                    )}
                   </div>
                 </div>
               </div>

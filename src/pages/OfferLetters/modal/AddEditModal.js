@@ -62,8 +62,8 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     } else {
       reset({
         status: "",
-        offer_date: "",
-        valid_until: "",
+        offer_date: new Date(),
+        valid_until: new Date(),
         offered_salary: "",
         position: "",
         employee_id: "",

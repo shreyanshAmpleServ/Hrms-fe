@@ -291,7 +291,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 1. Contact Details During Leave */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Contact During Leave</label>
+            <label className="form-label">
+              Contact During Leave
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="contact_details_during_leave"
               control={control}
@@ -299,7 +302,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                 <input
                   {...field}
                   className="form-control"
-                  placeholder="Enter contact details"
+                  placeholder="Enter Contact Details"
                 />
               )}
             />
@@ -333,7 +336,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
           {/* 5. Backup Person */}
           <div className="col-md-6 mb-3">
-            <label className="form-label">Backup Person</label>
+            <label className="form-label">
+              Backup Person
+              <span className="text-danger">*</span>
+            </label>
             <Controller
               name="backup_person_id"
               control={control}
@@ -476,7 +482,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   rows={3}
                   maxLength={255}
                   className="form-control"
-                  placeholder="Enter rejection reason"
+                  placeholder="Enter Rejection Reason"
                 />
               )}
             />

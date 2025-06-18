@@ -65,6 +65,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     formData.append("file_path", data.file_path[0]); // get the actual file
     formData.append("generated_on", data.generated_on);
     formData.append("submitted_to_bank", data.submitted_to_bank);
+
     try {
       selected
         ? await dispatch(
