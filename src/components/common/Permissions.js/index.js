@@ -1,24 +1,21 @@
-const PermissionAccess = (name) => {
-  // const permissions =JSON?.parse(localStorage.getItem("permissions"))
-  // const isAdmin = localStorage?.getItem("role")
-  // const allPermissions = permissions?.filter((i)=>i?.module_name === name)?.[0]?.permissions
-  // // const isView = allPermissions?.view
-  // // const isCreate = allPermissions?.create
-  // // const isUpdate = allPermissions?.update
-  // // const isDelete = allPermissions?.delete
-  //   return allPermissions
+/**
+ * Custom hook to check user permissions for a specific module
+ * @param {string} name - The name of the module to check permissions for
+ * @returns {Object} Object containing boolean flags for view, create, update and delete permissions
+ */
+const usePermissions = (name) => {
+  const permissions = JSON?.parse(localStorage.getItem("permissions")) || [];
+  const isAdmin = localStorage.getItem("role")?.includes("admin") || false;
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === name
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
+  const modulePermissions =
+    permissions.find((i) => i?.module_name === name)?.permissions || {};
+
   return {
-    isView: isAdmin || allPermissions?.view,
-    isCreate: isAdmin || allPermissions?.create,
-    isUpdate: isAdmin || allPermissions?.update,
-    isDelete: isAdmin || allPermissions?.delete,
+    isView: isAdmin || modulePermissions.view || false,
+    isCreate: isAdmin || modulePermissions.create || false,
+    isUpdate: isAdmin || modulePermissions.update || false,
+    isDelete: isAdmin || modulePermissions.delete || false,
   };
 };
 
-export default PermissionAccess;
+export default usePermissions;

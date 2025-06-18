@@ -1,15 +1,15 @@
-import { Table, Tag } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
-import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchLeaveEncashment } from "../../redux/LeaveEncashment/index.js";
-import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageLeaveEncashment from "./ManageLeaveEncashment/index.js";
+import { fetchLeaveEncashment } from "../../redux/LeaveEncashment";
+import DeleteConfirmation from "./DeleteConfirmation";
+import ManageLeaveEncashment from "./ManageLeaveEncashment";
 
 const LeaveEncashment = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -101,17 +101,17 @@ const LeaveEncashment = () => {
       title: "Approved Status",
       dataIndex: "approval_status",
       render: (text) => (
-        <Tag
-          color={
+        <div
+          className={`badge ${
             text === "approved"
-              ? "success"
+              ? "badge-success"
               : text === "pending"
-                ? "yellow"
-                : "red"
-          }
+                ? "badge-warning"
+                : "badge-danger"
+          }`}
         >
           {text?.charAt(0)?.toUpperCase() + text?.slice(1) || "-"}
-        </Tag>
+        </div>
       ),
     },
     ...(isDelete || isUpdate
@@ -254,6 +254,7 @@ const LeaveEncashment = () => {
                         loading={loading}
                         paginationData={paginationData}
                         onPageChange={handlePageChange}
+                        style={{ textWrap: "nowrap" }}
                       />
                     </div>
                   ) : (

@@ -18,10 +18,10 @@ import apiClient from "../../../utils/axiosConfig";
  */
 export const fetchUpcomingAnniversaries = createAsyncThunk(
   "dashboard/upcomingAnniversaries",
-  async (_, thunkAPI) => {
+  async ({ page = 1, limit = 10 }, thunkAPI) => {
     try {
       const response = await apiClient.get("/v1/dashboard/work-anniversary", {
-        params: { page: 1, limit: 10 },
+        params: { page, limit },
       });
       return response.data;
     } catch (error) {
@@ -63,7 +63,6 @@ const upcomingAnniversariesSlice = createSlice({
       })
       .addCase(fetchUpcomingAnniversaries.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
       });
   },
 });

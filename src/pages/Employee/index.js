@@ -120,11 +120,6 @@ const EmployeeList = () => {
         b?.hrms_employee_designation?.designation_name,
     },
 
-    // {
-    //   title: "Employment Type",
-    //   dataIndex: "employment_type",
-    //   sorter: (a, b) => a.employment_type.length - b.employment_type.length,
-    // },
     {
       title: "Status",
       dataIndex: "status",
@@ -431,6 +426,7 @@ const EmployeeList = () => {
                           loading={loading}
                           paginationData={paginationData}
                           onPageChange={handlePageChange}
+                          style={{ textWrap: "nowrap" }}
                         />
                       ) : (
                         <EmployeeGrid data={data} />

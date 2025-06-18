@@ -3,7 +3,7 @@ import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTable/index";
 import AddButton from "../../../../components/datatable/AddButton";
@@ -12,23 +12,17 @@ import SortDropdown from "../../../../components/datatable/SortDropDown";
 import { deleteLeaveType, fetchLeaveType } from "../../../../redux/LeaveType";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
+import usePermissions from "../../../../components/common/Permissions.js";
 
 const LeaveTypeList = () => {
   const [mode, setMode] = useState("add");
   const [selected, setSelected] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = useState("ascending");
   const [paginationData, setPaginationData] = useState();
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Leave Type",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Leave Type");
 
   const dispatch = useDispatch();
   const columns = [
@@ -39,24 +33,58 @@ const LeaveTypeList = () => {
       sorter: (a, b) => a.leave_type.localeCompare(b.leave_type),
     },
     {
+      title: "Quantity",
+      dataIndex: "leave_qty",
+      render: (text) => text || "-",
+      sorter: (a, b) => a.leave_qty - b.leave_qty,
+    },
+    {
+      title: "Unit",
+      dataIndex: "leave_unit",
+      render: (text) => (text === "D" ? "Day" : "Hour"),
+      sorter: (a, b) => a.leave_unit.localeCompare(b.leave_unit),
+    },
+    {
+      title: "For Gender",
+      dataIndex: "for_gender",
+      render: (text) =>
+        text === "B"
+          ? "Both"
+          : text === "M"
+            ? "Male"
+            : text === "F"
+              ? "Female"
+              : "-",
+      sorter: (a, b) => {
+        const genderOrder = { B: 0, M: 1, F: 2 };
+        return genderOrder[a.for_gender] - genderOrder[b.for_gender];
+      },
+    },
+    {
       title: "Carry Forward",
       dataIndex: "carry_forward",
       render: (text) => <div>{text ? "Yes" : "No"}</div>,
-      sorter: (a, b) => a.carry_forward.localeCompare(b.carry_forward),
+      sorter: (a, b) =>
+        a.carry_forward === b.carry_forward ? 0 : a.carry_forward ? -1 : 1,
+    },
+    {
+      title: "Prorate Allowed",
+      dataIndex: "prorate_allowed",
+      render: (text) => <div>{text ? "Yes" : "No"}</div>,
+      sorter: (a, b) =>
+        a.prorate_allowed === b.prorate_allowed
+          ? 0
+          : a.prorate_allowed
+            ? -1
+            : 1,
     },
 
-    {
-      title: "Created Date",
-      dataIndex: "createdate",
-      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
-      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
-    },
     ...(isUpdate || isDelete
       ? [
           {
             title: "Actions",
             dataIndex: "actions",
-            render: (text, record) => (
+            render: (_, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -98,7 +126,6 @@ const LeaveTypeList = () => {
       : []),
   ];
 
-  const navigate = useNavigate();
   const { leaveType, loading } = useSelector((state) => state.leaveType);
 
   React.useEffect(() => {
@@ -121,7 +148,7 @@ const LeaveTypeList = () => {
       pageSize,
     }));
     dispatch(
-      fetchLeaveType({ search: searchText, page: currentPage, size: pageSize }),
+      fetchLeaveType({ search: searchText, page: currentPage, size: pageSize })
     );
   };
 
@@ -133,11 +160,11 @@ const LeaveTypeList = () => {
     let data = leaveType?.data || [];
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;

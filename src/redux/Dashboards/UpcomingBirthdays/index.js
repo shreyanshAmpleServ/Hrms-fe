@@ -18,11 +18,11 @@ import apiClient from "../../../utils/axiosConfig";
  */
 export const fetchUpcomingBirthdays = createAsyncThunk(
   "dashboard/upcomingBirthdays",
-  async (_, thunkAPI) => {
+  async ({ page = 1, limit = 10 }, thunkAPI) => {
     try {
       const response = await apiClient.get(
         "/v1/dashboard/get-upcoming-birthdays",
-        { params: { page: 1, limit: 10 } }
+        { params: { page, limit } }
       );
       return response.data;
     } catch (error) {
@@ -57,7 +57,6 @@ const upcomingBirthdaysSlice = createSlice({
       })
       .addCase(fetchUpcomingBirthdays.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
       });
   },
 });

@@ -1,20 +1,19 @@
-import { Rate, Table, Tag } from "antd";
+import { Table } from "antd";
 import moment from "moment";
-import Select from "react-select"; // ✅ missing import
-
-import React, { useState, useEffect } from "react";
+import Select from "react-select";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
+import usePermissions from "../../components/common/Permissions.js/index.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
+import { fetchAttendaceSummary } from "../../redux/AttendanceByEmployee/index.js";
 import { fetchdailyAttendance } from "../../redux/dailyAttendance";
+import { fetchEmployee } from "../../redux/Employee";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManagedailyAttendance from "./ManagedailyAttendance/index.js";
-import { fetchEmployee } from "../../redux/Employee";
-import { fetchAttendaceSummary } from "../../redux/AttendanceByEmployee/index.js";
-import PermissionAccess from "../../components/common/Permissions.js/index.js";
 
 const DailyAttendance = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -26,8 +25,7 @@ const DailyAttendance = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const [selectedEmployee, setSelectedEmployee] = useState(null); // ✅ define selectedEmployee
-  const [attendanceToEdit, setAttendanceToEdit] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const { dailyAttendance, loading } = useSelector(
     (state) => state.dailyAttendance || {}
@@ -46,8 +44,11 @@ const DailyAttendance = () => {
       value: i.id,
     })) || []),
   ];
-  const AllPermissions = PermissionAccess("Daily Attendance Entry");
-  console.log("AllPermissions======PermissionAccess", AllPermissions);
+
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Daily Attendance Entry"
+  );
+
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
   }, [dispatch, searchValue]);
@@ -69,7 +70,6 @@ const DailyAttendance = () => {
       })
     );
   }, [dispatch, searchValue, selectedDateRange]);
-  console.log("fetchAttendaceSummary", dailyAttendance);
 
   React.useEffect(() => {
     setPaginationData({
@@ -99,22 +99,6 @@ const DailyAttendance = () => {
   const data = dailyAttendance?.attendanceList;
   const SummaryData = AttendaceSummarys;
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Daily Attendance Entry"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
-
-  //   "badge-soft-success",
-  // "badge-soft-warning",
-  // "badge-soft-info",
-  // "badge-soft-danger",
-  // "badge-soft-primary",
-  // "badge-soft-secondary",
   const getRandomClass = (status) => {
     return status === "Present"
       ? "badge-soft-success"
@@ -136,13 +120,6 @@ const DailyAttendance = () => {
       dataIndex: "full_name",
       render: (text) => text || "-",
     },
-    // {
-    //   title: "Attendance Date",
-    //   dataIndex: "employee_code",
-    //   render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-    //   sorter: (a, b) =>
-    //     new Date(a.attendance_date) - new Date(b.attendance_date),
-    // },
     {
       title: "Present",
       dataIndex: "present",
@@ -163,48 +140,6 @@ const DailyAttendance = () => {
       dataIndex: "late",
       render: (text) => text,
     },
-
-    ...(AllPermissions?.isDelete || AllPermissions?.isUpdate
-      ? [
-          // {
-          //   title: "Action",
-          //   render: (text, a) => (
-          //     <div className="dropdown table-action">
-          //       <Link
-          //         to="#"
-          //         className="action-icon "
-          //         data-bs-toggle="dropdown"
-          //         aria-expanded="false"
-          //       >
-          //         <i className="fa fa-ellipsis-v"></i>
-          //       </Link>
-          //       <div className="dropdown-menu dropdown-menu-right">
-          //         {isUpdate && (
-          //           <Link
-          //             className="dropdown-item"
-          //             to="#"
-          //             data-bs-toggle="offcanvas"
-          //             data-bs-target="#offcanvas_add"
-          //             onClick={() => setSelecteddailyAttendance(a)}
-          //           >
-          //             <i className="ti ti-edit text-blue" /> Edit
-          //           </Link>
-          //         )}
-          //         {isDelete && (
-          //           <Link
-          //             className="dropdown-item"
-          //             to="#"
-          //             onClick={() => handleDeletedailyAttendance(a)}
-          //           >
-          //             <i className="ti ti-trash text-danger" /> Delete
-          //           </Link>
-          //         )}
-          //       </div>
-          //     </div>
-          //   ),
-          // },
-        ]
-      : []),
   ];
   const columns2 = [
     {
@@ -229,7 +164,7 @@ const DailyAttendance = () => {
       dataIndex: "status",
       render: (text) => (
         <Link
-          to="#" // Use index as key
+          to="#"
           className={`badge ${text && getRandomClass(text)} fw-medium me-2 mb-1`}
         >
           {text || "-"}
@@ -242,7 +177,7 @@ const DailyAttendance = () => {
       render: (text) => text || "-",
     },
 
-    ...(AllPermissions?.isDelete || AllPermissions?.isUpdate
+    ...(isDelete || isUpdate
       ? [
           {
             title: "Action",
@@ -257,7 +192,7 @@ const DailyAttendance = () => {
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
-                  {AllPermissions?.isUpdate && (
+                  {isUpdate && (
                     <Link
                       className="dropdown-item"
                       to="#"
@@ -276,11 +211,6 @@ const DailyAttendance = () => {
       : []),
   ];
 
-  const handleDeletedailyAttendance = (dailyAttendance) => {
-    setSelecteddailyAttendance(dailyAttendance);
-    setShowDeleteModal(true);
-  };
-
   return (
     <>
       <Helmet>
@@ -290,12 +220,10 @@ const DailyAttendance = () => {
           content="This is helpdesk ticket page of DCC HRMS."
         />
       </Helmet>
-      {/* Page Wrapper */}
       <div className="page-wrapper">
         <div className="content">
           <div className="row">
             <div className="col-md-12">
-              {/* Page Header */}
               <div className="page-header">
                 <div className="row align-items-center">
                   <div className="col-4">
@@ -313,10 +241,8 @@ const DailyAttendance = () => {
                   </div>
                 </div>
               </div>
-              {/* /Page Header */}
               <div className="card">
                 <div className="card-header">
-                  {/* Search */}
                   <div className="row align-items-center">
                     <div className="col-sm-4">
                       <div className="icon-form mb-3 mb-sm-0">
@@ -331,7 +257,7 @@ const DailyAttendance = () => {
                         />
                       </div>
                     </div>
-                    {AllPermissions?.isCreate && (
+                    {isCreate && (
                       <div className="col-sm-8">
                         <div className="text-sm-end">
                           <Link
@@ -351,19 +277,8 @@ const DailyAttendance = () => {
 
                 <div className="card-body">
                   <>
-                    {/* Filter */}
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">
-                            All Daily Attendance Entry{" "}
-                          </h4>
-                        </div>
-                      </div>
-                      <div
-                        className="d-flex ms-auto"
-                        style={{ width: "250px" }}
-                      >
+                      <div className="d-flex" style={{ width: "250px" }}>
                         <Select
                           style={{ width: "250px" }}
                           options={employeeOptions}
@@ -378,23 +293,20 @@ const DailyAttendance = () => {
                           isLoading={employeeLoading}
                           placeholder="Select Employee"
                           onInputChange={(input) => setSearchValue(input)}
-                          // isClearable
                           className="w-100"
                           classNamePrefix="react-select"
                         />
-                      </div>{" "}
+                      </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="mx-2">
-                          <DateRangePickerComponent
-                            selectedDateRange={selectedDateRange}
-                            setSelectedDateRange={setSelectedDateRange}
-                          />
-                        </div>
+                        <DateRangePickerComponent
+                          selectedDateRange={selectedDateRange}
+                          setSelectedDateRange={setSelectedDateRange}
+                        />
                       </div>
                     </div>
                   </>
 
-                  {AllPermissions?.isView ? (
+                  {isView ? (
                     <div className="table-responsive custom-table">
                       {!selectedEmployee ? (
                         <Table

@@ -1,37 +1,33 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
 import Table from "../../components/common/dataTableNew/index";
-import FlashMessage from "../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-import moment from "moment";
-import { Helmet } from "react-helmet-async";
-import AddButton from "../../components/datatable/AddButton";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {
-  clearMessages,
   deleteleave_application,
   fetchleave_application,
 } from "../../redux/leaveApplication";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
+import usePermissions from "../../components/common/Permissions.js";
+import ManageStatus from "./ManageStatus";
 
 const LeaveApplications = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [open, setOpen] = React.useState(false);
+  const [mode, setMode] = React.useState("add");
+  const [selected, setSelected] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Leave Applications");
 
   const dispatch = useDispatch();
 
@@ -71,8 +67,6 @@ const LeaveApplications = () => {
       dataIndex: "contact_details_during_leave",
       render: (text) => <div>{text || "-"}</div>,
     },
-
-    // 2. Approval Date
     {
       title: "Approval Date",
       dataIndex: "approval_date",
@@ -82,26 +76,26 @@ const LeaveApplications = () => {
         new Date(a.approval_date || 0) - new Date(b.approval_date || 0),
     },
 
-    // 3. Document Attachment
-
     {
       title: "Attachment",
       dataIndex: "document_attachment",
-      render: (_text, record) => (
-        <a
-          href={record.document_attachment}
-          target="_blank"
-          rel="noopener noreferrer"
-          download
-          className="d-inline-flex align-items-center gap-2 text-decoration-none"
-          title="View or Download PDF"
-        >
-          <i className="ti ti-file-type-pdf fs-5"></i>
-          <span>View </span>
-        </a>
-      ),
+      render: (_text, record) =>
+        record.document_attachment ? (
+          <a
+            href={record.document_attachment}
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+            className="d-inline-flex align-items-center gap-2 text-decoration-none"
+            title="View or Download PDF"
+          >
+            <i className="ti ti-file-type-pdf fs-5"></i>
+            <span>View </span>
+          </a>
+        ) : (
+          "---"
+        ),
     },
-    // 4. Rejection Reason
     {
       title: "Rejection Reason",
       dataIndex: "rejection_reason",
@@ -109,14 +103,12 @@ const LeaveApplications = () => {
         (a.rejection_reason || "").localeCompare(b.rejection_reason || ""),
     },
 
-    // 5. Backup Person
     {
       title: "Backup Person",
       dataIndex: "leave_backup_person_id",
       render: (value) => <div>{value?.full_name || "-"}</div>,
     },
 
-    // 6. Approver
     {
       title: "Approver",
       dataIndex: "leave_approver",
@@ -131,7 +123,13 @@ const LeaveApplications = () => {
     {
       title: "Status",
       dataIndex: "status",
-      render: (value) => <div>{value || "—"}</div>,
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${value === "Pending" ? "bg-warning" : value === "Approved" ? "bg-success" : "bg-danger"}`}
+        >
+          {value || "—"}
+        </div>
+      ),
       sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
     },
 
@@ -140,7 +138,7 @@ const LeaveApplications = () => {
           {
             title: "Actions",
             dataIndex: "actions",
-            render: (_text, record) => (
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -155,10 +153,29 @@ const LeaveApplications = () => {
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "Pending"
+                        ? "Approve/Reject"
+                        : record.status === "Rejected"
+                          ? "Pending/Approve"
+                          : record.status === "Approved"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#add_edit_leave_application_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -169,7 +186,7 @@ const LeaveApplications = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteIndustry(record)}
+                      onClick={() => handleDelete(record)}
                     >
                       <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
@@ -182,7 +199,7 @@ const LeaveApplications = () => {
       : []),
   ];
 
-  const { leave_application, loading, error, success } = useSelector(
+  const { leave_application, loading } = useSelector(
     (state) => state.leave_Applications
   );
   React.useEffect(() => {
@@ -231,17 +248,14 @@ const LeaveApplications = () => {
     return data;
   }, [searchText, leave_application, columns, sortOrder]);
 
-  const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+  const handleDelete = (record) => {
+    setSelected(record);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteleave_application(selectedIndustry.id));
-      // navigate(`/leave_application`);
+    if (selected) {
+      dispatch(deleteleave_application(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -256,21 +270,6 @@ const LeaveApplications = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -290,11 +289,11 @@ const LeaveApplications = () => {
                 </div>
               </div>
             </div>
-            <div className="card ">
+            <div className="card">
               <div className="card-header">
                 <div className="row align-items-center">
-                  <div className="col-sm-8">
-                    <div className="icon-form mb-3 mb-sm-6">
+                  <div className="col-sm-9">
+                    <div className="icon-form mb-sm-6">
                       <SearchBar
                         searchText={searchText}
                         handleSearch={handleSearch}
@@ -303,18 +302,18 @@ const LeaveApplications = () => {
                     </div>
                   </div>
 
-                  {/* Add Offer Letter button aligned to the right at the end */}
-                  <div className="col-sm-2 ms-auto">
-                    <Link
-                      to=""
-                      className="btn btn-primary"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_leave_application_modal"
-                      onClick={() => setMode("add")}
-                    >
-                      <i className="ti ti-square-rounded-plus me-2" />
-                      Add Leave
-                    </Link>
+                  <div className="col-sm-3 text-end">
+                    {isCreate && (
+                      <Link
+                        className="btn btn-primary"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#add_edit_leave_application_modal"
+                        onClick={() => setMode("add")}
+                      >
+                        <i className="ti ti-square-rounded-plus me-2" />
+                        Apply Leave Application
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -345,14 +344,14 @@ const LeaveApplications = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal mode={mode} initialData={selected} />
       <DeleteAlert
-        label="Industry"
+        label="Leave Application"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </div>
   );
 };

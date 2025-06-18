@@ -1,31 +1,29 @@
+import moment from "moment";
 import React, { useEffect, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { fetchEmployee } from "../../../redux/Employee";
 import {
   addleave_application,
   updateleave_application,
 } from "../../../redux/leaveApplication";
 import { fetchLeaveType } from "../../../redux/LeaveType";
-import { fetchEmployee } from "../../../redux/Employee";
-import moment from "moment";
-import DatePicker from "react-datepicker";
+import ManageStatus from "../ManageStatus";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.leave_Applications);
   const dispatch = useDispatch();
 
   const {
-    register,
     handleSubmit,
     watch,
     control,
     formState: { errors },
     reset,
-    setValue,
   } = useForm();
 
-  // Fetch data
   useEffect(() => {
     dispatch(fetchEmployee());
     dispatch(fetchLeaveType());
@@ -34,7 +32,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const employee = useSelector((state) => state.employee.employee);
   const leaveType = useSelector((state) => state.leaveType.leaveType);
 
-  // Employee dropdown list
   const EmployeeList = useMemo(
     () =>
       employee?.data?.map((item) => ({
@@ -44,7 +41,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     [employee]
   );
 
-  // Leave Type dropdown list
   const LeaveTypeList = useMemo(
     () =>
       leaveType?.data?.map((item) => ({
@@ -54,13 +50,12 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     [leaveType]
   );
 
-  const Status = [
-    { label: "Pending", value: "pending" },
-    { label: "Approved", value: "approved" },
-    { label: "Rejected", value: "rejected" },
-  ];
+  // const Status = [
+  //   { label: "Pending", value: "pending" },
+  //   { label: "Approved", value: "approved" },
+  //   { label: "Rejected", value: "rejected" },
+  // ];
 
-  // Reset values on edit or add
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -73,14 +68,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           ? new Date(initialData.end_date).toISOString().split("T")[0]
           : "",
         reason: initialData.reason || "",
-        status: initialData.status || "",
-
-        // New fields
+        status: initialData.status || "Pending",
         contact_details_during_leave:
           initialData.contact_details_during_leave || "",
-        approval_date: initialData.approval_date
-          ? new Date(initialData.approval_date).toISOString().split("T")[0]
-          : "",
+        approval_date: initialData.approval_date || "",
         document_attachment: initialData.document_attachment || null,
         rejection_reason: initialData.rejection_reason || "",
         backup_person_id: initialData.backup_person_id || "",
@@ -93,11 +84,9 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         start_date: new Date().toISOString().split("T")[0],
         end_date: new Date().toISOString().split("T")[0],
         reason: "",
-        status: "",
-
-        // New fields default
+        status: "Pending",
         contact_details_during_leave: "",
-        approval_date: new Date(),
+        approval_date: "",
         document_attachment: null,
         rejection_reason: "",
         backup_person_id: "",
@@ -105,18 +94,16 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       });
     }
   }, [mode, initialData, reset]);
-  console.log("initialData", initialData);
 
-  // Submit handler
   const onSubmit = (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
-    const resumeFile = data.training_material_path?.[0];
+    const resumeFile = data.document_attachment?.[0];
 
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
         if (key === "document_attachment") {
-          formData.append(key, resumeFile); // Append the actual file
+          formData.append(key, resumeFile);
         } else if (data[key] instanceof Date) {
           formData.append(key, new Date(data[key]).toISOString());
         } else {
@@ -150,9 +137,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       "add_edit_leave_application_modal"
     );
     if (offcanvasElement) {
-      const handleModalClose = () => {
-        // Clean up state if needed
-      };
+      const handleModalClose = () => {};
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
         handleModalClose
@@ -170,7 +155,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       className="offcanvas offcanvas-end offcanvas-large"
       tabIndex={-1}
       id="add_edit_leave_application_modal"
-      // aria-labelledby="offcanvasLabel"
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">
@@ -187,8 +171,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       </div>
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
-          {/* Department */}
-          {/* Employee */}
           <div className="col-md-6">
             <label className="col-form-label">
               Employee <span className="text-danger">*</span>
@@ -219,7 +201,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-          {/* Leave Type */}
           <div className="col-md-6">
             <label className="col-form-label">
               Leave Type <span className="text-danger">*</span>
@@ -250,13 +231,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-          {/* Start Date */}
           <div className="col-md-6 mb-3 mt-2">
-            <label className="form-label">Start Date</label>
+            <label className="form-label">
+              Start Date <span className="text-danger">*</span>
+            </label>
             <Controller
               name="start_date"
               control={control}
-              rules={{ required: "Date is required" }}
+              rules={{ required: "Start Date is required" }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
@@ -278,13 +260,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-          {/* End Date */}
           <div className="col-md-6 mb-3 mt-2">
-            <label className="form-label">End Date</label>
+            <label className="form-label">
+              End Date <span className="text-danger">*</span>
+            </label>
             <Controller
               name="end_date"
               control={control}
-              rules={{ required: "Date is required" }}
+              rules={{ required: "End Date is required" }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
@@ -323,7 +306,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           </div>
 
           {/* 2. Approval Date */}
-          <div className="col-md-6 mb-3">
+          {/* <div className="col-md-6 mb-3">
             <label className="form-label">Approval Date</label>
             <Controller
               name="approval_date"
@@ -339,30 +322,13 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                 />
               )}
             />
-          </div>
+          </div> */}
 
           {/* 3. Document Attachment */}
 
           <div className="col-md-6 mb-3">
             <label className="col-form-label">Document Attachment</label>
-            <input
-              type="file"
-              className={`form-control ${errors.document_attachment ? "is-invalid" : ""}`}
-              accept=".pdf"
-              {...register("document_attachment", {
-                required: "Resume file is required.",
-                validate: {
-                  isPdf: (files) =>
-                    files[0]?.type === "application/pdf" ||
-                    "Only PDF files are allowed.",
-                },
-              })}
-            />
-            {errors.document_attachment && (
-              <small className="text-danger">
-                {errors.document_attachment.message}
-              </small>
-            )}
+            <input type="file" className="form-control" accept=".pdf" />
           </div>
 
           {/* 5. Backup Person */}
@@ -389,7 +355,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           </div>
 
           {/* 6. Approver */}
-          <div className="col-md-6 mb-3">
+          {/* <div className="col-md-6 mb-3">
             <label className="form-label">Approver</label>
             <Controller
               name="approver_id"
@@ -409,26 +375,28 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                 />
               )}
             />
-          </div>
+          </div> */}
 
           {/* Status */}
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Status</label>
+          {/* <div className="col-md-6 mb-3">
+            <label className="form-label">
+              Status <span className="text-danger">*</span>
+            </label>
             <Controller
               name="status"
               control={control}
-              rules={{ required: "Approved Status is required" }}
+              rules={{ required: "Status is required" }}
               render={({ field }) => {
-                const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value
+                const selectedStatus = Status?.find(
+                  (status) => status.value === field.value
                 );
                 return (
                   <Select
                     {...field}
                     className="select"
                     options={Status}
-                    placeholder="Select  Status"
-                    value={selectedDeal || null}
+                    placeholder="Select Status"
+                    value={selectedStatus || null}
                     classNamePrefix="react-select"
                     onChange={(selectedOption) =>
                       field.onChange(selectedOption.value)
@@ -446,22 +414,23 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             {errors.status && (
               <small className="text-danger">{errors.status.message}</small>
             )}
-          </div>
+          </div> */}
 
           {/* reason */}
           <div className="col-md-12 mb-3">
             <label className="form-label">
-              Reason <small className="text-muted">(Max 255 characters)</small>
+              Reason <small className="text-muted">(Max 255 characters)</small>{" "}
+              <span className="text-danger">*</span>
             </label>
             <Controller
               name="reason"
               control={control}
               rules={{
-                required: "reason is required!",
+                required: "Reason is required!",
                 maxLength: {
                   value: 255,
                   message:
-                    "reason must be less than or equal to 255 characters",
+                    "Reason must be less than or equal to 255 characters",
                 },
               }}
               render={({ field }) => (
@@ -470,32 +439,52 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                   rows={3}
                   maxLength={255}
                   className="form-control"
-                  placeholder="Enter reason "
+                  placeholder="Enter Reason"
                 />
               )}
             />
-            {/* {errors.reason && (
+            {errors.reason && (
               <small className="text-danger">{errors.reason.message}</small>
-            )} */}
+            )}
           </div>
-          {/* 4. Rejection Reason */}
+
           <div className="col-md-12 mb-3">
             <label className="form-label">
               Rejection Reason
               <small className="text-muted">(Max 255 characters)</small>
+              {watch("status") === "rejected" && (
+                <span className="text-danger">*</span>
+              )}
             </label>
             <Controller
               name="rejection_reason"
               control={control}
+              rules={{
+                required:
+                  watch("status") === "rejected"
+                    ? "Rejection reason is required!"
+                    : false,
+                maxLength: {
+                  value: 255,
+                  message:
+                    "Rejection reason must be less than or equal to 255 characters",
+                },
+              }}
               render={({ field }) => (
                 <textarea
                   {...field}
                   rows={3}
+                  maxLength={255}
                   className="form-control"
                   placeholder="Enter rejection reason"
                 />
               )}
             />
+            {errors.rejection_reason && (
+              <small className="text-danger px-1">
+                {errors.rejection_reason.message}
+              </small>
+            )}
           </div>
 
           <div className="col-md-12 text-end">

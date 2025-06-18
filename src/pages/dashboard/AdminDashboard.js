@@ -124,9 +124,7 @@ const AdminDashboard = () => {
     dispatch(fetchAttendanceOverview());
   }, []);
 
-  console.log(attendanceOverview);
-
-  const doughnutData = {
+  const attendance = {
     labels: attendanceOverview?.labels || [],
     datasets: [
       {
@@ -277,7 +275,7 @@ const AdminDashboard = () => {
                         <hr className="border-secondary my-1" />
                         <div className="mb-3 flex-grow-1 p-2">
                           <div style={{ minHeight: "350px" }}>
-                            <Pie data={doughnutData} />
+                            <Pie data={attendance} />
                           </div>
                         </div>
                       </div>
@@ -304,8 +302,8 @@ const AdminDashboard = () => {
 
                 {/* <Attendance /> */}
                 <ActBirth
-                  upcomingBirthdays={upcomingBirthdays?.data}
-                  upcomingAnniversaries={upcomingAnniversaries?.data}
+                  upcomingBirthdays={upcomingBirthdays}
+                  upcomingAnniversaries={upcomingAnniversaries}
                 />
                 <div className="col-lg-12">
                   <div className="card shadow-sm w-100">
