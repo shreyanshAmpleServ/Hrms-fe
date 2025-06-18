@@ -739,3 +739,11 @@ div.sidebar-themesettings
   top: 8px !important;
   right: 10px !important;
 }
+
+.ant-table-wrapper .ant-table-pagination.ant-pagination {
+  margin: 6px 0 !important;
+}
+
+.ant-table-container {
+  overflow-x: auto !important;
+}

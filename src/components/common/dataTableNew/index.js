@@ -1,20 +1,18 @@
-// index.tsx
-import React, { useState } from "react";
-import { Table, Spin } from "antd";
+import { Spin, Table } from "antd";
+import React from "react";
 import UnauthorizedImage from "../UnAuthorized.js/index.js";
 
-const Datatable = ({ columns, dataSource,className,border, paginationData,onPageChange, loading = false ,isView=true }) => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
+const Datatable = ({
+  columns,
+  dataSource,
+  className,
+  border,
+  paginationData,
+  onPageChange,
+  loading = false,
+  isView = true,
+  style,
+}) => {
   const handlePageChange = (page, size) => {
     if (onPageChange) {
       onPageChange({ currentPage: page, pageSize: size });
@@ -26,31 +24,29 @@ const Datatable = ({ columns, dataSource,className,border, paginationData,onPage
         <div style={{ textAlign: "center", padding: "50px" }}>
           <Spin tip="Loading data..." size="large" />
         </div>
-      ) :
-
-       isView ? (<Table
-          className={`table datanew dataTable no-footer  ${className}` }
+      ) : isView ? (
+        <Table
+          className={`table datanew dataTable no-footer  ${className}`}
           columns={columns}
           dataSource={dataSource}
-          // rowSelection={rowSelection}
           cellPaddingInlineSM
-          pagination={paginationData?.totalCount > 0 ? 
-             { 
-              current:  paginationData?.currentPage || 1,
-            pageSize:  paginationData?.pageSize || 10,
-            total: paginationData?.totalCount || 1,
-            showSizeChanger: true,
-            onChange: handlePageChange,
-          }: false}
-          // pagination={paginaiton === false ? false : true}
+          pagination={
+            paginationData?.totalCount > 0
+              ? {
+                  current: paginationData?.currentPage || 1,
+                  pageSize: paginationData?.pageSize || 10,
+                  total: paginationData?.totalCount || 1,
+                  showSizeChanger: false,
+                  onChange: handlePageChange,
+                }
+              : false
+          }
           bordered={border || false}
-          // scroll={{ x: "max-content" }}
-
-                  />)
-        :
+          style={style}
+        />
+      ) : (
         <UnauthorizedImage />
-      }
-
+      )}
     </>
   );
 };

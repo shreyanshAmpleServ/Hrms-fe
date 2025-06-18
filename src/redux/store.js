@@ -117,6 +117,10 @@ import DashboardsCountReducer from "./Dashboards/DashboardsCount";
 import EmployeeByDepartmentReducer from "./Dashboards/EmployeeByDepartment";
 import EmployeeByDesignationsReducer from "./Dashboards/EmployeeByDesignations";
 import EmployeeByStatusReducer from "./Dashboards/EmployeeByStatus";
+import upcomingBirthdaysReducer from "./Dashboards/UpcomingBirthdays";
+import upcomingAnniversariesReducer from "./Dashboards/UpcomingAnniversaries";
+import attendanceOverviewReducer from "./Dashboards/AttendanceOverview";
+
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -237,6 +241,9 @@ const store = configureStore({
     employeeByDepartment: EmployeeByDepartmentReducer,
     employeeByDesignations: EmployeeByDesignationsReducer,
     employeeByStatus: EmployeeByStatusReducer,
+    upcomingBirthdays: upcomingBirthdaysReducer,
+    upcomingAnniversaries: upcomingAnniversariesReducer,
+    attendanceOverview: attendanceOverviewReducer,
   },
 });
 
