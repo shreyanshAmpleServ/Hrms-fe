@@ -75,12 +75,12 @@ const JobPosting = () => {
   const columns = [
     {
       title: "Department",
-      dataIndex: "hrms_job_department", // assuming it’s populated as an object
+      dataIndex: "hrms_job_department",
       render: (text) => text?.department_name || "-",
     },
     {
       title: "Designation",
-      dataIndex: "hrms_job_designation", // assuming it’s populated as an object
+      dataIndex: "hrms_job_designation",
       render: (text) => text?.designation_name || "-",
     },
     {
@@ -113,7 +113,6 @@ const JobPosting = () => {
       dataIndex: "is_internal",
       render: (value) => (value ? "Yes" : "No"),
     },
-
     ...(isDelete || isUpdate
       ? [
           {
@@ -257,6 +256,7 @@ const JobPosting = () => {
                         loading={loading}
                         paginationData={paginationData}
                         onPageChange={handlePageChange}
+                        scroll={{ x: "max-content" }}
                       />
                     </div>
                   ) : (

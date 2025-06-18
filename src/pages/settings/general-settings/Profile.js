@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
 import { fetchUserByToken, updateUser } from "../../../redux/manage-user";
-import toast from "react-hot-toast";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ const Profile = () => {
       setAddress(userDetail?.address);
       setIsReset(false);
     }
-  }, [isReset]);
+  }, [isReset, userDetail]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];

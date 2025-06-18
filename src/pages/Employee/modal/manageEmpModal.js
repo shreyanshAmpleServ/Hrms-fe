@@ -119,7 +119,7 @@ const ManageEmpModal = ({ employeeData }) => {
         employeeData?.hrms_employee_address?.map((addr) => [
           {
             value: addr?.state,
-            label: addr?.employee_state.name,
+            label: addr?.employee_state?.name,
           },
         ]) || []
       );

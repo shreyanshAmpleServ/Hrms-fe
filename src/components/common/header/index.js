@@ -489,7 +489,7 @@ const Header = () => {
               </Link>
               <div className={` dropdown-menu  menu-drop-user `}>
                 <div className="profilename">
-                  <Link className="dropdown-item" to={route.dealsDashboard}>
+                  <Link className="dropdown-item" to={route.dasshboard}>
                     <i className="ti ti-layout-2" /> Dashboard
                   </Link>
                   <Link className="dropdown-item" to={route.profile}>
@@ -529,7 +529,7 @@ const Header = () => {
             <i className="fa fa-ellipsis-v" />
           </Link>
           <div className={` dropdown-menu `}>
-            <Link className="dropdown-item" to={route.dealsDashboard}>
+            <Link className="dropdown-item" to={route.dasshboard}>
               <i className="ti ti-layout-2" /> Dashboard
             </Link>
             <Link className="dropdown-item" to={route.profile}>

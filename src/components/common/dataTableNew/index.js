@@ -36,7 +36,7 @@ const Datatable = ({
                   current: paginationData?.currentPage || 1,
                   pageSize: paginationData?.pageSize || 10,
                   total: paginationData?.totalCount || 1,
-                  showSizeChanger: false,
+                  showSizeChanger: true,
                   onChange: handlePageChange,
                 }
               : false

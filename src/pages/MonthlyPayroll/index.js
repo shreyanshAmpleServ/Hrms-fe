@@ -253,6 +253,7 @@ const MonthlyPayroll = () => {
                         loading={loading}
                         paginationData={paginationData}
                         onPageChange={handlePageChange}
+                        scroll={{ x: "max-content" }}
                       />
                     </div>
                   ) : (

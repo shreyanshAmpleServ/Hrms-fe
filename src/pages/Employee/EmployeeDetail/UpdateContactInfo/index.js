@@ -1,12 +1,7 @@
-import moment from "moment";
 import React, { useEffect } from "react";
-import DatePicker from "react-datepicker";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Select from "react-select";
-import { fetchdepartment } from "../../../../redux/department";
-import { fetchdesignation } from "../../../../redux/designation";
 import { updateEmployee } from "../../../../redux/Employee";
 const UpdateContactInfo = ({ employeeDetail }) => {
   const { loading } = useSelector((state) => state.employee);
@@ -17,8 +12,6 @@ const UpdateContactInfo = ({ employeeDetail }) => {
     handleSubmit,
     formState: { errors },
     reset,
-    control,
-    watch,
   } = useForm({
     defaultValues: {
       primary_contact_name: employeeDetail?.primary_contact_name || "",
@@ -56,7 +49,7 @@ const UpdateContactInfo = ({ employeeDetail }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_update_contact_info_modal",
+      "close_btn_update_contact_info_modal"
     );
     const formData = new FormData();
     if (employeeDetail) {
@@ -64,17 +57,17 @@ const UpdateContactInfo = ({ employeeDetail }) => {
       formData.append("primary_contact_name", data.primary_contact_name);
       formData.append(
         "primary_contact_relation",
-        data.primary_contact_relation,
+        data.primary_contact_relation
       );
       formData.append("primary_contact_number", data.primary_contact_number);
       formData.append("secondary_contact_name", data.secondary_contact_name);
       formData.append(
         "secondary_contact_relation",
-        data.secondary_contact_relation,
+        data.secondary_contact_relation
       );
       formData.append(
         "secondary_contact_mumber",
-        data.secondary_contact_mumber,
+        data.secondary_contact_mumber
       );
       dispatch(updateEmployee(formData));
     }

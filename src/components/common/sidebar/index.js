@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Scrollbars from "react-custom-scrollbars-2";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { setExpandMenu } from "../../../redux/common/commonSlice";
+import Scrollbars from "react-custom-scrollbars-2";
 import { SidebarData } from "../data/json/sidebarData";
+import ImageWithBasePath from "../imageWithBasePath";
+import { useDispatch, useSelector } from "react-redux";
+import { setExpandMenu } from "../../../redux/common/commonSlice";
+import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 
 const Sidebar = () => {
   const Location = useLocation();
@@ -72,11 +75,15 @@ const Sidebar = () => {
       (part, index) => part.startsWith(":") || part === pathParts[index]
     );
   };
+  const [openMain, setOpenMain] = useState("CRM");
 
+  const toggleMainSection = (label) => {
+    setOpenMain((prev) => (prev === label ? "" : label));
+  };
   return (
     <>
       <div
-        className="sidebar border-end"
+        className="sidebar"
         id="sidebar"
         onMouseEnter={toggle}
         onMouseLeave={toggle2}
@@ -95,11 +102,9 @@ const Sidebar = () => {
                       alt="Profile"
                     />
 
-                    <div className="user-names">
+                    <div className="user-names text-capitalize">
                       <h5>{`${user?.full_name}`}</h5>
-                      <h6 className="text-capitalize">
-                        {`${user?.hrms_d_user_role[0]?.hrms_m_role?.["role_name"]}`}
-                      </h6>
+                      <h6>{`${user?.hrms_d_user_role[0]?.hrms_m_role?.["role_name"]}`}</h6>
                     </div>
                   </Link>
                 </li>
@@ -108,8 +113,26 @@ const Sidebar = () => {
               <ul>
                 {SidebarData?.map((mainLabel, index) => (
                   <li className="clinicdropdown" key={index}>
-                    <h6 className="submenu-hdr">{mainLabel?.label}</h6>
-                    <ul>
+                    <div
+                      className="d-flex justify-content-between fw-bolder border-bottom"
+                      onClick={() => toggleMainSection(mainLabel.label)}
+                    >
+                      <h6 className="submenu-hdr fw-bold">
+                        {mainLabel?.label}
+                      </h6>
+                      {openMain === mainLabel.label ? (
+                        <IoIosArrowDown />
+                      ) : (
+                        <IoIosArrowUp />
+                      )}
+                    </div>
+
+                    <ul
+                      style={{
+                        display:
+                          openMain === mainLabel.label ? "block" : "none",
+                      }}
+                    >
                       {mainLabel?.submenuItems?.map((title, i) => {
                         let link_array = [];
                         if ("submenuItems" in title) {

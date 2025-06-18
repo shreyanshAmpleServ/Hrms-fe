@@ -308,6 +308,7 @@ const PayslipViewer = () => {
                         loading={loading}
                         paginationData={paginationData}
                         onPageChange={handlePageChange}
+                        scroll={{ x: "max-content" }}
                       />
                     </div>
                   ) : (
