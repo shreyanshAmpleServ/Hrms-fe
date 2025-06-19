@@ -10,10 +10,12 @@ import {
   updateleave_application,
 } from "../../../redux/leaveApplication";
 import { fetchLeaveType } from "../../../redux/LeaveType";
+import { fetchLeaveBalanceByEmployee } from "../../../redux/leaveBalance";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.leave_Applications);
   const dispatch = useDispatch();
+  const { leaveBalanceByEmployee } = useSelector((state) => state.leaveBalance);
 
   const {
     handleSubmit,
@@ -49,11 +51,16 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     [leaveType]
   );
 
-  // const Status = [
-  //   { label: "Pending", value: "pending" },
-  //   { label: "Approved", value: "approved" },
-  //   { label: "Rejected", value: "rejected" },
-  // ];
+  useEffect(() => {
+    if (watch("employee_id") && watch("leave_type_id")) {
+      dispatch(
+        fetchLeaveBalanceByEmployee({
+          employeeId: watch("employee_id"),
+          leaveTypeId: watch("leave_type_id"),
+        })
+      );
+    }
+  }, [watch("employee_id"), watch("leave_type_id"), dispatch]);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -159,6 +166,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         <h5 className="fw-semibold">
           {contact ? "Update" : "Add"} Leave Applications
         </h5>
+
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -170,6 +178,15 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       </div>
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
+          <div className="col-md-12 mb-3">
+            {leaveBalanceByEmployee?.leave_balance && (
+              <div className="alert alert-success">
+                Available Balance for {leaveBalanceByEmployee?.leave_type}:{" "}
+                {leaveBalanceByEmployee?.leave_balance}
+              </div>
+            )}
+          </div>
+
           <div className="col-md-6">
             <label className="col-form-label">
               Employee <span className="text-danger">*</span>

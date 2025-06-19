@@ -83,7 +83,15 @@ export const deleteEmployee = createAsyncThunk(
   "employee/deleteEmployee",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/employee/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/employee/${id}`),
+        {
+          loading: "Employee deleting...",
+          success: (res) =>
+            res.data.message || "Employee deleted successfully!",
+          error: "Failed to delete employee",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "Employee deleted successfully",

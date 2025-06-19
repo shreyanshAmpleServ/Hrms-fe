@@ -564,6 +564,12 @@ export const SidebarData = [
             showSubRoute: false,
           },
           {
+            label: "Leave Balance",
+            link: route.leaveBalance,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
             label: "Holiday Calendar",
             link: route.holidayCalender,
             showSubRoute: false,

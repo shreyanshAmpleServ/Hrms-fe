@@ -75,7 +75,7 @@ const Sidebar = () => {
       (part, index) => part.startsWith(":") || part === pathParts[index]
     );
   };
-  const [openMain, setOpenMain] = useState("CRM");
+  const [openMain, setOpenMain] = useState("HRMS");
 
   const toggleMainSection = (label) => {
     setOpenMain((prev) => (prev === label ? "" : label));

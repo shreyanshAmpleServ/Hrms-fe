@@ -150,6 +150,7 @@ import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import WarningLetters from "../pages/WarningLetters";
+import LeaveBalance from "../pages/crm-settings/leaveAndAttendance/LeaveBalance";
 // // Export components individually
 
 export { Dashboard, Login };
@@ -543,6 +544,12 @@ export const privateRoutes = [
     element: <ShiftList />,
     route: Route,
     title: "Shift",
+  },
+  {
+    path: route.leaveBalance,
+    element: <LeaveBalance />,
+    route: Route,
+    title: "Leave Balance",
   },
   {
     path: route.leaveType,

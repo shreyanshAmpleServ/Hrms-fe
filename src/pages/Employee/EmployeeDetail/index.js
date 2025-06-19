@@ -16,6 +16,7 @@ import UpdatePassportInfo from "./UpdatePassportInfo";
 import UpdateSocialInfo from "./UpdateSocialInfo";
 import UpdateProfilePicture from "./UploadProfile";
 import EmployeeAttachment from "./Attachment";
+import EmployeeLeaveInfo from "./LeaveInfo";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
@@ -641,6 +642,15 @@ const EmployeeDetail = () => {
                           </small>
                         </a>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="card">
+                    <div className="card-body">
+                      <EmployeeLeaveInfo />
                     </div>
                   </div>
                 </div>

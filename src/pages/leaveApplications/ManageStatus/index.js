@@ -32,7 +32,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
       setValue("status", selected.status);
       setValue("rejection_reason", selected.rejection_reason);
     }
-  }, [selected]);
+  }, [selected, setValue]);
 
   const onSubmit = (data) => {
     dispatch(
@@ -103,7 +103,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                 )}
               </div>
             </div>
-            {watch("status") === "R" && (
+            {watch("status") === "Rejected" && (
               <div className="row">
                 <div className="col-md-12">
                   <label className="form-label">
@@ -114,7 +114,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                     control={control}
                     rules={{
                       required:
-                        watch("status") === "R"
+                        watch("status") === "Rejected"
                           ? "Rejection Reason is required"
                           : false,
                     }}

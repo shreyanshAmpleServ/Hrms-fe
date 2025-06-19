@@ -454,9 +454,9 @@ export const priceModelOptions = [
 ];
 export const genderOptions = [
   { value: "", label: "Select" },
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
-  { value: "Other", label: "Other" },
+  { value: "M", label: "Male" },
+  { value: "F", label: "Female" },
+  { value: "O", label: "Other" },
 ];
 export const maritalStatusOptions = [
   { value: "", label: "Select" },

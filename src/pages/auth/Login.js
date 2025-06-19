@@ -1,16 +1,13 @@
 // src/components/Login.js
-import React, { useState, useEffect } from "react";
-import ImageWithBasePath from "../../components/common/imageWithBasePath";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { loginUser, registerUser } from "../../redux/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { AllRoutes } from "../../config/AllRoute";
-import { useSelector } from "react-redux";
-import FlashMessage from "../../components/common/modals/FlashMessage";
-import logo from "../../assets/crms.png";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import bolls from "../../assets/bolls.png";
+import ImageWithBasePath from "../../components/common/imageWithBasePath";
+import FlashMessage from "../../components/common/modals/FlashMessage";
+import { AllRoutes } from "../../config/AllRoute";
+import { loginUser } from "../../redux/auth/authSlice";
 
 const Login = () => {
   const route = AllRoutes;
@@ -56,13 +53,13 @@ const Login = () => {
         <div className={newLocal} style={{ width: "40vw" }}>
           <img
             src={bolls}
-            alt="image"
+            alt="i"
             className="position-absolute z-3 h-25 "
             style={{ bottom: "-22px", left: "-22px" }}
           />
           <img
             src={bolls}
-            alt="image"
+            alt="i"
             className="position-absolute z-0  "
             style={{ top: "20%", left: "65%", height: "17%" }}
           />

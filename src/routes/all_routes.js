@@ -145,6 +145,9 @@ export const all_routes = {
   // Warning Letters
   warningLetters: "/warning-letters",
 
+  // Leave Balance
+  leaveBalance: "/leave-balance",
+
   // currency: "/currency",
   // core-hr //
 

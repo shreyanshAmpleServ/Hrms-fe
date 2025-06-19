@@ -2,6 +2,7 @@ import moment from "moment";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
@@ -60,7 +61,7 @@ const initialEmpData = {
   phone_number: "",
   status: "",
 };
-const ManageEmpModal = ({ employeeData }) => {
+const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const [selectedLogo, setSelectedLogo] = useState();
   const [manageAddress, setManageAddress] = useState(initialAddress);
   const [stateOptions, setStateOptions] = useState([]);
@@ -216,35 +217,32 @@ const ManageEmpModal = ({ employeeData }) => {
       employeeData
         ? await dispatch(updateEmployee(formData)).unwrap()
         : await dispatch(createEmployee(formData)).unwrap();
-    } catch (error) {
-      closeButton.click();
-    } finally {
-      closeButton.click();
       setSelectedLogo(null);
       reset(initialEmpData);
       setManageAddress(initialAddress);
       setStateOptions([]);
+      closeButton.click();
+    } catch (error) {
+      toast.error(error.message);
     }
+  };
+  const handleClose = () => {
+    setSelectedLogo(null);
+    reset(initialEmpData);
+    setManageAddress(initialAddress);
+    setStateOptions([]);
+    setEmployeeData(null);
   };
   React.useEffect(() => {
     const offcanvasElement = document.getElementById(
       "offcanvas_add_edit_employee"
     );
     if (offcanvasElement) {
-      const handleModalClose = () => {
-        setSelectedLogo(null);
-        reset(initialEmpData);
-        setStateOptions([]);
-        setManageAddress(initialAddress);
-      };
-      offcanvasElement.addEventListener(
-        "hidden.bs.offcanvas",
-        handleModalClose
-      );
+      offcanvasElement.addEventListener("hidden.bs.offcanvas", handleClose);
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose
+          handleClose
         );
       };
     }
@@ -286,6 +284,7 @@ const ManageEmpModal = ({ employeeData }) => {
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
+          onClick={handleClose}
         >
           <i className="ti ti-x" />
         </button>
@@ -997,8 +996,8 @@ const ManageEmpModal = ({ employeeData }) => {
           <div className="d-flex align-items-center justify-content-end">
             <button
               type="button"
-              data-bs-dismiss="offcanvas"
               className="btn btn-light me-2"
+              onClick={handleClose}
             >
               Cancel
             </button>
