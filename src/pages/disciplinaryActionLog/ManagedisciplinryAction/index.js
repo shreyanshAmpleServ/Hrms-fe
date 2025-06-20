@@ -366,7 +366,7 @@ const ManagedisciplinryAction = ({
                   )}
                 </div>
 
-                <div className="col-md-6 mb-3">
+                {/* <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
                   <Controller
                     name="status"
@@ -390,7 +390,7 @@ const ManagedisciplinryAction = ({
                       />
                     )}
                   />
-                </div>
+                </div> */}
 
                 <div className="col-12 mb-3">
                   <label className="col-form-label">

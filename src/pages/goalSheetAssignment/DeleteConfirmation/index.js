@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
 import { deletegoalSheet } from "../../../redux/GoalSheetAssignment";
 
-const DeleteConfirmation = ({ showModal, setShowModal, goalSheetId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, Id }) => {
   const dispatch = useDispatch();
   const handleDeletegoalSheet = () => {
-    if (goalSheetId) {
-      dispatch(deletegoalSheet(goalSheetId));
+    if (Id) {
+      dispatch(deletegoalSheet(Id));
       setShowModal(false);
     }
   };

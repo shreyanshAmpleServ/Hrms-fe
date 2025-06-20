@@ -51,11 +51,11 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
     value: i?.id,
   }));
 
-  const statusOptions = [
-    { value: "pending", label: "Pending" },
-    { value: "in_progress", label: "In Progress" },
-    { value: "completed", label: "Completed" },
-  ];
+  // const statusOptions = [
+  //   { value: "pending", label: "Pending" },
+  //   { value: "in_progress", label: "In Progress" },
+  //   { value: "completed", label: "Completed" },
+  // ];
 
   useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -77,7 +77,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
         due_date: goalSheet.due_date
           ? new Date(goalSheet.due_date)
           : new Date(),
-        status: goalSheet.status || "",
+        status: goalSheet.status || "panding",
       });
     } else {
       // Add mode
@@ -90,7 +90,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
         target_value: "",
         measurement_criteria: "",
         due_date: new Date(),
-        status: "",
+        status: "Panding",
       });
     }
   }, [goalSheet, reset]);
@@ -238,30 +238,6 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
               />
             </div>
 
-            {/* Goal Description */}
-            <div className="col-md-6 mb-3">
-              <label className="form-label">
-                Goal Description <span className="text-danger">*</span>
-              </label>
-              <Controller
-                name="goal_description"
-                control={control}
-                rules={{ required: "Description is required" }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="Enter Description"
-                  />
-                )}
-              />
-              {errors.goal_description && (
-                <small className="text-danger">
-                  {errors.goal_description.message}
-                </small>
-              )}
-            </div>
-
             {/* Weightage */}
             <div className="col-md-6 mb-3">
               <label className="form-label">
@@ -276,7 +252,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                     type="number"
                     {...field}
                     className="form-control"
-                    placeholder="Enter weightage"
+                    placeholder="Enter Weightage"
                   />
                 )}
               />
@@ -295,9 +271,10 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 control={control}
                 render={({ field }) => (
                   <input
+                    type="number"
                     {...field}
                     className="form-control"
-                    placeholder="Enter target value"
+                    placeholder="Enter Target Value"
                   />
                 )}
               />
@@ -311,6 +288,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 control={control}
                 render={({ field }) => (
                   <input
+                    type="number"
                     {...field}
                     className="form-control"
                     placeholder="Enter Measurement Criteria"
@@ -338,7 +316,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
             </div>
 
             {/* Status */}
-            <div className="col-md-6 mb-3">
+            {/* <div className="col-md-6 mb-3">
               <label className="form-label">
                 Status <span className="text-danger">*</span>
               </label>
@@ -362,6 +340,39 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
               {errors.status && (
                 <small className="text-danger">{errors.status.message}</small>
               )}
+            </div> */}
+            {/* Goal Description */}
+            <div className="col-md-12 mb-3">
+              <label className="form-label">
+                Goal Description{" "}
+                <small className="text-muted">(Max 255 characters)</small>
+              </label>
+              <Controller
+                name="resolution_notes"
+                control={control}
+                rules={{
+                  required: "Description is required!",
+                  maxLength: {
+                    value: 255,
+                    message:
+                      "Description must be less than or equal to 255 characters",
+                  },
+                }}
+                render={({ field }) => (
+                  <textarea
+                    {...field}
+                    rows={3}
+                    maxLength={255}
+                    className="form-control"
+                    placeholder="Enter Resolution Notes"
+                  />
+                )}
+              />
+              {/* {errors.goal_description && (
+                <small className="text-danger">
+                  {errors.goal_description.message}
+                </small>
+              )} */}
             </div>
           </div>
 

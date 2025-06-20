@@ -10,8 +10,11 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchAdvancePayment } from "../../redux/AdvancePayment/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageAdvancePayment from "./ManageAdvancePayment/index.js";
-
+import ManageStatus from "./ManageStatus/index.js";
 const AdvancePayment = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedAdvancePayment, setSelectedAdvancePayment] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -98,51 +101,100 @@ const AdvancePayment = () => {
       dataIndex: "request_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
-    {
-      title: "Status",
-      dataIndex: "approval_status",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "approval_status",
+    //   render: (text) => <p className="text-capitalize">{text}</p> || "-",
+    // },
     {
       title: "Approval Date",
       dataIndex: "approval_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
 
-    ...(isDelete || isUpdate
+    {
+      title: "Status",
+      dataIndex: "approval_status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "R"
+              ? "bg-warning"
+              : value === "A"
+                ? "bg-success"
+                : value === "P"
+                  ? "bg-danger"
+                  : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Pending"
+            : value === "A"
+              ? "Approved"
+              : value === "R"
+                ? "Rejected"
+                : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+    },
+
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.approval_status === "P"
+                        ? "Approve/Reject"
+                        : record.approval_status === "R"
+                          ? "Pending/Approve"
+                          : record.approval_status === "A"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedAdvancePayment(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteAdvancePayment(a)}
+                      onClick={() => handleDeleteAdvancePayment(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -268,8 +320,8 @@ const AdvancePayment = () => {
           </div>
         </div>
         <ManageAdvancePayment
-          setAdvancePayment={setSelectedAdvancePayment}
-          advancePayment={selectedAdvancePayment}
+          setAdvancePayment={setSelected}
+          advancePayment={selected}
         />
       </div>
       <DeleteConfirmation
@@ -277,6 +329,7 @@ const AdvancePayment = () => {
         setShowModal={setShowDeleteModal}
         advancePaymentId={selectedAdvancePayment?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

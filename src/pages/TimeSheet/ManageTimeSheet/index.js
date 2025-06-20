@@ -26,7 +26,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
     },
   });
 
-  const { loading } = useSelector((state) => state.leaveEncashment || {});
+  const { loading } = useSelector((state) => state.timeSheet || {});
 
   React.useEffect(() => {
     if (timeSheet) {

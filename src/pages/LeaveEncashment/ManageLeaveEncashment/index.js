@@ -24,33 +24,36 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
       employee_id: "",
       leave_type_id: "",
       leave_days: "",
-      encashment_date: new Date().toISOString(),
+      encashment_date: new Date(),
       encashment_amount: "",
-      approval_status: "",
+      approval_status: "Panding",
     },
   });
 
   const { loading } = useSelector((state) => state.leaveEncashment || {});
 
   React.useEffect(() => {
+    console.log("Reset chal raha hai, data -->", leaveEncashment);
+
     if (leaveEncashment) {
       reset({
         employee_id: leaveEncashment.employee_id || "",
         leave_type_id: leaveEncashment.leave_type_id || "",
         leave_days: leaveEncashment.leave_days || "",
-        encashment_date:
-          leaveEncashment.encashment_date || new Date().toISOString(),
+        encashment_date: leaveEncashment.encashment_date
+          ? new Date(leaveEncashment.encashment_date)
+          : new Date(),
         encashment_amount: leaveEncashment.encashment_amount || "",
-        approval_status: leaveEncashment.approval_status || "",
+        approval_status: leaveEncashment.approval_status || "Panding",
       });
     } else {
       reset({
         employee_id: "",
         leave_type_id: "",
         leave_days: "",
-        encashment_date: new Date().toISOString(),
+        encashment_date: new Date(),
         encashment_amount: "",
-        approval_status: "",
+        approval_status: "Panding",
       });
     }
   }, [leaveEncashment, reset]);
@@ -81,11 +84,11 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
     value: i?.id,
   }));
 
-  const approvedStatus = [
-    { label: "Pending", value: "pending" },
-    { label: "Approved", value: "approved" },
-    { label: "Rejected", value: "rejected" },
-  ];
+  // const approvedStatus = [
+  //   { label: "Pending", value: "pending" },
+  //   { label: "Approved", value: "approved" },
+  //   { label: "Rejected", value: "rejected" },
+  // ];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -332,7 +335,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                     </small>
                   )}
                 </div>
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
                       Approval Status
@@ -373,7 +376,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                       </small>
                     )}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="d-flex align-items-center justify-content-end">

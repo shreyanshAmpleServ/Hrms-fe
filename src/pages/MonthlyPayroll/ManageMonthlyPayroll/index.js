@@ -22,12 +22,12 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
 
   const { loading } = useSelector((state) => state.monthlyPayroll || {});
 
-  const statusOptions = [
-    { value: "pending", label: "Pending Processing" },
-    { value: "processing", label: "Processing" },
-    { value: "approved", label: "Processing Complete" },
-    { value: "rejected", label: "Processing Failed" },
-  ];
+  // const statusOptions = [
+  //   { value: "pending", label: "Pending Processing" },
+  //   { value: "processing", label: "Processing" },
+  //   { value: "approved", label: "Processing Complete" },
+  //   { value: "rejected", label: "Processing Failed" },
+  // ];
 
   React.useEffect(() => {
     if (monthlyPayroll) {
@@ -321,7 +321,7 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <label className="col-form-label">
                     Status <span className="text-danger">*</span>
                   </label>
@@ -350,7 +350,7 @@ const ManageMonthlyPayroll = ({ setMonthlyPayroll, monthlyPayroll }) => {
                       </small>
                     )}
                   </div>
-                </div>
+                </div> */}
                 <div className="col-md-6">
                   <label className="col-form-label">
                     Processed On<span className="text-danger">*</span>

@@ -10,8 +10,11 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchgoalSheet } from "../../redux/GoalSheetAssignment";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageGoalSheetAssignment from "./ManageGoalSheetAssignment/index.js";
-
+import ManageStatus from "./ManageStatus/index.js";
 const GoalSheetAssignment = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedgoalSheet, setSelectedgoalSheet] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -29,7 +32,7 @@ const GoalSheetAssignment = () => {
       fetchgoalSheet({
         search: searchValue,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange]);
 
@@ -54,7 +57,7 @@ const GoalSheetAssignment = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -62,7 +65,7 @@ const GoalSheetAssignment = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Helpdesk Ticket",
+    (i) => i?.module_name === "Helpdesk Ticket"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -114,43 +117,86 @@ const GoalSheetAssignment = () => {
     {
       title: "Status",
       dataIndex: "status",
-      render: (text) => <span className="text-capitalize">{text}</span> || "-",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "P"
+              ? "bg-warning"
+              : value === "I"
+                ? "bg-info"
+                : value === "C"
+                  ? "bg-success"
+                  : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Pending"
+            : value === "I"
+              ? "In Progress"
+              : value === "C"
+                ? "Completed"
+                : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
     },
 
-    ...(isDelete || isUpdate
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "I"
+                        ? "Pending/Progress"
+                        : record.status === "P"
+                          ? "Pending/Completed"
+                          : record.status === "C"
+                            ? "Pending/Completed"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedgoalSheet(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeletegoalSheet(a)}
+                      onClick={() => handleDeletegoalSheet(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -279,8 +325,8 @@ const GoalSheetAssignment = () => {
           </div>
         </div>
         <ManageGoalSheetAssignment
-          setgoalSheet={setSelectedgoalSheet}
-          goalSheet={selectedgoalSheet}
+          setgoalSheet={setSelected}
+          goalSheet={selected}
         />
       </div>
       <DeleteConfirmation
@@ -289,6 +335,7 @@ const GoalSheetAssignment = () => {
         goalSheet
         Id={selectedgoalSheet?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

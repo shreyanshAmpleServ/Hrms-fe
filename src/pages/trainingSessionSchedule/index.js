@@ -10,8 +10,11 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchtrainingSession } from "../../redux/trainingSessionSchedule";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import Managetraining from "./Managetrining";
-
+import ManageStatus from "./ManageStatus/index.js";
 const TrainingSessionSchedule = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedtrainingSession, setSelectedtrainingSession] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -155,45 +158,93 @@ const TrainingSessionSchedule = () => {
       render: (text) => text || "-",
     },
     {
-      title: "Training Status",
+      title: "Status",
       dataIndex: "training_status",
-      render: (text) => text || "-",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "P"
+              ? "bg-warning"
+              : value === "O"
+                ? "bg-info"
+                : value === "C"
+                  ? "bg-success"
+                  : value === "X"
+                    ? "bg-danger"
+                    : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Planned"
+            : value === "O"
+              ? "Ongoing"
+              : value === "C"
+                ? "Completed"
+                : value === "X"
+                  ? "Cancelled"
+                  : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) =>
+        (a.training_status || "").localeCompare(b.training_status || ""),
     },
 
-    ...(isDelete || isUpdate
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "P"
+                        ? "Approve/Reject"
+                        : record.status === "C"
+                          ? "Pending/Approve"
+                          : record.status === "A"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedtrainingSession(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeletetrainingSession(a)}
+                      onClick={() => handleDeletetrainingSession(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -319,8 +370,8 @@ const TrainingSessionSchedule = () => {
           </div>
         </div>
         <Managetraining
-          settrainingSession={setSelectedtrainingSession}
-          trainingSession={selectedtrainingSession}
+          settrainingSession={setSelected}
+          trainingSession={selected}
         />
       </div>
       <DeleteConfirmation
@@ -328,6 +379,7 @@ const TrainingSessionSchedule = () => {
         setShowModal={setShowDeleteModal}
         trainingSessionId={selectedtrainingSession?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

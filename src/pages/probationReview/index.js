@@ -10,8 +10,11 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchprobationReview } from "../../redux/ProbationReview";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageProbationReview from "./ManageProbationReview";
-
+import ManageStatus from "./ManageStatus/index.js";
 const ProbationReview = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedprobationReview, setSelectedprobationReview] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -91,11 +94,11 @@ const ProbationReview = () => {
       dataIndex: "review_notes",
       render: (text) => text || "-",
     },
-    {
-      title: "Confirmation Status",
-      dataIndex: "confirmation_status",
-      render: (status) => status || "-",
-    },
+    // {
+    //   title: "Confirmation Status",
+    //   dataIndex: "confirmation_status",
+    //   render: (status) => status || "-",
+    // },
     {
       title: "Confirmation Date",
       dataIndex: "confirmation_date",
@@ -143,40 +146,92 @@ const ProbationReview = () => {
       render: (text) => text || "-",
     },
 
-    ...(isDelete || isUpdate
+    {
+      title: "Confirmation Status",
+      dataIndex: "confirmation_status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "C"
+              ? "bg-success"
+              : value === "E"
+                ? "bg-warning"
+                : value === "T"
+                  ? "bg-danger"
+                  : "bg-secondary"
+          }`}
+        >
+          {value === "C"
+            ? "Confirmed"
+            : value === "E"
+              ? "Extended"
+              : value === "T"
+                ? "Terminated"
+                : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) =>
+        (a.confirmation_status || "").localeCompare(
+          b.confirmation_status || ""
+        ),
+    },
+
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "P"
+                        ? "Approve/Reject"
+                        : record.status === "C"
+                          ? "Pending/Approve"
+                          : record.status === "A"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedprobationReview(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteprobationReview(a)}
+                      onClick={() => handleDeleteprobationReview(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -302,8 +357,8 @@ const ProbationReview = () => {
           </div>
         </div>
         <ManageProbationReview
-          setprobationReview={setSelectedprobationReview}
-          probationReview={selectedprobationReview}
+          setprobationReview={setSelected}
+          probationReview={selected}
         />
       </div>
       <DeleteConfirmation
@@ -311,6 +366,7 @@ const ProbationReview = () => {
         setShowModal={setShowDeleteModal}
         probationReviewId={selectedprobationReview?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

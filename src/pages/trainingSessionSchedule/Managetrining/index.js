@@ -37,7 +37,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
       training_material_path: "",
       evaluation_required: "",
       feedback_required: "",
-      training_status: "",
+      training_status: "Panding",
     },
   });
 
@@ -61,7 +61,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
         training_material_path: trainingSession.training_material_path || "",
         evaluation_required: trainingSession.evaluation_required || "",
         feedback_required: trainingSession.feedback_required || "",
-        training_status: trainingSession.training_status || "",
+        training_status: trainingSession.training_status || "Panding",
       });
     } else {
       reset({
@@ -79,22 +79,22 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
         training_material_path: "",
         evaluation_required: "",
         feedback_required: "",
-        training_status: "",
+        training_status: "Panding",
       });
     }
-  }, [trainingSession, reset]);
+  }, [trainingSession]);
 
   const trainingOptions = [
     { value: "Online", label: "Online" },
     { value: "Offline", label: "Offline" },
     { value: "Hybrid", label: "Hybrid" },
   ];
-  const trainingStatusOptions = [
-    { label: "Planned", value: "planned" },
-    { label: "Ongoing", value: "ongoing" },
-    { label: "Completed", value: "completed" },
-    { label: "Cancelled", value: "cancelled" },
-  ];
+  // const trainingStatusOptions = [
+  //   { label: "Planned", value: "planned" },
+  //   { label: "Ongoing", value: "ongoing" },
+  //   { label: "Completed", value: "completed" },
+  //   { label: "Cancelled", value: "cancelled" },
+  // ];
   const audienceLevelOptions = [
     { label: "Beginner", value: "beginner" },
     { label: "Intermediate", value: "intermediate" },
@@ -476,7 +476,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
               )}
             </div>
 
-            <div className="col-md-6 mb-3">
+            {/* <div className="col-md-6 mb-3">
               <label className="col-form-label">Training Status</label>
               <Controller
                 name="training_status"
@@ -500,7 +500,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                   {errors.training_status.message}
                 </small>
               )}
-            </div>
+            </div> */}
 
             <div className="col-12 mb-3">
               <label className="form-label">
