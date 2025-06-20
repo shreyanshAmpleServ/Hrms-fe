@@ -22,11 +22,11 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
 
   const { loading } = useSelector((state) => state.advancePayment || {});
 
-  const statusOptions = [
-    { value: "pending", label: "Pending" },
-    { value: "approved", label: "Approved" },
-    { value: "rejected", label: "Rejected" },
-  ];
+  // const statusOptions = [
+  //   { value: "pending", label: "Pending" },
+  //   { value: "approved", label: "Approved" },
+  //   { value: "rejected", label: "Rejected" },
+  // ];
 
   React.useEffect(() => {
     if (advancePayment) {
@@ -34,7 +34,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
         employee_id: advancePayment?.employee_id,
         request_date: advancePayment?.request_date || moment().toISOString(),
         amount_requested: advancePayment?.amount_requested,
-        amount_approved: advancePayment?.amount_approved,
+        amount_approved: advancePayment?.amount_approved || "",
         approval_status: advancePayment?.approval_status || "pending",
         reason: advancePayment?.reason,
         approval_date: advancePayment.approval_date || moment().toISOString(),
@@ -181,7 +181,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                   </div>
                 </div>
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <label className="col-form-label">
                     Approval Status <span className="text-danger">*</span>
                   </label>
@@ -210,7 +210,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                       </small>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="col-md-6">
                   <label className="col-form-label">
@@ -237,7 +237,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <label className="col-form-label">
                     Amount Approved <span className="text-danger">*</span>
                   </label>
@@ -262,6 +262,41 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                     )}
                   </div>
                 </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Approval Date<span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
+                    <Controller
+                      name="approval_date"
+                      control={control}
+                      rules={{ required: "Request date is required!" }}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          placeholderText="Select Request Date"
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={(date) => field.onChange(date)}
+                          dateFormat="DD-MM-YYYY"
+                        />
+                      )}
+                    />
+                  </div>
+                  {errors.approval_date && (
+                    <small className="text-danger">
+                      {errors.approval_date.message}
+                    </small>
+                  )}
+                </div> */}
 
                 <div className="col-md-6">
                   <label className="col-form-label">
@@ -298,41 +333,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
                     </small>
                   )}
                 </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Approval Date<span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <Controller
-                      name="approval_date"
-                      control={control}
-                      rules={{ required: "Request date is required!" }}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          className="form-control"
-                          placeholderText="Select Request Date"
-                          selected={field.value}
-                          value={
-                            field.value
-                              ? moment(field.value).format("DD-MM-YYYY")
-                              : null
-                          }
-                          onChange={(date) => field.onChange(date)}
-                          dateFormat="DD-MM-YYYY"
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.approval_date && (
-                    <small className="text-danger">
-                      {errors.approval_date.message}
-                    </small>
-                  )}
-                </div>
+
                 <div className="col-md-6">
                   <label className="col-form-label">
                     Due Date

@@ -10,8 +10,11 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchdisciplinryAction } from "../../redux/disciplinaryActionLog/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManagedisciplinryAction from "./ManagedisciplinryAction/index.js";
-
+import ManageStatus from "./ManageStatus/index.js";
 const DisciplinaryActionLog = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add");
   const [searchValue, setSearchValue] = useState("");
   const [selecteddisciplinryAction, setSelecteddisciplinryAction] =
     useState(null);
@@ -109,11 +112,11 @@ const DisciplinaryActionLog = () => {
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
       sorter: (a, b) => new Date(a.effective_from) - new Date(b.effective_from),
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => text || "-",
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   render: (text) => text || "-",
+    // },
     {
       title: "Remarks",
       dataIndex: "remarks",
@@ -130,41 +133,89 @@ const DisciplinaryActionLog = () => {
       dataIndex: "disciplinary_reviewed_by",
       render: (text) => text?.full_name ?? "-",
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "P"
+              ? "bg-warning"
+              : value === "R"
+                ? "bg-info"
+                : value === "C"
+                  ? "bg-success"
+                  : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Pending"
+            : value === "R"
+              ? "Resolved"
+              : value === "C"
+                ? "Closed"
+                : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+    },
 
-    ...(isDelete || isUpdate
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "P"
+                        ? "Pending/Reject"
+                        : record.status === "R"
+                          ? "Pending/Resolved"
+                          : record.status === "C"
+                            ? "Closed/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelecteddisciplinryAction(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeletedisciplinryAction(a)}
+                      onClick={() => handleDeletedisciplinryAction(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -290,8 +341,8 @@ const DisciplinaryActionLog = () => {
           </div>
         </div>
         <ManagedisciplinryAction
-          setdisciplinryAction={setSelecteddisciplinryAction}
-          disciplinryAction={selecteddisciplinryAction}
+          setdisciplinryAction={setSelected}
+          disciplinryAction={selected}
         />
       </div>
       <DeleteConfirmation
@@ -299,6 +350,7 @@ const DisciplinaryActionLog = () => {
         setShowModal={setShowDeleteModal}
         disciplinryActionId={selecteddisciplinryAction?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

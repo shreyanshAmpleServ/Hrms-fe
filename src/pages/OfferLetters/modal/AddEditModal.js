@@ -6,7 +6,6 @@ import {
   addoffer_letter,
   updateoffer_letter,
 } from "../../../redux/offerLetters";
-import { fetchdepartment } from "../../../redux/department";
 import { fetchEmployee } from "../../../redux/Employee";
 import moment from "moment";
 import DatePicker from "react-datepicker";
@@ -35,20 +34,15 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     () =>
       employee?.data?.map((item) => ({
         value: item.id,
-        label: item.full_name, // or item.full_name or item.employee_name, depending on your API
+        label: item.full_name,
       })) || [],
     [employee]
   );
-  const Status = [
-    { label: "Pending", value: "pending" },
-    { label: "Approved", value: "approved" },
-    { label: "Rejected", value: "rejected" },
-  ];
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        status: initialData.status || "",
+        status: initialData.status || "Panding",
         offer_date: initialData.offer_date
           ? new Date(initialData.offer_date).toISOString().split("T")[0]
           : "",
@@ -61,7 +55,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       });
     } else {
       reset({
-        status: "",
+        status: "panding",
         offer_date: new Date(),
         valid_until: new Date(),
         offered_salary: "",
@@ -287,7 +281,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           </div>
 
           {/* Status */}
-          <div className="col-md-6 mb-3">
+          {/* <div className="col-md-6 mb-3">
             <label className="form-label">
               Status <span className="text-danger">*</span>
             </label>
@@ -317,7 +311,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             {errors.status && (
               <small className="text-danger">{errors.status.message}</small>
             )}
-          </div>
+          </div> */}
 
           <div className="col-md-12 text-end">
             <button

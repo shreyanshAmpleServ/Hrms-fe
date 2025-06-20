@@ -195,7 +195,7 @@ const ManagegrievanceSubmission = ({
                     </small>
                   )}
                 </div>
-
+                {/* 
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
                   <Controller
@@ -220,7 +220,7 @@ const ManagegrievanceSubmission = ({
                       />
                     )}
                   />
-                </div>
+                </div> */}
 
                 {/* Grievance Type */}
                 <div className="col-md-6 mb-3">

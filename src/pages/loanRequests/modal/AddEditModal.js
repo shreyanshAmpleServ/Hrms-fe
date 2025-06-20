@@ -50,11 +50,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       })) || [],
     [loan_type]
   );
-  const Status = [
-    { label: "Pending", value: "pending" },
-    { label: "Approved", value: "approved" },
-    { label: "Rejected", value: "rejected" },
-  ];
+  // const Status = [
+  //   { label: "Pending", value: "pending" },
+  //   { label: "Approved", value: "approved" },
+  //   { label: "Rejected", value: "rejected" },
+  // ];
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -64,9 +64,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         amount: initialData.amount || "",
         emi_months: initialData.emi_months || "",
         status: initialData.status || "pending",
-        request_date: initialData.request_date
-          ? new Date(initialData.request_date).toISOString().split("T")[0]
-          : "",
+        request_date: initialData.request_date || new Date(),
       });
     } else {
       reset({
@@ -75,7 +73,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         amount: "",
         emi_months: "",
         status: "pending",
-        request_date: "",
+        request_date: new Date(),
       });
     }
   }, [mode, initialData, reset]);
@@ -145,7 +143,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   placeholder="Select Employee"
                   isDisabled={!EmployeeList.length}
                   classNamePrefix="react-select"
-                  onChange={(option) => field.onChange(option?.value || "")}
+                  onChange={(option) => field.onChange(option?.value || null)}
                   value={EmployeeList.find(
                     (option) => option.value === watch("employee_id")
                   )}
@@ -260,7 +258,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
 
           {/* Status */}
-          <div className="col-md-6 mb-3">
+          {/* <div className="col-md-6 mb-3">
             <label className="form-label">Status</label>
             <Controller
               name="status"
@@ -291,7 +289,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 );
               }}
             />
-          </div>
+          </div> */}
 
           <div className="col-md-12 text-end">
             <button

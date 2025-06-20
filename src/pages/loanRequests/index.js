@@ -17,15 +17,18 @@ import {
   deleteloan_requests,
   fetchloan_requests,
 } from "../../redux/loanRequests";
+import ManageStatus from "./ManageStatus";
 
 const LoanRequests = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer",
+    (i) => i?.module_name === "Manufacturer"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -42,7 +45,7 @@ const LoanRequests = () => {
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
         (a.loan_req_employee?.full_name || "").localeCompare(
-          b.loan_req_employee?.full_name || "",
+          b.loan_req_employee?.full_name || ""
         ),
     },
     {
@@ -51,7 +54,7 @@ const LoanRequests = () => {
       render: (value) => <div>{value?.loan_name || "—"}</div>, // assuming loan_types is an object with loan_name
       sorter: (a, b) =>
         (a.loan_types?.loan_name || "").localeCompare(
-          b.loan_type?.loan_name || "",
+          b.loan_type?.loan_name || ""
         ),
     },
     {
@@ -65,24 +68,51 @@ const LoanRequests = () => {
       dataIndex: "emi_months",
       sorter: (a, b) => a.emi_months - b.emi_months,
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (value) => <div>{value || "Pending"}</div>,
-      sorter: (a, b) => a.status.localeCompare(b.status),
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   render: (value) => <div>{value || "Pending"}</div>,
+    //   sorter: (a, b) => a.status.localeCompare(b.status),
+    // },
     {
       title: "Requested On",
       dataIndex: "request_date",
       render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
       sorter: (a, b) => new Date(a.request_date) - new Date(b.request_date),
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "R"
+              ? "bg-warning"
+              : value === "A"
+                ? "bg-success"
+                : value === "P"
+                  ? "bg-danger"
+                  : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Pending"
+            : value === "A"
+              ? "Approved"
+              : value === "R"
+                ? "Rejected"
+                : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+    },
+
     ...(isUpdate || isDelete
       ? [
           {
             title: "Actions",
             dataIndex: "actions",
-            render: (_text, record) => (
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -97,10 +127,29 @@ const LoanRequests = () => {
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "P"
+                        ? "Approve/Reject"
+                        : record.status === "R"
+                          ? "Pending/Approve"
+                          : record.status === "A"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#add_edit_loan_requests_modal"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -125,7 +174,7 @@ const LoanRequests = () => {
   ];
 
   const { loan_requests, loading, error, success } = useSelector(
-    (state) => state.loan_requests,
+    (state) => state.loan_requests
   );
 
   React.useEffect(() => {
@@ -151,7 +200,7 @@ const LoanRequests = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -164,11 +213,11 @@ const LoanRequests = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -288,14 +337,15 @@ const LoanRequests = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal mode={mode} initialData={selected} />
       <DeleteAlert
-        label="Industry"
+        label="lone Requests"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </div>
   );
 };

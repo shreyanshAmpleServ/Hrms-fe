@@ -9,9 +9,12 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js"
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchMonthlyPayroll } from "../../redux/MonthlyPayroll/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageMonthlyPayroll from "./ManageMonthlyPayroll/index.js";
-
+import ManageStatus from "./ManageStatus/index.js";
+import ManageMonthlyPayroll from "./ManageMonthlyPayroll";
 const MonthlyPayroll = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add");
   const [searchValue, setSearchValue] = useState("");
   const [selectedMonthlyPayroll, setSelectedMonthlyPayroll] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -98,11 +101,11 @@ const MonthlyPayroll = () => {
       dataIndex: "total_deductions",
       render: (text) => text || "-",
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   render: (text) => <p className="text-capitalize">{text}</p> || "-",
+    // },
     {
       title: "Processed On",
       dataIndex: "processed_on",
@@ -113,40 +116,97 @@ const MonthlyPayroll = () => {
       dataIndex: "remarks",
       render: (text) => text || "-",
     },
-    ...(isDelete || isUpdate
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "P"
+              ? "bg-warning"
+              : value === "A"
+                ? "bg-success"
+                : value === "PA"
+                  ? "bg-info"
+                  : value === "H"
+                    ? "bg-dark"
+                    : value === "C"
+                      ? "bg-primary"
+                      : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Processing"
+            : value === "A"
+              ? "Approved"
+              : value === "PA"
+                ? "Paid"
+                : value === "H"
+                  ? "Hold"
+                  : value === "C"
+                    ? "Completed"
+                    : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+    },
+
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "P"
+                        ? "Approve/Reject"
+                        : record.status === "R"
+                          ? "Pending/Approve"
+                          : record.status === "A"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedMonthlyPayroll(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteMonthlyPayroll(a)}
+                      onClick={() => handleDeleteMonthlyPayroll(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -161,7 +221,10 @@ const MonthlyPayroll = () => {
     setSelectedMonthlyPayroll(monthlyPayroll);
     setShowDeleteModal(true);
   };
-
+  const handleDelete = (record) => {
+    setSelected(record);
+    setShowDeleteModal(true);
+  };
   return (
     <>
       <Helmet>
@@ -273,8 +336,8 @@ const MonthlyPayroll = () => {
           </div>
         </div>
         <ManageMonthlyPayroll
-          setMonthlyPayroll={setSelectedMonthlyPayroll}
-          monthlyPayroll={selectedMonthlyPayroll}
+          setMonthlyPayroll={setSelected}
+          monthlyPayroll={selected}
         />
       </div>
       <DeleteConfirmation
@@ -282,6 +345,7 @@ const MonthlyPayroll = () => {
         setShowModal={setShowDeleteModal}
         monthlyPayrollId={selectedMonthlyPayroll?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

@@ -91,11 +91,11 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
     value: emp.id,
   }));
 
-  const statusOptions = [
-    { label: "Confirmed", value: "Confirmed" },
-    { label: "Extended", value: "Extended" },
-    { label: "Terminated", value: "Terminated" },
-  ];
+  // const statusOptions = [
+  //   { label: "Confirmed", value: "Confirmed" },
+  //   { label: "Extended", value: "Extended" },
+  //   { label: "Terminated", value: "Terminated" },
+  // ];
   const statusOption = [
     { label: "Yes", value: "true" },
     { label: "No", value: "false" },
@@ -251,7 +251,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
             </div>
 
             {/* Confirmation Status */}
-            <div className="col-md-6 mb-3">
+            {/* <div className="col-md-6 mb-3">
               <label className="col-form-label">
                 Confirmation Status<span className="text-danger">*</span>
               </label>
@@ -280,7 +280,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   {errors.confirmation_status.message}
                 </small>
               )}
-            </div>
+            </div> */}
 
             {/* Confirmation Date */}
             <div className="col-md-6 mb-3">
