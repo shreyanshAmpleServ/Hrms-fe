@@ -1,5 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
+import { Placeholder } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,13 +10,15 @@ import {
   addleave_application,
   updateleave_application,
 } from "../../../redux/leaveApplication";
-import { fetchLeaveType } from "../../../redux/LeaveType";
 import { fetchLeaveBalanceByEmployee } from "../../../redux/leaveBalance";
+import { fetchLeaveType } from "../../../redux/LeaveType";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.leave_Applications);
   const dispatch = useDispatch();
-  const { leaveBalanceByEmployee } = useSelector((state) => state.leaveBalance);
+  const { leaveBalanceByEmployee, loading: leaveBalanceLoading } = useSelector(
+    (state) => state.leaveBalance
+  );
 
   const {
     handleSubmit,
@@ -156,6 +159,8 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     }
   }, []);
 
+  console.log(leaveBalanceByEmployee);
+
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -179,12 +184,27 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
           <div className="col-md-12 mb-3">
-            {leaveBalanceByEmployee?.leave_balance && (
-              <div className="alert alert-success">
-                Available Balance for {leaveBalanceByEmployee?.leave_type}:{" "}
-                {leaveBalanceByEmployee?.leave_balance}
-              </div>
-            )}
+            {leaveBalanceByEmployee?.data?.leave_balance ? (
+              leaveBalanceLoading ? (
+                <Placeholder as="span" animation="glow">
+                  <Placeholder
+                    xs={4}
+                    size="lg"
+                    style={{
+                      width: "100%",
+                      height: "40px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                </Placeholder>
+              ) : (
+                <div className="alert alert-success">
+                  Available Balance for{" "}
+                  {leaveBalanceByEmployee?.data?.leave_type}:{" "}
+                  {leaveBalanceByEmployee?.data?.leave_balance}
+                </div>
+              )
+            ) : null}
           </div>
 
           <div className="col-md-6">
