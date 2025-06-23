@@ -35,10 +35,23 @@ export const fetchLeaveBalance = createAsyncThunk(
           search: datas?.search || "",
         },
       });
-      return response;
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch leave balance"
+      );
+    }
+  }
+);
+export const fetchLeaveBalanceById = createAsyncThunk(
+  "leaveBalance/fetchLeaveBalanceById",
+  async (id, thunkAPI) => {
+    try {
+      const response = await apiClient.get(`/v1/leave-balance/${id}`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch leave balance by id"
       );
     }
   }
@@ -57,7 +70,7 @@ export const deleteLeaveBalance = createAsyncThunk(
           error: "Failed to delete leave balance",
         }
       );
-      return response;
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to delete leave balance"
@@ -75,10 +88,10 @@ export const createLeaveBalance = createAsyncThunk(
           loading: "Creating leave balance...",
           success: (res) =>
             res.data.message || "Leave balance created successfully!",
-          error: "Failed to create leave balance",
+          error: (error) => error.response?.data?.message,
         }
       );
-      return response;
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to create leave balance"
@@ -91,15 +104,15 @@ export const updateLeaveBalance = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.put(`/v1/leave-balance/${datas.id}`, datas),
+        apiClient.put(`/v1/leave-balance/${datas.id}`, datas.reqData),
         {
           loading: "Updating leave balance...",
           success: (res) =>
             res.data.message || "Leave balance updated successfully!",
-          error: "Failed to update leave balance",
+          error: (error) => error.response?.data?.message,
         }
       );
-      return response;
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to update leave balance"
@@ -168,6 +181,10 @@ const leaveBalanceSlice = createSlice({
       .addCase(createLeaveBalance.fulfilled, (state, action) => {
         state.loading = false;
         state.success = action.payload.message;
+        state.leaveBalance.data = [
+          ...state.leaveBalance.data,
+          action.payload.data,
+        ];
       })
       .addCase(createLeaveBalance.rejected, (state, action) => {
         state.loading = false;
@@ -180,8 +197,23 @@ const leaveBalanceSlice = createSlice({
       .addCase(updateLeaveBalance.fulfilled, (state, action) => {
         state.loading = false;
         state.success = action.payload.message;
+        state.leaveBalance.data = state.leaveBalance.data.map((item) =>
+          item.id === action.payload.data.id ? action.payload.data : item
+        );
       })
       .addCase(updateLeaveBalance.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchLeaveBalanceById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchLeaveBalanceById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.leaveBalanceDetail = action.payload;
+      })
+      .addCase(fetchLeaveBalanceById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

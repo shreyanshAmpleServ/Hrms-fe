@@ -34,7 +34,6 @@ const LeaveBalance = () => {
       render: (text) => <div>{text?.first_name + " " + text?.last_name}</div>,
       sorter: (a, b) =>
         a?.employee?.first_name.localeCompare(b?.employee?.first_name),
-      width: 200,
     },
     {
       title: "Employee Code",
@@ -43,12 +42,25 @@ const LeaveBalance = () => {
       sorter: (a, b) => a.employee_code.localeCompare(b.employee_code),
     },
     {
+      title: "Start Date",
+      dataIndex: "start_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        moment(a.start_date).isBefore(moment(b.start_date)) ? -1 : 1,
+    },
+    {
+      title: "End Date",
+      dataIndex: "end_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        moment(a.end_date).isBefore(moment(b.end_date)) ? -1 : 1,
+    },
+    {
       title: "Created Date",
       dataIndex: "createdate",
       render: (text) => moment(text).format("DD-MM-YYYY"),
       sorter: (a, b) =>
         moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
-      width: 200,
     },
     ...(isUpdate || isDelete
       ? [

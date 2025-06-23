@@ -1,36 +1,74 @@
+import { Select as AntdSelect, Button, Table } from "antd";
+import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../../../redux/Employee";
-
-import moment from "moment";
-import DatePicker from "react-datepicker";
-import { RiDeleteBin5Line } from "react-icons/ri";
-
-import { Button, Table } from "antd";
 import {
   createLeaveBalance,
+  fetchLeaveBalanceById,
   updateLeaveBalance,
-  fetchLeaveBalanceByEmployee,
 } from "../../../../../redux/leaveBalance";
+import { fetchLeaveType } from "../../../../../redux/LeaveType";
+
+const initialLeaveBalance = [
+  {
+    leave_type_id: "",
+    no_of_leaves: 0,
+    used_leaves: 0,
+    balance: 0,
+    leave_type_name: "",
+  },
+];
 
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
-  const [leaveBalanceData, setLeaveBalanceData] = useState([]);
-  const { loading, leaveBalanceByEmployee } = useSelector(
+  const [leaveBalanceData, setLeaveBalanceData] = useState(initialLeaveBalance);
+  const [selectedEmployeeData, setSelectedEmployeeData] = useState(null);
+  const dispatch = useDispatch();
+
+  const { loading, leaveBalanceDetail } = useSelector(
     (state) => state.leaveBalance
   );
-
-  const [selectedEmployeeData, setSelectedEmployeeData] = useState(null);
+  const { leaveType } = useSelector((state) => state.leaveType);
 
   useEffect(() => {
-    if (leaveBalanceByEmployee) {
-      setLeaveBalanceData(leaveBalanceByEmployee || []);
+    dispatch(fetchLeaveType());
+    if (mode === "edit" && initialData) {
+      dispatch(fetchLeaveBalanceById(initialData.id));
     }
-  }, [leaveBalanceByEmployee]);
+  }, [mode, initialData]);
 
-  console.log(leaveBalanceData);
+  const handleModalClose = () => {
+    reset();
+    setSelected(null);
+    setLeaveBalanceData([]);
+  };
+
+  const leaveTypeList = useMemo(() => {
+    const usedLeaveTypeIds = leaveBalanceData.map((item) => item.leave_type_id);
+    return (
+      leaveType?.data
+        ?.filter((item) => !usedLeaveTypeIds.includes(item.id))
+        .map((item) => ({
+          value: item.id,
+          label: item.leave_type,
+        })) || []
+    );
+  }, [leaveType, leaveBalanceData]);
+
+  useEffect(() => {
+    if (leaveBalanceDetail?.data?.leaveBalances) {
+      setLeaveBalanceData(
+        leaveBalanceDetail?.data?.leaveBalances?.map((item) => ({
+          ...item,
+          used_leaves: item.no_of_leaves - item.balance,
+        })) || []
+      );
+    }
+  }, [leaveBalanceDetail?.data?.leaveBalances]);
 
   const {
     handleSubmit,
@@ -40,15 +78,9 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     watch,
   } = useForm();
 
-  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchEmployee());
-    if (watch("employee_id")) {
-      dispatch(
-        fetchLeaveBalanceByEmployee({ employeeId: watch("employee_id") })
-      );
-    }
-  }, [dispatch, watch("employee_id")]);
+  }, []);
 
   const employee = useSelector((state) => state.employee.employee);
 
@@ -67,43 +99,159 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     { value: "N", label: "Inactive" },
   ];
 
+  const handleAddLeaveBalance = () => {
+    setLeaveBalanceData([...leaveBalanceData, initialLeaveBalance]);
+  };
+
+  const handleChangeLeaveBalance = (leave_type_id, field, value) => {
+    const newData = leaveBalanceData.map((item) => {
+      if ((item.leave_type_id || value) === Number(leave_type_id)) {
+        let updatedItem = { ...item };
+
+        switch (field) {
+          case "no_of_leaves":
+            updatedItem.no_of_leaves = Number(value);
+            updatedItem.balance =
+              updatedItem.no_of_leaves - (updatedItem.used_leaves || 0);
+            break;
+
+          case "used_leaves":
+            updatedItem.used_leaves = Number(value);
+            updatedItem.balance =
+              (updatedItem.no_of_leaves || 0) - updatedItem.used_leaves;
+            break;
+
+          case "balance":
+            updatedItem.balance = Number(value);
+            updatedItem.used_leaves =
+              (updatedItem.no_of_leaves || 0) - updatedItem.balance;
+            break;
+
+          case "leave_type_id":
+            updatedItem.leave_type_id = Number(value);
+            break;
+
+          default:
+            updatedItem[field] = Number(value);
+        }
+        return updatedItem;
+      }
+      return item;
+    });
+
+    setLeaveBalanceData(newData);
+  };
+
   const columns = [
     {
       title: "Leave Type",
-      dataIndex: "leave_type",
-      render: (text) => text ?? "-",
+      dataIndex: "leave_type_name",
+      render: (_, record) => (
+        <AntdSelect
+          options={leaveTypeList}
+          placeholder="Choose Leave Type"
+          style={{ width: "100%" }}
+          onChange={(value) => {
+            handleChangeLeaveBalance(value, "leave_type_id", value || "");
+          }}
+          value={
+            leaveType?.data?.find(
+              (option) => Number(option.id) === Number(record.leave_type_id)
+            )?.leave_type || ""
+          }
+        />
+      ),
+      width: "30%",
     },
-    {
-      title: "Leave Balance",
-      dataIndex: "leave_balance",
-      render: (text) => text ?? "-",
-    },
+
     {
       title: "Total Leave",
-      dataIndex: "total_leave",
-      render: (text) => text ?? "-",
+      dataIndex: "no_of_leaves",
+      render: (_, record) => (
+        <input
+          type="number"
+          style={{ height: "32px" }}
+          max={365}
+          className="form-control form-control-sm"
+          value={record.no_of_leaves}
+          min={0}
+          onChange={(e) => {
+            if (e.target.value <= 365) {
+              handleChangeLeaveBalance(
+                record.leave_type_id,
+                "no_of_leaves",
+                e.target.value
+              );
+            }
+          }}
+        />
+      ),
+      width: "20%",
     },
     {
       title: "Leave Taken",
-      dataIndex: "leave_taken",
-      render: (text) => text ?? "-",
+      render: (_, record) => (
+        <input
+          type="number"
+          style={{ height: "32px" }}
+          className="form-control form-control-sm"
+          value={record.used_leaves}
+          min={0}
+          max={record.no_of_leaves}
+          onChange={(e) => {
+            if (e.target.value <= record.no_of_leaves) {
+              handleChangeLeaveBalance(
+                record.leave_type_id,
+                "used_leaves",
+                e.target.value
+              );
+            }
+          }}
+        />
+      ),
+      width: "20%",
+    },
+    {
+      title: "Leave Balance",
+      dataIndex: "balance",
+      render: (_, record) => (
+        <input
+          type="number"
+          style={{ height: "32px" }}
+          className="form-control form-control-sm"
+          value={record.balance}
+          min={0}
+          max={record.no_of_leaves}
+          onChange={(e) => {
+            if (e.target.value <= record.no_of_leaves) {
+              handleChangeLeaveBalance(
+                record.leave_type_id,
+                "balance",
+                e.target.value
+              );
+            }
+          }}
+        />
+      ),
+      width: "20%",
     },
     {
       title: "Actions",
+      width: "10%",
       dataIndex: "actions",
       render: (_, record) => (
-        <Button
-          shape="circle"
+        <button
           type="button"
-          className="btn-outline-danger"
+          className="btn btn-outline-danger btn-sm"
           onClick={() => {
-            setLeaveBalanceData(
-              leaveBalanceData.filter((item) => item.id !== record.id)
-            );
+            const newData = leaveBalanceData.filter((item) => {
+              return item.leave_type_id !== record.leave_type_id;
+            });
+            setLeaveBalanceData(newData);
           }}
         >
-          <RiDeleteBin5Line fontSize={20} />
-        </Button>
+          <i className="ti ti-trash"></i>
+        </button>
       ),
     },
   ];
@@ -124,15 +272,15 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     if (mode === "edit" && initialData) {
       reset({
         employee_id: initialData.employee_id || "",
-        start_date: initialData.start_date || "",
-        end_date: initialData.end_date || "",
+        start_date: initialData.start_date || new Date().toISOString(),
+        end_date: initialData.end_date || new Date().toISOString(),
         status: initialData.status || "Y",
       });
     } else {
       reset({
         employee_id: "",
-        start_date: "",
-        end_date: "",
+        start_date: new Date().toISOString(),
+        end_date: new Date().toISOString(),
         status: "Y",
       });
     }
@@ -140,39 +288,57 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_leave_balance_offcanvas"
+      "close_btn_add_edit_leave_balance"
     );
-    if (mode === "add") {
-      dispatch(
-        createLeaveBalance({
-          employee_id: data.employee_id,
-          employee_code: selectedEmployeeData.employee_code,
-          first_name: selectedEmployeeData?.first_name || "",
-          last_name: selectedEmployeeData?.last_name || "",
-          start_date: data.start_date,
-          end_date: data.end_date,
-          status: data.status,
-        })
-      );
-    } else if (mode === "edit" && initialData) {
-      dispatch(
-        updateLeaveBalance({
-          id: initialData.id,
-          reqData: {
+    try {
+      if (mode === "add") {
+        dispatch(
+          createLeaveBalance({
             employee_id: data.employee_id,
-            employee_code: selectedEmployeeData.employee_code,
+            employee_code: selectedEmployeeData?.employee_code,
             first_name: selectedEmployeeData?.first_name || "",
             last_name: selectedEmployeeData?.last_name || "",
             start_date: data.start_date,
             end_date: data.end_date,
             status: data.status,
-          },
-        })
-      );
+            leave_balances: leaveBalanceData.map((item) => ({
+              leave_type_id: item.leave_type_id,
+              no_of_leaves: item.no_of_leaves,
+              used_leaves: String(item.used_leaves),
+              balance: item.balance,
+              leave_type_name: item.leave_type_name,
+            })),
+          })
+        );
+      } else if (mode === "edit" && initialData) {
+        dispatch(
+          updateLeaveBalance({
+            id: initialData.id,
+            reqData: {
+              employee_id: data.employee_id,
+              employee_code: selectedEmployeeData.employee_code,
+              first_name: selectedEmployeeData?.first_name || "",
+              last_name: selectedEmployeeData?.last_name || "",
+              start_date: data.start_date,
+              end_date: data.end_date,
+              status: data.status,
+              leave_balances: leaveBalanceData.map((item) => ({
+                leave_type_id: item.leave_type_id,
+                no_of_leaves: item.no_of_leaves,
+                used_leaves: String(item.used_leaves),
+                balance: item.balance,
+                leave_type_name: item.leave_type_name,
+              })),
+            },
+          })
+        );
+      }
+      reset();
+      setSelected(null);
+      closeButton?.click();
+    } catch (error) {
+      console.log(error);
     }
-    reset();
-    setSelected(null);
-    closeButton.click();
   };
 
   useEffect(() => {
@@ -180,10 +346,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       "offcanvas_add_edit_leave_balance"
     );
     if (offcanvasElement) {
-      const handleModalClose = () => {
-        reset();
-        setSelected(null);
-      };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
         handleModalClose
@@ -195,9 +357,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         );
       };
     }
-  }, [setSelected]);
-
-  console.log(leaveBalanceData);
+  }, [handleModalClose]);
 
   return (
     <div
@@ -213,6 +373,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
+          id="close_btn_add_edit_leave_balance"
           aria-label="Close"
         >
           <i className="ti ti-x" />
@@ -278,12 +439,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       onChange={(selectedOption) =>
                         field.onChange(selectedOption.value)
                       }
-                      styles={{
-                        menu: (provided) => ({
-                          ...provided,
-                          zIndex: 9999,
-                        }),
-                      }}
                     />
                   );
                 }}
@@ -293,12 +448,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               )}
             </Col>
           </Row>
-          <Row>
+          <Row className="mb-3">
             <Col md={6}>
               <label className="col-form-label">
                 Start Date<span className="text-danger"> *</span>
               </label>
-              <div className="mb-3 icon-form">
+              <div className="icon-form">
                 <span className="form-icon">
                   <i className="ti ti-calendar-check" />
                 </span>
@@ -315,10 +470,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       value={
                         field.value
                           ? moment(field.value).format("DD-MM-YYYY")
-                          : null
+                          : ""
                       }
                       onChange={field.onChange}
-                      dateFormat="DD-MM-YYYY"
+                      maxDate={watch("end_date")}
                     />
                   )}
                 />
@@ -333,7 +488,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               <label className="col-form-label">
                 End Date<span className="text-danger"> *</span>
               </label>
-              <div className="mb-3 icon-form">
+              <div className="icon-form">
                 <span className="form-icon">
                   <i className="ti ti-calendar-check" />
                 </span>
@@ -350,10 +505,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       value={
                         field.value
                           ? moment(field.value).format("DD-MM-YYYY")
-                          : null
+                          : ""
                       }
                       onChange={field.onChange}
-                      dateFormat="DD-MM-YYYY"
+                      minDate={watch("start_date")}
                     />
                   )}
                 />
@@ -369,8 +524,22 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               dataSource={leaveBalanceData || []}
               columns={columns}
               loading={loading}
+              className="mkx"
               pagination={false}
             />
+            <div
+              className="d-flex justify-content-start"
+              style={{ padding: "5px 10px" }}
+            >
+              <Button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleAddLeaveBalance}
+                icon={<i className="ti ti-square-rounded-plus" />}
+              >
+                New Row
+              </Button>
+            </div>
           </div>
 
           <div className="d-flex offcanvas-footer align-items-center justify-content-end">
@@ -378,6 +547,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               type="button"
               data-bs-dismiss="offcanvas"
               className="btn btn-light me-2"
+              id="close_btn_add_edit_leave_balance"
+              onClick={handleModalClose}
             >
               Cancel
             </button>
@@ -399,6 +570,18 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           </div>
         </form>
       </div>
+      <style>
+        {`
+          input::-webkit-outer-spin-button,
+          input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+          .mkx .ant-table-cell {
+            padding: 10px !important;
+          }
+        `}
+      </style>
     </div>
   );
 };
