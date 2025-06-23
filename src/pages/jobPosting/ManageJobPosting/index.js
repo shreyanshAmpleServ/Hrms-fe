@@ -43,7 +43,6 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
 
   React.useEffect(() => {
     if (JobPosting) {
-      // Edit Mode
       reset({
         department_id: JobPosting.department_id || "",
         designation_id: JobPosting.designation_id || "",
@@ -51,23 +50,26 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
         description: JobPosting.description || "",
         required_experience: JobPosting.required_experience || "",
         posting_date: JobPosting.posting_date
-          ? new Date(JobPosting.posting_date)
-          : new Date(),
+          ? new Date(JobPosting.posting_date).toISOString()
+          : new Date().toISOString(),
         closing_date: JobPosting.closing_date
-          ? new Date(JobPosting.closing_date)
-          : new Date(),
+          ? new Date(JobPosting.closing_date).toISOString()
+          : new Date(
+              new Date().setDate(new Date().getDate() + 7)
+            ).toISOString(),
         is_internal: JobPosting.is_internal || false,
       });
     } else {
-      // Add Mode
       reset({
         department_id: "",
         designation_id: "",
         job_title: "",
         description: "",
         required_experience: "",
-        posting_date: new Date(),
-        closing_date: new Date(),
+        posting_date: new Date().toISOString(),
+        closing_date: new Date(
+          new Date().setDate(new Date().getDate() + 7)
+        ).toISOString(),
         is_internal: false,
       });
     }
@@ -205,7 +207,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 render={({ field }) => (
                   <input
                     {...field}
-                    className="form-control"
+                    className={`form-control ${errors.job_title ? "is-invalid" : ""}`}
                     placeholder="Enter Job Title"
                   />
                 )}
@@ -228,7 +230,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 render={({ field }) => (
                   <input
                     {...field}
-                    className="form-control"
+                    className={`form-control ${errors.required_experience ? "is-invalid" : ""}`}
                     placeholder="Required Experience"
                   />
                 )}
@@ -251,12 +253,16 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    className="form-control"
-                    selected={field.value ? new Date(field.value) : null}
+                    className={`form-control ${errors.posting_date ? "is-invalid" : ""}`}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : null
+                    }
                     onChange={(date) =>
                       field.onChange(moment(date).startOf("day").toDate())
                     }
-                    dateFormat="dd-MM-yyyy"
+                    dateFormat="DD-MM-YYYY"
                     maxDate={new Date()}
                     placeholderText="Select Posting Date"
                   />
@@ -286,12 +292,16 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    className="form-control"
-                    selected={field.value ? new Date(field.value) : null}
+                    className={`form-control ${errors.closing_date ? "is-invalid" : ""}`}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : null
+                    }
                     onChange={(date) =>
                       field.onChange(moment(date).startOf("day").toDate())
                     }
-                    dateFormat="dd-MM-yyyy"
+                    dateFormat="DD-MM-YYYY"
                     minDate={postingDate || null}
                     placeholderText="Select Closing Date"
                   />
@@ -307,6 +317,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
               <label className="col-form-label">
                 Description{" "}
                 <small className="text-muted">(Max 255 characters)</small>
+                <span className="text-danger">*</span>
               </label>
               <Controller
                 name="description"
@@ -324,19 +335,22 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                     {...field}
                     rows={3}
                     maxLength={255}
-                    className="form-control"
+                    className={`form-control ${errors.description ? "is-invalid" : ""}`}
                     placeholder="Enter Description "
                   />
                 )}
               />
-              {/* {errors.description && (
+              {errors.description && (
                 <small className="text-danger">
                   {errors.description.message}
                 </small>
-              )} */}
+              )}
             </div>
 
-            <div className="col-md-12 mb-3 form-check ms-3 ">
+            <div
+              style={{ paddingLeft: "35px" }}
+              className="col-md-12 mb-3 form-check"
+            >
               <Controller
                 name="is_internal"
                 control={control}
@@ -349,7 +363,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                   />
                 )}
               />
-              <label className="form-check-label ms-2">Is Internal Job?</label>
+              <label className="form-check-label">Is Internal Job?</label>
             </div>
           </div>
 

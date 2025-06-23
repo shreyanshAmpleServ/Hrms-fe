@@ -151,7 +151,7 @@ import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import WarningLetters from "../pages/WarningLetters";
 import LeaveBalance from "../pages/crm-settings/leaveAndAttendance/LeaveBalance";
-// // Export components individually
+import Candidate from "../pages/Candidate";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -460,12 +460,12 @@ export const privateRoutes = [
     route: Route,
     title: "Tax Regime",
   },
-  // {
-  //   path: route.currency,
-  //   element: <CurrenciesList />,
-  //   route: Route,
-  //   title: "Currency",
-  // },
+  {
+    path: route.candidate,
+    element: <Candidate />,
+    route: Route,
+    title: "Candidate",
+  },
   {
     path: route.modules,
     element: <Modules />,

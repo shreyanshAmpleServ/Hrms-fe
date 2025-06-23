@@ -7,14 +7,14 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchJobPosting } from "../../redux/JobPosting";
+import { fetchCandidate } from "../../redux/Candidate/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageJobPosting from "./ManageJobPosting/index.js";
+import ManageCandidate from "./ManageCandidate/index.js";
 import usePermissions from "../../components/common/Permissions.js/index.js";
 
-const JobPosting = () => {
+const Candidate = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedJobPosting, setSelectedJobPosting] = useState(null);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -22,15 +22,12 @@ const JobPosting = () => {
     endDate: moment(),
   });
   const dispatch = useDispatch();
-  const { isView, isCreate, isUpdate, isDelete } =
-    usePermissions("Job Posting");
-  const { JobPosting, loading } = useSelector(
-    (state) => state.JobPosting || {}
-  );
+
+  const { candidate, loading } = useSelector((state) => state.candidate || {});
 
   React.useEffect(() => {
     dispatch(
-      fetchJobPosting({
+      fetchCandidate({
         search: searchValue,
         ...selectedDateRange,
       })
@@ -39,12 +36,12 @@ const JobPosting = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: JobPosting?.currentPage,
-      totalPage: JobPosting?.totalPages,
-      totalCount: JobPosting?.totalCount,
-      pageSize: JobPosting?.size,
+      currentPage: candidate?.currentPage,
+      totalPage: candidate?.totalPages,
+      totalCount: candidate?.totalCount,
+      pageSize: candidate?.size,
     });
-  }, [JobPosting]);
+  }, [candidate]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -53,7 +50,7 @@ const JobPosting = () => {
       pageSize,
     }));
     dispatch(
-      fetchJobPosting({
+      fetchCandidate({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
@@ -62,50 +59,100 @@ const JobPosting = () => {
     );
   };
 
-  const data = JobPosting?.data;
+  const data = candidate?.data;
+
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Candidate");
 
   const columns = [
     {
-      title: "Department",
-      dataIndex: "hrms_job_department",
-      render: (text) => text?.department_name || "-",
+      title: "Candidate Name",
+      dataIndex: "full_name",
+      render: (text) => text || "-",
     },
     {
-      title: "Designation",
-      dataIndex: "hrms_job_designation",
-      render: (text) => text?.designation_name || "-",
+      title: "Email",
+      dataIndex: "email",
+      render: (text) => text || "-",
     },
     {
-      title: "Job Title",
-      dataIndex: "job_title",
+      title: "Phone",
+      dataIndex: "phone",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
       render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      render: (text) => <p>{text}</p> || "-",
+      title: "Status Remarks",
+      dataIndex: "status_remarks",
+      render: (text) => text || "-",
     },
     {
-      title: "Experience",
-      dataIndex: "required_experience",
-      render: (text) => <p>{text}</p> || "-",
+      title: "Interview Stage",
+      dataIndex: "interview_stage",
+      render: (text) => text || "-",
     },
     {
-      title: "Posting Date",
-      dataIndex: "posting_date",
+      title: "Interview 1 Remarks",
+      dataIndex: "interview1_remarks",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Interview 2 Remarks",
+      dataIndex: "interview2_remarks",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Interview 3 Remarks",
+      dataIndex: "interview3_remarks",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Nationality",
+      dataIndex: "nationality",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Date of Birth",
+      dataIndex: "date_of_birth",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => moment(a?.posting_date).diff(moment(b?.posting_date)),
     },
     {
-      title: "Closing Date",
-      dataIndex: "closing_date",
+      title: "Expected Joining Date",
+      dataIndex: "expected_joining_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => moment(a?.closing_date).diff(moment(b?.closing_date)),
     },
     {
-      title: "Internal Job",
-      dataIndex: "is_internal",
-      render: (value) => (value ? "Yes" : "No"),
+      title: "Offer Accepted Date",
+      dataIndex: "offer_accepted_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+    {
+      title: "Actual Joining Date",
+      dataIndex: "actual_joining_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+    {
+      title: "No Show Flag",
+      dataIndex: "no_show_flag",
+      render: (text) => text || "-",
+    },
+    {
+      title: "No Show Marked Date",
+      dataIndex: "no_show_marked_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+    {
+      title: "No Show Remarks",
+      dataIndex: "no_show_remarks",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdate",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     ...(isDelete || isUpdate
       ? [
@@ -128,7 +175,7 @@ const JobPosting = () => {
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedJobPosting(a)}
+                      onClick={() => setSelectedCandidate(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -138,7 +185,7 @@ const JobPosting = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteJobPosting(a)}
+                      onClick={() => handleDeleteCandidate(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -151,19 +198,16 @@ const JobPosting = () => {
       : []),
   ];
 
-  const handleDeleteJobPosting = (JobPosting) => {
-    setSelectedJobPosting(JobPosting);
+  const handleDeleteCandidate = (candidate) => {
+    setSelectedCandidate(candidate);
     setShowDeleteModal(true);
   };
 
   return (
     <>
       <Helmet>
-        <title>DCC HRMS - Job Posting</title>
-        <meta
-          name="helpdesk-ticket"
-          content="This is helpdesk ticket page of DCC HRMS."
-        />
+        <title>DCC HRMS - Candidate</title>
+        <meta name="candidate" content="This is candidate page of DCC HRMS." />
       </Helmet>
       {/* Page Wrapper */}
       <div className="page-wrapper">
@@ -175,9 +219,9 @@ const JobPosting = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Job Posting
+                      Candidate
                       <span className="count-title">
-                        {JobPosting?.totalCount}
+                        {candidate?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -201,7 +245,7 @@ const JobPosting = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Job Posting"
+                          placeholder="Search Candidate"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -216,7 +260,7 @@ const JobPosting = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add Job Posting
+                            Add Candidate
                           </Link>
                         </div>
                       </div>
@@ -227,10 +271,7 @@ const JobPosting = () => {
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="d-flex align-items-center flex-wrap row-gap-2"></div>
-                      </div>
+                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="mx-2">
                           <DateRangePickerComponent
@@ -247,10 +288,10 @@ const JobPosting = () => {
                       <Table
                         columns={columns}
                         dataSource={data}
+                        scroll={{ x: "max-content" }}
                         loading={loading}
                         paginationData={paginationData}
                         onPageChange={handlePageChange}
-                        scroll={{ x: "max-content" }}
                       />
                     </div>
                   ) : (
@@ -269,18 +310,18 @@ const JobPosting = () => {
             </div>
           </div>
         </div>
-        <ManageJobPosting
-          setJobPosting={setSelectedJobPosting}
-          JobPosting={selectedJobPosting}
+        <ManageCandidate
+          setCandidate={setSelectedCandidate}
+          candidate={selectedCandidate}
         />
       </div>
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        JobPostingId={selectedJobPosting?.id}
+        candidateId={selectedCandidate?.id}
       />
     </>
   );
 };
 
-export default JobPosting;
+export default Candidate;

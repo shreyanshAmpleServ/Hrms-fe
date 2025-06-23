@@ -254,4 +254,5 @@ export const all_routes = {
   leaveType: "/leave-type",
   holidayCalender: "/holiday-calender",
   workSchedule: "/work-schedule",
+  candidate: "/candidate",
 };

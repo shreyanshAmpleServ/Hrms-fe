@@ -121,6 +121,7 @@ import upcomingBirthdaysReducer from "./Dashboards/UpcomingBirthdays";
 import upcomingAnniversariesReducer from "./Dashboards/UpcomingAnniversaries";
 import attendanceOverviewReducer from "./Dashboards/AttendanceOverview";
 import leaveBalanceReducer from "./leaveBalance";
+import candidateReducer from "./Candidate";
 
 const store = configureStore({
   reducer: {
@@ -246,6 +247,7 @@ const store = configureStore({
     upcomingAnniversaries: upcomingAnniversariesReducer,
     attendanceOverview: attendanceOverviewReducer,
     leaveBalance: leaveBalanceReducer,
+    candidate: candidateReducer,
   },
 });
 
