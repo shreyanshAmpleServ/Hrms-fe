@@ -70,7 +70,7 @@ export const deleteLeaveBalance = createAsyncThunk(
           error: "Failed to delete leave balance",
         }
       );
-      return response.data;
+      return { id, message: response.data.message };
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to delete leave balance"
@@ -168,6 +168,10 @@ const leaveBalanceSlice = createSlice({
       })
       .addCase(deleteLeaveBalance.fulfilled, (state, action) => {
         state.loading = false;
+        const filterData = state.leaveBalance.data?.filter(
+          (item) => item.id !== action.payload.id
+        );
+        state.leaveBalance.data = filterData;
         state.success = action.payload.message;
       })
       .addCase(deleteLeaveBalance.rejected, (state, action) => {

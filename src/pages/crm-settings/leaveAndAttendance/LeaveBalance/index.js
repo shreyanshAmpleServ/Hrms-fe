@@ -31,9 +31,9 @@ const LeaveBalance = () => {
   const columns = [
     {
       title: "Employee",
-      render: (text) => <div>{text?.first_name + " " + text?.last_name}</div>,
-      sorter: (a, b) =>
-        a?.employee?.first_name.localeCompare(b?.employee?.first_name),
+      dataIndex: "leave_balance_employee",
+      render: (text) => <div>{text?.full_name}</div>,
+      sorter: (a, b) => a?.full_name.localeCompare(b?.full_name),
     },
     {
       title: "Employee Code",
@@ -96,7 +96,7 @@ const LeaveBalance = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteIndustry(record)}
+                      onClick={() => handleDeleteLeaveBalance(record)}
                     >
                       <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
@@ -157,8 +157,8 @@ const LeaveBalance = () => {
     return data;
   }, [leaveBalance, sortOrder]);
 
-  const handleDeleteIndustry = (industry) => {
-    setSelected(industry);
+  const handleDeleteLeaveBalance = (leaveBalance) => {
+    setSelected(leaveBalance);
     setShowDeleteModal(true);
   };
 

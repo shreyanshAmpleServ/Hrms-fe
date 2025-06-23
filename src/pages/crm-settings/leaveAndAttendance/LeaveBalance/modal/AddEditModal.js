@@ -316,7 +316,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             id: initialData.id,
             reqData: {
               employee_id: data.employee_id,
-              employee_code: selectedEmployeeData.employee_code,
+              employee_code: selectedEmployeeData?.employee_code,
               first_name: selectedEmployeeData?.first_name || "",
               last_name: selectedEmployeeData?.last_name || "",
               start_date: data.start_date,
