@@ -1,15 +1,15 @@
 import moment from "moment";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
+import { fetchdepartment } from "../../../redux/department";
+import { fetchEmployee } from "../../../redux/Employee";
 import {
   createtrainingSession,
   updatetrainingSession,
 } from "../../../redux/trainingSessionSchedule";
-import { fetchEmployee } from "../../../redux/Employee";
-import Select from "react-select";
-import { fetchdepartment } from "../../../redux/department";
 
 const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
       training_material_path: "",
       evaluation_required: "",
       feedback_required: "",
-      training_status: "Panding",
+      training_status: "P",
     },
   });
 
@@ -58,9 +58,9 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
         participant_limit: trainingSession.participant_limit || "",
         duration_hours: trainingSession.duration_hours || "",
         training_material_path: trainingSession.training_material_path || "",
-        evaluation_required: trainingSession.evaluation_required || "",
-        feedback_required: trainingSession.feedback_required || "",
-        training_status: trainingSession.training_status || "Panding",
+        evaluation_required: trainingSession.evaluation_required || false,
+        feedback_required: trainingSession.feedback_required || false,
+        training_status: trainingSession.training_status || "P",
       });
     } else {
       reset({
@@ -75,9 +75,9 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
         participant_limit: "",
         duration_hours: "",
         training_material_path: "",
-        evaluation_required: "",
-        feedback_required: "",
-        training_status: "Panding",
+        evaluation_required: false,
+        feedback_required: false,
+        training_status: "P",
       });
     }
   }, [trainingSession]);
@@ -501,61 +501,38 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
             </div> */}
 
             <div className="col-12 mb-3">
-              <label className="form-label">
-                Feedback Required{" "}
-                <small className="text-muted">(Max 255 characters)</small>
-              </label>
-
               <Controller
                 name="feedback_required"
                 control={control}
-                rules={{
-                  required: "Feedback Required  is required!",
-                  maxLength: {
-                    value: 255,
-                    message:
-                      "Description must be less than or equal to 255 characters",
-                  },
-                }}
                 render={({ field }) => (
-                  <textarea
-                    {...field}
-                    rows={3}
-                    maxLength={255}
-                    className="form-control"
-                    onChange={(option) => field.onChange(option)}
-                    placeholder="Enter Feedback Required "
-                  />
+                  <div className="form-check">
+                    <input
+                      {...field}
+                      type="checkbox"
+                      className="form-check-input"
+                    />
+                    <label className="form-check-label">
+                      Feedback required
+                    </label>
+                  </div>
                 )}
               />
             </div>
-
             <div className="col-12 mb-3">
-              <label className="form-label">
-                Evaluation Required{" "}
-                <small className="text-muted">(Max 255 characters)</small>
-              </label>
-
               <Controller
                 name="evaluation_required"
                 control={control}
-                rules={{
-                  required: "Evaluation Required   is required!",
-                  maxLength: {
-                    value: 255,
-                    message:
-                      "Description must be less than or equal to 255 characters",
-                  },
-                }}
                 render={({ field }) => (
-                  <textarea
-                    {...field}
-                    rows={3}
-                    maxLength={255}
-                    onChange={(option) => field.onChange(option)}
-                    className="form-control"
-                    placeholder="Enter Evaluation Required"
-                  />
+                  <div className="form-check">
+                    <input
+                      {...field}
+                      type="checkbox"
+                      className="form-check-input"
+                    />
+                    <label className="form-check-label">
+                      Evaluation Required
+                    </label>
+                  </div>
                 )}
               />
             </div>

@@ -14,7 +14,7 @@ import ManageStatus from "./ManageStatus/index.js";
 const TrainingSessionSchedule = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [searchValue, setSearchValue] = useState("");
   const [selectedtrainingSession, setSelectedtrainingSession] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -100,12 +100,12 @@ const TrainingSessionSchedule = () => {
     {
       title: "Training Type",
       dataIndex: "training_type",
-      render: (text) => text || "-",
+      render: (text) => <p className="text-capitalize">{text || "-"}</p>,
     },
     {
       title: "Training Objective",
       dataIndex: "training_objective",
-      render: (text) => text || "-",
+      render: (text) => <p className="text-capitalize">{text || "-"}</p>,
     },
     {
       title: "Department",
@@ -115,7 +115,7 @@ const TrainingSessionSchedule = () => {
     {
       title: "Audience Level",
       dataIndex: "audience_level",
-      render: (text) => text || "-",
+      render: (text) => <p className="text-capitalize">{text || "-"}</p>,
     },
     {
       title: "Participant Limit",
@@ -150,12 +150,12 @@ const TrainingSessionSchedule = () => {
     {
       title: "Evaluation Required",
       dataIndex: "evaluation_required",
-      render: (text) => text || "-",
+      render: (text) => (text ? "Yes" : "No"),
     },
     {
       title: "Feedback Required",
       dataIndex: "feedback_required",
-      render: (text) => text || "-",
+      render: (text) => (text ? "Yes" : "No"),
     },
     {
       title: "Status",
@@ -215,13 +215,7 @@ const TrainingSessionSchedule = () => {
                       }}
                     >
                       <i className="ti ti-settings text-blue"></i>
-                      {record.status === "P"
-                        ? "Approve/Reject"
-                        : record.status === "C"
-                          ? "Pending/Approve"
-                          : record.status === "A"
-                            ? "Reject/Pending"
-                            : "Manage Status"}
+                      Manage Status
                     </Link>
                   )}
                   {isUpdate && (
@@ -350,6 +344,7 @@ const TrainingSessionSchedule = () => {
                         dataSource={data}
                         loading={loading}
                         paginationData={paginationData}
+                        scroll={{ x: "max-content" }}
                         onPageChange={handlePageChange}
                       />
                     </div>
