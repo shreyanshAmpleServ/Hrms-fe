@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deleteHelpdeskTicket } from "../../../redux/HelpdeskTicket";
+import { deleteMedicalRecord } from "../../../redux/MedicalRecord";
 
-const DeleteConfirmation = ({ showModal, setShowModal, helpdeskTicketId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, medicalRecordId }) => {
   const dispatch = useDispatch();
-  const handleDeleteHelpdeskTicket = () => {
-    if (helpdeskTicketId) {
-      dispatch(deleteHelpdeskTicket(helpdeskTicketId));
+  const handleDeleteMedicalRecord = () => {
+    if (medicalRecordId) {
+      dispatch(deleteMedicalRecord(medicalRecordId));
       setShowModal(false);
     }
   };
@@ -15,7 +15,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, helpdeskTicketId }) => {
       {showModal && (
         <div
           className="modal fade show"
-          id="delete_helpdesk_ticket"
+          id="delete_medical_record"
           role="dialog"
           style={{ display: "block" }}
         >
@@ -26,9 +26,9 @@ const DeleteConfirmation = ({ showModal, setShowModal, helpdeskTicketId }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove Helpdesk Ticket?</h4>
+                  <h4 className="mb-2">Remove Medical Record?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the helpdesk ticket
+                    Are you sure you want to remove <br /> the medical record
                     you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">
@@ -40,7 +40,7 @@ const DeleteConfirmation = ({ showModal, setShowModal, helpdeskTicketId }) => {
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={handleDeleteHelpdeskTicket}
+                      onClick={handleDeleteMedicalRecord}
                     >
                       Yes, Delete it
                     </button>

@@ -6,11 +6,26 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { fetchEmployee } from "../../../redux/Employee";
 import {
-  createHelpdeskTicket,
-  updateHelpdeskTicket,
-} from "../../../redux/HelpdeskTicket";
+  createMedicalRecord,
+  updateMedicalRecord,
+} from "../../../redux/MedicalRecord";
+const medicalRecordTypes = [
+  { label: "Pre-Employment Medical Checkup", value: "pre_employment_checkup" },
+  { label: "Periodic Health Checkup", value: "periodic_checkup" },
+  { label: "Occupational Health Record", value: "occupational_health" },
+  { label: "Vaccination Record", value: "vaccination" },
+  { label: "Medical Leave Certificate", value: "medical_leave_certificate" },
+  { label: "Fitness for Duty Report", value: "fitness_duty" },
+  { label: "Hospitalization Record", value: "hospitalization" },
+  { label: "Health Insurance Claim", value: "insurance_claim" },
+  { label: "Mental Health Report", value: "mental_health" },
+  { label: "Return to Work Clearance", value: "return_to_work" },
+  { label: "Chronic Illness Monitoring", value: "chronic_illness" },
+  { label: "Accident/Injury Report", value: "accident_injury" },
+  { label: "Drug/Alcohol Test Result", value: "drug_alcohol_test" },
+];
 
-const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
+const ManageMedicalRecord = ({ setMedicalRecord, medicalRecord }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
@@ -20,7 +35,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
     formState: { errors },
   } = useForm();
 
-  const { loading } = useSelector((state) => state.helpdeskTicket || {});
+  const { loading } = useSelector((state) => state.medicalRecord || {});
 
   const statusOptions = [
     { value: "open", label: "Open" },
@@ -38,26 +53,38 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
     { value: "critical", label: "Critical" },
   ];
 
-  const ticketTypeOptions = [
-    { value: "technical", label: "Technical" },
-    { value: "hr", label: "HR" },
-    { value: "it", label: "IT" },
-    { value: "facilities", label: "Facilities" },
-    { value: "other", label: "Other" },
+  const recordTypeOptions = [
+    { value: "annual_health", label: "Annual Health" },
+    { value: "medical_checkup", label: "Medical Checkup" },
+    { value: "occupational_health", label: "Occupational Health" },
+    { value: "vaccination", label: "Vaccination" },
+    { value: "medical_leave_certificate", label: "Medical Leave Certificate" },
+  ];
+
+  const documentPathOptions = [
+    { value: "annual_health", label: "Annual Health" },
+    { value: "medical_checkup", label: "Medical Checkup" },
+    { value: "occupational_health", label: "Occupational Health" },
+    { value: "vaccination", label: "Vaccination" },
+    { value: "medical_leave_certificate", label: "Medical Leave Certificate" },
   ];
 
   React.useEffect(() => {
     reset({
-      employee_id: helpdeskTicket?.employee_id || "",
-      ticket_subject: helpdeskTicket?.ticket_subject || "",
-      ticket_type: helpdeskTicket?.ticket_type || "",
-      status: helpdeskTicket?.status || "",
-      priority: helpdeskTicket?.priority || "",
-      assigned_to: helpdeskTicket?.assigned_to || "",
-      description: helpdeskTicket?.description || "",
-      submitted_on: helpdeskTicket?.submitted_on || new Date().toISOString(),
+      employee_id: medicalRecord?.medical_employee_id?.id || "",
+      record_type: medicalRecord?.record_type || "",
+      description: medicalRecord?.description || "",
+      record_date: medicalRecord?.record_date || new Date().toISOString(),
+      document_path: medicalRecord?.document_path || "",
+      doctor_name: medicalRecord?.doctor_name || "",
+      hospital_name: medicalRecord?.hospital_name || "",
+      diagnosis: medicalRecord?.diagnosis || "",
+      treatment: medicalRecord?.treatment || "",
+      next_review_date:
+        medicalRecord?.next_review_date || new Date().toISOString(),
+      prescription_path: medicalRecord?.prescription_path || "",
     });
-  }, [helpdeskTicket, reset]);
+  }, [medicalRecord, reset]);
 
   React.useEffect(() => {
     dispatch(fetchEmployee({ searchValue }));
@@ -75,17 +102,17 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      helpdeskTicket
+      medicalRecord
         ? await dispatch(
-            updateHelpdeskTicket({
-              id: helpdeskTicket.id,
-              helpdeskTicketData: { ...data },
+            updateMedicalRecord({
+              id: medicalRecord.id,
+              medicalRecordData: { ...data },
             })
           ).unwrap()
-        : await dispatch(createHelpdeskTicket({ ...data })).unwrap();
+        : await dispatch(createMedicalRecord({ ...data })).unwrap();
       closeButton.click();
       reset();
-      setHelpdeskTicket(null);
+      setMedicalRecord(null);
     } catch (error) {
       closeButton.click();
     }
@@ -95,7 +122,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setHelpdeskTicket(null);
+        setMedicalRecord(null);
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -108,7 +135,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
         );
       };
     }
-  }, [setHelpdeskTicket]);
+  }, [setMedicalRecord]);
 
   return (
     <>
@@ -118,14 +145,14 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{helpdeskTicket ? "Update " : "Add "} Helpdesk Ticket</h4>
+          <h4>{medicalRecord ? "Update " : "Add "} Medical Record</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             onClick={() => {
-              setHelpdeskTicket(null);
+              setMedicalRecord(null);
               reset();
             }}
           >
@@ -182,143 +209,49 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                     )}
                   </div>
                 </div>
-
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Status <span className="text-danger">*</span>
+                    Record Type <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="status"
+                      name="record_type"
                       control={control}
-                      rules={{ required: "Status is required!" }}
+                      rules={{ required: "Record type is required!" }}
                       render={({ field }) => (
                         <Select
                           {...field}
                           className="select"
-                          options={statusOptions}
-                          placeholder="Select Status"
+                          options={medicalRecordTypes}
+                          placeholder="Select Record Type"
                           classNamePrefix="react-select"
-                          value={statusOptions.find(
+                          value={medicalRecordTypes.find(
                             (x) => x.value === field.value
                           )}
                           onChange={(option) => field.onChange(option.value)}
                         />
                       )}
                     />
-                    {errors.status && (
+                    {errors.record_type && (
                       <small className="text-danger">
-                        {errors.status.message}
+                        {errors.record_type.message}
                       </small>
                     )}
                   </div>
                 </div>
-
                 <div className="col-md-6">
                   <label className="col-form-label">
-                    Priority <span className="text-danger">*</span>
+                    Record Date <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="priority"
+                      name="record_date"
                       control={control}
-                      rules={{ required: "Priority is required!" }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          className="select"
-                          options={priorityOptions}
-                          placeholder="Select Priority"
-                          classNamePrefix="react-select"
-                          value={priorityOptions.find(
-                            (x) => x.value === field.value
-                          )}
-                          onChange={(option) => field.onChange(option.value)}
-                        />
-                      )}
-                    />
-                    {errors.priority && (
-                      <small className="text-danger">
-                        {errors.priority.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Ticket Type <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="ticket_type"
-                      control={control}
-                      rules={{ required: "Ticket type is required!" }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          className="select"
-                          options={ticketTypeOptions}
-                          placeholder="Select Ticket Type"
-                          classNamePrefix="react-select"
-                          value={ticketTypeOptions.find(
-                            (x) => x.value === field.value
-                          )}
-                          onChange={(option) => field.onChange(option.value)}
-                        />
-                      )}
-                    />
-                    {errors.ticket_type && (
-                      <small className="text-danger">
-                        {errors.ticket_type.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Ticket Subject <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="ticket_subject"
-                      control={control}
-                      rules={{ required: "Ticket subject is required!" }}
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          type="text"
-                          className={`form-control ${errors.ticket_subject ? "is-invalid" : ""}`}
-                          placeholder="Enter Ticket Subject"
-                        />
-                      )}
-                    />
-                    {errors.ticket_subject && (
-                      <small className="text-danger">
-                        {errors.ticket_subject.message}
-                      </small>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <label className="col-form-label">
-                    Submitted Date<span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <Controller
-                      name="submitted_on"
-                      control={control}
-                      rules={{ required: "Submitted date is required!" }}
+                      rules={{ required: "Record date is required!" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
-                          placeholderText="Select Submitted Date"
                           selected={field.value}
                           value={
                             field.value
@@ -330,53 +263,137 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                         />
                       )}
                     />
+                    {errors.record_date && (
+                      <small className="text-danger">
+                        {errors.record_date.message}
+                      </small>
+                    )}
                   </div>
-                  {errors.submitted_on && (
+                </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Document <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="document_path"
+                      control={control}
+                      rules={{ required: "Document is required!" }}
+                      render={({ field }) => (
+                        <input
+                          type="file"
+                          className="form-control"
+                          placeholder="Upload Document"
+                          onChange={(e) => field.onChange(e.target.files[0])}
+                        />
+                      )}
+                    />
+                    {errors.document_path && (
+                      <small className="text-danger">
+                        {errors.document_path.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Prescription <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="prescription_path"
+                      control={control}
+                      rules={{ required: "Prescription is required!" }}
+                      render={({ field }) => (
+                        <input
+                          type="file"
+                          className="form-control"
+                          placeholder="Upload Prescription"
+                          onChange={(e) => field.onChange(e.target.files[0])}
+                        />
+                      )}
+                    />
+                    {errors.prescription_path && (
+                      <small className="text-danger">
+                        {errors.prescription_path.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Doctor Name <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="doctor_name"
+                      control={control}
+                      rules={{ required: "Doctor name is required!" }}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          className={`form-control ${errors.doctor_name ? "is-invalid" : ""}`}
+                          placeholder="Enter Doctor Name"
+                        />
+                      )}
+                    />
+                    {errors.doctor_name && (
+                      <small className="text-danger">
+                        {errors.doctor_name.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Hospital Name<span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="hospital_name"
+                      control={control}
+                      rules={{ required: "Hospital name is required!" }}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className="form-control"
+                          placeholder="Enter Hospital Name"
+                        />
+                      )}
+                    />
+                  </div>
+                  {errors.hospital_name && (
                     <small className="text-danger">
-                      {errors.submitted_on.message}
+                      {errors.hospital_name.message}
                     </small>
                   )}
                 </div>
-
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Assigned To
+                      Diagnosis
                       <span className="text-danger">*</span>
                     </label>
                     <Controller
-                      name="assigned_to"
+                      name="diagnosis"
                       control={control}
-                      rules={{ required: "Assigned to is required" }}
+                      rules={{ required: "Diagnosis is required" }}
                       render={({ field }) => {
-                        const selectedAssignee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <input
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Assignee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            value={selectedAssignee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            className="form-control"
+                            placeholder="Enter Diagnosis"
+                            value={field.value || null}
+                            onChange={(e) => field.onChange(e.target.value)}
                           />
                         );
                       }}
                     />
-                    {errors.assigned_to && (
+                    {errors.diagnosis && (
                       <small className="text-danger">
-                        {errors.assigned_to.message}
+                        {errors.diagnosis.message}
                       </small>
                     )}
                   </div>
@@ -384,28 +401,58 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
               </div>
               <div className="col-md-12">
                 <label className="col-form-label">
-                  Description{" "}
-                  <small className="text-muted">(Max 255 characters)</small>
+                  Treatment
+                  <small className="text-muted"> (Max 255 characters)</small>
                 </label>
                 <div className="mb-3">
                   <Controller
-                    name="description"
+                    name="treatment"
                     control={control}
-                    rules={{ required: "Description is required!" }}
+                    rules={{ required: "Treatment is required!" }}
                     render={({ field }) => (
                       <textarea
                         rows={3}
                         {...field}
-                        className={`form-control ${errors.description ? "is-invalid" : ""}`}
-                        placeholder="Enter Description"
+                        className={`form-control ${errors.treatment ? "is-invalid" : ""}`}
+                        placeholder="Enter Treatment"
                       />
                     )}
                   />
-                  {errors.description && (
+                  {errors.treatment && (
                     <small className="text-danger">
-                      {errors.description.message}
+                      {errors.treatment.message}
                     </small>
                   )}
+                </div>
+                <div className="col-md-6">
+                  <label className="col-form-label">
+                    Next Review Date <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="next_review_date"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          selected={field.value}
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={(date) => field.onChange(date)}
+                          dateFormat="DD-MM-YYYY"
+                        />
+                      )}
+                    />
+                    {errors.next_review_date && (
+                      <small className="text-danger">
+                        {errors.next_review_date.message}
+                      </small>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -418,7 +465,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {helpdeskTicket
+                {medicalRecord
                   ? loading
                     ? "Updating..."
                     : "Update"
@@ -446,4 +493,4 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
   );
 };
 
-export default ManageHelpdeskTicket;
+export default ManageMedicalRecord;

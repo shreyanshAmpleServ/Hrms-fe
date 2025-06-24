@@ -34,9 +34,21 @@ export const fetchMedicalRecord = createAsyncThunk(
 export const createMedicalRecord = createAsyncThunk(
   "medicalRecord/createMedicalRecord",
   async (medicalRecordData, thunkAPI) => {
+    const formData = new FormData();
+    formData.append("employee_id", medicalRecordData.employee_id);
+    formData.append("record_type", medicalRecordData.record_type);
+    formData.append("record_date", medicalRecordData.record_date);
+    formData.append("document_path", medicalRecordData.document_path);
+    formData.append("doctor_name", medicalRecordData.doctor_name);
+    formData.append("hospital_name", medicalRecordData.hospital_name);
+    formData.append("diagnosis", medicalRecordData.diagnosis);
+    formData.append("treatment", medicalRecordData.treatment);
+    formData.append("next_review_date", medicalRecordData.next_review_date);
+    formData.append("prescription_path", medicalRecordData.prescription_path);
+
     try {
       const response = await toast.promise(
-        apiClient.post("/v1/medical-record", medicalRecordData),
+        apiClient.post("/v1/medical-record", formData),
         {
           loading: "Creating medical record...",
           success: (res) =>
@@ -59,9 +71,21 @@ export const createMedicalRecord = createAsyncThunk(
 export const updateMedicalRecord = createAsyncThunk(
   "medicalRecord/updateMedicalRecord",
   async ({ id, medicalRecordData }, thunkAPI) => {
+    const formData = new FormData();
+    formData.append("employee_id", medicalRecordData.employee_id);
+    formData.append("record_type", medicalRecordData.record_type);
+    formData.append("record_date", medicalRecordData.record_date);
+    formData.append("document_path", medicalRecordData.document_path);
+    formData.append("doctor_name", medicalRecordData.doctor_name);
+    formData.append("hospital_name", medicalRecordData.hospital_name);
+    formData.append("diagnosis", medicalRecordData.diagnosis);
+    formData.append("treatment", medicalRecordData.treatment);
+    formData.append("next_review_date", medicalRecordData.next_review_date);
+    formData.append("prescription_path", medicalRecordData.prescription_path);
+
     try {
       const response = await toast.promise(
-        apiClient.put(`/v1/medical-record/${id}`, medicalRecordData),
+        apiClient.put(`/v1/medical-record/${id}`, formData),
         {
           loading: "Updating medical record...",
           success: (res) =>

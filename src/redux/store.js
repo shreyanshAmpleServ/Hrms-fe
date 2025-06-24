@@ -122,6 +122,7 @@ import upcomingAnniversariesReducer from "./Dashboards/UpcomingAnniversaries";
 import attendanceOverviewReducer from "./Dashboards/AttendanceOverview";
 import leaveBalanceReducer from "./leaveBalance";
 import candidateReducer from "./Candidate";
+import medicalRecordReducer from "./MedicalRecord";
 
 const store = configureStore({
   reducer: {
@@ -248,6 +249,7 @@ const store = configureStore({
     attendanceOverview: attendanceOverviewReducer,
     leaveBalance: leaveBalanceReducer,
     candidate: candidateReducer,
+    medicalRecord: medicalRecordReducer,
   },
 });
 

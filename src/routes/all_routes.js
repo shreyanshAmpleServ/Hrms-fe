@@ -148,7 +148,7 @@ export const all_routes = {
   // Leave Balance
   leaveBalance: "/leave-balance",
 
-  // currency: "/currency",
+  currency: "/currency",
   // core-hr //
 
   /* Source Route*/
@@ -170,7 +170,6 @@ export const all_routes = {
 
   state: "/state",
   country: "/country",
-  currency: "/currency",
 
   // Settings //
   connectedApps: "/general-settings/connected-apps",
@@ -256,4 +255,5 @@ export const all_routes = {
   workSchedule: "/work-schedule",
   candidate: "/candidate",
   candidateDetail: "/candidate/:id",
+  medicalRecord: "/medical-record",
 };

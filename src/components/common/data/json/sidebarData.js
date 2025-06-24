@@ -242,6 +242,12 @@ export const SidebarData = [
             submenu: false,
           },
           {
+            label: "Medical Record",
+            link: route.medicalRecord,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
             label: "Succession Planning Entry",
             link: route.successionPlanningEntry,
             showSubRoute: false,

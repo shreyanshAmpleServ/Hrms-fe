@@ -9,6 +9,7 @@ import {
   updatetravelReimbursement,
 } from "../../../redux/TravelReimbursement";
 import DatePicker from "react-datepicker";
+import { fetchCurrencies } from "../../../redux/currency";
 
 const ManagetravelReimbursement = ({
   settravelReimbursement,
@@ -16,6 +17,18 @@ const ManagetravelReimbursement = ({
 }) => {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
+
+  const { currencies, loading: currencyLoading } = useSelector(
+    (state) => state.currencies
+  );
+  const currencyOptions = currencies?.data?.map((currency) => ({
+    label: currency.currency_code + " - " + currency.currency_name,
+    value: currency.id,
+  }));
+
+  React.useEffect(() => {
+    dispatch(fetchCurrencies());
+  }, [dispatch]);
 
   const {
     control,
@@ -138,6 +151,7 @@ const ManagetravelReimbursement = ({
     >
       <div className="offcanvas-header border-bottom">
         <h4>{travelReimbursement ? "Update" : "Add"} Travel Reimbursement</h4>
+
         <button
           type="button"
           className="btn-close custom-btn-close border p-1"
@@ -311,14 +325,23 @@ const ManagetravelReimbursement = ({
               <Controller
                 name="currency"
                 control={control}
-                render={({ field }) => (
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter Currency (e.g., INR, USD)"
-                    {...field}
-                  />
-                )}
+                rules={{ required: "Currency is required" }}
+                render={({ field }) => {
+                  const selected = currencyOptions?.find(
+                    (opt) => opt.value === field.value
+                  );
+                  return (
+                    <Select
+                      {...field}
+                      options={currencyOptions}
+                      isLoading={currencyLoading}
+                      placeholder="Select Currency"
+                      value={selected || null}
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  );
+                }}
               />
             </div>
 

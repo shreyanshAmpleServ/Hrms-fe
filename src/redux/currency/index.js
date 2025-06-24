@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 // Fetch All Currencies
 export const fetchCurrencies = createAsyncThunk(
   "currencies/fetchCurrencies",
-  async ({ page, size, search }, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
       const params = {
-        search: search || "",
-        page: page || "",
-        size: size || "",
+        search: data?.search || "",
+        page: data?.page || 1,
+        size: data?.size || 10,
       };
       const response = await apiClient.get("/v1/currencies", { params });
       return response.data;

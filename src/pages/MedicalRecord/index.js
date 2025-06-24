@@ -1,16 +1,16 @@
-import { Rate, Table, Tag } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
+import usePermissions from "../../components/common/Permissions.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchMedicalRecord } from "../../redux/MedicalRecord/index.js";
+import { fetchMedicalRecord } from "../../redux/MedicalRecord";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageMedicalRecord from "./ManageMedicalRecord/index.js";
-import usePermissions from "../../hooks/usePermissions.js";
 
 const MedicalRecord = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -28,12 +28,7 @@ const MedicalRecord = () => {
   );
 
   React.useEffect(() => {
-    dispatch(
-      fetchMedicalRecord({
-        search: searchValue,
-        ...selectedDateRange,
-      })
-    );
+    dispatch(fetchMedicalRecord({ search: searchValue, ...selectedDateRange }));
   }, [dispatch, searchValue, selectedDateRange]);
 
   React.useEffect(() => {
@@ -69,7 +64,7 @@ const MedicalRecord = () => {
   const columns = [
     {
       title: "Employee Name",
-      dataIndex: "helpdesk_employee",
+      dataIndex: "medical_employee_id",
       render: (text) => text?.full_name || "-",
     },
     {
@@ -77,15 +72,11 @@ const MedicalRecord = () => {
       dataIndex: "record_type",
       render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
-    {
-      title: "Description",
-      dataIndex: "description",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
-    },
+
     {
       title: "Record Date",
       dataIndex: "record_date",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
       title: "Next Review Date",
@@ -95,14 +86,41 @@ const MedicalRecord = () => {
     {
       title: "Document Path",
       dataIndex: "document_path",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
+      render: (text) => (
+        <a href={text} target="_blank" rel="noopener noreferrer">
+          <i className="ti ti-file-document" /> View
+        </a>
+      ),
+    },
+    {
+      title: "Hospital Name",
+      dataIndex: "hospital_name",
+      render: (text) => text || "-",
     },
     {
       title: "Doctor Name",
       dataIndex: "doctor_name",
-      render: (text) => text?.full_name || "-",
+      render: (text) => text || "-",
     },
-
+    {
+      title: "Diagnosis",
+      dataIndex: "diagnosis",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Treatment",
+      dataIndex: "treatment",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Prescription Path",
+      dataIndex: "prescription_path",
+      render: (text) => (
+        <a href={text} target="_blank" rel="noopener noreferrer">
+          <i className="ti ti-file-document" /> View
+        </a>
+      ),
+    },
     ...(isDelete || isUpdate
       ? [
           {
@@ -243,6 +261,7 @@ const MedicalRecord = () => {
                         loading={loading}
                         paginationData={paginationData}
                         onPageChange={handlePageChange}
+                        scroll={{ x: "max-content" }}
                       />
                     </div>
                   ) : (

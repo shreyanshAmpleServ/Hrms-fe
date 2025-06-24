@@ -25,14 +25,14 @@ const CurrenciesList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Currency",
+    (i) => i?.module_name === "Currency"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
   const isCreate = isAdmin || allPermissions?.create;
   const isUpdate = isAdmin || allPermissions?.update;
   const isDelete = isAdmin || allPermissions?.delete;
-  console.log("HIiiiiiiii");
+
   const dispatch = useDispatch();
   const columns = [
     {
@@ -129,7 +129,7 @@ const CurrenciesList = () => {
   ];
 
   const { currencies, loading, error, success } = useSelector(
-    (state) => state.currencies,
+    (state) => state.currencies
   );
 
   React.useEffect(() => {
@@ -151,8 +151,8 @@ const CurrenciesList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
+            .includes(searchText.toLowerCase())
+        )
       );
     }
     // if (sortOrder === "ascending") {

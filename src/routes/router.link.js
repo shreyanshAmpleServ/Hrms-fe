@@ -153,6 +153,8 @@ import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import CandidateDetail from "../pages/Candidate/CandidateDetail";
 import { all_routes } from "./all_routes";
+import MedicalRecord from "../pages/MedicalRecord";
+import CurrenciesList from "../pages/crm-settings/currency";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -726,12 +728,12 @@ export const privateRoutes = [
     route: Route,
     title: "Bank Accounts",
   },
-  // {
-  //   path: route.currencies,
-  //   element: <Currencies />,
-  //   route: Route,
-  //   title: 'Currencies'
-  // },
+  {
+    path: route.currency,
+    element: <CurrenciesList />,
+    route: Route,
+    title: "Currencies",
+  },
   {
     path: route.paymentGateways,
     element: <PaymentGateways />,
@@ -1082,6 +1084,12 @@ export const privateRoutes = [
     element: <CandidateDetail />,
     route: Route,
     title: "Candidate Detail",
+  },
+  {
+    path: route.medicalRecord,
+    element: <MedicalRecord />,
+    route: Route,
+    title: "Medical Record",
   },
 ];
 

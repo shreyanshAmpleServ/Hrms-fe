@@ -22,7 +22,7 @@ const CurrenciesList = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Currency",
+    (i) => i?.module_name === "Currency"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -118,7 +118,7 @@ const CurrenciesList = () => {
   const { currencies, loading } = useSelector((state) => state.currencies);
 
   React.useEffect(() => {
-    dispatch(fetchCurrencies({ search: searchText }));
+    dispatch(fetchCurrencies({ search: searchText, page: 1, size: 10 }));
   }, [dispatch, searchText]);
   React.useEffect(() => {
     setPaginationData({
@@ -140,7 +140,7 @@ const CurrenciesList = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -151,13 +151,13 @@ const CurrenciesList = () => {
   const filteredData = useMemo(() => {
     let data = currencies?.data || [];
 
-    if (sortOrder === "ascending") {
+    if (data && sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.create_date).isBefore(moment(b.create_date)) ? -1 : 1
       );
-    } else if (sortOrder === "descending") {
+    } else if (data && sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.create_date).isBefore(moment(b.create_date)) ? 1 : -1
       );
     }
     return data;

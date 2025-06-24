@@ -10,6 +10,7 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchtravelReimbursement } from "../../redux/TravelReimbursement";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageTravelReimbursement from "./ManageTravelReimbursement";
+import { fetchCurrencies } from "../../redux/currency/index.js";
 
 const TravelReimbursement = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -131,8 +132,9 @@ const TravelReimbursement = () => {
 
     {
       title: "Currency",
-      dataIndex: "currency",
-      render: (text) => text || "-",
+      dataIndex: "travel_expense_currency",
+      render: (text) =>
+        text?.currency_code + " - " + text?.currency_name || "-",
     },
     {
       title: "Exchange Rate",
@@ -309,6 +311,7 @@ const TravelReimbursement = () => {
                         dataSource={data}
                         loading={loading}
                         paginationData={paginationData}
+                        scroll={{ x: "max-content" }}
                         onPageChange={handlePageChange}
                       />
                     </div>
