@@ -64,7 +64,7 @@ const InterviewStages = () => {
   return (
     <div className="mb-3 card">
       <div className="card-body p-5">
-        <div className="d-flex p-2 align-items-center justify-content-between flex-wrap row-gap-2 mb-3">
+        <div className="d-flex p-2 align-items-center justify-content-between flex-wrap row-gap-2 mb-5">
           <h4 className="mb-2">Interview Stages</h4>
           <button
             className="btn btn-primary"

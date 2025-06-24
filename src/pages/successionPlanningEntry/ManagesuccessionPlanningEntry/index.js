@@ -42,7 +42,6 @@ const ManagesuccessionPlanning = ({
       role_id: "",
       evaluation_date: new Date().toISOString(),
       training_date: new Date().toISOString(),
-      evaluation_date: new Date().toISOString(),
     },
   });
 
@@ -61,28 +60,15 @@ const ManagesuccessionPlanning = ({
         plan_date: successionPlanning.plan_date || "",
         development_plan: successionPlanning.development_plan || "",
         successor_rank: successionPlanning.successor_rank || "",
-        expected_transition_date:
-          successionPlanning.expected_transition_date ||
-          new Date().toISOString(),
         risk_of_loss: successionPlanning.risk_of_loss || "",
+        expected_transition_date:
+          successionPlanning.expected_transition_date || "",
         evaluated_by: successionPlanning.evaluated_by || "",
         retention_plan: successionPlanning.retention_plan || "",
         last_updated_by_hr: successionPlanning.last_updated_by_hr || "",
-        last_review_date:
-          successionPlanning.last_review_date || new Date().toISOString(),
         role_id: successionPlanning.role_id || "",
-        evaluation_date:
-          successionPlanning?.evaluation_date || new Date().toISOString(),
-        expected_transition_date:
-          successionPlanning?.expected_transition_date ||
-          new Date().toISOString(),
-        plan_date: successionPlanning?.plan_date || new Date().toISOString(),
-        last_review_date:
-          successionPlanning?.last_review_date || new Date().toISOString(),
         training_date:
           successionPlanning.training_date || new Date().toISOString(),
-        evaluation_date:
-          successionPlanning.evaluation_date || new Date().toISOString(),
       });
     } else {
       reset({
@@ -93,16 +79,13 @@ const ManagesuccessionPlanning = ({
         plan_date: new Date().toISOString(),
         development_plan: "",
         successor_rank: "",
-        expected_transition_date: new Date().toISOString(),
         risk_of_loss: "",
         retention_plan: "",
         last_updated_by_hr: "",
         last_review_date: new Date().toISOString(),
         evaluated_by: "",
         role_id: "",
-        evaluation_date: new Date().toISOString(),
         training_date: new Date().toISOString(),
-        evaluation_date: new Date().toISOString(),
       });
     }
   }, [successionPlanning, reset]);
@@ -381,41 +364,6 @@ const ManagesuccessionPlanning = ({
                 </small>
               )}
             </div>
-
-            {/* Development Plan */}
-            <div className="col-md-6 mb-3">
-              <label className="col-form-label">Development Plan</label>
-              <Controller
-                name="development_plan"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter Development Plan"
-                  />
-                )}
-              />
-            </div>
-
-            {/* Successor Rank */}
-            <div className="col-md-6 mb-3">
-              <label className="col-form-label">Successor Rank</label>
-              <Controller
-                name="successor_rank"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="number"
-                    className="form-control"
-                    placeholder="Enter Successor Rank"
-                  />
-                )}
-              />
-            </div>
-
             {/* Expected Transition Date */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">Expected Transition Date</label>
@@ -438,6 +386,23 @@ const ManagesuccessionPlanning = ({
                     className="form-control"
                     dateFormat="dd-MM-yyyy"
                     placeholderText="Select Offer Date"
+                  />
+                )}
+              />
+            </div>
+
+            {/* Successor Rank */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">Successor Rank</label>
+              <Controller
+                name="successor_rank"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter Successor Rank"
                   />
                 )}
               />
@@ -476,16 +441,20 @@ const ManagesuccessionPlanning = ({
                 <label className="col-form-label">
                   Role <span className="text-danger">*</span>
                 </label>
-                <Select
-                  className="react-select"
-                  options={roleOptions}
-                  isLoading={rolesLoading}
-                  onChange={(selectedOption) =>
-                    setValue("role_id", selectedOption?.value)
-                  }
-                  placeholder="Select Role"
-                  menuPortalTarget={document.body}
-                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+                <Controller
+                  name="role_id"
+                  control={control}
+                  rules={{ required: "Role is required" }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={roleOptions}
+                      isLoading={rolesLoading}
+                      placeholder="Select Role"
+                      onChange={(opt) => field.onChange(opt?.value)}
+                      classNamePrefix="react-select"
+                    />
+                  )}
                 />
                 {errors.role_id && (
                   <small className="text-danger">
@@ -494,26 +463,12 @@ const ManagesuccessionPlanning = ({
                 )}
               </div>
             </div>
-            {/* Retention Plan */}
-            <div className="col-md-6 mb-3">
-              <label className="col-form-label">Retention Plan</label>
-              <Controller
-                name="retention_plan"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter Retention Plan"
-                  />
-                )}
-              />
-            </div>
 
             {/* Last Updated by HR */}
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Last Updated By HR</label>
+              <label className="col-form-label">
+                Last Updated By HR <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="last_updated_by_hr"
                 control={control}
@@ -542,7 +497,9 @@ const ManagesuccessionPlanning = ({
               )}
             </div>
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Evaluated By</label>
+              <label className="col-form-label">
+                Evaluated By <span className="text-danger">*</span>
+              </label>
               <Controller
                 name="evaluated_by"
                 control={control}
@@ -596,6 +553,60 @@ const ManagesuccessionPlanning = ({
                   />
                 )}
               />
+            </div>
+            {/* Development Plan */}
+            <div className="col-md-12 mb-3">
+              <label className="col-form-label">
+                Development Plan{" "}
+                <span className="text-muted">(Max 255 characters)</span>
+              </label>
+              <Controller
+                name="development_plan"
+                control={control}
+                rules={{
+                  maxLength: { value: 255, message: "Max 255 characters" },
+                }}
+                render={({ field }) => (
+                  <textarea
+                    {...field}
+                    rows={3}
+                    className="form-control"
+                    placeholder="Enter Development Plan"
+                  />
+                )}
+              />
+              {errors.development_plan && (
+                <small className="text-danger">
+                  {errors.development_plan.message}
+                </small>
+              )}
+            </div>
+            {/* Retention Plan */}
+            <div className="col-md-12 mb-3">
+              <label className="col-form-label">
+                Retention Plan{" "}
+                <span className="text-muted">(Max 255 characters)</span>
+              </label>
+              <Controller
+                name="retention_plan"
+                control={control}
+                rules={{
+                  maxLength: { value: 255, message: "Max 255 characters" },
+                }}
+                render={({ field }) => (
+                  <textarea
+                    {...field}
+                    rows={3}
+                    className="form-control"
+                    placeholder="Enter Retention Plan"
+                  />
+                )}
+              />
+              {errors.retention_plan && (
+                <small className="text-danger">
+                  {errors.retention_plan.message}
+                </small>
+              )}
             </div>
           </div>
 
