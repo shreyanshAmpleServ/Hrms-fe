@@ -96,21 +96,7 @@ const Candidate = () => {
       dataIndex: "interview_stage",
       render: (text) => text || "-",
     },
-    {
-      title: "Interview 1 Remarks",
-      dataIndex: "interview1_remarks",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Interview 2 Remarks",
-      dataIndex: "interview2_remarks",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Interview 3 Remarks",
-      dataIndex: "interview3_remarks",
-      render: (text) => text || "-",
-    },
+
     {
       title: "Nationality",
       dataIndex: "nationality",

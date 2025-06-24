@@ -123,6 +123,8 @@ import attendanceOverviewReducer from "./Dashboards/AttendanceOverview";
 import leaveBalanceReducer from "./leaveBalance";
 import candidateReducer from "./Candidate";
 import medicalRecordReducer from "./MedicalRecord";
+import applicationSourceReducer from "./ApplicationSource";
+import interviewStagesReducer from "./InterviewStages";
 
 const store = configureStore({
   reducer: {
@@ -250,6 +252,8 @@ const store = configureStore({
     leaveBalance: leaveBalanceReducer,
     candidate: candidateReducer,
     medicalRecord: medicalRecordReducer,
+    applicationSource: applicationSourceReducer,
+    interviewStages: interviewStagesReducer,
   },
 });
 

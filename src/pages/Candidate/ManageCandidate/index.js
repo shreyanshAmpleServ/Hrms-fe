@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { createCandidate, updateCandidate } from "../../../redux/Candidate";
 import { fetchdesignation } from "../../../redux/designation";
+import { fetchApplicationSource } from "../../../redux/ApplicationSource";
+import { fetchInterviewStages } from "../../../redux/InterviewStages";
 
 const ManageCandidate = ({ setCandidate, candidate }) => {
   const dispatch = useDispatch();
@@ -30,15 +32,6 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     { value: "O", label: "Other" },
   ];
 
-  const interviewStageOptions = [
-    { value: "Initial", label: "Initial" },
-    { value: "Technical", label: "Technical" },
-    { value: "HR", label: "HR" },
-    { value: "Final", label: "Final" },
-    { value: "Rejected", label: "Rejected" },
-    { value: "On Hold", label: "On Hold" },
-  ];
-
   const { designation, loading: designationLoading } = useSelector(
     (state) => state.designation || {}
   );
@@ -51,19 +44,29 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     value: i?.id,
   }));
 
-  const applicationSourceOptions = [
-    { value: "Linkedin", label: "Linkedin" },
-    { value: "Indeed", label: "Indeed" },
-    { value: "Glassdoor", label: "Glassdoor" },
-    { value: "Referral", label: "Referral" },
-    { value: "Job Portal", label: "Job Portal" },
-    { value: "Job Posting", label: "Job Posting" },
-    { value: "Job Board", label: "Job Board" },
-    { value: "Job Search", label: "Job Search" },
-    { value: "Job Alert", label: "Job Alert" },
-    { value: "Job Search Engine", label: "Job Search Engine" },
-    { value: "Other", label: "Other" },
-  ];
+  const { applicationSource, loading: applicationSourceLoading } = useSelector(
+    (state) => state.applicationSource || {}
+  );
+  useEffect(() => {
+    dispatch(fetchApplicationSource());
+  }, []);
+
+  const applicationSourceOptions = applicationSource?.data?.map((i) => ({
+    label: i?.source_name,
+    value: i?.id,
+  }));
+
+  const { interviewStages, loading: interviewStagesLoading } = useSelector(
+    (state) => state.interviewStages || {}
+  );
+  useEffect(() => {
+    dispatch(fetchInterviewStages());
+  }, []);
+
+  const interviewStageOptions = interviewStages?.data?.map((i) => ({
+    label: i?.stage_name,
+    value: i?.id,
+  }));
 
   const noShowFlagOptions = [
     { value: "N", label: "No" },
@@ -429,7 +432,8 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                         placeholder="Select Source"
                         options={applicationSourceOptions}
                         classNamePrefix="react-select"
-                        value={applicationSourceOptions.find(
+                        isLoading={applicationSourceLoading}
+                        value={applicationSourceOptions?.find(
                           (x) => x.value === field.value
                         )}
                         onChange={(option) => field.onChange(option.value)}
@@ -496,7 +500,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                         options={interviewStageOptions}
                         placeholder="Select Interview Stage"
                         classNamePrefix="react-select"
-                        value={interviewStageOptions.find(
+                        value={interviewStageOptions?.find(
                           (x) => x.value === field.value
                         )}
                         onChange={(selectedOption) =>
@@ -616,7 +620,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
               <div className="col-md-12">
                 <label className="col-form-label">
                   Status Remarks{" "}
-                  <span className="text-muted">(5 - 255 characters)</span>{" "}
+                  <span className="text-muted">(max 255 characters)</span>{" "}
                   <span className="text-danger">*</span>
                 </label>
                 <div className="mb-3">
@@ -625,11 +629,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                     control={control}
                     rules={{
                       required: "Status remarks is required!",
-                      minLength: {
-                        value: 5,
-                        message:
-                          "Status remarks must be at least 5 characters long",
-                      },
+
                       maxLength: {
                         value: 255,
                         message:
