@@ -1,8 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import apiClient from "../../utils/axiosConfig";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
+import apiClient from "../../utils/axiosConfig";
 
-// Fetch All shifts
 export const fetchShift = createAsyncThunk(
   "shift/fetchShift",
   async (datas, thunkAPI) => {
@@ -10,7 +9,7 @@ export const fetchShift = createAsyncThunk(
       const response = await apiClient.get(
         `/v1/shift?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`
       );
-      return response.data; // Returns a list of shift
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch shift"
@@ -19,7 +18,6 @@ export const fetchShift = createAsyncThunk(
   }
 );
 
-// Add a shift
 export const addShift = createAsyncThunk(
   "shift/addShift",
   async (shiftData, thunkAPI) => {
@@ -32,11 +30,8 @@ export const addShift = createAsyncThunk(
           error: "Failed to add shift",
         }
       );
-      // const response = await apiClient.post("/v1/shift", shiftData);
-      // toast.success(response.data.message || "shift created successfully");
-      return response.data; // Returns the newly added shift
+      return response.data;
     } catch (error) {
-      toast.error(error.response?.data || "Failed to add shift");
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to add shift"
       );
@@ -44,7 +39,6 @@ export const addShift = createAsyncThunk(
   }
 );
 
-// Update a shift
 export const updateShift = createAsyncThunk(
   "shift/updateShift",
   async ({ id, ShiftData }, thunkAPI) => {
@@ -57,9 +51,7 @@ export const updateShift = createAsyncThunk(
           error: "Failed to update shift",
         }
       );
-      // const response = await apiClient.put(`/v1/shift/${id}`, shiftData);
-      // toast.success(response.data.message || "shift updated successfully");
-      return response.data; // Returns the updated shift
+      return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
         toast.error("shift not found");
@@ -68,7 +60,6 @@ export const updateShift = createAsyncThunk(
           message: "shift not found",
         });
       }
-      toast.error(error.response?.data || "Failed to update shift");
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to update shift"
       );
@@ -76,7 +67,6 @@ export const updateShift = createAsyncThunk(
   }
 );
 
-// Delete a shift
 export const deleteShift = createAsyncThunk(
   "shift/deleteShift",
   async (id, thunkAPI) => {
@@ -94,7 +84,6 @@ export const deleteShift = createAsyncThunk(
         message: response.data.message || "Shift deleted successfully",
       };
     } catch (error) {
-      toast.error(error.response?.data || "Failed to delete shift");
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to delete shift"
       );
@@ -102,13 +91,12 @@ export const deleteShift = createAsyncThunk(
   }
 );
 
-// Fetch a Single shift by ID
 export const fetchShiftById = createAsyncThunk(
   "shift/fetchShiftById",
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/shift/${id}`);
-      return response.data; // Returns the shift details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch shift"

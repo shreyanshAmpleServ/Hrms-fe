@@ -22,7 +22,6 @@ const ManagesuccessionPlanning = ({
     control,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {

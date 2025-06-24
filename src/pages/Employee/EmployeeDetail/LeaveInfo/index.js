@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { fetchLeaveBalanceByEmployee } from "../../../../redux/leaveBalance";
 
 const EmployeeLeaveInfo = () => {
-  const { id } = useParams();
+  const { id: employeeId } = useParams();
   const dispatch = useDispatch();
 
   const { leaveBalanceByEmployee, loading } = useSelector(
@@ -13,8 +13,8 @@ const EmployeeLeaveInfo = () => {
   );
 
   React.useEffect(() => {
-    dispatch(fetchLeaveBalanceByEmployee({ employeeId: id }));
-  }, [dispatch, id]);
+    dispatch(fetchLeaveBalanceByEmployee({ employeeId }));
+  }, [dispatch, employeeId]);
 
   const columns = [
     {

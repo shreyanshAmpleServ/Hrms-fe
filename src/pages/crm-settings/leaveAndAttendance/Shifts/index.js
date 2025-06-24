@@ -12,6 +12,7 @@ import SortDropdown from "../../../../components/datatable/SortDropDown";
 import { deleteShift, fetchShift } from "../../../../redux/Shift";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
+import usePermissions from "../../../../components/common/Permissions.js";
 
 const ShiftList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
@@ -20,17 +21,11 @@ const ShiftList = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [paginationData, setPaginationData] = useState();
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Shift",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Shift");
 
   const dispatch = useDispatch();
+
   const columns = [
     {
       title: "Shift Name",
@@ -39,17 +34,69 @@ const ShiftList = () => {
       sorter: (a, b) => a.shift_name.localeCompare(b.shift_name),
     },
     {
+      title: "Daily Working Hours",
+      dataIndex: "daily_working_hours",
+      render: (text) => <div>{text}</div>,
+      sorter: (a, b) =>
+        a.daily_working_hours.localeCompare(b.daily_working_hours),
+    },
+    {
+      title: "Number of Working Days",
+      dataIndex: "number_of_working_days",
+      render: (text) => <div>{text}</div>,
+      sorter: (a, b) =>
+        a.number_of_working_days.localeCompare(b.number_of_working_days),
+    },
+    {
       title: "Start Time",
       dataIndex: "start_time",
-      render: (text) => <div>{moment(text).format("hh:mm A")}</div>,
+      render: (text) => text.slice(0, 5),
       sorter: (a, b) => a.start_time.localeCompare(b.start_time),
     },
     {
       title: "End Time",
       dataIndex: "end_time",
-      render: (text) => <div>{moment(text).format("hh:mm A")}</div>,
+      render: (text) => text.slice(0, 5),
       sorter: (a, b) => a.end_time.localeCompare(b.end_time),
     },
+    {
+      title: "Lunch Time",
+      dataIndex: "lunch_time",
+      render: (text) => text,
+      sorter: (a, b) => a.lunch_time.localeCompare(b.lunch_time),
+    },
+    {
+      title: "Half Day On",
+      dataIndex: "half_day_on",
+      render: (text) =>
+        text === 1
+          ? "Monday"
+          : text === 2
+            ? "Tuesday"
+            : text === 3
+              ? "Wednesday"
+              : text === 4
+                ? "Thursday"
+                : text === 5
+                  ? "Friday"
+                  : text === 6
+                    ? "Saturday"
+                    : "Sunday",
+      sorter: (a, b) => a.half_day_on.localeCompare(b.half_day_on),
+    },
+    {
+      title: "Half Day Working",
+      dataIndex: "half_day_working",
+      render: (text) => <div>{text === "Y" ? "Yes" : "No"}</div>,
+      sorter: (a, b) => a.half_day_working.localeCompare(b.half_day_working),
+    },
+    {
+      title: "Remarks",
+      dataIndex: "remarks",
+      render: (text) => <div>{text}</div>,
+      sorter: (a, b) => a.remarks.localeCompare(b.remarks),
+    },
+
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -125,7 +172,7 @@ const ShiftList = () => {
       pageSize,
     }));
     dispatch(
-      fetchShift({ search: searchText, page: currentPage, size: pageSize }),
+      fetchShift({ search: searchText, page: currentPage, size: pageSize })
     );
   };
 
@@ -138,11 +185,11 @@ const ShiftList = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
