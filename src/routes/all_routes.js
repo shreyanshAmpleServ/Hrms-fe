@@ -255,4 +255,5 @@ export const all_routes = {
   holidayCalender: "/holiday-calender",
   workSchedule: "/work-schedule",
   candidate: "/candidate",
+  candidateDetail: "/candidate/:id",
 };

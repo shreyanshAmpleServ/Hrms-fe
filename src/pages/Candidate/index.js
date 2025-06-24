@@ -67,7 +67,9 @@ const Candidate = () => {
     {
       title: "Candidate Name",
       dataIndex: "full_name",
-      render: (text) => text || "-",
+      render: (text, record) => (
+        <Link to={`/candidate/${record.id}`}>{text}</Link>
+      ),
     },
     {
       title: "Email",

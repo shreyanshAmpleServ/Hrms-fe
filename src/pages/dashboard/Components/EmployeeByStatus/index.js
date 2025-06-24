@@ -50,7 +50,6 @@ export const EmployeeByStatus = ({ data }) => {
       },
     ],
   };
-  console.log(data?.data?.values);
 
   const options = {
     responsive: true,

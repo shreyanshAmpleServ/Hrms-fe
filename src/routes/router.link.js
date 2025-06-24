@@ -10,6 +10,7 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import Calls from "../pages/call";
 import CampaignsList from "../pages/Campaign";
+import Candidate from "../pages/Candidate";
 import Cases from "../pages/Case";
 import Companies from "../pages/companies/";
 import CompanyDetail from "../pages/companies/CompanyDetail";
@@ -31,6 +32,7 @@ import EmployeeTypeList from "../pages/crm-settings/core-hr/employmentType";
 import CountriesList from "../pages/crm-settings/country";
 import Industries from "../pages/crm-settings/industries";
 import HolidayCalenderList from "../pages/crm-settings/leaveAndAttendance/HolidayCalender";
+import LeaveBalance from "../pages/crm-settings/leaveAndAttendance/LeaveBalance";
 import LeaveTypeList from "../pages/crm-settings/leaveAndAttendance/LeaveType";
 import ShiftList from "../pages/crm-settings/leaveAndAttendance/Shifts";
 import WorkTemplateList from "../pages/crm-settings/leaveAndAttendance/WorkSchedule";
@@ -146,12 +148,11 @@ import UserDetail from "../pages/user-management/manage-users/UserDetail";
 import RolesPermissions from "../pages/user-management/roles";
 import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
+import WarningLetters from "../pages/WarningLetters";
 import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
+import CandidateDetail from "../pages/Candidate/CandidateDetail";
 import { all_routes } from "./all_routes";
-import WarningLetters from "../pages/WarningLetters";
-import LeaveBalance from "../pages/crm-settings/leaveAndAttendance/LeaveBalance";
-import Candidate from "../pages/Candidate";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -1075,6 +1076,12 @@ export const privateRoutes = [
     element: <WarningLetters />,
     route: Route,
     title: "Warning Letters",
+  },
+  {
+    path: route.candidateDetail,
+    element: <CandidateDetail />,
+    route: Route,
+    title: "Candidate Detail",
   },
 ];
 

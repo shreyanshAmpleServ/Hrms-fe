@@ -209,7 +209,6 @@ const candidateSlice = createSlice({
         state.loading = false;
         state.error = action.payload.message;
       })
-
       .addCase(fetchCandidateById.pending, (state) => {
         state.loading = true;
         state.error = null;

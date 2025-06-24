@@ -14,6 +14,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 403) {
       // Handle unauthorized access (e.g., redirect to login)
       window.location.href = "/login";
+      localStorage.clear();
     }
     return Promise.reject(error);
   }
