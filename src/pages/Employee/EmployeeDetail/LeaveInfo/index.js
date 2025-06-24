@@ -48,7 +48,7 @@ const EmployeeLeaveInfo = () => {
       <div className="table-responsive custom-table">
         <Table
           columns={columns}
-          dataSource={leaveBalanceByEmployee || []}
+          dataSource={leaveBalanceByEmployee?.data || []}
           loading={loading}
           pagination={false}
         />
