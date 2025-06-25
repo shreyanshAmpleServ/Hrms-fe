@@ -253,7 +253,7 @@ export const all_routes = {
   leaveType: "/leave-type",
   holidayCalender: "/holiday-calender",
   workSchedule: "/work-schedule",
-  candidate: "/candidate",
+  candidates: "/candidates",
   candidateDetail: "/candidate/:id",
   medicalRecord: "/medical-record",
 };

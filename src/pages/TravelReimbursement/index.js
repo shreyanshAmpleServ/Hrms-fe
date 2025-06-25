@@ -1,4 +1,4 @@
-import { Rate, Table } from "antd";
+import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -10,7 +10,6 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchtravelReimbursement } from "../../redux/TravelReimbursement";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageTravelReimbursement from "./ManageTravelReimbursement";
-import { fetchCurrencies } from "../../redux/currency/index.js";
 
 const TravelReimbursement = () => {
   const [searchValue, setSearchValue] = useState("");

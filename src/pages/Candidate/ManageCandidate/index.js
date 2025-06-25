@@ -8,6 +8,7 @@ import { createCandidate, updateCandidate } from "../../../redux/Candidate";
 import { fetchdesignation } from "../../../redux/designation";
 import { fetchApplicationSource } from "../../../redux/ApplicationSource";
 import { fetchInterviewStages } from "../../../redux/InterviewStages";
+import { fetchJobPosting } from "../../../redux/JobPosting";
 
 const ManageCandidate = ({ setCandidate, candidate }) => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -68,6 +70,19 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     value: i?.id,
   }));
 
+  const { JobPosting, loading: jobPostingLoading } = useSelector(
+    (state) => state.JobPosting || {}
+  );
+
+  const jobPostingOptions = JobPosting?.data?.map((i) => ({
+    label: i?.job_title,
+    value: i?.id,
+  }));
+
+  useEffect(() => {
+    dispatch(fetchJobPosting());
+  }, []);
+
   const noShowFlagOptions = [
     { value: "N", label: "No" },
     { value: "Y", label: "Yes" },
@@ -83,9 +98,6 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
       gender: candidate?.gender || "",
       status_remarks: candidate?.status_remarks || "",
       interview_stage: candidate?.interview_stage || "",
-      interview1_remarks: candidate?.interview1_remarks || "",
-      interview2_remarks: candidate?.interview2_remarks || "",
-      interview3_remarks: candidate?.interview3_remarks || "",
       expected_joining_date: candidate?.expected_joining_date
         ? new Date(candidate.expected_joining_date).toISOString()?.slice(0, 10)
         : new Date().toISOString()?.slice(0, 10),
@@ -93,18 +105,22 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
         ? new Date(candidate.actual_joining_date).toISOString()?.slice(0, 10)
         : new Date().toISOString()?.slice(0, 10),
       no_show_flag: candidate?.no_show_flag || "",
+      job_posting: candidate?.job_posting || "",
+      date_of_application: candidate?.date_of_application
+        ? new Date(candidate.date_of_application).toISOString()?.slice(0, 10)
+        : new Date().toISOString()?.slice(0, 10),
       no_show_marked_date: candidate?.no_show_marked_date
         ? new Date(candidate.no_show_marked_date).toISOString()?.slice(0, 10)
-        : new Date().toISOString()?.slice(0, 10),
+        : watch("no_show_flag") === "Y"
+          ? new Date().toISOString()?.slice(0, 10)
+          : "",
       no_show_remarks: candidate?.no_show_remarks || "",
       offer_accepted_date: candidate?.offer_accepted_date
         ? new Date(candidate.offer_accepted_date).toISOString()?.slice(0, 10)
         : new Date().toISOString()?.slice(0, 10),
       date_of_birth: candidate?.date_of_birth
         ? new Date(candidate.date_of_birth).toISOString()?.slice(0, 10)
-        : new Date(new Date().setFullYear(new Date().getFullYear() - 18))
-            .toISOString()
-            ?.slice(0, 10),
+        : moment().subtract(18, "years").toISOString()?.slice(0, 10),
       nationality: candidate?.nationality || "",
       applied_position_id: candidate?.applied_position_id?.toString() || "",
       application_source: candidate?.application_source || "",
@@ -418,31 +434,31 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
             <div className="row">
               <div className="col-md-6">
                 <label className="col-form-label">
-                  Source <span className="text-danger">*</span>
+                  Job Posting <span className="text-danger">*</span>
                 </label>
                 <div className="mb-3">
                   <Controller
-                    name="application_source"
+                    name="job_posting"
                     control={control}
-                    rules={{ required: "Source is required!" }}
+                    rules={{ required: "Job Posting is required!" }}
                     render={({ field }) => (
                       <Select
                         {...field}
                         className="select"
-                        placeholder="Select Source"
-                        options={applicationSourceOptions}
+                        placeholder="Select Job Posting"
+                        options={jobPostingOptions}
                         classNamePrefix="react-select"
-                        isLoading={applicationSourceLoading}
-                        value={applicationSourceOptions?.find(
+                        isLoading={jobPostingLoading}
+                        value={jobPostingOptions?.find(
                           (x) => x.value === field.value
                         )}
                         onChange={(option) => field.onChange(option.value)}
                       />
                     )}
                   />
-                  {errors.application_source && (
+                  {errors.job_posting && (
                     <small className="text-danger">
-                      {errors.application_source.message}
+                      {errors.job_posting.message}
                     </small>
                   )}
                 </div>
@@ -500,6 +516,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                         options={interviewStageOptions}
                         placeholder="Select Interview Stage"
                         classNamePrefix="react-select"
+                        isLoading={interviewStagesLoading}
                         value={interviewStageOptions?.find(
                           (x) => x.value === field.value
                         )}
@@ -516,54 +533,54 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                   )}
                 </div>
               </div>
-
               <div className="col-md-6">
-                <label className="col-form-label">Expected Joining Date</label>
-                <div className="mb-3 icon-form">
-                  <span className="form-icon">
-                    <i className="ti ti-calendar-check" />
-                  </span>
+                <label className="col-form-label">
+                  Source <span className="text-danger">*</span>
+                </label>
+                <div className="mb-3">
                   <Controller
-                    name="expected_joining_date"
+                    name="application_source"
                     control={control}
+                    rules={{ required: "Source is required!" }}
                     render={({ field }) => (
-                      <DatePicker
+                      <Select
                         {...field}
-                        className="form-control"
-                        placeholderText="Select Expected Joining Date"
-                        value={
-                          field.value
-                            ? moment(field.value).format("DD-MM-YYYY")
-                            : null
-                        }
-                        onChange={(date) => field.onChange(date)}
-                        dateFormat="DD-MM-YYYY"
-                        showYearDropdown
-                        showMonthDropdown
-                        dropdownMode="select"
-                        minDate={new Date()}
+                        className="select"
+                        placeholder="Select Source"
+                        options={applicationSourceOptions}
+                        classNamePrefix="react-select"
+                        isLoading={applicationSourceLoading}
+                        value={applicationSourceOptions?.find(
+                          (x) => x.value === field.value
+                        )}
+                        onChange={(option) => field.onChange(option.value)}
                       />
                     )}
                   />
+                  {errors.application_source && (
+                    <small className="text-danger">
+                      {errors.application_source.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="row">
               <div className="col-md-6">
-                <label className="col-form-label">Actual Joining Date</label>
+                <label className="col-form-label">Date of Application</label>
                 <div className="mb-3 icon-form">
                   <span className="form-icon">
                     <i className="ti ti-calendar-check" />
                   </span>
                   <Controller
-                    name="actual_joining_date"
+                    name="date_of_application"
                     control={control}
                     render={({ field }) => (
                       <DatePicker
                         {...field}
                         className="form-control"
-                        placeholderText="Select Actual Joining Date"
+                        placeholderText="Select Date of Application"
                         value={
                           field.value
                             ? moment(field.value).format("DD-MM-YYYY")
@@ -577,9 +594,13 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                       />
                     )}
                   />
+                  {errors.date_of_application && (
+                    <small className="text-danger">
+                      {errors.date_of_application.message}
+                    </small>
+                  )}
                 </div>
               </div>
-
               <div className="col-md-6">
                 <label className="col-form-label">Offer Accepted Date</label>
                 <div className="mb-3 icon-form">
@@ -612,6 +633,67 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                       {errors.offer_accepted_date.message}
                     </small>
                   )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-6">
+                <label className="col-form-label">Expected Joining Date</label>
+                <div className="mb-3 icon-form">
+                  <span className="form-icon">
+                    <i className="ti ti-calendar-check" />
+                  </span>
+                  <Controller
+                    name="expected_joining_date"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        className="form-control"
+                        placeholderText="Select Expected Joining Date"
+                        value={
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : null
+                        }
+                        onChange={(date) => field.onChange(date)}
+                        dateFormat="DD-MM-YYYY"
+                        showYearDropdown
+                        showMonthDropdown
+                        dropdownMode="select"
+                        minDate={new Date()}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <label className="col-form-label">Actual Joining Date</label>
+                <div className="mb-3 icon-form">
+                  <span className="form-icon">
+                    <i className="ti ti-calendar-check" />
+                  </span>
+                  <Controller
+                    name="actual_joining_date"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        className="form-control"
+                        placeholderText="Select Actual Joining Date"
+                        value={
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : null
+                        }
+                        onChange={(date) => field.onChange(date)}
+                        dateFormat="DD-MM-YYYY"
+                        showYearDropdown
+                        showMonthDropdown
+                        dropdownMode="select"
+                      />
+                    )}
+                  />
                 </div>
               </div>
             </div>
@@ -803,76 +885,75 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                 </div>
               </div>
 
-              <div className="col-md-6">
-                <label className="col-form-label">No Show Marked Date</label>
-                <div className="mb-3 icon-form">
-                  <span className="form-icon">
-                    <i className="ti ti-calendar-check" />
-                  </span>
-                  <Controller
-                    name="no_show_marked_date"
-                    control={control}
-                    render={({ field }) => (
-                      <DatePicker
-                        {...field}
-                        className="form-control"
-                        placeholderText="Select No Show Marked Date"
-                        value={
-                          field.value
-                            ? moment(field.value).format("DD-MM-YYYY")
-                            : null
-                        }
-                        onChange={(date) => field.onChange(date)}
-                        dateFormat="DD-MM-YYYY"
-                        showYearDropdown
-                        showMonthDropdown
-                        dropdownMode="select"
-                      />
-                    )}
-                  />
+              {watch("no_show_flag") === "Y" && (
+                <div className="col-md-6">
+                  <label className="col-form-label">No Show Marked Date</label>
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon">
+                      <i className="ti ti-calendar-check" />
+                    </span>
+                    <Controller
+                      name="no_show_marked_date"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          placeholderText="Select No Show Marked Date"
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
+                          }
+                          onChange={(date) => field.onChange(date)}
+                          dateFormat="DD-MM-YYYY"
+                          showYearDropdown
+                          showMonthDropdown
+                          dropdownMode="select"
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            <div className="row">
-              <div className="col-md-12">
-                <label className="col-form-label">
-                  No Show Remarks{" "}
-                  <span className="text-muted">(5 - 255 characters)</span>{" "}
-                </label>
-                <div className="mb-3">
-                  <Controller
-                    name="no_show_remarks"
-                    control={control}
-                    rules={{
-                      minLength: {
-                        value: 5,
-                        message:
-                          "No show remarks must be at least 5 characters long",
-                      },
-                      maxLength: {
-                        value: 255,
-                        message:
-                          "No show remarks must be less than 255 characters long",
-                      },
-                    }}
-                    render={({ field }) => (
-                      <textarea
-                        rows={3}
-                        {...field}
-                        className={`form-control ${errors.no_show_remarks ? "is-invalid" : ""}`}
-                        placeholder="Enter No Show Remarks"
-                      />
+            {watch("no_show_flag") === "Y" && (
+              <div className="row">
+                <div className="col-md-12">
+                  <label className="col-form-label">
+                    No Show Remarks{" "}
+                    <span className="text-muted">(max 255 characters)</span>{" "}
+                  </label>
+                  <div className="mb-3">
+                    <Controller
+                      name="no_show_remarks"
+                      control={control}
+                      rules={{
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "No show remarks must be less than 255 characters long",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <textarea
+                          rows={3}
+                          {...field}
+                          className={`form-control ${errors.no_show_remarks ? "is-invalid" : ""}`}
+                          placeholder="Enter No Show Remarks"
+                        />
+                      )}
+                    />
+                    {errors.no_show_remarks && (
+                      <small className="text-danger">
+                        {errors.no_show_remarks.message}
+                      </small>
                     )}
-                  />
-                  {errors.no_show_remarks && (
-                    <small className="text-danger">
-                      {errors.no_show_remarks.message}
-                    </small>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="d-flex align-items-center justify-content-end">
               <button

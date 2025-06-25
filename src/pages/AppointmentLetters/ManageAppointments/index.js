@@ -8,7 +8,7 @@ import {
   createAppointment,
   updateAppointment,
 } from "../../../redux/AppointmentLetters";
-import { fetchEmployee } from "../../../redux/Employee";
+import { fetchCandidate } from "../../../redux/Candidate";
 import { fetchdesignation } from "../../../redux/designation";
 
 const ManageAppointments = ({ setAppointment, appointment }) => {
@@ -22,7 +22,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      employee_id: "",
+      candidate_id: "",
       issue_date: new Date().toISOString(),
       designation_id: "",
       terms_summary: "",
@@ -34,14 +34,14 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   React.useEffect(() => {
     if (appointment) {
       reset({
-        employee_id: appointment.employee_id || "",
+        candidate_id: appointment.candidate_id || "",
         issue_date: appointment.issue_date || new Date().toISOString(),
         designation_id: appointment.designation_id || "",
         terms_summary: appointment.terms_summary || "",
       });
     } else {
       reset({
-        employee_id: "",
+        candidate_id: "",
         issue_date: new Date().toISOString(),
         designation_id: "",
         terms_summary: "",
@@ -50,14 +50,14 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   }, [appointment, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchCandidate({ searchValue }));
   }, [dispatch, searchValue]);
 
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+  const { candidate, loading: candidateLoading } = useSelector(
+    (state) => state.candidate || {}
   );
 
-  const employees = employee?.data?.map((i) => ({
+  const candidates = candidate?.data?.data?.map((i) => ({
     label: i?.full_name,
     value: i?.id,
   }));
@@ -139,25 +139,25 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Employee
+                      Candidate
                       <span className="text-danger"> *</span>
                     </label>
                     <Controller
-                      name="employee_id"
+                      name="candidate_id"
                       control={control}
-                      rules={{ required: "Employee is required" }}
+                      rules={{ required: "Candidate is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                        const selectedDeal = candidates?.find(
+                          (candidate) => candidate.value === field.value
                         );
                         return (
                           <Select
                             {...field}
                             className="select"
-                            options={employees}
+                            options={candidates}
                             classNamePrefix="react-select"
-                            placeholder="Select Employee"
-                            isLoading={employeeLoading}
+                            placeholder="Select Candidate"
+                            isLoading={candidateLoading}
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
                             }
@@ -175,9 +175,9 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
                         );
                       }}
                     />
-                    {errors.employee_id && (
+                    {errors.candidate_id && (
                       <small className="text-danger">
-                        {errors.employee_id.message}
+                        {errors.candidate_id.message}
                       </small>
                     )}
                   </div>

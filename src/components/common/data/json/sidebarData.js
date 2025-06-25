@@ -34,8 +34,8 @@ export const SidebarData = [
             submenu: false,
           },
           {
-            label: "Candidate",
-            link: route.candidate,
+            label: "Candidates",
+            link: route.candidates,
             showSubRoute: false,
             submenu: false,
           },

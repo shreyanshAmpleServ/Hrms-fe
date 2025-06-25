@@ -11,6 +11,48 @@ import { fetchCandidate } from "../../redux/Candidate/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageCandidate from "./ManageCandidate/index.js";
 import usePermissions from "../../components/common/Permissions.js/index.js";
+// [
+//   {
+//     title: "Application Review",
+//     status: "completed",
+//     date: "2024-06-20",
+//     rating: 4,
+//     description:
+//       "Candidate meets all basic eligibility criteria. Resume is well-structured and relevant to the role.",
+//   },
+//   {
+//     title: "Phone Screening",
+//     status: "completed",
+//     date: "2024-06-22",
+//     rating: 4.5,
+//     description:
+//       "Candidate showed clear communication, explained past projects confidently, and expressed interest in the role.",
+//   },
+//   {
+//     title: "Technical Interview",
+//     status: "current",
+//     date: "",
+//     rating: 0,
+//     description:
+//       "Scheduled with the frontend team. Candidate to be assessed on React, JS, and problem-solving ability.",
+//   },
+//   {
+//     title: "Final Interview",
+//     status: "pending",
+//     date: "",
+//     rating: 0,
+//     description:
+//       "Managerial evaluation of team fit, critical thinking, and leadership potential.",
+//   },
+//   {
+//     title: "Offer Discussion",
+//     status: "pending",
+//     date: "",
+//     rating: 0,
+//     description:
+//       "Discussion on salary expectations, joining date, and offer conditions.",
+//   },
+// ];
 
 const Candidate = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -36,10 +78,10 @@ const Candidate = () => {
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: candidate?.currentPage,
-      totalPage: candidate?.totalPages,
-      totalCount: candidate?.totalCount,
-      pageSize: candidate?.size,
+      currentPage: candidate?.data?.currentPage,
+      totalPage: candidate?.data?.totalPages,
+      totalCount: candidate?.data?.totalCount,
+      pageSize: candidate?.data?.size,
     });
   }, [candidate]);
 
@@ -72,6 +114,16 @@ const Candidate = () => {
       ),
     },
     {
+      title: "Candidate Code",
+      dataIndex: "candidate_code",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Job Posting",
+      dataIndex: "candidate_job_posting",
+      render: (text) => text?.job_title || "-",
+    },
+    {
       title: "Email",
       dataIndex: "email",
       render: (text) => text || "-",
@@ -82,21 +134,17 @@ const Candidate = () => {
       render: (text) => text || "-",
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
+      title: "Gender",
+      dataIndex: "gender",
+      render: (text) =>
+        text === "M"
+          ? "Male"
+          : text === "F"
+            ? "Female"
+            : text === "O"
+              ? "Other"
+              : "-",
     },
-    {
-      title: "Status Remarks",
-      dataIndex: "status_remarks",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Interview Stage",
-      dataIndex: "interview_stage",
-      render: (text) => text || "-",
-    },
-
     {
       title: "Nationality",
       dataIndex: "nationality",
@@ -106,6 +154,46 @@ const Candidate = () => {
       title: "Date of Birth",
       dataIndex: "date_of_birth",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+    {
+      title: "Application Source",
+      dataIndex: "candidate_application_source",
+      render: (text) => text?.source_name || "-",
+    },
+    {
+      title: "Interview Stage",
+      dataIndex: "candidate_interview_stage",
+      render: (text) => text?.stage_name || "-",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (text) => (
+        <span
+          className={`badge text-white ${
+            text === "P"
+              ? "bg-warning"
+              : text === "A"
+                ? "bg-success"
+                : text === "R"
+                  ? "bg-danger"
+                  : "bg-secondary"
+          }`}
+        >
+          {text === "P"
+            ? "Pending"
+            : text === "A"
+              ? "Approved"
+              : text === "R"
+                ? "Rejected"
+                : text}
+        </span>
+      ),
+    },
+    {
+      title: "Status Remarks",
+      dataIndex: "status_remarks",
+      render: (text) => text || "-",
     },
     {
       title: "Expected Joining Date",
@@ -125,22 +213,18 @@ const Candidate = () => {
     {
       title: "No Show Flag",
       dataIndex: "no_show_flag",
-      render: (text) => text || "-",
+      render: (text) => (text === "Y" ? "Yes" : "No"),
     },
     {
       title: "No Show Marked Date",
       dataIndex: "no_show_marked_date",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      render: (text) =>
+        text === "Y" ? moment(text).format("DD-MM-YYYY") : "-",
     },
     {
       title: "No Show Remarks",
       dataIndex: "no_show_remarks",
       render: (text) => text || "-",
-    },
-    {
-      title: "Created At",
-      dataIndex: "createdate",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     ...(isDelete || isUpdate
       ? [
@@ -209,7 +293,7 @@ const Candidate = () => {
                     <h4 className="page-title">
                       Candidate
                       <span className="count-title">
-                        {candidate?.totalCount}
+                        {candidate?.data?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -275,7 +359,7 @@ const Candidate = () => {
                     <div className="table-responsive custom-table">
                       <Table
                         columns={columns}
-                        dataSource={data}
+                        dataSource={data?.data}
                         scroll={{ x: "max-content" }}
                         loading={loading}
                         paginationData={paginationData}

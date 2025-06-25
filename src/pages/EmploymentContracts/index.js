@@ -72,12 +72,12 @@ const EmploymentContracts = () => {
 
   const columns = [
     {
-      title: "Contracted Employee",
-      dataIndex: "contracted_employee",
+      title: "Contracted Candidate",
+      dataIndex: "contracted_candidate",
       render: (text) => text.full_name || "-",
       sorter: (a, b) =>
-        a.contracted_employee.full_name.localeCompare(
-          b.contracted_employee.full_name
+        a.contracted_candidate.full_name.localeCompare(
+          b.contracted_candidate.full_name
         ),
     },
     {

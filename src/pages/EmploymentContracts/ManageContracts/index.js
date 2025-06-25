@@ -1,14 +1,14 @@
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { fetchCandidate } from "../../../redux/Candidate";
 import {
   createContract,
   updateContract,
 } from "../../../redux/EmployementContracts";
-import { fetchEmployee } from "../../../redux/Employee";
-import moment from "moment";
 const ManageContracts = ({ setContract, contract }) => {
   const [searchValue, setSearchValue] = useState("");
   const [documentPath, setDocumentPath] = useState(null);
@@ -17,11 +17,10 @@ const ManageContracts = ({ setContract, contract }) => {
     control,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      employee_id: "",
+      candidate_id: "",
       contract_start_date: new Date().toISOString(),
       contract_end_date: new Date().toISOString(),
       contract_type: "",
@@ -35,7 +34,7 @@ const ManageContracts = ({ setContract, contract }) => {
   React.useEffect(() => {
     if (contract) {
       reset({
-        employee_id: contract.employee_id || "",
+        candidate_id: contract.candidate_id || "",
         contract_start_date:
           contract.contract_start_date || new Date().toISOString(),
         contract_end_date:
@@ -46,7 +45,7 @@ const ManageContracts = ({ setContract, contract }) => {
       });
     } else {
       reset({
-        employee_id: "",
+        candidate_id: "",
         contract_start_date: new Date().toISOString(),
         contract_end_date: new Date().toISOString(),
         contract_type: "",
@@ -57,14 +56,14 @@ const ManageContracts = ({ setContract, contract }) => {
   }, [contract, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchCandidate({ searchValue }));
   }, [dispatch, searchValue]);
 
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+  const { candidate, loading: candidateLoading } = useSelector(
+    (state) => state.candidate || {}
   );
 
-  const employees = employee?.data?.map((i) => ({
+  const candidates = candidate?.data?.data?.map((i) => ({
     label: i?.full_name,
     value: i?.id,
   }));
@@ -148,25 +147,25 @@ const ManageContracts = ({ setContract, contract }) => {
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
-                      Employee
+                      Candidate
                       <span className="text-danger">*</span>
                     </label>
                     <Controller
-                      name="employee_id"
+                      name="candidate_id"
                       control={control}
-                      rules={{ required: "Employee is required" }}
+                      rules={{ required: "Candidate is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
+                        const selectedDeal = candidates?.find(
+                          (candidate) => candidate.value === field.value
                         );
                         return (
                           <Select
                             {...field}
                             className="select"
-                            options={employees}
+                            options={candidates}
                             classNamePrefix="react-select"
-                            placeholder="Select Employee"
-                            isLoading={employeeLoading}
+                            placeholder="Select Candidate"
+                            isLoading={candidateLoading}
                             onInputChange={(inputValue) =>
                               setSearchValue(inputValue)
                             }
@@ -184,9 +183,9 @@ const ManageContracts = ({ setContract, contract }) => {
                         );
                       }}
                     />
-                    {errors.employee_id && (
+                    {errors.candidate_id && (
                       <small className="text-danger">
-                        {errors.employee_id.message}
+                        {errors.candidate_id.message}
                       </small>
                     )}
                   </div>
@@ -329,7 +328,6 @@ const ManageContracts = ({ setContract, contract }) => {
                     name="description"
                     control={control}
                     rules={{
-                      required: "Description is required!",
                       maxLength: {
                         value: 255,
                         message:

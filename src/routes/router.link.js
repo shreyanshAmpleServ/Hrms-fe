@@ -464,7 +464,7 @@ export const privateRoutes = [
     title: "Tax Regime",
   },
   {
-    path: route.candidate,
+    path: route.candidates,
     element: <Candidate />,
     route: Route,
     title: "Candidate",

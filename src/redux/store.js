@@ -125,6 +125,7 @@ import candidateReducer from "./Candidate";
 import medicalRecordReducer from "./MedicalRecord";
 import applicationSourceReducer from "./ApplicationSource";
 import interviewStagesReducer from "./InterviewStages";
+import interviewStageRemarkReducer from "./InterviewStageRemark";
 
 const store = configureStore({
   reducer: {
@@ -254,6 +255,7 @@ const store = configureStore({
     medicalRecord: medicalRecordReducer,
     applicationSource: applicationSourceReducer,
     interviewStages: interviewStagesReducer,
+    interviewStageRemark: interviewStageRemarkReducer,
   },
 });
 

@@ -139,36 +139,6 @@ const CandidateDetail = () => {
     );
   }
 
-  // actual_joining_date: "2025-06-23T00:00:00.000Z";
-  // application_source: "Glassdoor";
-  // applied_position_id: null;
-  // candidate_code: "";
-  // createdate: "2025-06-23T11:28:22.143Z";
-  // createdby: 6;
-  // date_of_birth: "2007-06-23T00:00:00.000Z";
-  // email: "manikant.sharma@ampleserv.com";
-  // expected_joining_date: "2025-06-23T00:00:00.000Z";
-  // full_name: "Mani Kant Sharma";
-  // gender: "M";
-  // id: 10;
-  // interview1_remarks: "";
-  // interview2_remarks: "";
-  // interview3_remarks: "";
-  // interview_stage: "Initial";
-  // job_posting: null;
-  // log_inst: 1;
-  // nationality: "India";
-  // no_show_flag: "N";
-  // no_show_marked_date: "2025-06-22T00:00:00.000Z";
-  // no_show_remarks: "";
-  // offer_accepted_date: "2025-06-23T00:00:00.000Z";
-  // phone: "8737018483";
-  // resume_path: "https://DCC-HRMS.s3.us-east-005.backblazeb2.com/resume_path/24d85c74-03ef-44b9-b99b-91882f28efe7.pdf";
-  // status: null;
-  // status_remarks: null;
-  // updatedate: "2025-06-23T11:29:40.616Z";
-  // updatedby: 6;
-
   return (
     <>
       <div className="page-wrapper position-relative">
@@ -196,7 +166,7 @@ const CandidateDetail = () => {
                   <div className="col-sm-6">
                     <ul className="contact-breadcrumb">
                       <li>
-                        <Link to={route.candidate}>
+                        <Link to={route.candidates}>
                           <i className="ti ti-arrow-narrow-left" />
                           Candidates
                         </Link>
@@ -210,7 +180,7 @@ const CandidateDetail = () => {
                 <div className="card-body pb-2">
                   <div className="d-flex pb-3 align-items-center justify-content-between flex-wrap">
                     <h4>Personal Information</h4>
-                    <Tooltip title="Update Basic Info">
+                    {/* <Tooltip title="Update Basic Info">
                       <Button
                         variant="filled"
                         shape="circle"
@@ -218,7 +188,7 @@ const CandidateDetail = () => {
                         data-bs-target={`#update_basic_info_modal`}
                         icon={<EditFilled />}
                       />
-                    </Tooltip>
+                    </Tooltip> */}
                   </div>
                   <div className="d-flex justify-content-between px-3 flex-wrap">
                     <div className="d-flex w-50 gap-5">
@@ -314,7 +284,7 @@ const CandidateDetail = () => {
                   </div>
                 </div>
               </div>
-              <InterviewStages />
+              <InterviewStages candidateDetail={candidateDetail} />
             </div>
           </div>
         </div>

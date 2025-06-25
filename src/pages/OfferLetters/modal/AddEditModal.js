@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import moment from "moment";
+import React, { useEffect } from "react";
+import DatePicker from "react-datepicker";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { fetchCandidate } from "../../../redux/Candidate";
 import {
   addoffer_letter,
   updateoffer_letter,
 } from "../../../redux/offerLetters";
-import { fetchEmployee } from "../../../redux/Employee";
-import moment from "moment";
-import DatePicker from "react-datepicker";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.offer_letter);
@@ -24,25 +24,32 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee());
+    dispatch(fetchCandidate());
   }, [dispatch]);
 
-  const employee = useSelector((state) => state.employee.employee);
+  const { candidate, loading: candidateLoading } = useSelector(
+    (state) => state.candidate || {}
+  );
+
+  console.log(
+    candidate?.data?.data?.map((item) => ({
+      value: item.id,
+      label: item.full_name,
+    }))
+  );
+
   const offerDate = useWatch({ control, name: "offer_date" });
 
-  const EmployeeList = useMemo(
-    () =>
-      employee?.data?.map((item) => ({
-        value: item.id,
-        label: item.full_name,
-      })) || [],
-    [employee]
-  );
+  const CandidateList =
+    candidate?.data?.data?.map((item) => ({
+      value: item.id,
+      label: item.full_name,
+    })) || [];
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        status: initialData.status || "Panding",
+        status: initialData.status || "P",
         offer_date: initialData.offer_date
           ? new Date(initialData.offer_date).toISOString().split("T")[0]
           : "",
@@ -51,16 +58,16 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           : "",
         offered_salary: initialData.offered_salary || "",
         position: initialData.position || "",
-        employee_id: initialData.employee_id || "",
+        candidate_id: initialData.candidate_id || "",
       });
     } else {
       reset({
-        status: "panding",
+        status: "P",
         offer_date: new Date(),
         valid_until: new Date(),
         offered_salary: "",
         position: "",
-        employee_id: "",
+        candidate_id: "",
       });
 
       const modalBody = document.querySelector(".offcanvas-body");
@@ -146,32 +153,31 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         <form onSubmit={handleSubmit(onSubmit)} className="row">
           {/* Department */}
           {/* Employee ID */}
-          <div className="col-md-6">
+          <div className="col-md-6 mb-3">
             <label className="col-form-label">
-              Employee <span className="text-danger">*</span>
+              Candidate <span className="text-danger">*</span>
             </label>
             <Controller
-              name="employee_id"
+              name="candidate_id"
               control={control}
-              rules={{ required: "Employee is required" }}
+              rules={{ required: "Candidate is required" }}
               render={({ field }) => (
                 <Select
                   {...field}
-                  options={EmployeeList}
-                  placeholder="Choose Employee"
-                  isDisabled={!EmployeeList.length}
+                  options={CandidateList}
+                  placeholder="Choose Candidate"
                   classNamePrefix="react-select"
                   className="select2"
                   onChange={(option) => field.onChange(option?.value || "")}
-                  value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id")
+                  value={CandidateList?.find(
+                    (option) => option.value === watch("candidate_id")
                   )}
                 />
               )}
             />
-            {errors.employee_id && (
+            {errors.candidate_id && (
               <small className="text-danger">
-                {errors.employee_id.message}
+                {errors.candidate_id.message}
               </small>
             )}
           </div>
@@ -324,9 +330,9 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loading}
+              disabled={candidateLoading}
             >
-              {loading
+              {candidateLoading
                 ? mode === "add"
                   ? "Creating..."
                   : "Updating..."

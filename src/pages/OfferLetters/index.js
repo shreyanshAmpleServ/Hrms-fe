@@ -36,18 +36,13 @@ const OfferLetters = () => {
   const dispatch = useDispatch();
 
   const columns = [
-    // {
-    //     title: "Employee ID",
-    //     dataIndex: "employee_id",
-    //     sorter: (a, b) => a.employee_id.localeCompare(b.employee_id),
-    // },
     {
-      title: "Employee",
-      dataIndex: "offered_employee",
+      title: "Candidate",
+      dataIndex: "offered_candidate",
       render: (value) => <div>{value?.full_name}</div>,
       sorter: (a, b) =>
-        (a.offered_employee?.full_name || "").localeCompare(
-          b.offered_employee?.full_name || ""
+        (a.offered_candidate?.full_name || "").localeCompare(
+          b.offered_candidate?.full_name || ""
         ),
     },
 
@@ -67,7 +62,7 @@ const OfferLetters = () => {
     {
       title: "Offered Salary",
       dataIndex: "offered_salary",
-      render: (value) => <div>₹ {Number(value).toLocaleString()}</div>,
+      render: (value) => <div>{Number(value).toLocaleString()}</div>,
       sorter: (a, b) => a.offered_salary - b.offered_salary,
     },
 
@@ -79,37 +74,24 @@ const OfferLetters = () => {
     },
 
     {
-      title: "Created At",
-      dataIndex: "created_date",
-      render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-      sorter: (a, b) => a.created_date.length - b.created_date.length,
-    },
-    {
       title: "Confirmation Status",
       dataIndex: "status",
       render: (value) => (
         <div
           className={`text-capitalize badge ${
             value === "R"
-              ? "bg-warning"
+              ? "bg-danger"
               : value === "A"
                 ? "bg-success"
                 : value === "P"
-                  ? "bg-danger"
+                  ? "bg-warning"
                   : "bg-secondary"
           }`}
         >
-          {value === "P"
-            ? "Pending"
-            : value === "A"
-              ? "Approved"
-              : value === "R"
-                ? "Rejected"
-                : value || "—"}
+          {value === "P" ? "Pending" : value === "A" ? "Approved" : "Rejected"}
         </div>
       ),
-      sorter: (a, b) =>
-        (a.status || "").localeCompare(b.confirmation_status || ""),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
     },
 
     ...(isUpdate || isDelete
@@ -139,9 +121,9 @@ const OfferLetters = () => {
                     >
                       <i className="ti ti-settings text-blue"></i>
                       {record.status === "P"
-                        ? "Approve/Reject"
+                        ? "Approve"
                         : record.status === "R"
-                          ? "Pending/Approve"
+                          ? "Reject"
                           : record.status === "A"
                             ? "Reject/Pending"
                             : "Manage Status"}
@@ -334,7 +316,7 @@ const OfferLetters = () => {
 
       <AddEditModal mode={mode} initialData={selected} />
       <DeleteAlert
-        label=" Offer Letters"
+        label="Offer Letters"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         selectedIndustry={selectedIndustry}

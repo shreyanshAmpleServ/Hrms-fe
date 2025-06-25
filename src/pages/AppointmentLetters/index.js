@@ -74,20 +74,19 @@ const AppointmentLetters = () => {
 
   const columns = [
     {
-      title: "Issue Date",
-      dataIndex: "issue_date",
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : ""),
-      sorter: (a, b) => a.issue_date.length - b.issue_date.length,
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "appointment_employee",
+      title: "Candidate",
+      dataIndex: "appointment_candidate",
       render: (text) => text.full_name || "-",
     },
     {
       title: "Designation",
       dataIndex: "appointment_designation",
       render: (text) => text.designation_name || "-",
+    },
+    {
+      title: "Appointment Date",
+      dataIndex: "issue_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "---"),
     },
     {
       title: "Terms Summary",
@@ -97,7 +96,7 @@ const AppointmentLetters = () => {
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : ""),
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "---"),
       sorter: (a, b) => a.createdate.length - b.createdate.length,
     },
     ...(isDelete || isUpdate
