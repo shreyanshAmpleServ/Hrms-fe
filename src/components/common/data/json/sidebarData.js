@@ -449,6 +449,11 @@ export const SidebarData = [
             link: route.taxSlab,
             showSubRoute: false,
           },
+          {
+            label: "Cost Center",
+            link: route.CostCenter,
+            showSubRoute: false,
+          },
         ],
       },
 

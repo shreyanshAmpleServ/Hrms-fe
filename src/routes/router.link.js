@@ -156,6 +156,7 @@ import { all_routes } from "./all_routes";
 import MedicalRecord from "../pages/MedicalRecord";
 import CurrenciesList from "../pages/crm-settings/currency";
 import TaxSlab from "../pages/crm-settings/taxSlab";
+import CostCenter from "../pages/crm-settings/costCenter";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -324,6 +325,12 @@ export const privateRoutes = [
     element: <TaxSlab />,
     route: Route,
     title: "Tax Slab",
+  },
+  {
+    path: route.CostCenter,
+    element: <CostCenter />,
+    route: Route,
+    title: "Cost Center",
   },
   {
     path: route.salesInvoice,
