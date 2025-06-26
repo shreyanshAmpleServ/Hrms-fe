@@ -444,6 +444,11 @@ export const SidebarData = [
             link: route.taxRelief,
             showSubRoute: false,
           },
+          {
+            label: "Tax Slab",
+            link: route.taxSlab,
+            showSubRoute: false,
+          },
         ],
       },
 

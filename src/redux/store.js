@@ -127,6 +127,7 @@ import applicationSourceReducer from "./ApplicationSource";
 import interviewStagesReducer from "./InterviewStages";
 import interviewStageRemarkReducer from "./InterviewStageRemark";
 import hrLettersReducer from "./HRLetters";
+import taxSlabReducer from "./taxSlab";
 
 const store = configureStore({
   reducer: {
@@ -258,6 +259,7 @@ const store = configureStore({
     interviewStages: interviewStagesReducer,
     interviewStageRemark: interviewStageRemarkReducer,
     hrLetters: hrLettersReducer,
+    taxSlab: taxSlabReducer,
   },
 });
 
