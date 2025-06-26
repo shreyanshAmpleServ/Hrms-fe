@@ -1,4 +1,5 @@
-import { Progress, Table } from "antd";
+import { Progress } from "antd";
+import Table from "../../components/common/dataTableNew/index.js";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";

@@ -1,10 +1,10 @@
-import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
+import Datatable from "../../components/common/dataTableNew/index.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchWPSFiles } from "../../redux/WPSFileGenerator/index.js";
@@ -240,7 +240,7 @@ const WPSFileGenerator = () => {
 
                   {isView ? (
                     <div className="table-responsive custom-table">
-                      <Table
+                      <Datatable
                         columns={columns}
                         dataSource={data}
                         loading={loading}

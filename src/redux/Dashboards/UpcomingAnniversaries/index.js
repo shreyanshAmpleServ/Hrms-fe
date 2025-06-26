@@ -61,7 +61,7 @@ const upcomingAnniversariesSlice = createSlice({
         state.loading = false;
         state.upcomingAnniversaries = action.payload.data;
       })
-      .addCase(fetchUpcomingAnniversaries.rejected, (state, action) => {
+      .addCase(fetchUpcomingAnniversaries.rejected, (state) => {
         state.loading = false;
       });
   },

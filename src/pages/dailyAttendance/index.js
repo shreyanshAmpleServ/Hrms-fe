@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import Table from "../../components/common/dataTableNew/index.js";
 import moment from "moment";
 import Select from "react-select";
 import React, { useEffect, useState } from "react";

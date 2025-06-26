@@ -55,7 +55,7 @@ const upcomingBirthdaysSlice = createSlice({
         state.loading = false;
         state.upcomingBirthdays = action.payload.data;
       })
-      .addCase(fetchUpcomingBirthdays.rejected, (state, action) => {
+      .addCase(fetchUpcomingBirthdays.rejected, (state) => {
         state.loading = false;
       });
   },

@@ -9,7 +9,6 @@ import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 import moment from "moment";
 import { Helmet } from "react-helmet-async";
-import AddButton from "../../components/datatable/AddButton";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {

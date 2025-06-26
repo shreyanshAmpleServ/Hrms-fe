@@ -410,7 +410,7 @@ const Header = () => {
                             </p>
                             <p className="noti-sub-details">
                               “Oh, I finished de-bugging the phones, but the
-                              system's compiling for eighteen minutes, or
+                              system&apos;s compiling for eighteen minutes, or
                               twenty. So, some minor systems may go on and off
                               for a while.”
                             </p>
