@@ -14,18 +14,19 @@ import SortDropdown from "../../../components/datatable/SortDropDown";
 // import { clearMessages, fetchManufacturer } from "../../../redux/manufacturer";
 import {
   clearMessages,
-  deleteTaxSlab,
-  fetchTaxSlab,
-} from "../../../redux/taxSlab";
+  deleteTaxSetup,
+  fetchTaxSetup,
+} from "../../../redux/taxSetUp";
 import ManageTaxModal from "./modal/ManageTaxModal";
 import { Helmet } from "react-helmet-async";
+import { deleteCostCenter, fetchCostCenter } from "../../../redux/costCenter";
 
-const TaxSlab = () => {
+const CostCenter = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Tax Slab"
+    (i) => i?.module_name === "Cost Center"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -36,55 +37,36 @@ const TaxSlab = () => {
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "Rule Type",
-      dataIndex: "rule_type",
-      // render: (text, record) => <Link to={`#`}>{record.name}</Link>,
+      title: "Name",
+      dataIndex: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
+    {
+      title: "External Code",
+      dataIndex: "external_code",
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+    },
+    {
+      title: "Dimension",
+      dataIndex: "dimension_id",
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+    },
     // {
-    //   title: "Category",
-    //   dataIndex: "category",
-    //   // render: (text, record) => (
-    //   //   <Link to={`#`}>{record.name}</Link>
-    //   // ),
-    //   sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+    //   title: "Account",
+    //   dataIndex: "account_name",
+    //   sorter: (a, b) => a.account_name.localeCompare(b.account_name),
     // },
     {
-      title: "Slab Min",
-      dataIndex: "slab_min",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-    },
-    {
-      title: "Slab Max",
-      dataIndex: "slab_max",
-      sorter: (a, b) => a.account_name.localeCompare(b.account_name),
-    },
-    {
-      title: "Rate",
-      dataIndex: "rate",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-    },
-    {
-      title: "Flat Amount",
-      dataIndex: "flat_amount",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-    },
-    {
-      title: "Formula Text",
-      dataIndex: "formula_text",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-    },
-    {
-      title: "Effective From",
-      dataIndex: "effective_from",
+      title: "Valid From",
+      dataIndex: "validFrom",
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
       sorter: (a, b) => new Date(a.validFrom) - new Date(b.validFrom),
     },
     {
-      title: "Effective To",
-      dataIndex: "effective_to",
+      title: "Valid To",
+      dataIndex: "validTo",
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
@@ -165,14 +147,14 @@ const TaxSlab = () => {
   ];
 
   const {
-    taxSlab: taxs,
+    costCenter: taxs,
     loading,
     error,
     success,
-  } = useSelector((state) => state.taxSlab);
+  } = useSelector((state) => state.costCenter);
 
   React.useEffect(() => {
-    dispatch(fetchTaxSlab());
+    dispatch(fetchCostCenter());
   }, [dispatch]);
 
   const [searchText, setSearchText] = useState("");
@@ -183,7 +165,7 @@ const TaxSlab = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = taxs;
+    let data = taxs?.data || [];
     if (searchText) {
       data = data.filter((item) =>
         columns.some((col) =>
@@ -215,7 +197,7 @@ const TaxSlab = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const deleteData = () => {
     if (selectedTax) {
-      dispatch(deleteTaxSlab(selectedTax.id));
+      dispatch(deleteCostCenter(selectedTax.id));
       // navigate(`/taxs`);
       setShowDeleteModal(false);
     }
@@ -224,7 +206,7 @@ const TaxSlab = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Tax Setup</title>
+        <title>DCC HRMS - Cost Center</title>
         <meta name="Tax Setup" content="This is Tax Setup page of DCC HRMS." />
       </Helmet>
       <div className="content">
@@ -249,8 +231,10 @@ const TaxSlab = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Tax Slab
-                    <span className="count-title">{taxs?.length || 0}</span>
+                    Cost Center
+                    <span className="count-title">
+                      {taxs?.data.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -266,7 +250,7 @@ const TaxSlab = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Tax"
+                    label="Search Cost Center"
                   />
                   {isCreate && (
                     <div className="col-8">
@@ -278,7 +262,7 @@ const TaxSlab = () => {
                           data-bs-target={`#offcanvas_add_edit_tax_setup`}
                         >
                           <i className="ti ti-square-rounded-plus me-2" />
-                          Add Tax Slab
+                          Add Cost Center
                         </Link>{" "}
                       </div>
                     </div>
@@ -312,7 +296,7 @@ const TaxSlab = () => {
       {/* <AddEditModal mode={mode} initialData={selectedTax} /> */}
       <ManageTaxModal tax={selectedTax} setTax={setSelectedTax} />
       <DeleteAlert
-        label="Tax Slab"
+        label="Cost Center"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         selectedTax={selectedTax}
@@ -322,4 +306,4 @@ const TaxSlab = () => {
   );
 };
 
-export default TaxSlab;
+export default CostCenter;
