@@ -19,10 +19,7 @@ import ManageStatus from "../../../OfferLetters/ManageStatus";
 const CandidateOfferLetters = ({ candidateDetail }) => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
-  const [paginationData, setPaginationData] = React.useState();
-  const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [mode, setMode] = React.useState("add");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
     (i) => i?.module_name === "Offer Letter"
@@ -153,7 +150,9 @@ const CandidateOfferLetters = ({ candidateDetail }) => {
   const { offer_letter, loading } = useSelector((state) => state.offer_letter);
 
   React.useEffect(() => {
-    dispatch(fetchoffer_letter({ candidate_id: candidateDetail?.id }));
+    if (candidateDetail?.id) {
+      dispatch(fetchoffer_letter({ candidate_id: candidateDetail?.id }));
+    }
   }, [candidateDetail?.id]);
 
   const handleDeleteIndustry = (industry) => {
@@ -173,14 +172,23 @@ const CandidateOfferLetters = ({ candidateDetail }) => {
   return (
     <>
       <div className="card">
-        <div className="card-header">
+        <div className="card-header p-4 d-flex justify-content-between align-items-center">
           <h4 className="card-title">Offer Letters</h4>
+          <Link
+            to=""
+            className="btn btn-primary"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#add_edit_offer_letter_modal"
+            onClick={() => {
+              setMode("add with candidate");
+            }}
+          >
+            <i className="ti ti-square-rounded-plus me-2" />
+            Add Offer Letter
+          </Link>
         </div>
         <div className="card-body">
-          <div
-            style={{ height: "300px", overflowY: "auto" }}
-            className="table-responsive custom-table"
-          >
+          <div className="table-responsive custom-table">
             <Table
               dataSource={offer_letter?.data || []}
               columns={columns}
@@ -192,7 +200,11 @@ const CandidateOfferLetters = ({ candidateDetail }) => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selected} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        candidate_id={candidateDetail?.id}
+      />
       <DeleteAlert
         label="Offer Letters"
         showModal={showDeleteModal}

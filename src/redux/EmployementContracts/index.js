@@ -15,6 +15,7 @@ export const fetchContracts = createAsyncThunk(
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
         endDate: datas?.endDate?.toISOString() || "",
+        candidate_id: datas?.candidate_id || "",
       };
       const response = await apiClient.get("/v1/employment-contract", {
         params,

@@ -126,6 +126,7 @@ import medicalRecordReducer from "./MedicalRecord";
 import applicationSourceReducer from "./ApplicationSource";
 import interviewStagesReducer from "./InterviewStages";
 import interviewStageRemarkReducer from "./InterviewStageRemark";
+import hrLettersReducer from "./HRLetters";
 import taxSlabReducer from "./taxSlab";
 import costCenterReducer from "./costCenter";
 
@@ -258,9 +259,14 @@ const store = configureStore({
     applicationSource: applicationSourceReducer,
     interviewStages: interviewStagesReducer,
     interviewStageRemark: interviewStageRemarkReducer,
+    hrLetters: hrLettersReducer,
     taxSlab: taxSlabReducer,
     costCenter: costCenterReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export default store;

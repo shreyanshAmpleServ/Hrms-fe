@@ -10,8 +10,12 @@ import {
   updateoffer_letter,
 } from "../../../redux/offerLetters";
 
-const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.offer_letter);
+const AddEditModal = ({
+  contact,
+  mode = "add",
+  initialData = null,
+  candidate_id,
+}) => {
   const dispatch = useDispatch();
 
   const {
@@ -23,19 +27,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  // useEffect(() => {
-  //   dispatch(fetchCandidate());
-  // }, [dispatch]);
+  useEffect(() => {
+    if (!candidate_id) {
+      dispatch(fetchCandidate({ search: "" }));
+    }
+  }, [candidate_id]);
 
   const { candidate, loading: candidateLoading } = useSelector(
     (state) => state.candidate || {}
-  );
-
-  console.log(
-    candidate?.data?.data?.map((item) => ({
-      value: item.id,
-      label: item.full_name,
-    }))
   );
 
   const offerDate = useWatch({ control, name: "offer_date" });
@@ -58,7 +57,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
           : "",
         offered_salary: initialData.offered_salary || "",
         position: initialData.position || "",
-        candidate_id: initialData.candidate_id || "",
+        candidate_id: initialData.candidate_id || candidate_id || "",
       });
     } else {
       reset({
@@ -67,7 +66,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         valid_until: new Date(),
         offered_salary: "",
         position: "",
-        candidate_id: "",
+        candidate_id: candidate_id || "",
       });
 
       const modalBody = document.querySelector(".offcanvas-body");
@@ -96,6 +95,8 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
     if (mode === "add") {
       dispatch(addoffer_letter(formattedData));
+    } else if (mode === "add with candidate") {
+      dispatch(addoffer_letter({ ...formattedData, candidate_id }));
     } else if (mode === "edit" && initialData) {
       dispatch(
         updateoffer_letter({
@@ -151,37 +152,36 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       </div>
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
-          {/* Department */}
-          {/* Employee ID */}
-          <div className="col-md-6 mb-3">
-            <label className="col-form-label">
-              Candidate <span className="text-danger">*</span>
-            </label>
-            <Controller
-              name="candidate_id"
-              control={control}
-              rules={{ required: "Candidate is required" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={CandidateList}
-                  placeholder="Choose Candidate"
-                  classNamePrefix="react-select"
-                  className="select2"
-                  onChange={(option) => field.onChange(option?.value || "")}
-                  value={CandidateList?.find(
-                    (option) => option.value === watch("candidate_id")
-                  )}
-                />
+          {!candidate_id && (
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">
+                Candidate <span className="text-danger">*</span>
+              </label>
+              <Controller
+                name="candidate_id"
+                control={control}
+                rules={{ required: "Candidate is required" }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={CandidateList}
+                    placeholder="Choose Candidate"
+                    classNamePrefix="react-select"
+                    className="select2"
+                    onChange={(option) => field.onChange(option?.value || "")}
+                    value={CandidateList?.find(
+                      (option) => option.value === watch("candidate_id")
+                    )}
+                  />
+                )}
+              />
+              {errors.candidate_id && (
+                <small className="text-danger">
+                  {errors.candidate_id.message}
+                </small>
               )}
-            />
-            {errors.candidate_id && (
-              <small className="text-danger">
-                {errors.candidate_id.message}
-              </small>
-            )}
-          </div>
-
+            </div>
+          )}
           {/* Offer Date */}
           <div className="col-md-6 mb-3">
             <label className="form-label">
@@ -209,7 +209,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               <small className="text-danger">{errors.offer_date.message}</small>
             )}
           </div>
-
           {/* Position */}
           <div className="col-md-6 mb-3">
             <label className="form-label">
@@ -225,7 +224,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               <small className="text-danger">{errors.position.message}</small>
             )}
           </div>
-
           {/* Offered Salary */}
           <div className="col-md-6 mb-3">
             <label className="form-label">
@@ -249,7 +247,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               </small>
             )}
           </div>
-
           {/* Valid Until */}
           <div className="col-md-6 mb-3">
             <label className="form-label">
@@ -285,7 +282,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               </small>
             )}
           </div>
-
           {/* Status */}
           {/* <div className="col-md-6 mb-3">
             <label className="form-label">
@@ -318,7 +314,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               <small className="text-danger">{errors.status.message}</small>
             )}
           </div> */}
-
           <div className="col-md-12 text-end">
             <button
               type="button"

@@ -1,19 +1,16 @@
-import { useForm } from "react-hook-form";
+import React, { useEffect, useMemo } from "react";
+import DatePicker from "react-datepicker";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Select from "react-select";
+import { fetchCandidate } from "../../../redux/Candidate";
 import {
   addresume_upload,
   updateresume_upload,
 } from "../../../redux/resumeUpload";
-import { fetchCandidate } from "../../../redux/Candidate";
-import { Controller } from "react-hook-form";
-import Select from "react-select";
-import React, { useEffect, useMemo } from "react";
-import moment from "moment";
-import DatePicker from "react-datepicker";
-// import { Modal, Button } from 'react-bootstrap';
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, candidate_id }) => {
   const { loading } = useSelector((state) => state.resume_upload);
   const dispatch = useDispatch();
 
@@ -27,8 +24,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchCandidate());
-  }, [dispatch]);
+    if (!candidate_id) {
+      dispatch(fetchCandidate());
+    }
+  }, [candidate_id]);
 
   const candidate = useSelector((state) => state.candidate.candidate);
 
@@ -45,14 +44,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (mode === "edit" && initialData) {
       reset({
         // resume_upload_name: initialData.resume_upload_name || "",
-        candidate_id: initialData.candidate_id || "",
+        candidate_id: initialData.candidate_id || candidate_id || "",
         resume_path: initialData.resume_path || "",
         uploaded_on: initialData.uploaded_on || new Date().toISOString(),
       });
     } else {
       reset({
         // resume_upload_name: "",
-        candidate_id: "",
+        candidate_id: candidate_id || "",
         resume_path: "",
         uploaded_on: new Date().toISOString(), // today
       });
@@ -116,35 +115,39 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Resume Upload Name */}
 
               {/* Employee ID */}
-              <div className="md-3">
-                <label className="col-form-label">
-                  Candidate <span className="text-danger">*</span>
-                </label>
-                <Controller
-                  name="candidate_id"
-                  control={control}
-                  rules={{ required: "Candidate is required" }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={CandidateList}
-                      placeholder="Choose Candidate"
-                      isDisabled={!CandidateList.length}
-                      classNamePrefix="react-select"
-                      className="select2"
-                      onChange={(option) => field.onChange(option?.value || "")}
-                      value={CandidateList.find(
-                        (option) => option.value === watch("candidate_id")
-                      )}
-                    />
+              {!candidate_id && (
+                <div className="md-3">
+                  <label className="col-form-label">
+                    Candidate <span className="text-danger">*</span>
+                  </label>
+                  <Controller
+                    name="candidate_id"
+                    control={control}
+                    rules={{ required: "Candidate is required" }}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={CandidateList}
+                        placeholder="Choose Candidate"
+                        isDisabled={!CandidateList.length}
+                        classNamePrefix="react-select"
+                        className="select2"
+                        onChange={(option) =>
+                          field.onChange(option?.value || "")
+                        }
+                        value={CandidateList.find(
+                          (option) => option.value === watch("candidate_id")
+                        )}
+                      />
+                    )}
+                  />
+                  {errors.candidate_id && (
+                    <small className="text-danger">
+                      {errors.candidate_id.message}
+                    </small>
                   )}
-                />
-                {errors.candidate_id && (
-                  <small className="text-danger">
-                    {errors.candidate_id.message}
-                  </small>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Resume Path */}
               <div className="mb-3 mt-3">

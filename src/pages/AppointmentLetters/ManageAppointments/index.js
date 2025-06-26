@@ -11,7 +11,7 @@ import {
 import { fetchCandidate } from "../../../redux/Candidate";
 import { fetchdesignation } from "../../../redux/designation";
 
-const ManageAppointments = ({ setAppointment, appointment }) => {
+const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
   const [searchValue, setSearchValue] = useState("");
   const [searchDesignation, setSearchDesignation] = useState("");
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      candidate_id: "",
+      candidate_id: candidate_id || "",
       issue_date: new Date().toISOString(),
       designation_id: "",
       terms_summary: "",
@@ -41,7 +41,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
       });
     } else {
       reset({
-        candidate_id: "",
+        candidate_id: candidate_id || "",
         issue_date: new Date().toISOString(),
         designation_id: "",
         terms_summary: "",
@@ -50,8 +50,10 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   }, [appointment, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchCandidate({ searchValue }));
-  }, [dispatch, searchValue]);
+    if (!candidate_id) {
+      dispatch(fetchCandidate({ search: searchValue }));
+    }
+  }, [searchValue, candidate_id]);
 
   const { candidate, loading: candidateLoading } = useSelector(
     (state) => state.candidate || {}
@@ -64,7 +66,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
 
   React.useEffect(() => {
     dispatch(fetchdesignation({ searchValue: searchDesignation }));
-  }, [dispatch, searchDesignation]);
+  }, [searchDesignation]);
 
   const { designation, loading: designationLoading } = useSelector(
     (state) => state.designation || {}
@@ -92,7 +94,9 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
   };
 
   useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_add");
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_appointment"
+    );
     if (offcanvasElement) {
       const handleModalClose = () => {
         setAppointment(null);
@@ -115,7 +119,7 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
       <div
         className="offcanvas offcanvas-end offcanvas-large"
         tabIndex={-1}
-        id="offcanvas_add"
+        id="offcanvas_add_appointment"
       >
         <div className="offcanvas-header border-bottom">
           <h4>{appointment ? "Update " : "Add"} Appointment Letters</h4>
@@ -136,52 +140,54 @@ const ManageAppointments = ({ setAppointment, appointment }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      Candidate
-                      <span className="text-danger"> *</span>
-                    </label>
-                    <Controller
-                      name="candidate_id"
-                      control={control}
-                      rules={{ required: "Candidate is required" }}
-                      render={({ field }) => {
-                        const selectedDeal = candidates?.find(
-                          (candidate) => candidate.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={candidates}
-                            classNamePrefix="react-select"
-                            placeholder="Select Candidate"
-                            isLoading={candidateLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
-                    />
-                    {errors.candidate_id && (
-                      <small className="text-danger">
-                        {errors.candidate_id.message}
-                      </small>
-                    )}
+                {!candidate_id && (
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="col-form-label">
+                        Candidate
+                        <span className="text-danger"> *</span>
+                      </label>
+                      <Controller
+                        name="candidate_id"
+                        control={control}
+                        rules={{ required: "Candidate is required" }}
+                        render={({ field }) => {
+                          const selectedDeal = candidates?.find(
+                            (candidate) => candidate.value === field.value
+                          );
+                          return (
+                            <Select
+                              {...field}
+                              className="select"
+                              options={candidates}
+                              classNamePrefix="react-select"
+                              placeholder="Select Candidate"
+                              isLoading={candidateLoading}
+                              onInputChange={(inputValue) =>
+                                setSearchValue(inputValue)
+                              }
+                              value={selectedDeal || null}
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption.value)
+                              }
+                              styles={{
+                                menu: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999,
+                                }),
+                              }}
+                            />
+                          );
+                        }}
+                      />
+                      {errors.candidate_id && (
+                        <small className="text-danger">
+                          {errors.candidate_id.message}
+                        </small>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">

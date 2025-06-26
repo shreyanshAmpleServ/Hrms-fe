@@ -42,7 +42,7 @@ export const all_routes = {
 
   // core-hr //
   company: "/company",
-
+  hrLetter: "/hr-letter",
   branch: "/branch",
   department: "/department",
   designation: "/designation",

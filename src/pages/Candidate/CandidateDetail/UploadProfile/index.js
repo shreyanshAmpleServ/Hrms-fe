@@ -1,13 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 const UpdateProfilePicture = ({
-  employeeDetail,
+  candidateDetail,
   onSubmit,
   image,
   setImage,
   handleImageUploadOpen,
 }) => {
-  const { loading } = useSelector((state) => state.employee);
+  const { loading } = useSelector((state) => state.candidate);
 
   const handleImageUpload = (e) => {
     setImage(e.target.files[0]);
@@ -19,7 +19,7 @@ const UpdateProfilePicture = ({
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              Edit Profile Picture ({employeeDetail?.employee_code})
+              Edit Profile Picture ({candidateDetail?.candidate_code})
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -37,7 +37,7 @@ const UpdateProfilePicture = ({
                   src={
                     image
                       ? URL.createObjectURL(image)
-                      : employeeDetail?.profile_pic
+                      : candidateDetail?.profile_pic
                   }
                   alt="profile"
                   height={300}
@@ -68,10 +68,10 @@ const UpdateProfilePicture = ({
                   className="btn btn-primary"
                 >
                   {loading
-                    ? employeeDetail
+                    ? candidateDetail
                       ? "Updating..."
                       : "Creating..."
-                    : employeeDetail
+                    : candidateDetail
                       ? "Update"
                       : "Create"}
                 </button>

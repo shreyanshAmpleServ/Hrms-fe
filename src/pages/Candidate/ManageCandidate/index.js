@@ -703,15 +703,12 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                 <label className="col-form-label">
                   Status Remarks{" "}
                   <span className="text-muted">(max 255 characters)</span>{" "}
-                  <span className="text-danger">*</span>
                 </label>
                 <div className="mb-3">
                   <Controller
                     name="status_remarks"
                     control={control}
                     rules={{
-                      required: "Status remarks is required!",
-
                       maxLength: {
                         value: 255,
                         message:
