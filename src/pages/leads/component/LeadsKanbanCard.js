@@ -31,16 +31,16 @@ const LeadKanbanCard = ({ lead, leadStatus, leadContainerID }) => {
             <i className="ti ti-report-money text-dark me-1" />$
             {lead.annual_revenue}
           </p>
-          <p class="text-default d-inline-flex align-items-center mb-2">
-            <i class="ti ti-mail text-dark me-1"></i>
+          <p className="text-default d-inline-flex align-items-center mb-2">
+            <i className="ti ti-mail text-dark me-1"></i>
             {lead?.email}
           </p>
-          <p class="text-default d-inline-flex align-items-center mb-2">
-            <i class="ti ti-phone text-dark me-1"></i>
+          <p className="text-default d-inline-flex align-items-center mb-2">
+            <i className="ti ti-phone text-dark me-1"></i>
             {lead?.phone}
           </p>
-          <p class="text-default d-inline-flex align-items-center">
-            <i class="ti ti-map-pin-pin text-dark me-1"></i>
+          <p className="text-default d-inline-flex align-items-center">
+            <i className="ti ti-map-pin-pin text-dark me-1"></i>
             {lead?.street},{lead?.city} {lead?.country}
           </p>
           {/* Add more deal-related information here */}

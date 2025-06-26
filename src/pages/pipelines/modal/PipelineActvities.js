@@ -137,7 +137,7 @@ const ComapanyActvities = ({ company }) => {
                       <h6 className="fw-medium mb-1">Notes added by Antony</h6>
                       <p className="mb-1">
                         Please accept my apologies for the inconvenience caused.
-                        It would be much appreciated if it's possible to
+                        It would be much appreciated if it&apos;s possible to
                         reschedule to 6:00 PM, or any other day that week.
                       </p>
                       <p>10.00 pm</p>
@@ -375,9 +375,9 @@ const ComapanyActvities = ({ company }) => {
                     <p>
                       A project review evaluates the success of an initiative
                       and identifies areas for improvement. It can also evaluate
-                      a current project to determine whether it's on the right
-                      track. Or, it can determine the success of a completed
-                      project.{" "}
+                      a current project to determine whether it&apos;s on the
+                      right track. Or, it can determine the success of a
+                      completed project.{" "}
                     </p>
                     <div className="d-inline-flex align-items-center flex-wrap">
                       <div className="note-download me-3">
@@ -600,7 +600,7 @@ const ComapanyActvities = ({ company }) => {
                     <p>
                       Projects play a crucial role in the success of
                       organizations, and their importance cannot be overstated.
-                      Whether it's launching a new product, improving an
+                      Whether it&apos;s launching a new product, improving an
                       existing
                     </p>
                     <div className="notes-editor">
@@ -734,7 +734,7 @@ const ComapanyActvities = ({ company }) => {
                   <p>
                     A project review evaluates the success of an initiative and
                     identifies areas for improvement. It can also evaluate a
-                    current project to determine whether it's on the right
+                    current project to determine whether it&apos;s on the right
                     track. Or, it can determine the success of a completed
                     project.{" "}
                   </p>
@@ -890,7 +890,8 @@ const ComapanyActvities = ({ company }) => {
                   <p>
                     Projects play a crucial role in the success of
                     organizations, and their importance cannot be overstated.
-                    Whether it's launching a new product, improving an existing
+                    Whether it&apos;s launching a new product, improving an
+                    existing
                   </p>
                 </div>
               </div>

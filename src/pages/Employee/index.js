@@ -131,13 +131,13 @@ const EmployeeList = () => {
               height: "10px",
               borderRadius: "50%",
               backgroundColor:
-                text === "Probation" || "Retired"
+                text === "Probation" || text === "Retired"
                   ? "blue"
                   : text === "Active"
                     ? "green"
-                    : text === "Terminated" || "Resigned"
+                    : text === "Terminated" || text === "Resigned"
                       ? "red"
-                      : text === "On Hold" || "Notice Period"
+                      : text === "On Hold" || text === "Notice Period"
                         ? "orange"
                         : "black",
               display: "inline-block",

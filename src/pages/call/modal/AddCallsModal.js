@@ -46,7 +46,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   const [searchProjects, setSearchProjects] = useState("");
   const [searchCallFor, setSearchCallFor] = useState("");
   const { contacts, loading: loadingContact } = useSelector(
-    (state) => state.contacts,
+    (state) => state.contacts
   );
   const { leads, loading: loadingLeads } = useSelector((state) => state.leads);
   const { users, loading: loadingUser } = useSelector((state) => state.users);
@@ -54,7 +54,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   const { callStatuses } = useSelector((state) => state.callStatuses);
   const { callTypes } = useSelector((state) => state.callTypes);
   const { projects, loading: loadingProjects } = useSelector(
-    (state) => state.projects,
+    (state) => state.projects
   );
   const [isScheduled, setIsScheduled] = useState(false);
   // const { relatedTo } = useSelector((state) => state.calls);
@@ -160,7 +160,6 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
       call_purpose_id: null,
       call_status_id: null,
       ongoing_callStatus: isScheduled ? "Scheduled" : "Completed",
-      call_status_id: null,
       call_type_id: null,
       call_start_date: new Date(),
       call_start_time: "",
@@ -270,7 +269,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
       await dispatch(
         callsDetails
           ? updateCalls({ id: callsDetails.id, callData: { ...finalData } })
-          : addCalls(finalData),
+          : addCalls(finalData)
       ).unwrap();
       reset();
       closeButton.click();
@@ -289,12 +288,12 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -302,7 +301,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
 
   useEffect(() => {
     setIsScheduled(
-      callsDetails?.ongoing_callStatus === "Scheduled" ? true : false,
+      callsDetails?.ongoing_callStatus === "Scheduled" ? true : false
     );
   }, [callsDetails]);
 
@@ -379,7 +378,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                             value={
                               options1?.find(
                                 (option) =>
-                                  option.value === watch("call_for") || "",
+                                  option.value === watch("call_for") || ""
                               ) || ""
                             }
                             styles={customStyles}
@@ -435,7 +434,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                                     ? callForContactId
                                     : callFor === "Leads"
                                       ? callForLeadId
-                                      : callForProjectId),
+                                      : callForProjectId)
                               ) || ""
                             }
                             isSearchable
@@ -505,8 +504,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                             } // Send only value
                             value={
                               options3?.find(
-                                (option) =>
-                                  option.value === watch("related_to"),
+                                (option) => option.value === watch("related_to")
                               ) || ""
                             }
                             styles={{
@@ -537,7 +535,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                             value={
                               constactList?.find(
                                 (option) =>
-                                  option.value === watch("related_to_id"),
+                                  option.value === watch("related_to_id")
                               ) || ""
                             }
                             isSearchable
@@ -613,7 +611,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                           } // Send only value
                           value={
                             usersList?.find(
-                              (option) => option.value === watch("assigned_to"),
+                              (option) => option.value === watch("assigned_to")
                             ) || ""
                           }
                           styles={{
@@ -653,7 +651,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         value={
                           callPurposeList?.find(
                             (option) =>
-                              option.value === watch("call_purpose_id"),
+                              option.value === watch("call_purpose_id")
                           ) || ""
                         }
                         styles={{
@@ -696,7 +694,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         } // Send only value
                         value={
                           callTypeList?.find(
-                            (option) => option.value === watch("call_type_id"),
+                            (option) => option.value === watch("call_type_id")
                           ) || ""
                         }
                         styles={{
@@ -740,7 +738,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                           value={
                             callStatusList?.find(
                               (option) =>
-                                option.value === watch("call_status_id"),
+                                option.value === watch("call_status_id")
                             ) || ""
                           }
                           styles={{
@@ -846,7 +844,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         !isScheduled && {
                           required: "Duration is required",
                           valueAsNumber: true,
-                        },
+                        }
                       )}
                     />
                     {errors.duration_minutes && (
@@ -912,7 +910,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                             field.onChange(selectedOption?.value || null)
                           } // Send only value
                           value={reminderTypes?.find(
-                            (option) => option.value === watch("reminder_type"),
+                            (option) => option.value === watch("reminder_type")
                           )}
                           styles={{
                             menu: (provided) => ({

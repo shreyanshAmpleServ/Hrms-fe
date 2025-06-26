@@ -189,9 +189,9 @@ const EmailSettings = () => {
                                   PHPMailer is a third-party PHP library that
                                   provides a simple way to send emails in PHP.
                                   It offers a range of features that make it a
-                                  popular alternative to PHP's built-in mail()
-                                  function, such as support for HTML emails,
-                                  attachments, and SMTP authentication.
+                                  popular alternative to PHP&apos;s built-in
+                                  mail() function, such as support for HTML
+                                  emails, attachments, and SMTP authentication.
                                 </p>
                               </div>
                             </div>
