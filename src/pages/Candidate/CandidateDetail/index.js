@@ -12,6 +12,8 @@ import UpdateBasicInfo from "./UpdateBasicInfo";
 import UpdateProfilePicture from "./UploadProfile";
 import CandidateOfferLetters from "./OfferLetters";
 import CandidateContracts from "./CandidateContracts";
+import CandidateResume from "./CandidateResume";
+import CandidateAppointment from "./CandidateAppointment";
 
 const CandidateDetail = () => {
   const { id } = useParams();
@@ -290,11 +292,17 @@ const CandidateDetail = () => {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-12">
               <CandidateOfferLetters candidateDetail={candidateDetail} />
             </div>
-            <div className="col-md-6">
+            <div className="col-md-12">
               <CandidateContracts candidateDetail={candidateDetail} />
+            </div>
+            <div className="col-md-12">
+              <CandidateResume candidateDetail={candidateDetail} />
+            </div>
+            <div className="col-md-12">
+              <CandidateAppointment candidateDetail={candidateDetail} />
             </div>
           </div>
         </div>

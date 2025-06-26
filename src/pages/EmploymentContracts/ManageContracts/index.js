@@ -9,7 +9,7 @@ import {
   createContract,
   updateContract,
 } from "../../../redux/EmployementContracts";
-const ManageContracts = ({ setContract, contract }) => {
+const ManageContracts = ({ setContract, contract, candidate_id }) => {
   const [searchValue, setSearchValue] = useState("");
   const [documentPath, setDocumentPath] = useState(null);
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ const ManageContracts = ({ setContract, contract }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      candidate_id: "",
+      candidate_id: candidate_id || "",
       contract_start_date: new Date().toISOString(),
       contract_end_date: new Date().toISOString(),
       contract_type: "",
@@ -34,7 +34,7 @@ const ManageContracts = ({ setContract, contract }) => {
   React.useEffect(() => {
     if (contract) {
       reset({
-        candidate_id: contract.candidate_id || "",
+        candidate_id: contract.candidate_id || candidate_id || "",
         contract_start_date:
           contract.contract_start_date || new Date().toISOString(),
         contract_end_date:
@@ -45,7 +45,7 @@ const ManageContracts = ({ setContract, contract }) => {
       });
     } else {
       reset({
-        candidate_id: "",
+        candidate_id: candidate_id || "",
         contract_start_date: new Date().toISOString(),
         contract_end_date: new Date().toISOString(),
         contract_type: "",
@@ -56,8 +56,10 @@ const ManageContracts = ({ setContract, contract }) => {
   }, [contract, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchCandidate({ searchValue }));
-  }, [dispatch, searchValue]);
+    if (!candidate_id) {
+      dispatch(fetchCandidate({ searchValue }));
+    }
+  }, [searchValue, candidate_id]);
 
   const { candidate, loading: candidateLoading } = useSelector(
     (state) => state.candidate || {}
@@ -144,52 +146,54 @@ const ManageContracts = ({ setContract, contract }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="col-form-label">
-                      Candidate
-                      <span className="text-danger">*</span>
-                    </label>
-                    <Controller
-                      name="candidate_id"
-                      control={control}
-                      rules={{ required: "Candidate is required" }}
-                      render={({ field }) => {
-                        const selectedDeal = candidates?.find(
-                          (candidate) => candidate.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={candidates}
-                            classNamePrefix="react-select"
-                            placeholder="Select Candidate"
-                            isLoading={candidateLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
-                    />
-                    {errors.candidate_id && (
-                      <small className="text-danger">
-                        {errors.candidate_id.message}
-                      </small>
-                    )}
+                {!candidate_id && (
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="col-form-label">
+                        Candidate
+                        <span className="text-danger">*</span>
+                      </label>
+                      <Controller
+                        name="candidate_id"
+                        control={control}
+                        rules={{ required: "Candidate is required" }}
+                        render={({ field }) => {
+                          const selectedDeal = candidates?.find(
+                            (candidate) => candidate.value === field.value
+                          );
+                          return (
+                            <Select
+                              {...field}
+                              className="select"
+                              options={candidates}
+                              classNamePrefix="react-select"
+                              placeholder="Select Candidate"
+                              isLoading={candidateLoading}
+                              onInputChange={(inputValue) =>
+                                setSearchValue(inputValue)
+                              }
+                              value={selectedDeal || null}
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption.value)
+                              }
+                              styles={{
+                                menu: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999,
+                                }),
+                              }}
+                            />
+                          );
+                        }}
+                      />
+                      {errors.candidate_id && (
+                        <small className="text-danger">
+                          {errors.candidate_id.message}
+                        </small>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">

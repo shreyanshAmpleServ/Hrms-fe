@@ -119,7 +119,7 @@ const AppointmentLetters = () => {
                       className="dropdown-item"
                       to="#"
                       data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvas_add"
+                      data-bs-target="#offcanvas_add_appointment"
                       onClick={() => setSelectedAppointment(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
@@ -205,7 +205,7 @@ const AppointmentLetters = () => {
                             to="#"
                             className="btn btn-primary"
                             data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvas_add"
+                            data-bs-target="#offcanvas_add_appointment"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
                             Add Appointment Letters

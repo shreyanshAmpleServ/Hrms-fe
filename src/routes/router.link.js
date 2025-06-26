@@ -155,6 +155,7 @@ import CandidateDetail from "../pages/Candidate/CandidateDetail";
 import { all_routes } from "./all_routes";
 import MedicalRecord from "../pages/MedicalRecord";
 import CurrenciesList from "../pages/crm-settings/currency";
+import HRLetterList from "../pages/crm-settings/core-hr/hrLetter";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -238,6 +239,12 @@ export const privateRoutes = [
     element: <Company />,
     route: Route,
     title: "Company",
+  },
+  {
+    path: route.hrLetter,
+    element: <HRLetterList />,
+    route: Route,
+    title: "HR Letter",
   },
   {
     path: route.branch,

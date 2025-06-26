@@ -6,17 +6,17 @@ import { Link } from "react-router-dom";
 import Table from "../../../../components/common/dataTableNew/index";
 import usePermissions from "../../../../components/common/Permissions.js";
 import {
-  deleteContract,
-  fetchContracts,
-} from "../../../../redux/EmployementContracts";
-import DeleteAlert from "../../../EmploymentContracts/DeleteConfirmation";
-import AddEditModal from "../../../EmploymentContracts/ManageContracts";
+  deleteAppointment,
+  fetchAppointments,
+} from "../../../../redux/AppointmentLetters";
+import DeleteAlert from "../../../AppointmentLetters/DeleteConfirmation";
+import AddEditModal from "../../../AppointmentLetters/ManageAppointments";
 
-const CandidateContracts = ({ candidateDetail }) => {
-  const [contract, setContract] = React.useState(null);
+const CandidateAppointment = ({ candidateDetail }) => {
+  const [appointments, setAppointments] = React.useState(null);
   const [mode, setMode] = React.useState("add");
   const { isView, isCreate, isUpdate, isDelete } = usePermissions(
-    "Employment Contracts"
+    "Appointment Letters"
   );
 
   const dispatch = useDispatch();
@@ -24,50 +24,23 @@ const CandidateContracts = ({ candidateDetail }) => {
   const columns = [
     {
       title: "Candidate",
-      dataIndex: "contracted_candidate",
-      render: (text) => text?.full_name || "-",
-      sorter: (a, b) =>
-        a?.contracted_candidate?.full_name?.localeCompare(
-          b?.contracted_candidate?.full_name
-        ),
+      dataIndex: "appointment_candidate",
+      render: (text) => text.full_name || "-",
     },
     {
-      title: "Type",
-      dataIndex: "contract_type",
-      render: (text) =>
-        text
-          ? text
-              .replaceAll("_", " ")
-              .replace(/\b\w/g, (char) => char.toUpperCase())
-          : "-",
-      sorter: (a, b) => a.contract_type.localeCompare(b.contract_type),
+      title: "Designation",
+      dataIndex: "appointment_designation",
+      render: (text) => text.designation_name || "-",
     },
     {
-      title: "Start Date",
-      dataIndex: "contract_start_date",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) =>
-        moment(a.contract_start_date).unix() -
-        moment(b.contract_start_date).unix(),
+      title: "Appointment Date",
+      dataIndex: "issue_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "---"),
     },
     {
-      title: "End Date",
-      dataIndex: "contract_end_date",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : ""),
-      sorter: (a, b) =>
-        moment(a.contract_end_date).unix() - moment(b.contract_end_date).unix(),
-    },
-    {
-      title: "Document",
-      dataIndex: "document_path",
-      render: (text) =>
-        text ? (
-          <a href={text} target="_blank" rel="noopener noreferrer">
-            <i className="ti ti-file-type-pdf" /> View
-          </a>
-        ) : (
-          "-"
-        ),
+      title: "Terms Summary",
+      dataIndex: "terms_summary",
+      render: (text) => text || "---",
     },
     ...(isDelete || isUpdate
       ? [
@@ -89,8 +62,8 @@ const CandidateContracts = ({ candidateDetail }) => {
                       className="dropdown-item"
                       to="#"
                       data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvas_add"
-                      onClick={() => setContract(a)}
+                      data-bs-target="#offcanvas_add_appointment"
+                      onClick={() => setAppointments(a)}
                     >
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
@@ -100,7 +73,7 @@ const CandidateContracts = ({ candidateDetail }) => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => setContract(a)}
+                      onClick={() => setAppointments(a)}
                     >
                       <i className="ti ti-trash text-danger" /> Delete
                     </Link>
@@ -113,16 +86,18 @@ const CandidateContracts = ({ candidateDetail }) => {
       : []),
   ];
 
-  const { contracts, loading } = useSelector((state) => state.contracts);
+  const { appointment, loading } = useSelector((state) => state.appointment);
 
   React.useEffect(() => {
-    dispatch(fetchContracts({ candidate_id: candidateDetail?.id }));
+    if (candidateDetail?.id) {
+      dispatch(fetchAppointments({ candidate_id: candidateDetail?.id }));
+    }
   }, [candidateDetail?.id]);
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (contract) {
-      dispatch(deleteContract(contract.id));
+    if (appointment) {
+      dispatch(deleteAppointment(appointment.id));
       setShowDeleteModal(false);
     }
   };
@@ -131,26 +106,26 @@ const CandidateContracts = ({ candidateDetail }) => {
     <>
       <div className="card">
         <div className="card-header p-4 d-flex justify-content-between align-items-center">
-          <h4 className="card-title">Contracts</h4>
+          <h4 className="card-title">Appointment</h4>
           {isCreate && (
             <Link
-              to=""
+              to="#"
               className="btn btn-primary"
               data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add"
+              data-bs-target="#offcanvas_add_appointment  "
               onClick={() => {
                 setMode("add with candidate");
               }}
             >
               <i className="ti ti-square-rounded-plus me-2" />
-              Add Contract
+              Add Appointment
             </Link>
           )}
         </div>
         <div className="card-body">
           <div className="table-responsive custom-table">
             <Table
-              dataSource={contracts?.data || []}
+              dataSource={appointment?.data || []}
               columns={columns}
               loading={loading}
               isView={isView}
@@ -162,12 +137,12 @@ const CandidateContracts = ({ candidateDetail }) => {
 
       <AddEditModal
         mode={mode}
-        contract={contract}
-        setContract={setContract}
+        appointment={appointments}
+        setAppointment={setAppointments}
         candidate_id={candidateDetail?.id}
       />
       <DeleteAlert
-        label="Contracts"
+        label="Appointment"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         onDelete={deleteData}
@@ -176,4 +151,4 @@ const CandidateContracts = ({ candidateDetail }) => {
   );
 };
 
-export default CandidateContracts;
+export default CandidateAppointment;
