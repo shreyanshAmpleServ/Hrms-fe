@@ -122,7 +122,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
         ? new Date(candidate.date_of_birth).toISOString()?.slice(0, 10)
         : moment().subtract(18, "years").toISOString()?.slice(0, 10),
       nationality: candidate?.nationality || "",
-      applied_position_id: candidate?.applied_position_id?.toString() || "",
+      applied_position_id: candidate?.applied_position_id || "",
       application_source: candidate?.application_source || "",
     });
   }, [candidate, reset]);

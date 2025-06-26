@@ -25,8 +25,11 @@ const InterviewStages = ({ candidateDetail }) => {
   const { interviewStages } = useSelector(
     (state) => state.interviewStages || {}
   );
-  const { interviewStageRemark, loading: interviewStageRemarkLoading } =
-    useSelector((state) => state.interviewStageRemark || {});
+  const {
+    interviewStageRemark,
+    loading: interviewStageRemarkLoading,
+    success,
+  } = useSelector((state) => state.interviewStageRemark || {});
 
   const {
     handleSubmit,
@@ -78,13 +81,13 @@ const InterviewStages = ({ candidateDetail }) => {
 
   useEffect(() => {
     dispatch(fetchEmployee({ search: searchValue }));
-  }, [dispatch, searchValue]);
+  }, [searchValue]);
 
   useEffect(() => {
     if (candidateDetail?.id) {
       dispatch(fetchInterviewStageRemark({ candidate_id: candidateDetail.id }));
     }
-  }, [dispatch, candidateDetail?.id]);
+  }, [candidateDetail?.id]);
 
   useEffect(() => {
     if (interviewStageRemark?.data?.length === 0) {
@@ -93,6 +96,8 @@ const InterviewStages = ({ candidateDetail }) => {
       setCurrent(currentStageIndex + 1);
     }
   }, [currentStageIndex, interviewStageRemark?.data?.length]);
+
+  console.log(current, currentStageIndex);
 
   const handleSubmitRemark = useCallback(
     (data) => {
@@ -109,12 +114,17 @@ const InterviewStages = ({ candidateDetail }) => {
           is_completed: current === stages.length - 1,
         })
       );
+    },
+    [candidateDetail?.id, currentStage, stages.length]
+  );
+
+  useEffect(() => {
+    if (success) {
       setCurrent((prev) => (prev < stages.length - 1 ? prev + 1 : prev));
       setModalVisible(false);
       reset();
-    },
-    [dispatch, candidateDetail?.id, currentStage, stages.length]
-  );
+    }
+  }, [success]);
 
   const handleNext = useCallback(() => {
     setModalVisible(true);
@@ -149,7 +159,7 @@ const InterviewStages = ({ candidateDetail }) => {
           </div>
 
           <div className="d-flex justify-content-between">
-            <div>
+            <div style={{ width: "70%" }}>
               <span className="fw-medium text-dark">Feedback Remarks:</span>
               <p className="text-muted mt-1 mb-0">{stage.remark}</p>
             </div>
@@ -158,6 +168,8 @@ const InterviewStages = ({ candidateDetail }) => {
                 <Avatar
                   src={stage?.interview_stage_employee_id?.profile_picture}
                   className="me-2 bg-primary"
+                  size={28}
+                  style={{ fontSize: "12px" }}
                 >
                   {stage?.interview_stage_employee_id?.full_name
                     ?.charAt(0)
@@ -188,7 +200,9 @@ const InterviewStages = ({ candidateDetail }) => {
 
         <Steps
           progressDot
-          current={current}
+          current={
+            interviewStageRemark?.data?.length === 0 ? -1 : currentStageIndex
+          }
           items={stages}
           status={current >= stages.length - 1 ? "finish" : "process"}
         />
@@ -320,9 +334,12 @@ const InterviewStages = ({ candidateDetail }) => {
                   <div className="row">
                     <div className="col-md-12">
                       <div className="mb-3">
-                        <label className="form-label">Remarks</label>
+                        <label className="form-label">
+                          Remarks<span className="text-danger"> *</span>
+                        </label>
                         <Controller
                           control={control}
+                          rules={{ required: "Remarks is required" }}
                           name="remarks"
                           render={({ field }) => (
                             <textarea
@@ -334,6 +351,11 @@ const InterviewStages = ({ candidateDetail }) => {
                           )}
                         />
                       </div>
+                      {errors.remarks && (
+                        <small className="text-danger">
+                          {errors.remarks.message}
+                        </small>
+                      )}
                     </div>
                   </div>
                 </div>

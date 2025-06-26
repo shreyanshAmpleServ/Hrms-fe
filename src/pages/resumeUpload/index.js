@@ -1,16 +1,11 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
-import Table from "../../components/common/dataTableNew/index";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
+import Table from "../../components/common/dataTableNew/index.js";
 import AddButton from "../../components/datatable/AddButton";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
@@ -18,6 +13,8 @@ import {
   deleteresume_upload,
   fetchresume_upload,
 } from "../../redux/resumeUpload";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const ResumeUpload = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'

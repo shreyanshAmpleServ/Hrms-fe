@@ -16,6 +16,7 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
     "react/jsx-key": "off",
+    "no-unsafe-optional-chaining": "off",
   },
   settings: {
     react: {

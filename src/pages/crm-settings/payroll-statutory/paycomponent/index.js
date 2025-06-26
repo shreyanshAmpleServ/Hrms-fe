@@ -1,5 +1,4 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
@@ -7,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -25,56 +25,182 @@ const Paycomponent = () => {
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Pay Component",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Pay Component");
 
   const dispatch = useDispatch();
 
   const columns = [
     {
-      title: "Name",
+      title: "Component Name",
       dataIndex: "component_name",
       render: (text) => text || "-",
       sorter: (a, b) =>
         (a.component_name || "").localeCompare(b.component_name || ""),
     },
     {
-      title: "Code",
+      title: "Component Code",
       dataIndex: "component_code",
       render: (text) => text || "-",
       sorter: (a, b) =>
         (a.component_code || "").localeCompare(b.component_code || ""),
     },
     {
-      title: "Type",
+      title: "Component Type",
       dataIndex: "component_type",
       render: (text) => text || "-",
       sorter: (a, b) =>
         (a.component_type || "").localeCompare(b.component_type || ""),
     },
+    {
+      title: "Auto Fill",
+      dataIndex: "auto_fill",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) => (a.auto_fill || "").localeCompare(b.auto_fill || ""),
+    },
 
     {
-      title: "Is Taxable",
+      title: "Is Taxable?",
       dataIndex: "is_taxable",
       render: (text) => (text === "Y" ? "Yes" : "No") || "-",
       sorter: (a, b) => (a.is_taxable || "").localeCompare(b.is_taxable || ""),
     },
     {
-      title: "Is Statutory",
+      title: "Is Statutory?",
       dataIndex: "is_statutory",
       render: (text) => (text === "Y" ? "Yes" : "No") || "-",
       sorter: (a, b) =>
         (a.is_statutory || "").localeCompare(b.is_statutory || ""),
     },
     {
-      title: "Status",
+      title: "Is Recurring?",
+      dataIndex: "is_recurring",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.is_recurring || "").localeCompare(b.is_recurring || ""),
+    },
+    {
+      title: "Is Advance?",
+      dataIndex: "is_advance",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) => (a.is_advance || "").localeCompare(b.is_advance || ""),
+    },
+    {
+      title: "Is Grossable?",
+      dataIndex: "is_grossable",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.is_grossable || "").localeCompare(b.is_grossable || ""),
+    },
+    {
+      title: "Is Overtime Related?",
+      dataIndex: "is_overtime_related",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.is_overtime_related || "").localeCompare(
+          b.is_overtime_related || ""
+        ),
+    },
+    {
+      title: "Is Worklife Related?",
+      dataIndex: "is_worklife_related",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.is_worklife_related || "").localeCompare(
+          b.is_worklife_related || ""
+        ),
+    },
+    {
+      title: "Is Unpaid Leave?",
+      dataIndex: "unpaid_leave",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.unpaid_leave || "").localeCompare(b.unpaid_leave || ""),
+    },
+    {
+      title: "Is Contributes to NSSF?",
+      dataIndex: "contributes_to_nssf",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.contributes_to_nssf || "").localeCompare(
+          b.contributes_to_nssf || ""
+        ),
+    },
+    {
+      title: "Is Contributes to PayE?",
+      dataIndex: "contributes_to_paye",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.contributes_to_paye || "").localeCompare(
+          b.contributes_to_paye || ""
+        ),
+    },
+    {
+      title: "GL Account",
+      dataIndex: "gl_account_id",
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.gl_account_id || "").localeCompare(b.gl_account_id || ""),
+    },
+    {
+      title: "Project",
+      dataIndex: "project_id",
+      render: (text) => text || "-",
+      sorter: (a, b) => (a.project_id || "").localeCompare(b.project_id || ""),
+    },
+    {
+      title: "Tax Code",
+      dataIndex: "tax_code_id",
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.tax_code_id || "").localeCompare(b.tax_code_id || ""),
+    },
+    {
+      title: "Payable GL Account",
+      dataIndex: "payable_glaccount_id",
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.payable_glaccount_id || "").localeCompare(
+          b.payable_glaccount_id || ""
+        ),
+    },
+    {
+      title: "Pay or Deduct",
+      dataIndex: "pay_or_deduct",
+      render: (text) => (text === "P" ? "Pay" : "Deduct") || "-",
+      sorter: (a, b) =>
+        (a.pay_or_deduct || "").localeCompare(b.pay_or_deduct || ""),
+    },
+    {
+      title: "Factor",
+      dataIndex: "factor",
+      render: (text) => text || "-",
+      sorter: (a, b) => (a.factor || "").localeCompare(b.factor || ""),
+    },
+    {
+      title: "Execution Order",
+      dataIndex: "execution_order",
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.execution_order || "").localeCompare(b.execution_order || ""),
+    },
+    {
+      title: "Formula Editable",
+      dataIndex: "formula_editable",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.formula_editable || "").localeCompare(b.formula_editable || ""),
+    },
+    {
+      title: "Default Formula",
+      dataIndex: "default_formula",
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.default_formula || "").localeCompare(b.default_formula || ""),
+    },
+
+    {
+      title: "Is Active?",
       dataIndex: "is_active",
       render: (text) => (
         <div>
@@ -89,7 +215,7 @@ const Paycomponent = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     ...(isUpdate || isDelete
       ? [
@@ -164,7 +290,7 @@ const Paycomponent = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -177,11 +303,11 @@ const Paycomponent = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

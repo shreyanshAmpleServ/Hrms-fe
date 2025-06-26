@@ -12,15 +12,15 @@ export const fetchCompany = createAsyncThunk(
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
         endDate: datas?.endDate?.toISOString() || "",
-      }
+      };
       const response = await apiClient.get("/v1/company", { params });
       return response.data; // Returns a list of company
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch company",
+        error.response?.data || "Failed to fetch company"
       );
     }
-  },
+  }
 );
 
 // Add a Company
@@ -32,18 +32,18 @@ export const addCompany = createAsyncThunk(
       return response.data; // Returns the newly added company
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add company",
+        error.response?.data || "Failed to add company"
       );
     }
-  },
+  }
 );
 
 // Update a Company
 export const updateCompany = createAsyncThunk(
   "company/updateCompany",
-  async ({ id, companyData }, thunkAPI) => {
+  async ({ companyData }, thunkAPI) => {
     try {
-      const { id, ...data } = companyData
+      const { id, ...data } = companyData;
       const response = await apiClient.put(`/v1/company/${id}`, { ...data });
       return response.data; // Returns the updated company
     } catch (error) {
@@ -54,10 +54,10 @@ export const updateCompany = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update company",
+        error.response?.data || "Failed to update company"
       );
     }
-  },
+  }
 );
 
 // Delete a Company
@@ -72,10 +72,10 @@ export const deleteCompany = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete company",
+        error.response?.data || "Failed to delete company"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single Company by ID
@@ -87,10 +87,10 @@ export const fetchCompanyById = createAsyncThunk(
       return response.data; // Returns the company details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch company",
+        error.response?.data || "Failed to fetch company"
       );
     }
-  },
+  }
 );
 
 const companySlice = createSlice({
@@ -128,7 +128,10 @@ const companySlice = createSlice({
       })
       .addCase(addCompany.fulfilled, (state, action) => {
         state.loading = false;
-        state.company = { ...state.company, data: [action.payload.data, ...state.company.data] };
+        state.company = {
+          ...state.company,
+          data: [action.payload.data, ...state.company.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addCompany.rejected, (state, action) => {
@@ -142,12 +145,15 @@ const companySlice = createSlice({
       .addCase(updateCompany.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.company.data?.findIndex(
-          (company) => company.id === action.payload.data.id,
+          (company) => company.id === action.payload.data.id
         );
         if (index !== -1) {
           state.company.data[index] = action.payload.data;
         } else {
-          state.company = { ...state.company, data: [action.payload.data, ...state.company.data] };
+          state.company = {
+            ...state.company,
+            data: [action.payload.data, ...state.company.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -162,9 +168,9 @@ const companySlice = createSlice({
       .addCase(deleteCompany.fulfilled, (state, action) => {
         state.loading = false;
         const filteredData = state.company.data.filter(
-          (company) => company.id !== action.payload.data.id,
+          (company) => company.id !== action.payload.data.id
         );
-        state.company = { ...state.company, data: filteredData }
+        state.company = { ...state.company, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteCompany.rejected, (state, action) => {

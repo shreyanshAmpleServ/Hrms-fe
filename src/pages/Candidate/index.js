@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import Table from "../../components/common/dataTableNew/index.js";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -11,54 +11,12 @@ import { fetchCandidate } from "../../redux/Candidate/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageCandidate from "./ManageCandidate/index.js";
 import usePermissions from "../../components/common/Permissions.js/index.js";
-// [
-//   {
-//     title: "Application Review",
-//     status: "completed",
-//     date: "2024-06-20",
-//     rating: 4,
-//     description:
-//       "Candidate meets all basic eligibility criteria. Resume is well-structured and relevant to the role.",
-//   },
-//   {
-//     title: "Phone Screening",
-//     status: "completed",
-//     date: "2024-06-22",
-//     rating: 4.5,
-//     description:
-//       "Candidate showed clear communication, explained past projects confidently, and expressed interest in the role.",
-//   },
-//   {
-//     title: "Technical Interview",
-//     status: "current",
-//     date: "",
-//     rating: 0,
-//     description:
-//       "Scheduled with the frontend team. Candidate to be assessed on React, JS, and problem-solving ability.",
-//   },
-//   {
-//     title: "Final Interview",
-//     status: "pending",
-//     date: "",
-//     rating: 0,
-//     description:
-//       "Managerial evaluation of team fit, critical thinking, and leadership potential.",
-//   },
-//   {
-//     title: "Offer Discussion",
-//     status: "pending",
-//     date: "",
-//     rating: 0,
-//     description:
-//       "Discussion on salary expectations, joining date, and offer conditions.",
-//   },
-// ];
 
 const Candidate = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [paginationData, setPaginationData] = useState({});
+  const [paginationData, setPaginationData] = useState();
   const [selectedDateRange, setSelectedDateRange] = useState({
     startDate: moment().subtract(30, "days"),
     endDate: moment(),
@@ -360,7 +318,6 @@ const Candidate = () => {
                       <Table
                         columns={columns}
                         dataSource={data?.data}
-                        scroll={{ x: "max-content" }}
                         loading={loading}
                         paginationData={paginationData}
                         onPageChange={handlePageChange}

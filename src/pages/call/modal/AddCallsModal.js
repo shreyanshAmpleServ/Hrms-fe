@@ -331,7 +331,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
         style={{ marginBottom: "0px", marginRight: "13px" }}
       >
         {" "}
-        <label for="filter" class="switch" aria-label="Toggle Filter">
+        <label htmlFor="filter" className="switch" aria-label="Toggle Filter">
           <input
             type="checkbox"
             id="filter"

@@ -22,7 +22,7 @@ const Modules = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Modules",
+    (i) => i?.module_name === "Modules"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role") === "admin";
   const isCreate = isAdmin ? true : allPermissions?.create;
@@ -115,7 +115,7 @@ const Modules = () => {
   ];
 
   const { modules, loading, error, success } = useSelector(
-    (state) => state.modules,
+    (state) => state.modules
   );
 
   React.useEffect(() => {
@@ -138,7 +138,7 @@ const Modules = () => {
       pageSize,
     }));
     dispatch(
-      fetchModules({ search: searchText, page: currentPage, size: pageSize }),
+      fetchModules({ search: searchText, page: currentPage, size: pageSize })
     );
   };
 
@@ -151,11 +151,11 @@ const Modules = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
@@ -233,7 +233,6 @@ const Modules = () => {
                     dataSource={filteredData}
                     columns={columns}
                     loading={loading}
-                    // isView={isView}
                     paginationData={paginationData}
                     onPageChange={handlePageChange}
                   />

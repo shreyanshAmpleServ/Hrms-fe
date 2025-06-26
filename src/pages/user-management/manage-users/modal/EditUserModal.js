@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { fetchEmployee } from "../../../../redux/Employee";
 import { updateUser } from "../../../../redux/manage-user";
 import { fetchRoles } from "../../../../redux/roles";
-import { fetchEmployee } from "../../../../redux/Employee";
 
 const EditUserModal = ({ user }) => {
   const dispatch = useDispatch();
   const [isChangePassword, setIsChangePassword] = useState("N");
-  const [useEmployeeData, setUseEmployeeData] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
   const { roles, loading: rolesLoading } = useSelector((state) => state.roles);
