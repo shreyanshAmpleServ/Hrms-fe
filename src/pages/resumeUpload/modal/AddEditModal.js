@@ -5,7 +5,7 @@ import {
   addresume_upload,
   updateresume_upload,
 } from "../../../redux/resumeUpload";
-import { fetchEmployee } from "../../../redux/Employee";
+import { fetchCandidate } from "../../../redux/Candidate";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 import React, { useEffect, useMemo } from "react";
@@ -27,18 +27,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee());
+    dispatch(fetchCandidate());
   }, [dispatch]);
 
-  const employee = useSelector((state) => state.employee.employee);
+  const candidate = useSelector((state) => state.candidate.candidate);
 
-  const EmployeeList = useMemo(
+  const CandidateList = useMemo(
     () =>
-      employee?.data?.map((item) => ({
+      candidate?.data?.data?.map((item) => ({
         value: item.id,
-        label: item.full_name, // or item.full_name or item.employee_name, depending on your API
-      })) || [],
-    [employee]
+        label: item.full_name,
+      })) || []
   );
 
   // Prefill form in edit mode
@@ -46,14 +45,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (mode === "edit" && initialData) {
       reset({
         // resume_upload_name: initialData.resume_upload_name || "",
-        employee_id: initialData.employee_id || "",
+        candidate_id: initialData.candidate_id || "",
         resume_path: initialData.resume_path || "",
         uploaded_on: initialData.uploaded_on || new Date().toISOString(),
       });
     } else {
       reset({
         // resume_upload_name: "",
-        employee_id: "",
+        candidate_id: "",
         resume_path: "",
         uploaded_on: new Date().toISOString(), // today
       });
@@ -71,7 +70,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     const formData = new FormData();
     // If you use resume_upload_name, make sure to add it to the form
     // formData.append("resume_upload_name", data.resume_upload_name);
-    formData.append("employee_id", data.employee_id || "");
+    formData.append("candidate_id", data.candidate_id || "");
     formData.append(
       "uploaded_on",
       data.uploaded_on || new Date().toISOString()
@@ -119,30 +118,30 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Employee ID */}
               <div className="md-3">
                 <label className="col-form-label">
-                  Employee <span className="text-danger">*</span>
+                  Candidate <span className="text-danger">*</span>
                 </label>
                 <Controller
-                  name="employee_id"
+                  name="candidate_id"
                   control={control}
-                  rules={{ required: "Employee is required" }}
+                  rules={{ required: "Candidate is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={EmployeeList}
-                      placeholder="Choose Employee"
-                      isDisabled={!EmployeeList.length}
+                      options={CandidateList}
+                      placeholder="Choose Candidate"
+                      isDisabled={!CandidateList.length}
                       classNamePrefix="react-select"
                       className="select2"
                       onChange={(option) => field.onChange(option?.value || "")}
-                      value={EmployeeList.find(
-                        (option) => option.value === watch("employee_id")
+                      value={CandidateList.find(
+                        (option) => option.value === watch("candidate_id")
                       )}
                     />
                   )}
                 />
-                {errors.employee_id && (
+                {errors.candidate_id && (
                   <small className="text-danger">
-                    {errors.employee_id.message}
+                    {errors.candidate_id.message}
                   </small>
                 )}
               </div>

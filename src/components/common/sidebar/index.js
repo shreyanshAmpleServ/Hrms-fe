@@ -8,7 +8,6 @@ import { SidebarData } from "../data/json/sidebarData";
 
 const Sidebar = () => {
   const Location = useLocation();
-  const expandMenu = useSelector((state) => state.common?.expandMenu);
   const dispatch = useDispatch();
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const Permissions = localStorage.getItem("permissions")
@@ -17,7 +16,7 @@ const Sidebar = () => {
 
   const [subOpen, setSubopen] = useState("");
   const [subsidebar, setSubsidebar] = useState("");
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const [openMain, setOpenMain] = useState("HRMS");
 
@@ -254,7 +253,7 @@ const Sidebar = () => {
                       }}
                     >
                       {filterSubmenuItems(mainLabel.submenuItems, search)?.map(
-                        (title, i) => {
+                        (title) => {
                           let link_array = [];
                           if ("submenuItems" in title) {
                             title.submenuItems?.forEach((link) => {

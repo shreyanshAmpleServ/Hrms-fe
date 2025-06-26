@@ -137,7 +137,7 @@ const currenciesSlice = createSlice({
         state.loading = false;
         state.currencies = action.payload.data;
       })
-      .addCase(fetchCurrencies.rejected, (state, action) => {
+      .addCase(fetchCurrencies.rejected, (state, _action) => {
         state.loading = false;
         // state.error = action.payload.message;
       })

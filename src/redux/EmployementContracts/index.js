@@ -36,7 +36,7 @@ export const createContract = createAsyncThunk(
   async (contractData, thunkAPI) => {
     try {
       const formData = new FormData();
-      formData.append("employee_id", contractData.employee_id);
+      formData.append("candidate_id", contractData.candidate_id);
       formData.append(
         "contract_start_date",
         new Date(contractData.contract_start_date).toISOString()
@@ -76,7 +76,7 @@ export const updateContract = createAsyncThunk(
   async ({ id, contractData }, thunkAPI) => {
     try {
       const formData = new FormData();
-      formData.append("employee_id", contractData.employee_id);
+      formData.append("candidate_id", contractData.candidate_id);
       formData.append("contract_start_date", contractData.contract_start_date);
       formData.append("contract_end_date", contractData.contract_end_date);
       formData.append("contract_type", contractData.contract_type);

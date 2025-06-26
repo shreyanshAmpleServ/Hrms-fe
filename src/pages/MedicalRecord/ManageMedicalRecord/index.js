@@ -37,38 +37,6 @@ const ManageMedicalRecord = ({ setMedicalRecord, medicalRecord }) => {
 
   const { loading } = useSelector((state) => state.medicalRecord || {});
 
-  const statusOptions = [
-    { value: "open", label: "Open" },
-    { value: "in_progress", label: "In Progress" },
-    { value: "resolved", label: "Resolved" },
-    { value: "closed", label: "Closed" },
-    { value: "pending", label: "Pending" },
-  ];
-
-  const priorityOptions = [
-    { value: "low", label: "Low" },
-    { value: "medium", label: "Medium" },
-    { value: "high", label: "High" },
-    { value: "urgent", label: "Urgent" },
-    { value: "critical", label: "Critical" },
-  ];
-
-  const recordTypeOptions = [
-    { value: "annual_health", label: "Annual Health" },
-    { value: "medical_checkup", label: "Medical Checkup" },
-    { value: "occupational_health", label: "Occupational Health" },
-    { value: "vaccination", label: "Vaccination" },
-    { value: "medical_leave_certificate", label: "Medical Leave Certificate" },
-  ];
-
-  const documentPathOptions = [
-    { value: "annual_health", label: "Annual Health" },
-    { value: "medical_checkup", label: "Medical Checkup" },
-    { value: "occupational_health", label: "Occupational Health" },
-    { value: "vaccination", label: "Vaccination" },
-    { value: "medical_leave_certificate", label: "Medical Leave Certificate" },
-  ];
-
   React.useEffect(() => {
     reset({
       employee_id: medicalRecord?.medical_employee_id?.id || "",
