@@ -261,6 +261,10 @@ const store = configureStore({
     hrLetters: hrLettersReducer,
     taxSlab: taxSlabReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export default store;

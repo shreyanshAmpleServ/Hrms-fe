@@ -122,7 +122,9 @@ export const fetchCandidateById = createAsyncThunk(
 const candidateSlice = createSlice({
   name: "candidate",
   initialState: {
-    candidate: {},
+    candidate: {
+      data: [],
+    },
     candidateDetail: null,
     loading: false,
     error: null,
@@ -178,7 +180,7 @@ const candidateSlice = createSlice({
             ...state.candidate,
             data: [action.payload.data],
           };
-        } else {
+        } else if (Array.isArray(state.candidate.data)) {
           const index = state.candidate.data.findIndex(
             (data) => data.id === action.payload.data.id
           );

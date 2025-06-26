@@ -51,7 +51,7 @@ const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
 
   React.useEffect(() => {
     if (!candidate_id) {
-      dispatch(fetchCandidate({ searchValue }));
+      dispatch(fetchCandidate({ search: searchValue }));
     }
   }, [searchValue, candidate_id]);
 

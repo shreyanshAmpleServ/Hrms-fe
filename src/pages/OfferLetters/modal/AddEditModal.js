@@ -16,7 +16,6 @@ const AddEditModal = ({
   initialData = null,
   candidate_id,
 }) => {
-  const { loading } = useSelector((state) => state.offer_letter);
   const dispatch = useDispatch();
 
   const {
@@ -30,9 +29,9 @@ const AddEditModal = ({
 
   useEffect(() => {
     if (!candidate_id) {
-      dispatch(fetchCandidate());
+      dispatch(fetchCandidate({ search: "" }));
     }
-  }, [dispatch, candidate_id]);
+  }, [candidate_id]);
 
   const { candidate, loading: candidateLoading } = useSelector(
     (state) => state.candidate || {}
