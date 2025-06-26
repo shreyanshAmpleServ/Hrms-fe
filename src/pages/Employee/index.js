@@ -1,4 +1,3 @@
-import { Table } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -12,6 +11,7 @@ import { deleteEmployee, fetchEmployee } from "../../redux/Employee/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import EmployeeGrid from "./gridEmployee.js";
 import ManageEmpModal from "./modal/manageEmpModal.js";
+import Datatable from "../../components/common/dataTableNew/index.js";
 
 const EmployeeList = () => {
   const [view, setView] = useState("list");
@@ -420,7 +420,7 @@ const EmployeeList = () => {
                   {isView ? (
                     <div className="table-responsive custom-table">
                       {view === "list" ? (
-                        <Table
+                        <Datatable
                           columns={columns}
                           dataSource={data}
                           loading={loading}
