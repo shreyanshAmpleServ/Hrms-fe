@@ -29,6 +29,40 @@ const Datatable = ({
           className={`table datanew dataTable no-footer  ${className}`}
           columns={columns}
           dataSource={dataSource}
+          // components={{
+          //   header: {
+          //     cell: ({ children }) => (
+          //       <th
+          //         style={{
+          //           overflowY: "auto",
+          //           padding: "8px 16px",
+          //           backgroundColor: "#F1F1FF",
+          //           fontWeight: "bold",
+          //           textAlign: "left",
+          //         }}
+          //       >
+          //         {children}
+          //       </th>
+          //     ),
+          //   },
+          //   body: {
+          //     cell: ({ children }) => (
+          //       <td
+          //         style={{
+          //           overflowY: "auto",
+          //           padding: "5px 16px",
+          //           textOverflow: "ellipsis",
+          //           whiteSpace: "nowrap",
+          //           overflow: "hidden",
+          //           maxWidth: "200px",
+          //         }}
+          //         title={children}
+          //       >
+          //         {children}
+          //       </td>
+          //     ),
+          //   },
+          // }}
           cellPaddingInlineSM
           pagination={
             paginationData?.totalCount > 0
@@ -42,7 +76,7 @@ const Datatable = ({
               : false
           }
           bordered={border || false}
-          style={style}
+          style={{ ...style }}
         />
       ) : (
         <UnauthorizedImage />

@@ -1,5 +1,5 @@
-import { CameraFilled, EditFilled } from "@ant-design/icons";
-import { Avatar, Button, Skeleton, Tooltip, Upload } from "antd";
+import { CameraFilled } from "@ant-design/icons";
+import { Avatar, Skeleton, Upload } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,9 +7,11 @@ import { Link, useParams } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import { fetchCandidateById, updateCandidate } from "../../../redux/Candidate";
 import { all_routes } from "../../../routes/all_routes";
+import InterviewStages from "./InterviewStages";
 import UpdateBasicInfo from "./UpdateBasicInfo";
 import UpdateProfilePicture from "./UploadProfile";
-import InterviewStages from "./InterviewStages";
+import CandidateOfferLetters from "./OfferLetters";
+import CandidateContracts from "./CandidateContracts";
 
 const CandidateDetail = () => {
   const { id } = useParams();
@@ -285,6 +287,14 @@ const CandidateDetail = () => {
                 </div>
               </div>
               <InterviewStages candidateDetail={candidateDetail} />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6">
+              <CandidateOfferLetters candidateDetail={candidateDetail} />
+            </div>
+            <div className="col-md-6">
+              <CandidateContracts candidateDetail={candidateDetail} />
             </div>
           </div>
         </div>

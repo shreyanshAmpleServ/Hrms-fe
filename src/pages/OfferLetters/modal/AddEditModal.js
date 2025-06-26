@@ -23,9 +23,9 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  useEffect(() => {
-    dispatch(fetchCandidate());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchCandidate());
+  // }, [dispatch]);
 
   const { candidate, loading: candidateLoading } = useSelector(
     (state) => state.candidate || {}
