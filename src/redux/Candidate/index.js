@@ -172,17 +172,29 @@ const candidateSlice = createSlice({
       })
       .addCase(updateCandidate.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.candidate.data?.findIndex(
-          (item) => item.id === action.payload.data.id
-        );
-        if (index !== -1) {
-          state.candidate.data[index] = action.payload.data;
-        } else {
+
+        if (!state.candidate.data) {
           state.candidate = {
             ...state.candidate,
-            data: [...(state.candidate.data || []), action.payload.data],
+            data: [action.payload.data],
           };
+        } else {
+          const index = state.candidate.data.findIndex(
+            (data) => data.id === action.payload.data.id
+          );
+
+          if (index !== -1 && action.payload.data) {
+            state.candidate.data[index] = action.payload.data;
+            state.candidateDetail = action.payload.data;
+          } else if (action.payload.data) {
+            state.candidateDetail = action.payload.data;
+            state.candidate = {
+              ...state.candidate,
+              data: [...state.candidate.data, action.payload.data],
+            };
+          }
         }
+
         state.success = action.payload.message;
       })
       .addCase(updateCandidate.rejected, (state, action) => {

@@ -48,8 +48,13 @@ const CandidateDetail = () => {
   const handleProfilePictureUpload = async () => {
     const formData = new FormData();
     formData.append("profile_pic", image);
-    formData.append("id", id);
-    dispatch(updateCandidate(formData));
+    Object.keys(candidateDetail).forEach((key) => {
+      if (key !== "profile_pic" && candidateDetail[key]) {
+        formData.append(key, candidateDetail[key]);
+      }
+    });
+
+    dispatch(updateCandidate({ id, candidateData: formData }));
     const closeModal = document.getElementById(
       "close_btn_update_profile_picture_modal"
     );
