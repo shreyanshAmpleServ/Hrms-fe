@@ -67,7 +67,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
   }, [dispatch, searchValue]);
 
   const { contacts, loading: loadingContact } = useSelector(
-    (state) => state.contacts,
+    (state) => state.contacts
   );
 
   const contactlist = contacts?.data?.map((contact) => ({
@@ -112,7 +112,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
   };
   React.useEffect(() => {
     const offcanvasElement = document.getElementById(
-      "offcanvas_add_edit_tax_setup",
+      "offcanvas_add_edit_tax_setup"
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -120,12 +120,12 @@ const ManageTaxModal = ({ tax, setTax }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -166,7 +166,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                     required: "Name is required",
                   })}
                 />
-                {errors.full_name && (
+                {errors.name && (
                   <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>

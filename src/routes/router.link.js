@@ -155,6 +155,7 @@ import CandidateDetail from "../pages/Candidate/CandidateDetail";
 import { all_routes } from "./all_routes";
 import MedicalRecord from "../pages/MedicalRecord";
 import CurrenciesList from "../pages/crm-settings/currency";
+import TaxSlab from "../pages/crm-settings/taxSlab";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -317,6 +318,12 @@ export const privateRoutes = [
     element: <Orders />,
     route: Route,
     title: "Orders",
+  },
+  {
+    path: route.taxSlab,
+    element: <TaxSlab />,
+    route: Route,
+    title: "Tax Slab",
   },
   {
     path: route.salesInvoice,

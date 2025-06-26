@@ -126,6 +126,7 @@ import medicalRecordReducer from "./MedicalRecord";
 import applicationSourceReducer from "./ApplicationSource";
 import interviewStagesReducer from "./InterviewStages";
 import interviewStageRemarkReducer from "./InterviewStageRemark";
+import taxSlabReducer from "./taxSlab";
 
 const store = configureStore({
   reducer: {
@@ -256,6 +257,7 @@ const store = configureStore({
     applicationSource: applicationSourceReducer,
     interviewStages: interviewStagesReducer,
     interviewStageRemark: interviewStageRemarkReducer,
+    taxSlab: taxSlabReducer,
   },
 });
 
