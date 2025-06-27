@@ -94,7 +94,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
               <div className="mb-3">
                 <label className="col-form-label">
-                  Template Path <span className="text-danger">*</span>
+                  Attachment<span className="text-danger">*</span>
                 </label>
                 <input
                   type="file"
