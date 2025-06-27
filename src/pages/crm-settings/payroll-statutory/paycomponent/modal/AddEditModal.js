@@ -9,6 +9,7 @@ import {
 } from "../../../../../redux/pay-component";
 import { fetchProjects } from "../../../../../redux/projects";
 import { fetchTaxSlab } from "../../../../../redux/taxSlab";
+import { fetchCostCenter } from "../../../../../redux/costCenter";
 
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.payComponent);
@@ -16,10 +17,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { taxSlab } = useSelector((state) => state.taxSlab);
 
   const { projects } = useSelector((state) => state.projects);
+  const { costCenter } = useSelector((state) => state.costCenter);
 
   useEffect(() => {
     dispatch(fetchTaxSlab());
     dispatch(fetchProjects());
+    dispatch(fetchCostCenter());
   }, []);
 
   const {
@@ -55,6 +58,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     label: item?.rule_type,
   }));
 
+  const costCenterOptions = costCenter?.data?.map((item) => ({
+    value: item?.id,
+    label: item?.name,
+  }));
+
   useEffect(() => {
     reset({
       auto_fill: initialData?.auto_fill || "N",
@@ -62,12 +70,17 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       component_code: initialData?.component_code || "",
       component_name: initialData?.component_name || "",
       component_type: initialData?.component_type || "",
+      cost_center1_id: initialData?.cost_center1_id || "",
+      cost_center2_id: initialData?.cost_center2_id || "",
+      cost_center3_id: initialData?.cost_center3_id || "",
+      cost_center4_id: initialData?.cost_center4_id || "",
+      cost_center5_id: initialData?.cost_center5_id || "",
       contributes_to_nssf: initialData?.contributes_to_nssf || "",
       contributes_to_paye: initialData?.contributes_to_paye || "",
       default_formula: initialData?.default_formula || "",
       execution_order: initialData?.execution_order || "",
       factor: initialData?.factor || "",
-      formula_editable: initialData?.formula_editable || "",
+      formula_editable: initialData?.formula_editable || "N",
       gl_account_id: initialData?.gl_account_id || "",
       is_advance: initialData?.is_advance || "N",
       is_grossable: initialData?.is_grossable || "N",
@@ -362,9 +375,130 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             </div>
             <div className="col-md-6">
               <div className="mb-3">
+                <label className="col-form-label">Cost Center 1</label>
+                <Controller
+                  name="cost_center1_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={costCenterOptions}
+                      placeholder="Select Cost Center"
+                      value={
+                        costCenterOptions?.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Cost Center 2</label>
+                <Controller
+                  name="cost_center2_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={costCenterOptions}
+                      placeholder="Select Cost Center"
+                      value={
+                        costCenterOptions?.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Cost Center 3</label>
+                <Controller
+                  name="cost_center3_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={costCenterOptions}
+                      placeholder="Select Cost Center"
+                      value={
+                        costCenterOptions?.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Cost Center 4</label>
+                <Controller
+                  name="cost_center4_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={costCenterOptions}
+                      placeholder="Select Cost Center"
+                      value={
+                        costCenterOptions?.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Cost Center 5</label>
+                <Controller
+                  name="cost_center5_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={costCenterOptions}
+                      placeholder="Select Cost Center"
+                      value={
+                        costCenterOptions?.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="mb-3">
                 <label className="col-form-label">Default Formula</label>
-                <input
-                  type="text"
+                <textarea
+                  rows={3}
                   className="form-control"
                   placeholder="Enter Default Formula"
                   {...register("default_formula")}
@@ -580,7 +714,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               <div className="mb-3 form-check form-switch">
                 <label className="col-form-label">Formula Editable</label>
                 <Controller
-                  name="formula_editable  "
+                  name="formula_editable"
                   control={control}
                   render={({ field }) => (
                     <input

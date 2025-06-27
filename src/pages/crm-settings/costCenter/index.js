@@ -11,15 +11,10 @@ import moment from "moment";
 
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-// import { clearMessages, fetchManufacturer } from "../../../redux/manufacturer";
-import {
-  clearMessages,
-  deleteTaxSetup,
-  fetchTaxSetup,
-} from "../../../redux/taxSetUp";
-import ManageTaxModal from "./modal/ManageTaxModal";
 import { Helmet } from "react-helmet-async";
 import { deleteCostCenter, fetchCostCenter } from "../../../redux/costCenter";
+import { clearMessages } from "../../../redux/taxSetUp";
+import ManageTaxModal from "./modal/ManageTaxModal";
 
 const CostCenter = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
