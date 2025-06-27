@@ -124,10 +124,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           {mode === "add" ? "Add Pay Component" : "Edit Pay Component"}
         </h5>
         <button
-          className="btn-close custom-btn-close border p-1 me-0 text-dark"
+          type="button"
+          className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
-          id="Close_pay_component_modal"
+          onClick={() => {
+            setSelected(null);
+            reset();
+          }}
         >
           <i className="ti ti-x" />
         </button>
@@ -195,6 +199,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={componentTypeOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Component Type"
                       value={
                         componentTypeOptions.find(
@@ -225,6 +230,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={payOrDeductOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Pay or Deduct"
                       value={
                         payOrDeductOptions.find(
@@ -289,6 +295,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={taxSlabOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Tax Code"
                       value={
                         taxSlabOptions?.find(
@@ -313,6 +320,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={projectOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Project"
                       value={
                         projectOptions?.find(
@@ -383,6 +391,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={costCenterOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Cost Center"
                       value={
                         costCenterOptions?.find(
@@ -407,6 +416,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={costCenterOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Cost Center"
                       value={
                         costCenterOptions?.find(
@@ -432,6 +442,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={costCenterOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Cost Center"
                       value={
                         costCenterOptions?.find(
@@ -456,6 +467,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={costCenterOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Cost Center"
                       value={
                         costCenterOptions?.find(
@@ -480,6 +492,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Select
                       {...field}
                       options={costCenterOptions}
+                      classNamePrefix="react-select"
                       placeholder="Select Cost Center"
                       value={
                         costCenterOptions?.find(

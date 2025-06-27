@@ -31,21 +31,21 @@ const Paycomponent = () => {
 
   const columns = [
     {
-      title: "Component Name",
+      title: "Name",
       dataIndex: "component_name",
       render: (text) => text || "-",
       sorter: (a, b) =>
         (a.component_name || "").localeCompare(b.component_name || ""),
     },
     {
-      title: "Component Code",
+      title: "Code",
       dataIndex: "component_code",
       render: (text) => text || "-",
       sorter: (a, b) =>
         (a.component_code || "").localeCompare(b.component_code || ""),
     },
     {
-      title: "Component Type",
+      title: "Type",
       dataIndex: "component_type",
       render: (text) => text || "-",
       sorter: (a, b) =>
@@ -196,6 +196,52 @@ const Paycomponent = () => {
       render: (text) => text || "-",
       sorter: (a, b) =>
         (a.default_formula || "").localeCompare(b.default_formula || ""),
+    },
+
+    {
+      title: "Cost Center 1",
+      dataIndex: "pay_component_cost_center1",
+      render: (text) => text?.name || "-",
+      sorter: (a, b) =>
+        (a.pay_component_cost_center1?.name || "").localeCompare(
+          b.pay_component_cost_center1?.name || ""
+        ),
+    },
+    {
+      title: "Cost Center 2",
+      dataIndex: "pay_component_cost_center2",
+      render: (text) => text?.name || "-",
+      sorter: (a, b) =>
+        (a.pay_component_cost_center2?.name || "").localeCompare(
+          b.pay_component_cost_center2?.name || ""
+        ),
+    },
+    {
+      title: "Cost Center 3",
+      dataIndex: "pay_component_cost_center3",
+      render: (text) => text?.name || "-",
+      sorter: (a, b) =>
+        (a.pay_component_cost_center3?.name || "").localeCompare(
+          b.pay_component_cost_center3?.name || ""
+        ),
+    },
+    {
+      title: "Cost Center 4",
+      dataIndex: "pay_component_cost_center4",
+      render: (text) => text?.name || "-",
+      sorter: (a, b) =>
+        (a.pay_component_cost_center4?.name || "").localeCompare(
+          b.pay_component_cost_center4?.name || ""
+        ),
+    },
+    {
+      title: "Cost Center 5",
+      dataIndex: "pay_component_cost_center5",
+      render: (text) => text?.name || "-",
+      sorter: (a, b) =>
+        (a.pay_component_cost_center5?.name || "").localeCompare(
+          b.pay_component_cost_center5?.name || ""
+        ),
     },
 
     {

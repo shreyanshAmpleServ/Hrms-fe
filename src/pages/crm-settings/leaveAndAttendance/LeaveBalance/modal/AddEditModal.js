@@ -217,20 +217,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       render: (_, record) => (
         <input
           type="number"
+          disabled
           style={{ height: "32px" }}
           className="form-control form-control-sm"
           value={record.balance}
-          min={0}
-          max={record.no_of_leaves}
-          onChange={(e) => {
-            if (e.target.value <= record.no_of_leaves) {
-              handleChangeLeaveBalance(
-                record.leave_type_id,
-                "balance",
-                e.target.value
-              );
-            }
-          }}
         />
       ),
       width: "20%",
