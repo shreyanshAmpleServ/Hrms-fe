@@ -18,10 +18,10 @@ import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
 const Paycomponent = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
@@ -356,19 +356,23 @@ const Paycomponent = () => {
             </div>
             <div className="card ">
               <div className="card-header">
-                <div className="row align-items-center">
+                <div className="row align-items-center justify-content-between">
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
                     label="Search Pay Component..."
                   />
                   {isCreate && (
-                    <div className="col-sm-8">
-                      <AddButton
-                        label="Add Pay Component"
-                        id="add_edit_pay_component_modal"
-                        setMode={() => setMode("add")}
-                      />
+                    <div className="col-sm-4 d-flex justify-content-end">
+                      <Link
+                        to="#"
+                        className="btn btn-primary"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvas_add"
+                      >
+                        <i className="ti ti-square-rounded-plus me-2" /> Add Pay
+                        Component
+                      </Link>
                     </div>
                   )}
                 </div>

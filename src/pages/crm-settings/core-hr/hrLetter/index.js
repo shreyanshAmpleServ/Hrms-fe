@@ -1,57 +1,103 @@
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-import moment from "moment";
-import { Helmet } from "react-helmet-async";
-import AddButton from "../../../../components/datatable/AddButton";
+import usePermissions from "../../../../components/common/Permissions.js";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deleteHRLetter,
-  fetchHRLetters,
-} from "../../../../redux/HRLetters";
-import usePermissions from "../../../../components/common/Permissions.js";
+import { deleteHRLetter, fetchHRLetters } from "../../../../redux/HRLetters";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
 
 const HRLetterList = () => {
   const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending");
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
+  const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
-  const { isView, isCreate, isUpdate, isDelete } = usePermissions("HR Letter");
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("HR Letters");
 
   const dispatch = useDispatch();
 
   const columns = [
     {
-      title: "HR Letter Name",
-      dataIndex: "hr_letter_name",
-      render: (text, record) => <Link to={`#`}>{record.hr_letter_name}</Link>,
-      sorter: (a, b) => a.hr_letter_name.localeCompare(b.hr_letter_name),
+      title: "Employee Name",
+      dataIndex: "hrms_d_employee",
+      render: (text) => text?.full_name || "-",
     },
     {
-      title: "Company Name",
-      dataIndex: "hr_letter_company",
-      render: (text) => text.company_name,
+      title: "Letter Type",
+      dataIndex: "hr_letter_letter_type",
+      render: (text) => text?.letter_name || "-",
     },
     {
-      title: "Company Code",
-      dataIndex: "hr_letter_company",
-      render: (text) => text.company_code,
+      title: "Letter Subject",
+      dataIndex: "letter_ subject",
+      render: (text, record) => (
+        <Link to={`#`}>{record?.letter_subject || "-"}</Link>
+      ),
+      sorter: (a, b) => a?.letter_subject?.localeCompare(b?.letter_subject),
     },
     {
-      title: "Location",
-      dataIndex: "location",
-      render: (text, record) => <Link to={`#`}>{record.location}</Link>,
-      sorter: (a, b) => a.location.localeCompare(b.location),
+      title: "Letter Content",
+      dataIndex: "letter_content",
+      render: (text) => (
+        <p
+          title={text}
+          style={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            width: "200px",
+          }}
+        >
+          {text}
+        </p>
+      ),
+    },
+
+    {
+      title: "Document",
+      dataIndex: "document_path",
+      render: (text) =>
+        text ? (
+          <a href={text} target="_blank" rel="noopener noreferrer">
+            <i className="fa fa-file-pdf"></i> View
+          </a>
+        ) : (
+          "-"
+        ),
+    },
+    {
+      title: "Request Date",
+      dataIndex: "request_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        moment(a?.request_date).isBefore(moment(b?.request_date)) ? -1 : 1,
+    },
+    {
+      title: "Issue Date",
+      dataIndex: "issue_date",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      sorter: (a, b) =>
+        moment(a?.issue_date).isBefore(moment(b?.issue_date)) ? -1 : 1,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (text) =>
+        text === "P" ? (
+          <span className="badge bg-warning">Pending</span>
+        ) : text === "A" ? (
+          <span className="badge bg-success">Approved</span>
+        ) : (
+          <span className="badge bg-danger">Rejected</span>
+        ),
+      sorter: (a, b) => a?.status?.localeCompare(b?.status),
     },
     ...(isUpdate || isDelete
       ? [
@@ -73,10 +119,10 @@ const HRLetterList = () => {
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
-                      data-bs-toggle="modal"
-                      data-bs-target="#add_edit_hr_letter_modal"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add"
                       onClick={() => {
-                        setSelectedIndustry(record);
+                        setSelected(record);
                         setMode("edit");
                       }}
                     >
@@ -100,9 +146,7 @@ const HRLetterList = () => {
       : []),
   ];
 
-  const { hrLetters, loading, error, success } = useSelector(
-    (state) => state.hrLetters
-  );
+  const { hrLetters, loading } = useSelector((state) => state.hrLetters);
 
   React.useEffect(() => {
     dispatch(fetchHRLetters({ search: searchText }));
@@ -147,13 +191,13 @@ const HRLetterList = () => {
   }, [hrLetters, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+    setSelected(industry);
     setShowDeleteModal(true);
   };
 
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteHRLetter(selectedIndustry.id));
+    if (selected) {
+      dispatch(deleteHRLetter(selected.id));
       setShowDeleteModal(false);
     }
   };
@@ -161,32 +205,17 @@ const HRLetterList = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - HR Letter</title>
+        <title>DCC HRMS - HR Letters</title>
         <meta name="hr letter" content="This is hr letter page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    HR Letter
+                    HR Letters
                     <span className="count-title">
                       {hrLetters?.totalCount || 0}
                     </span>
@@ -201,19 +230,23 @@ const HRLetterList = () => {
             </div>
             <div className="card ">
               <div className="card-header">
-                <div className="row align-items-center">
+                <div className="row align-items-center justify-content-between">
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search HR Letter"
+                    label="Search HR Letters"
                   />
                   {isCreate && (
-                    <div className="col-sm-8">
-                      <AddButton
-                        label="Add HR Letter"
-                        id="add_edit_hr_letter_modal"
-                        setMode={() => setMode("add")}
-                      />
+                    <div className="col-sm-3 d-flex justify-content-end">
+                      <Link
+                        to="#"
+                        className="btn btn-primary"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvas_add"
+                      >
+                        <i className="ti ti-square-rounded-plus me-2" />
+                        Add HR Letters
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -244,12 +277,15 @@ const HRLetterList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal
+        mode={mode}
+        initialData={selected}
+        setHrLetter={setSelected}
+      />
       <DeleteAlert
-        label="HR Letter"
+        label="HR Letters"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
     </div>

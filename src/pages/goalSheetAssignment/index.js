@@ -11,10 +11,10 @@ import { fetchgoalSheet } from "../../redux/GoalSheetAssignment";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageGoalSheetAssignment from "./ManageGoalSheetAssignment/index.js";
 import ManageStatus from "./ManageStatus/index.js";
+import usePermissions from "../../components/common/Permissions.js/index.js";
 const GoalSheetAssignment = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedgoalSheet, setSelectedgoalSheet] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -63,31 +63,25 @@ const GoalSheetAssignment = () => {
 
   const data = goalSheet?.data;
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Helpdesk Ticket"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Goal Sheet Assignment"
+  );
 
   const columns = [
     {
       title: "Employee Name",
-      dataIndex: "goal_sheet_assignment_employee", // make sure relation is populated
+      dataIndex: "goal_sheet_assignment_employee",
       render: (text) => text?.full_name || "-",
     },
     {
       title: "Appraisal Cycle",
       dataIndex: "goal_sheet_assignment_appraisal",
-      render: (text) => text?.review_period || "-", // assuming name exists
+      render: (text) => text?.review_period || "-",
     },
     {
       title: "Goal Category",
       dataIndex: "goal_sheet_assignment_goalCategory",
-      render: (text) => text?.category_name || "-", // optional field
+      render: (text) => text?.category_name || "-",
     },
     {
       title: "Goal Description",
@@ -184,7 +178,6 @@ const GoalSheetAssignment = () => {
                       data-bs-target="#offcanvas_add"
                       onClick={() => {
                         setSelected(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit

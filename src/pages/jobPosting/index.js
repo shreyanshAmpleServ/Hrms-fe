@@ -71,6 +71,11 @@ const JobPosting = () => {
       render: (text) => text?.department_name || "-",
     },
     {
+      title: "Job Code",
+      dataIndex: "job_code",
+      render: (text) => <p>{text}</p> || "-",
+    },
+    {
       title: "Designation",
       dataIndex: "hrms_job_designation",
       render: (text) => text?.designation_name || "-",

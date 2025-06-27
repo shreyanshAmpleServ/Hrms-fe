@@ -368,6 +368,11 @@ export const SidebarData = [
             showSubRoute: false,
           },
           {
+            label: "HR Letters",
+            link: route.hrLetter,
+            showSubRoute: false,
+          },
+          {
             label: "Department",
             link: route.department,
             showSubRoute: false,

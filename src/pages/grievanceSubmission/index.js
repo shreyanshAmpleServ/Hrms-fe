@@ -11,11 +11,11 @@ import { fetchgrievanceSubmission } from "../../redux/grievanceSubmission/index.
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManagegrievanceSubmission from "./ManagegrievanceSubmission/index.js";
 import ManageStatus from "./ManageStatus/index.js";
+import usePermissions from "../../components/common/Permissions.js/index.js";
 
 const GrievanceSubmission = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedgrievanceSubmission, setSelectedgrievanceSubmission] =
     useState(null);
@@ -67,24 +67,18 @@ const GrievanceSubmission = () => {
 
   const data = grievanceSubmission?.data;
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Grievance Submission"
+  );
 
   const columns = [
     {
       title: "Employee Name",
-      render: (text) => text?.grievance_employee?.full_name || "-", // assuming relation
+      render: (text) => text?.grievance_employee?.full_name || "-",
     },
     {
       title: "Grievance Type",
-      render: (text) => text?.grievance_types?.grievance_type_name || "-", // assuming relation
+      render: (text) => text?.grievance_types?.grievance_type_name || "-",
     },
     {
       title: "Description",
@@ -99,17 +93,13 @@ const GrievanceSubmission = () => {
     {
       title: "Submitted On",
       dataIndex: "submitted_on",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY HH:mm") : "-"),
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
       sorter: (a, b) => new Date(a.submitted_on) - new Date(b.submitted_on),
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "status",
-    //   render: (text) => text || "-",
-    // },
     {
       title: "Assigned To",
-      render: (text) => text?.grievance_assigned_to?.full_name || "-", // assuming relation
+      dataIndex: "grievance_assigned_to",
+      render: (text) => text?.full_name || "-",
     },
     {
       title: "Resolution Notes",
@@ -191,7 +181,6 @@ const GrievanceSubmission = () => {
                       data-bs-target="#offcanvas_add"
                       onClick={() => {
                         setSelected(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTableNew/index";
+import usePermissions from "../../../components/common/Permissions.js";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
@@ -20,14 +21,8 @@ const Modules = () => {
   const [paginationData, setPaginationData] = useState();
   const [selectedModule, setSelectedModule] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Modules"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role") === "admin";
-  const isCreate = isAdmin ? true : allPermissions?.create;
-  const isUpdate = isAdmin ? true : allPermissions?.update;
-  const isDelete = isAdmin ? true : allPermissions?.delete;
+
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Modules");
 
   const dispatch = useDispatch();
   const columns = [

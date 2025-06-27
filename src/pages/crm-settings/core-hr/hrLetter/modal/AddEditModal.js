@@ -1,12 +1,14 @@
+import moment from "moment";
 import React, { useEffect, useState } from "react";
+import ReactDatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import Select from "react-select";
+import { fetchEmployee } from "../../../../../redux/Employee";
 import { createHRLetter, updateHRLetter } from "../../../../../redux/HRLetters";
-import { fetchCompany } from "../../../../../redux/company";
+import { fetchlatter_type } from "../../../../../redux/letterType";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, setHrLetter }) => {
   const [searchValue, setSearchValue] = useState("");
   const { loading } = useSelector((state) => state.hrLetters);
   const dispatch = useDispatch();
@@ -14,192 +16,395 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const {
     register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
     reset,
   } = useForm();
 
   React.useEffect(() => {
-    dispatch(fetchCompany({ search: searchValue }));
+    dispatch(fetchEmployee({ search: searchValue }));
+    dispatch(fetchlatter_type({ search: searchValue }));
   }, [searchValue, dispatch]);
 
-  const company = useSelector((state) => state.company.company);
+  const employee = useSelector((state) => state.employee.employee);
 
-  const CompanyList =
-    company?.data?.map((item) => ({
+  const EmployeeList =
+    employee?.data?.map((item) => ({
       value: item.id,
-      label: item.company_name,
+      label: item.full_name,
     })) || [];
+  const { latter_type, loading: letterTypeLoading } = useSelector(
+    (state) => state.letterTypeMaster
+  );
+
+  const letterTypeOptions = latter_type?.data?.map((item) => ({
+    value: item.id,
+    label: item.letter_name,
+  }));
+
+  const statusOptions = [
+    { value: "P", label: "Pending" },
+    { value: "A", label: "Approved" },
+    { value: "R", label: "Rejected" },
+  ];
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        hr_letter_name: initialData.hr_letter_name || "",
-        location: initialData.location || "",
-        company_id: initialData.company_id || "",
-        is_active: initialData.is_active || "Y",
+        letter_subject: initialData.letter_subject || "",
+        letter_content: initialData.letter_content || "",
+        letter_type: initialData.letter_type || "",
+        employee_id: initialData.employee_id || "",
+        issue_date: initialData.issue_date || new Date().toISOString(),
+        document_path: initialData.document_path || null,
+        request_date: initialData.request_date || new Date().toISOString(),
+        status: initialData.status || "P",
       });
     } else {
       reset({
-        hr_letter_name: "",
-        location: "",
-        company_id: "",
-        is_active: "Y",
+        letter_subject: "",
+        letter_content: "",
+        letter_type: "",
+        employee_id: "",
+        issue_date: new Date().toISOString(),
+        document_path: null,
+        request_date: new Date().toISOString(),
+        status: "P",
       });
     }
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById("close_hr_letter_modal");
+    const closeButton = document.getElementById("close_hr_letter_offcanvas");
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
     if (mode === "add") {
-      dispatch(createHRLetter(data));
+      dispatch(createHRLetter(formData));
     } else if (mode === "edit" && initialData) {
       dispatch(
         updateHRLetter({
           id: initialData.id,
-          hrLetterData: data,
+          hrLetterData: formData,
         })
       );
     }
     reset();
     closeButton?.click();
   };
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setHrLetter(null);
+        reset();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [reset, setHrLetter]);
   return (
-    <div className="modal fade" id="add_edit_hr_letter_modal" role="dialog">
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">
-              {mode === "add" ? "Add  HR Letter" : "Edit HR Letter "}
-            </h5>
-            <button
-              className="btn-close custom-btn-close border p-1 me-0 text-dark"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              id="close_hr_letter_modal"
-            >
-              <i className="ti ti-x" />
-            </button>
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="modal-body">
-              <div className="mb-3 col-md-12">
+    <div
+      className="offcanvas offcanvas-end offcanvas-large"
+      id="offcanvas_add"
+      tabIndex={-1}
+    >
+      <div className="offcanvas-header border-bottom">
+        <h4>{mode === "add" ? "Add HR Letter" : "Edit HR Letter"}</h4>
+        <button
+          className="btn-close custom-btn-close border p-1 me-0 text-dark"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+          id="close_hr_letter_offcanvas"
+        >
+          <i className="ti ti-x" />
+        </button>
+      </div>
+      <div className="offcanvas-body">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="row">
+            <div className="col-md-6">
+              <div className="mb-3">
                 <label className="col-form-label">
-                  HR Letter Name <span className="text-danger">*</span>
+                  Employee Name
+                  <span className="text-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="Enter HR Letter Name"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
-                  {...register("hr_letter_name", {
-                    required: "HR Letter name is required.",
-                    minLength: {
-                      value: 3,
-                      message: "HR Letter name must be at least 3 characters.",
-                    },
-                  })}
+                <Controller
+                  name="employee_id"
+                  control={control}
+                  rules={{ required: "Employee Name is required" }}
+                  render={({ field }) => {
+                    const selectedEmployee = EmployeeList?.find(
+                      (option) => option.value === field.value
+                    );
+                    return (
+                      <Select
+                        {...field}
+                        className="select"
+                        options={EmployeeList}
+                        classNamePrefix="react-select"
+                        placeholder="Choose Employee Name"
+                        onInputChange={(inputValue) =>
+                          setSearchValue(inputValue)
+                        }
+                        value={selectedEmployee || null}
+                        onChange={(selectedOption) =>
+                          field.onChange(selectedOption.value)
+                        }
+                      />
+                    );
+                  }}
                 />
-                {errors.hr_letter_name && (
+                {errors.employee_id && (
                   <small className="text-danger">
-                    {errors.hr_letter_name.message}
+                    {errors.employee_id.message}
                   </small>
                 )}
               </div>
-
-              <div className="col-md-12">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Company Name
-                    <span className="text-danger">*</span>
-                  </label>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Letter Type
+                  <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="letter_type"
+                  control={control}
+                  rules={{ required: "Letter Type is required" }}
+                  render={({ field }) => {
+                    const selectedLetterType = letterTypeOptions?.find(
+                      (option) => option.value === field.value
+                    );
+                    return (
+                      <Select
+                        {...field}
+                        className="select"
+                        options={letterTypeOptions}
+                        isLoading={letterTypeLoading}
+                        classNamePrefix="react-select"
+                        placeholder="Choose Letter Type"
+                        onInputChange={(inputValue) =>
+                          setSearchValue(inputValue)
+                        }
+                        value={selectedLetterType || null}
+                        onChange={(selectedOption) =>
+                          field.onChange(selectedOption.value)
+                        }
+                      />
+                    );
+                  }}
+                />
+                {errors.letter_type && (
+                  <small className="text-danger">
+                    {errors.letter_type.message}
+                  </small>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Document</label>
+                <Controller
+                  name="document_path"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        className="form-control"
+                        onChange={(e) => {
+                          field.onChange(e.target.files[0]);
+                        }}
+                      />
+                    );
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        {...field}
+                        className="select"
+                        options={statusOptions}
+                        classNamePrefix="react-select"
+                        placeholder="Choose Status"
+                        value={
+                          statusOptions?.find(
+                            (option) => option.value === field.value
+                          ) || null
+                        }
+                        onChange={(selectedOption) =>
+                          field.onChange(selectedOption.value)
+                        }
+                      />
+                    );
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Request Date</label>
+                <div className="mb-3 icon-form">
+                  <span className="form-icon">
+                    <i className="ti ti-calendar-check" />
+                  </span>
                   <Controller
-                    name="company_id"
+                    name="request_date"
                     control={control}
-                    rules={{ required: "Company Name is required" }}
+                    rules={{ required: "Request Date is required!" }}
+                    render={({ field }) => (
+                      <ReactDatePicker
+                        {...field}
+                        className="form-control"
+                        placeholderText="Select Request Date"
+                        selected={field.value}
+                        value={
+                          field.value
+                            ? moment(field.value).format("DD-MM-YYYY")
+                            : null
+                        }
+                        onChange={(date) => field.onChange(date)}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">Issue Date</label>
+                <div className="mb-3 icon-form">
+                  <span className="form-icon">
+                    <i className="ti ti-calendar-check" />
+                  </span>
+                  <Controller
+                    name="issue_date"
+                    control={control}
                     render={({ field }) => {
-                      const selectedCompany = CompanyList?.find(
-                        (option) => option.value === field.value
-                      );
                       return (
-                        <Select
+                        <ReactDatePicker
+                          className="form-control"
+                          placeholderText="Enter Issue Date"
                           {...field}
-                          className="select"
-                          options={CompanyList}
-                          classNamePrefix="react-select"
-                          placeholder="Choose Company Name"
-                          onInputChange={(inputValue) =>
-                            setSearchValue(inputValue)
+                          value={
+                            field.value
+                              ? moment(field.value).format("DD-MM-YYYY")
+                              : null
                           }
-                          value={selectedCompany || null}
-                          onChange={(selectedOption) =>
-                            field.onChange(selectedOption.value)
-                          }
-                          styles={{
-                            menu: (provided) => ({
-                              ...provided,
-                              zIndex: 9999,
-                            }),
-                          }}
+                          onChange={(date) => field.onChange(date)}
                         />
                       );
                     }}
                   />
-                  {errors.company_id && (
-                    <small className="text-danger">
-                      {errors.company_id.message}
-                    </small>
-                  )}
                 </div>
               </div>
+            </div>
 
-              <div className="col-md-12 mb-3">
+            <div className="mb-3 col-md-12">
+              <label className="col-form-label">
+                Letter Subject <span className="text-danger">*</span>
+              </label>
+              <Controller
+                name="letter_subject"
+                control={control}
+                rules={{ required: "Letter Subject is required" }}
+                render={({ field }) => {
+                  return (
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter Letter Subject"
+                      {...field}
+                    />
+                  );
+                }}
+              />
+
+              {errors.letter_subject && (
+                <small className="text-danger">
+                  {errors.letter_subject.message}
+                </small>
+              )}
+            </div>
+            <div className="col-md-12">
+              <div className="mb-3">
                 <label className="col-form-label">
-                  Location <span className="text-danger">*</span>
+                  Letter Content <span className="text-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="Enter Location"
-                  className={`form-control ${errors.location ? "is-invalid" : ""}`}
-                  {...register("location", {
-                    required: "Location is required.",
-                  })}
+                <Controller
+                  name="letter_content"
+                  control={control}
+                  rules={{ required: "Letter Content is required" }}
+                  render={({ field }) => {
+                    return (
+                      <textarea
+                        className="form-control"
+                        placeholder="Enter Letter Content"
+                        {...field}
+                        rows={3}
+                      />
+                    );
+                  }}
                 />
-                {errors.location && (
+                {errors.letter_content && (
                   <small className="text-danger">
-                    {errors.location.message}
+                    {errors.letter_content.message}
                   </small>
                 )}
               </div>
             </div>
+          </div>
 
-            {/* Footer */}
-            <div className="modal-footer">
-              <div className="d-flex align-items-center justify-content-end m-0">
-                <Link
-                  to="#"
-                  className="btn btn-light me-2"
-                  data-bs-dismiss="modal"
+          <div className="d-flex align-items-center justify-content-end">
+            <button
+              type="button"
+              data-bs-dismiss="offcanvas"
+              className="btn btn-light me-2"
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary">
+              {mode !== "add"
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
                 >
-                  Cancel
-                </Link>
-                <button
-                  disabled={loading}
-                  type="submit"
-                  className="btn btn-primary"
-                >
-                  {loading
-                    ? mode === "add"
-                      ? "Creating..."
-                      : "Updating..."
-                    : mode === "add"
-                      ? "Create"
-                      : "Update"}
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

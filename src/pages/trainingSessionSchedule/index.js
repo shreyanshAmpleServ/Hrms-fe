@@ -14,7 +14,6 @@ import ManageStatus from "./ManageStatus/index.js";
 const TrainingSessionSchedule = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add");
   const [searchValue, setSearchValue] = useState("");
   const [selectedtrainingSession, setSelectedtrainingSession] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -226,7 +225,6 @@ const TrainingSessionSchedule = () => {
                       data-bs-target="#offcanvas_add"
                       onClick={() => {
                         setSelected(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit

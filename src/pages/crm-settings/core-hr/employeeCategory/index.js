@@ -27,7 +27,7 @@ const Employee_CategoryList = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Employee Category",
+    (i) => i?.module_name === "Employee Category"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -118,7 +118,7 @@ const Employee_CategoryList = () => {
   ];
 
   const { employee_category, loading, error, success } = useSelector(
-    (state) => state.employee_category,
+    (state) => state.employee_category
   );
 
   React.useEffect(() => {
@@ -144,7 +144,7 @@ const Employee_CategoryList = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -157,11 +157,11 @@ const Employee_CategoryList = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

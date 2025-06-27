@@ -14,7 +14,6 @@ import ManageStatus from "./ManageStatus/index.js";
 const ProbationReview = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedprobationReview, setSelectedprobationReview] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -219,7 +218,6 @@ const ProbationReview = () => {
                       data-bs-target="#offcanvas_add"
                       onClick={() => {
                         setSelected(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit
