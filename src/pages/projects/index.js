@@ -28,6 +28,7 @@ import EditProjectModal from "./modal/EditProjectModal";
 import FilterComponent from "./modal/FilterComponent";
 import ProjectGrid from "./ProjectsGrid";
 import { Helmet } from "react-helmet-async";
+import { render } from "@testing-library/react";
 
 const ProjectList = () => {
   const [view, setView] = useState("list"); // 'list' or 'grid'
@@ -46,7 +47,7 @@ const ProjectList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Projects",
+    (i) => i?.module_name === "Projects"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -58,36 +59,49 @@ const ProjectList = () => {
     {
       title: "Project Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <Link to={`/projects/${record.id}`}>{record.name}</Link>
-      ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: "Budget",
-      dataIndex: "amount",
+      title: "Code",
+      dataIndex: "code",
       sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
     },
     {
-      title: "Start Date",
+      title: "Employee",
+      dataIndex: "projects_employee_detail",
       render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
+        <span>{text?.full_name || "--"}</span> // Assuming this is a placeholder for employee details
       ),
-      dataIndex: "startDate",
+      sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
+    },
+    {
+      title: "Is Locked",
+      dataIndex: "locked",
+      render: (text) => (
+        <span>{text === "Y" ? "Yes" : "No"}</span> // Assuming this is a placeholder for employee details
+      ),
+      sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
+    },
+    {
+      title: "Valid From",
+      dataIndex: "valid_from",
+      render: (text) => (
+        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
+      ),
       sorter: (a, b) => moment(a.startDate).diff(moment(b.startDate)),
     },
     {
-      title: "End Date",
+      title: "Valid To",
       render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
+        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      dataIndex: "dueDate",
+      dataIndex: "valid_to",
       sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
     },
     {
       title: "Created Date",
       render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY, hh:mm a")}</span> // Format the date as needed
+        <span>{moment(text).format("DD MMM YYYY")}</span> // Format the date as needed
       ),
       dataIndex: "createdDate",
       sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
@@ -146,14 +160,14 @@ const ProjectList = () => {
                       <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
-                  {isView && (
+                  {/* {isView && (
                     <Link
                       className="dropdown-item"
                       to={`/projects/${record?.id}`}
                     >
                       <i className="ti ti-eye text-blue-light"></i> Preview
                     </Link>
-                  )}
+                  )} */}
                 </div>
               </div>
             ),
@@ -166,7 +180,7 @@ const ProjectList = () => {
     dispatch(fetchProjects({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
   const { projects, loading, error, success } = useSelector(
-    (state) => state.projects,
+    (state) => state.projects
   );
   React.useEffect(() => {
     setPaginationData({
@@ -189,7 +203,7 @@ const ProjectList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
   // Memoized handlers
@@ -244,7 +258,7 @@ const ProjectList = () => {
             return moment(row.dueDate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        }),
+        })
       ),
       startY: 20,
     });

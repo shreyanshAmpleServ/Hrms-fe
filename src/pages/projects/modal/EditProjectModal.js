@@ -5,59 +5,78 @@ import { updateProject } from "../../../redux/projects";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import { arrProjectTiming } from "../../../components/common/selectoption/selectoption";
+import { fetchEmployee } from "../../../redux/Employee";
 
+const lockedStatus = [
+  { value: "Y", label: "Yes" },
+  { value: "N", label: "No" },
+];
 const EditProjectModal = ({ project }) => {
   const dispatch = useDispatch();
-  const [startDate, setStartDate] = useState(new Date());
-  const [dueDate, setDueDate] = useState(null);
+  const [valid_from, setValidFrom] = useState(new Date());
+  const [valid_to, setValidTo] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
 
   const { loading } = useSelector((state) => state.projects);
 
   const {
     control,
     handleSubmit,
+    watch,
     register,
     reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
+      employee_id: project?.employee_id || null,
       name: project?.name || "",
-      projectTiming: project?.projectTiming
-        ? { value: project.projectTiming, label: project.projectTiming }
-        : "",
-      amount: project?.amount || "",
-      startDate: project?.startDate ? new Date(project.startDate) : null,
-      dueDate: project?.dueDate ? new Date(project.dueDate) : null,
-      description: project?.description || "",
+      code: project?.code || "",
+      locked: project?.locked || "",
+      valid_from: project?.valid_from ? new Date(project.valid_from) : null,
+      valid_to: project?.valid_to ? new Date(project.valid_to) : null,
       is_active: project?.is_active || "Y",
     },
   });
   useEffect(() => {
     reset({
+      employee_id: project?.employee_id || null,
       name: project?.name || "",
-      projectTiming: project?.projectTiming
-        ? { value: project.projectTiming, label: project.projectTiming }
-        : "",
-      amount: project?.amount || "",
-      startDate: project?.startDate ? new Date(project.startDate) : null,
-      dueDate: project?.dueDate ? new Date(project.dueDate) : null,
-      description: project?.description || "",
+      code: project?.code || "",
+      locked: project?.locked || "",
+      valid_from: project?.valid_from ? new Date(project.valid_from) : null,
+      valid_to: project?.valid_to ? new Date(project.valid_to) : null,
       is_active: project?.is_active || "Y",
     });
   }, [project, reset]);
+
+  React.useEffect(() => {
+    dispatch(fetchEmployee({ search: searchValue }));
+  }, [dispatch, searchValue]);
+
+  const { employee, loading: employeeLoading } = useSelector(
+    (state) => state.employee || {}
+  );
+
+  const employees = employee?.data?.map((i) => ({
+    label: i?.full_name,
+    value: i?.id,
+  }));
+  useEffect(() => {
+    setSearchValue(project?.projects_employee_detail?.full_name || "");
+  }, [project]);
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_offcanvas_edit_project");
 
     try {
       const transformedData = {
         ...data,
-        dueDate: data.dueDate?.toISOString() || null,
-        startDate: data.startDate?.toISOString() || null,
-        projectTiming: data.projectTiming?.value || null,
-        amount: parseFloat(data?.amount) || null,
+        valid_to: data.valid_to?.toISOString() || null,
+        valid_from: data.valid_from?.toISOString() || null,
+        code: data.code || null,
+        locked: data?.locked || "",
       };
       await dispatch(
-        updateProject({ id: project.id, projectData: transformedData }),
+        updateProject({ id: project.id, projectData: transformedData })
       ).unwrap();
       closeButton.click();
       reset();
@@ -129,107 +148,151 @@ const EditProjectModal = ({ project }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">Project Timing</label>
+                        <label className="col-form-label">Code</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("code", {
+                            required: "Project code is required",
+                          })}
+                        />
+                        {errors.code && (
+                          <small className="text-danger">
+                            {errors.code.message}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-6 ">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Employee
+                          <span className="text-danger"> *</span>
+                        </label>
                         <Controller
-                          name="projectTiming"
-                          rules={{ required: "Project Timing is required" }}
+                          name="employee_id"
+                          control={control}
+                          rules={{ required: "Employee is required" }}
+                          render={({ field }) => {
+                            const selectedEmployee = employees?.find(
+                              (employee) => employee.value === field.value
+                            );
+                            return (
+                              <Select
+                                {...field}
+                                className="select"
+                                options={employees}
+                                placeholder="Select Employee"
+                                classNamePrefix="react-select"
+                                isLoading={employeeLoading}
+                                onInputChange={(inputValue) =>
+                                  setSearchValue(inputValue)
+                                }
+                                value={selectedEmployee || null}
+                                onChange={(selectedOption) =>
+                                  field.onChange(selectedOption.value)
+                                }
+                                styles={{
+                                  menu: (provided) => ({
+                                    ...provided,
+                                    zIndex: 9999,
+                                  }),
+                                }}
+                              />
+                            );
+                          }}
+                        />
+                        {errors.employee_id && (
+                          <small className="text-danger">
+                            {errors.employee_id.message}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Valid From <span className="text-danger">*</span>
+                        </label>
+                        <Controller
+                          name="valid_from"
+                          control={control}
+                          rules={{ required: "Valid from is required" }}
+                          render={({ field }) => (
+                            <DatePicker
+                              className="form-control"
+                              selected={valid_from}
+                              onChange={(date) => {
+                                setValidFrom(date);
+                                field.onChange(date);
+                              }}
+                              dateFormat="yyyy-MM-dd"
+                            />
+                          )}
+                        />
+                        {errors.valid_from && (
+                          <small className="text-danger">
+                            {errors.valid_from.message}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">Valid To</label>
+                        <Controller
+                          name="valid_to"
+                          control={control}
+                          render={({ field }) => (
+                            <DatePicker
+                              className="form-control"
+                              selected={valid_to}
+                              onChange={(date) => {
+                                setValidTo(date);
+                                field.onChange(date);
+                              }}
+                              dateFormat="yyyy-MM-dd"
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                    {/* is loced  */}
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Is locked <span className="text-danger">*</span>
+                        </label>
+                        <Controller
+                          name="locked"
+                          rules={{ required: "Locked is required" }}
                           control={control}
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={arrProjectTiming}
-                              placeholder="Choose"
+                              options={lockedStatus}
+                              placeholder="Select Gender"
                               classNamePrefix="react-select"
-                            />
-                          )}
-                        />
-                        {errors.projectTiming && (
-                          <small className="text-danger">
-                            {errors.projectTiming.message}
-                          </small>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Budget <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          className="form-control"
-                          {...register("amount", {
-                            required: "Budget is required",
-                          })}
-                        />
-                        {errors.amount && (
-                          <small className="text-danger">
-                            {errors.amount.message}
-                          </small>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Start Date <span className="text-danger">*</span>
-                        </label>
-                        <Controller
-                          name="startDate"
-                          control={control}
-                          rules={{ required: "Start date is required" }}
-                          render={({ field }) => (
-                            <DatePicker
-                              className="form-control"
-                              selected={startDate}
-                              onChange={(date) => {
-                                setStartDate(date);
-                                field.onChange(date);
+                              value={
+                                lockedStatus?.find(
+                                  (option) => option.value === watch("locked")
+                                ) || ""
+                              }
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
                               }}
-                              dateFormat="yyyy-MM-dd"
                             />
                           )}
                         />
-                        {errors.startDate && (
+                        {errors.locked && (
                           <small className="text-danger">
-                            {errors.startDate.message}
+                            {errors.locked.message}
                           </small>
                         )}
                       </div>
                     </div>
-
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">Due Date</label>
-                        <Controller
-                          name="dueDate"
-                          control={control}
-                          render={({ field }) => (
-                            <DatePicker
-                              className="form-control"
-                              selected={dueDate}
-                              onChange={(date) => {
-                                setDueDate(date);
-                                field.onChange(date);
-                              }}
-                              dateFormat="yyyy-MM-dd"
-                            />
-                          )}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-12">
-                      <div className="mb-3">
-                        <label className="col-form-label">Description</label>
-                        <textarea
-                          className="form-control"
-                          rows="3"
-                          {...register("description")}
-                        ></textarea>
-                      </div>
-                    </div>
+                    {/* Status  */}
                     <div className="col-md-12">
                       <div className="mb-0">
                         <label className="col-form-label">Status</label>

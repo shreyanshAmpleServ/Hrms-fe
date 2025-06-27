@@ -257,4 +257,5 @@ export const all_routes = {
   candidateDetail: "/candidate/:id",
   medicalRecord: "/medical-record",
   taxSlab: "/tax-slab",
+  CostCenter: "/cost-center",
 };
