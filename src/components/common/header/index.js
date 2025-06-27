@@ -124,20 +124,18 @@ const Header = () => {
                       <Controller
                         name="Select"
                         control={control}
-                        style={{ backgroundColor: "red" }}
                         render={({ field }) => (
                           <Select
                             {...field}
                             options={ModuleOptions}
-                            classNamePrefix="react-select"
                             placeholder="Select Modules"
                             onChange={handleSelect}
                             styles={{
-                              control: (base, state) => ({
+                              control: (base) => ({
                                 ...base,
                                 height: "23px",
                                 marginTop: "-10px",
-                                backgroundColor: "transparent", // ✅ this controls the background
+                                backgroundColor: "transparent",
                                 borderColor: "transparent",
                                 boxShadow: "none",
                                 alignItems: "center",

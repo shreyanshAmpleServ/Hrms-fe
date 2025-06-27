@@ -11,6 +11,7 @@ import Register from "../pages/auth/Register";
 import Calls from "../pages/call";
 import CampaignsList from "../pages/Campaign";
 import Candidate from "../pages/Candidate";
+import CandidateDetail from "../pages/Candidate/CandidateDetail";
 import Cases from "../pages/Case";
 import Companies from "../pages/companies/";
 import CompanyDetail from "../pages/companies/CompanyDetail";
@@ -29,7 +30,10 @@ import DepanrtmentList from "../pages/crm-settings/core-hr/department";
 import DesignationList from "../pages/crm-settings/core-hr/designation";
 import EmployeeCategoryList from "../pages/crm-settings/core-hr/employeeCategory";
 import EmployeeTypeList from "../pages/crm-settings/core-hr/employmentType";
+import HRLetterList from "../pages/crm-settings/core-hr/hrLetter";
+import CostCenter from "../pages/crm-settings/costCenter";
 import CountriesList from "../pages/crm-settings/country";
+import CurrenciesList from "../pages/crm-settings/currency";
 import Industries from "../pages/crm-settings/industries";
 import HolidayCalenderList from "../pages/crm-settings/leaveAndAttendance/HolidayCalender";
 import LeaveBalance from "../pages/crm-settings/leaveAndAttendance/LeaveBalance";
@@ -64,6 +68,7 @@ import WorkLifeEventTypeMaster from "../pages/crm-settings/recruitment&Talent/wo
 import SourceList from "../pages/crm-settings/sources";
 import StateList from "../pages/crm-settings/state";
 import TaxSetUpList from "../pages/crm-settings/TaxSetUp";
+import TaxSlab from "../pages/crm-settings/taxSlab";
 import DailyAttendance from "../pages/dailyAttendance";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
 import DealList from "../pages/deals";
@@ -96,6 +101,7 @@ import {
 } from "../pages/main-menu/deals-dashboard";
 import LeadsDashboard from "../pages/main-menu/leads-dashboard";
 import ProjectDashboard from "../pages/main-menu/project-dashboard";
+import MedicalRecord from "../pages/MedicalRecord";
 import MonthlyPayroll from "../pages/MonthlyPayroll";
 import NotificationsLog from "../pages/Notifications";
 import OfferLetters from "../pages/OfferLetters";
@@ -151,13 +157,8 @@ import VendorDetail from "../pages/Vendor/VendorDetail";
 import WarningLetters from "../pages/WarningLetters";
 import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
-import CandidateDetail from "../pages/Candidate/CandidateDetail";
 import { all_routes } from "./all_routes";
-import MedicalRecord from "../pages/MedicalRecord";
-import CurrenciesList from "../pages/crm-settings/currency";
-import HRLetterList from "../pages/crm-settings/core-hr/hrLetter";
-import TaxSlab from "../pages/crm-settings/taxSlab";
-import CostCenter from "../pages/crm-settings/costCenter";
+import BasicSalary from "../pages/BasicSalary";
 
 export { Dashboard, Login };
 const route = all_routes;
@@ -338,6 +339,12 @@ export const privateRoutes = [
     element: <CostCenter />,
     route: Route,
     title: "Cost Center",
+  },
+  {
+    path: route.basicPayroll,
+    element: <BasicSalary />,
+    route: Route,
+    title: "Basic Payroll",
   },
   {
     path: route.salesInvoice,

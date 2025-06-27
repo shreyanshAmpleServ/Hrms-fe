@@ -129,6 +129,7 @@ import interviewStageRemarkReducer from "./InterviewStageRemark";
 import hrLettersReducer from "./HRLetters";
 import taxSlabReducer from "./taxSlab";
 import costCenterReducer from "./costCenter";
+import basicSalaryReducer from "./BasicSalary";
 
 const store = configureStore({
   reducer: {
@@ -262,6 +263,7 @@ const store = configureStore({
     hrLetters: hrLettersReducer,
     taxSlab: taxSlabReducer,
     costCenter: costCenterReducer,
+    basicSalary: basicSalaryReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

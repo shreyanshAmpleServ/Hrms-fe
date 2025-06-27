@@ -110,6 +110,12 @@ export const SidebarData = [
             submenu: false,
           },
           {
+            label: "Basic Payroll",
+            link: route.basicPayroll,
+            showSubRoute: false,
+            submenu: false,
+          },
+          {
             label: "Payslip Viewer",
             link: route.payslipViewer,
             showSubRoute: false,

@@ -258,4 +258,5 @@ export const all_routes = {
   medicalRecord: "/medical-record",
   taxSlab: "/tax-slab",
   CostCenter: "/cost-center",
+  basicPayroll: "/basic-payroll",
 };

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { updateProject } from "../../../redux/projects";
 import DatePicker from "react-datepicker";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { arrProjectTiming } from "../../../components/common/selectoption/selectoption";
 import { fetchEmployee } from "../../../redux/Employee";
+import { updateProject } from "../../../redux/projects";
 
 const lockedStatus = [
   { value: "Y", label: "Yes" },
