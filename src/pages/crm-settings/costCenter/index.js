@@ -233,7 +233,7 @@ const CostCenter = () => {
                   <h4 className="page-title">
                     Cost Center
                     <span className="count-title">
-                      {taxs?.data.length || 0}
+                      {taxs?.data?.length || 0}
                     </span>
                   </h4>
                 </div>

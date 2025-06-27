@@ -62,7 +62,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
   }, [payslip, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

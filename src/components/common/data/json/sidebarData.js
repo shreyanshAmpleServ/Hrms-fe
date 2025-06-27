@@ -454,6 +454,11 @@ export const SidebarData = [
             link: route.CostCenter,
             showSubRoute: false,
           },
+          {
+            label: "Projects",
+            link: route.projects,
+            showSubRoute: false,
+          },
         ],
       },
 

@@ -227,7 +227,7 @@ export const privateRoutes = [
     path: route.projects,
     element: <Projects />,
     route: Route,
-    title: "Projects Listing",
+    title: "Projects",
   },
   {
     path: route.quotation,
