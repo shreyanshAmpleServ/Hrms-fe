@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
@@ -7,6 +7,7 @@ import {
   addpay_component,
   updatepay_component,
 } from "../../../../../redux/pay-component";
+import { fetchProjects } from "../../../../../redux/projects";
 import { fetchTaxSlab } from "../../../../../redux/taxSlab";
 
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
@@ -14,8 +15,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const { taxSlab } = useSelector((state) => state.taxSlab);
 
+  const { projects } = useSelector((state) => state.projects);
+
   useEffect(() => {
     dispatch(fetchTaxSlab());
+    dispatch(fetchProjects());
   }, []);
 
   const {
@@ -41,11 +45,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     { value: "D", label: "Deduct" },
   ];
 
-  const projectOptions = [
-    { value: "1", label: "Project Alpha" },
-    { value: "2", label: "Project Beta" },
-    { value: "3", label: "Project Gamma" },
-  ];
+  const projectOptions = projects?.data?.map((item) => ({
+    value: item?.id,
+    label: item?.name,
+  }));
 
   const taxSlabOptions = taxSlab?.map((item) => ({
     value: item?.id,
@@ -299,7 +302,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       options={projectOptions}
                       placeholder="Select Project"
                       value={
-                        projectOptions.find(
+                        projectOptions?.find(
                           (option) => option.value === field.value
                         ) || null
                       }
@@ -558,6 +561,26 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 <label className="col-form-label">Contributes to PAYE</label>
                 <Controller
                   name="contributes_to_paye"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="checkbox"
+                      className="form-check-input"
+                      value={field.value === "Y" ? true : false}
+                      onChange={(e) =>
+                        field.onChange(e.target.checked ? "Y" : "N")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="mb-3 form-check form-switch">
+                <label className="col-form-label">Formula Editable</label>
+                <Controller
+                  name="formula_editable  "
                   control={control}
                   render={({ field }) => (
                     <input

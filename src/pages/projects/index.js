@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -10,32 +11,27 @@ import CollapseHeader from "../../components/common/collapse-header";
 import { countryList } from "../../components/common/data/json/countriesData";
 import Table from "../../components/common/dataTable/index";
 import FlashMessage from "../../components/common/modals/FlashMessage";
+import usePermissions from "../../components/common/Permissions.js/index.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent";
 import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
-import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import {
   clearMessages,
   deleteProject,
   fetchProjects,
 } from "../../redux/projects";
-import { all_routes } from "../../routes/all_routes";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddProjectModal from "./modal/AddProjectModal";
 import EditProjectModal from "./modal/EditProjectModal";
 import FilterComponent from "./modal/FilterComponent";
-import ProjectGrid from "./ProjectsGrid";
-import { Helmet } from "react-helmet-async";
-import { render } from "@testing-library/react";
 
 const ProjectList = () => {
-  const [view, setView] = useState("list"); // 'list' or 'grid'
   const [paginationData, setPaginationData] = useState();
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const [sortOrder, setSortOrder] = useState("ascending");
   const [selectedDateRange, setSelectedDateRange] = useState({
     startDate: moment().subtract(30, "days"),
     endDate: moment(),
@@ -45,15 +41,7 @@ const ProjectList = () => {
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Projects"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Projects");
 
   const columns = [
     {
@@ -69,40 +57,30 @@ const ProjectList = () => {
     {
       title: "Employee",
       dataIndex: "projects_employee_detail",
-      render: (text) => (
-        <span>{text?.full_name || "--"}</span> // Assuming this is a placeholder for employee details
-      ),
+      render: (text) => <span>{text?.full_name || "--"}</span>,
       sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
     },
     {
       title: "Is Locked",
       dataIndex: "locked",
-      render: (text) => (
-        <span>{text === "Y" ? "Yes" : "No"}</span> // Assuming this is a placeholder for employee details
-      ),
+      render: (text) => <span>{text === "Y" ? "Yes" : "No"}</span>,
       sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
     },
     {
       title: "Valid From",
       dataIndex: "valid_from",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
       sorter: (a, b) => moment(a.startDate).diff(moment(b.startDate)),
     },
     {
       title: "Valid To",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
       dataIndex: "valid_to",
       sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
     },
     {
       title: "Created Date",
-      render: (text) => (
-        <span>{moment(text).format("DD MMM YYYY")}</span> // Format the date as needed
-      ),
+      render: (text) => <span>{moment(text).format("DD MMM YYYY")}</span>,
       dataIndex: "createdDate",
       sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
     },
@@ -206,7 +184,7 @@ const ProjectList = () => {
       })
     );
   };
-  // Memoized handlers
+
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
@@ -217,7 +195,7 @@ const ProjectList = () => {
     if (selectedStatus !== null) {
       data = data.filter((item) => item.is_active === selectedStatus);
     }
-    // Sorting by createDate (ascending or descending)
+
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) => {
         const dateA = moment(a.createdate);
@@ -272,9 +250,8 @@ const ProjectList = () => {
 
   const deleteData = () => {
     if (selectedProject) {
-      dispatch(deleteProject(selectedProject.id)); // Dispatch the delete action
-      // navigate(`/projects`); // Navigate to the specified route
-      setShowDeleteModal(false); // Close the modal
+      dispatch(deleteProject(selectedProject.id));
+      setShowDeleteModal(false);
     }
   };
   return (
@@ -301,7 +278,6 @@ const ProjectList = () => {
 
         <div className="row">
           <div className="col-md-12">
-            {/* Page Header */}
             <div className="page-header">
               <div className="row align-items-center">
                 <div className="col-8">
@@ -319,10 +295,8 @@ const ProjectList = () => {
                 </div>
               </div>
             </div>
-            {/* /Page Header */}
             <div className="card ">
               <div className="card-header">
-                {/* Search */}
                 <div className="row align-items-center">
                   <SearchBar
                     searchText={searchText}
@@ -331,7 +305,6 @@ const ProjectList = () => {
                   />
 
                   <div className="col-sm-8">
-                    {/* Export Start & Add Button */}
                     <ExportData
                       exportToPDF={exportToPDF}
                       exportToExcel={exportToExcel}
@@ -339,14 +312,11 @@ const ProjectList = () => {
                       isCreate={isCreate}
                       id="offcanvas_add_project"
                     />
-                    {/* Export End & Add Button  */}
                   </div>
                 </div>
-                {/* /Search */}
               </div>
 
               <div className="card-body">
-                {/* Filter */}
                 <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
                     <SortDropdown
@@ -359,35 +329,25 @@ const ProjectList = () => {
                     />
                   </div>
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    {/* <ManageColumnsDropdown /> */}
                     <FilterComponent
                       countryList={countryList}
                       applyFilters={({ countries, status }) => {
                         setFilteredCountries(countries);
-                        setSelectedStatus(status); // Set the selected status
+                        setSelectedStatus(status);
                       }}
                     />
-
-                    <ViewIconsToggle view={view} setView={setView} />
                   </div>
                 </div>
 
-                {/* /Filter */}
-                {/* Project List */}
-
                 {isView ? (
                   <div className="table-responsive custom-table">
-                    {view === "list" ? (
-                      <Table
-                        dataSource={filteredData}
-                        columns={columns}
-                        loading={loading}
-                        paginationData={paginationData}
-                        onPageChange={handlePageChange}
-                      />
-                    ) : (
-                      <ProjectGrid data={filteredData} />
-                    )}
+                    <Table
+                      dataSource={filteredData}
+                      columns={columns}
+                      loading={loading}
+                      paginationData={paginationData}
+                      onPageChange={handlePageChange}
+                    />
                   </div>
                 ) : (
                   <UnauthorizedImage />
@@ -400,7 +360,6 @@ const ProjectList = () => {
                     <div className="datatable-paginate" />
                   </div>
                 </div>
-                {/* /Project List */}
               </div>
             </div>
           </div>
