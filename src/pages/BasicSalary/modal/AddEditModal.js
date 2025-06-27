@@ -1,4 +1,4 @@
-import { Select as AntdSelect, Table } from "antd";
+import { Select as AntdSelect, Button, Table } from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
@@ -81,7 +81,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     );
   }, [currencies]);
 
-  console.log(currencies, "currencies", currencyList);
   // Memoized options lists
   const departmentList = useMemo(() => {
     return (
@@ -119,6 +118,32 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       })) || [],
     [employee]
   );
+  const allowanceGroupList = [
+    { value: "1", label: "A" },
+    { value: "2", label: "B" },
+    { value: "3", label: "C" },
+    { value: "4", label: "D" },
+    { value: "5", label: "E" },
+  ];
+  const payGradeLevelList = [
+    { value: "1", label: "A" },
+    { value: "2", label: "B" },
+    { value: "3", label: "C" },
+    { value: "4", label: "D" },
+    { value: "5", label: "E" },
+  ];
+  const payGradeList = [
+    { value: "1", label: "A" },
+    { value: "2", label: "B" },
+    { value: "3", label: "C" },
+    { value: "4", label: "D" },
+    { value: "5", label: "E" },
+  ];
+
+  const statusList = [
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
+  ];
 
   const workLifeEventLogList = useMemo(() => {
     return (
@@ -151,7 +176,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     }
   }, [employee, watch("employee_id")]);
 
-  console.log(employeeData);
   // Initial data fetch
   useEffect(() => {
     dispatch(fetchdepartment());
@@ -172,15 +196,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   // Set basic salary data from API response
   useEffect(() => {
-    if (basicSalaryDetail?.data?.basicSalarys) {
+    if (basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line) {
       setBasicSalaryData(
-        basicSalaryDetail?.data?.basicSalarys?.map((item) => ({
-          ...item,
-          used_leaves: item.no_of_leaves - item.balance,
-        })) || []
+        basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line || []
       );
     }
-  }, [basicSalaryDetail?.data?.basicSalarys]);
+  }, [basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line]);
 
   // Reset form based on mode
   useEffect(() => {
@@ -196,7 +217,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         work_life_entry: initialData.work_life_entry || "",
         effective_from: initialData.effective_from || new Date().toISOString(),
         effective_to: initialData.effective_to || new Date().toISOString(),
-        status: initialData.status || "Y",
+        status: initialData.status || "Active",
         remarks: initialData.remarks || "",
       });
     } else {
@@ -211,7 +232,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         work_life_entry: "",
         effective_from: new Date().toISOString(),
         effective_to: new Date().toISOString(),
-        status: "Y",
+        status: "Active",
         remarks: "",
       });
     }
@@ -241,20 +262,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             );
 
             switch (field) {
-              case "no_of_leaves":
-                updatedItem.no_of_leaves = Number(value);
-                updatedItem.balance =
-                  updatedItem.no_of_leaves - (updatedItem.used_leaves || 0);
+              case "amount":
+                updatedItem.amount = Number(value);
                 break;
-              case "used_leaves":
-                updatedItem.used_leaves = Number(value);
-                updatedItem.balance =
-                  (updatedItem.no_of_leaves || 0) - updatedItem.used_leaves;
-                break;
-              case "balance":
-                updatedItem.balance = Number(value);
-                updatedItem.used_leaves =
-                  (updatedItem.no_of_leaves || 0) - updatedItem.balance;
+              case "currency_id":
+                updatedItem.currency_id = Number(value);
                 break;
               case "pay_component_id":
                 updatedItem.pay_component_id = Number(value);
@@ -276,6 +288,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 updatedItem.unpaid_leave = payComponent?.unpaid_leave;
                 updatedItem.contributes_to_nssf =
                   payComponent?.contributes_to_nssf;
+                updatedItem.currency_id = payComponent?.currency_id;
                 updatedItem.contributes_to_paye =
                   payComponent?.contributes_to_paye;
                 updatedItem.gl_account_id = payComponent?.gl_account_id;
@@ -544,7 +557,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           dispatch(
             updateBasicSalary({
               id: initialData.id,
-              reqData: submitData,
+              basicSalaryData: submitData,
             })
           );
         }
@@ -725,29 +738,23 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 name="pay_grade_id"
                 control={control}
                 rules={{ required: "Pay Grade is required" }}
-                render={({ field }) => {
-                  const payGradeList = [
-                    { value: "1", label: "A" },
-                    { value: "2", label: "B" },
-                    { value: "3", label: "C" },
-                    { value: "4", label: "D" },
-                    { value: "5", label: "E" },
-                  ];
-                  return (
-                    <Select
-                      {...field}
-                      options={payGradeList}
-                      placeholder="Choose Pay Grade"
-                      classNamePrefix="react-select"
-                      className="select2"
-                      onChange={(option) => field.onChange(option?.value || "")}
-                      value={
-                        payGradeList.find((item) => item.value === field.value)
-                          ?.label
-                      }
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={payGradeList}
+                    placeholder="Choose Pay Grade"
+                    isDisabled={!payGradeList.length}
+                    classNamePrefix="react-select"
+                    className="select2"
+                    onChange={(option) => {
+                      field.onChange(option?.value || "");
+                    }}
+                    value={payGradeList.find(
+                      (option) =>
+                        String(option.value) === String(watch("pay_grade_id"))
+                    )}
+                  />
+                )}
               />
               {errors.pay_grade_id && (
                 <div className="invalid-feedback d-block">
@@ -764,30 +771,24 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 name="pay_grade_level"
                 control={control}
                 rules={{ required: "Pay Grade Level is required" }}
-                render={({ field }) => {
-                  const payGradeLevelList = [
-                    { value: "1", label: "1" },
-                    { value: "2", label: "2" },
-                    { value: "3", label: "3" },
-                    { value: "4", label: "4" },
-                    { value: "5", label: "5" },
-                  ];
-                  return (
-                    <Select
-                      {...field}
-                      options={payGradeLevelList}
-                      placeholder="Choose Pay Grade Level"
-                      classNamePrefix="react-select"
-                      className="select2"
-                      onChange={(option) => field.onChange(option?.value || "")}
-                      value={
-                        payGradeLevelList.find(
-                          (item) => item.value === field.value
-                        )?.label
-                      }
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={payGradeLevelList}
+                    placeholder="Choose Pay Grade Level"
+                    isDisabled={!payGradeLevelList.length}
+                    classNamePrefix="react-select"
+                    className="select2"
+                    onChange={(option) => {
+                      field.onChange(option?.value || "");
+                    }}
+                    value={payGradeLevelList.find(
+                      (option) =>
+                        String(option.value) ===
+                        String(watch("pay_grade_level"))
+                    )}
+                  />
+                )}
               />
               {errors.pay_grade_level && (
                 <div className="invalid-feedback d-block">
@@ -801,39 +802,31 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 Allowance Group <span className="text-danger">*</span>
               </label>
               <Controller
-                name="allowance_group_id"
+                name="allowance_group"
                 control={control}
                 rules={{ required: "Allowance Group is required" }}
-                render={({ field }) => {
-                  const allowanceGroupList = [
-                    { value: "1", label: "A" },
-                    { value: "2", label: "B" },
-                    { value: "3", label: "C" },
-                    { value: "4", label: "D" },
-                    { value: "5", label: "E" },
-                  ];
-
-                  return (
-                    <Select
-                      {...field}
-                      options={allowanceGroupList}
-                      placeholder="Choose Allowance Group"
-                      isDisabled={false}
-                      classNamePrefix="react-select"
-                      className="select2"
-                      onChange={(option) => field.onChange(option?.value || "")}
-                      value={
-                        allowanceGroupList.find(
-                          (item) => item.value === field.value
-                        )?.label
-                      }
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={allowanceGroupList}
+                    placeholder="Choose Allowance Group"
+                    isDisabled={!allowanceGroupList.length}
+                    classNamePrefix="react-select"
+                    className="select2"
+                    onChange={(option) => {
+                      field.onChange(option?.value || "");
+                    }}
+                    value={allowanceGroupList.find(
+                      (option) =>
+                        String(option.value) ===
+                        String(watch("allowance_group"))
+                    )}
+                  />
+                )}
               />
-              {errors.allowance_group_id && (
+              {errors.allowance_group && (
                 <div className="invalid-feedback d-block">
-                  {errors.allowance_group_id.message}
+                  {errors.allowance_group.message}
                 </div>
               )}
             </div>
@@ -843,7 +836,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 Work Life Entry <span className="text-danger">*</span>
               </label>
               <Controller
-                name="work_life_entry_id"
+                name="work_life_entry"
                 control={control}
                 rules={{ required: "Work Life Entry is required" }}
                 render={({ field }) => (
@@ -851,14 +844,17 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     {...field}
                     options={workLifeEventLogList}
                     placeholder="Choose Work Life Entry"
+                    isDisabled={!workLifeEventLogList.length}
                     classNamePrefix="react-select"
                     className="select2"
-                    onChange={(option) => field.onChange(option?.value || "")}
-                    value={
-                      workLifeEventLogList.find(
-                        (item) => item.value === field.value
-                      )?.label
-                    }
+                    onChange={(option) => {
+                      field.onChange(option?.value || "");
+                    }}
+                    value={workLifeEventLogList.find(
+                      (option) =>
+                        String(option.value) ===
+                        String(watch("work_life_entry"))
+                    )}
                   />
                 )}
               />
@@ -923,6 +919,34 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 </div>
               )}
             </div>
+            <div className="col-md-4 mb-3">
+              <label className="form-label">
+                Status <span className="text-danger">*</span>
+              </label>
+              <Controller
+                name="status"
+                control={control}
+                rules={{ required: "Status is required!" }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={statusList}
+                    placeholder="Choose Status"
+                    classNamePrefix="react-select"
+                    className="select2"
+                    value={statusList.find(
+                      (option) =>
+                        String(option.value) === String(watch("status"))
+                    )}
+                  />
+                )}
+              />
+              {errors.status && (
+                <div className="invalid-feedback d-block">
+                  {errors.status.message}
+                </div>
+              )}
+            </div>
             <div className="col-12 mb-3">
               <label className="form-label">
                 Remarks <span className="text-danger">*</span>
@@ -949,6 +973,16 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           </div>
 
           <div className="col-12">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <Button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={handleAddBasicSalary}
+                icon={<i className="ti ti-square-rounded-plus me-1" />}
+              >
+                New Row
+              </Button>
+            </div>
             <div className="table-responsive custom-table">
               <Table
                 dataSource={basicSalaryData || []}

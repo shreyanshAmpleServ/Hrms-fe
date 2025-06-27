@@ -25,69 +25,7 @@ const BasicSalary = () => {
     usePermissions("Basic Salary");
 
   const dispatch = useDispatch();
-  // allowance_group
-  // :
-  // ""
-  // branch_id
-  // :
-  // 37
-  // createdate
-  // :
-  // "2025-06-27T11:17:27.180Z"
-  // createdby
-  // :
-  // 6
-  // department_id
-  // :
-  // 9
-  // effective_from
-  // :
-  // "2025-06-27T00:00:00.000Z"
-  // effective_to
-  // :
-  // "2025-06-27T00:00:00.000Z"
-  // employee_id
-  // :
-  // 30
-  // hrms_d_employee
-  // :
-  // {id: 30, employee_code: "EMP-00601", first_name: "Test", last_name: "Employee", gender: "M",…}
-  // hrms_d_employee_pay_component_assignment_line
-  // :
-  // [{id: 3, parent_id: 9, line_num: 0, pay_component_id: 40, amount: "0", type_value: "0",…}]
-  // id
-  // :
-  // 9
-  // log_inst
-  // :
-  // 1
-  // pay_grade_id
-  // :
-  // 4
-  // pay_grade_level
-  // :
-  // 4
-  // position_id
-  // :
-  // 0
-  // remarks
-  // :
-  // "aXQWCQW"
-  // status
-  // :
-  // "Y"
-  // updatedate
-  // :
-  // null
-  // updatedby
-  // :
-  // null
-  // work_life_entry
-  // :
-  // 0
-  // work_life_entry_pay_header
-  // :
-  // null
+
 
   const columns = [
     {
@@ -115,26 +53,30 @@ const BasicSalary = () => {
     },
     {
       title: "Department",
-      dataIndex: "department_id",
-      render: (text) => text?.name || "-",
+      dataIndex: "hrms_d_employee",
+      render: (text) => text?.hrms_employee_department?.department_name || "-",
       sorter: (a, b) =>
-        (a?.department_id?.name || "").localeCompare(
-          b?.department_id?.name || ""
+        (a?.hrms_d_employee?.hrms_employee_department?.department_name || "").localeCompare(
+          b?.hrms_d_employee?.hrms_employee_department?.department_name || ""
         ),
     },
     {
       title: "Branch",
-      dataIndex: "branch_id",
-      render: (text) => text?.name || "-",
+      dataIndex: "branch_pay_component_header",
+      render: (text) => text?.branch_name || "-",
       sorter: (a, b) =>
-        (a?.branch_id?.name || "").localeCompare(b?.branch_id?.name || ""),
+        (a?.branch_pay_component_header?.branch_name || "").localeCompare(
+          b?.branch_pay_component_header?.branch_name || ""
+        ),
     },
     {
       title: "Position",
-      dataIndex: "position_id",
-      render: (text) => text?.name || "-",
+      dataIndex: "hrms_d_employee",
+      render: (text) => text?.hrms_employee_designation?.designation_name || "-",
       sorter: (a, b) =>
-        (a?.position_id?.name || "").localeCompare(b?.position_id?.name || ""),
+        (a?.hrms_d_employee?.hrms_employee_designation?.designation_name || "").localeCompare(
+          b?.hrms_d_employee?.hrms_employee_designation?.designation_name || ""
+        ),
     },
     {
       title: "Pay Grade",
@@ -179,48 +121,48 @@ const BasicSalary = () => {
 
     ...(isUpdate || isDelete
       ? [
-          {
-            title: "Actions",
-            dataIndex: "actions",
-            render: (_, record) => (
-              <div className="dropdown table-action">
-                <Link
-                  to="#"
-                  className="action-icon"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="true"
-                >
-                  <i className="fa fa-ellipsis-v"></i>
-                </Link>
-                <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
-                    <Link
-                      className="dropdown-item edit-popup"
-                      to="#"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvas_add_edit_basic_salary"
-                      onClick={() => {
-                        setSelected(record);
-                        setMode("edit");
-                      }}
-                    >
-                      <i className="ti ti-edit text-blue"></i> Edit
-                    </Link>
-                  )}
-                  {isDelete && (
-                    <Link
-                      className="dropdown-item"
-                      to="#"
-                      onClick={() => handleDeleteBasicSalary(record)}
-                    >
-                      <i className="ti ti-trash text-danger"></i> Delete
-                    </Link>
-                  )}
-                </div>
+        {
+          title: "Actions",
+          dataIndex: "actions",
+          render: (_, record) => (
+            <div className="dropdown table-action">
+              <Link
+                to="#"
+                className="action-icon"
+                data-bs-toggle="dropdown"
+                aria-expanded="true"
+              >
+                <i className="fa fa-ellipsis-v"></i>
+              </Link>
+              <div className="dropdown-menu dropdown-menu-right">
+                {isUpdate && (
+                  <Link
+                    className="dropdown-item edit-popup"
+                    to="#"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvas_add_edit_basic_salary"
+                    onClick={() => {
+                      setSelected(record);
+                      setMode("edit");
+                    }}
+                  >
+                    <i className="ti ti-edit text-blue"></i> Edit
+                  </Link>
+                )}
+                {isDelete && (
+                  <Link
+                    className="dropdown-item"
+                    to="#"
+                    onClick={() => handleDeleteBasicSalary(record)}
+                  >
+                    <i className="ti ti-trash text-danger"></i> Delete
+                  </Link>
+                )}
               </div>
-            ),
-          },
-        ]
+            </div>
+          ),
+        },
+      ]
       : []),
   ];
 
