@@ -25,28 +25,78 @@ const BasicSalary = () => {
     usePermissions("Basic Salary");
 
   const dispatch = useDispatch();
+  // allowance_group
+  // :
+  // ""
+  // branch_id
+  // :
+  // 37
+  // createdate
+  // :
+  // "2025-06-27T11:17:27.180Z"
+  // createdby
+  // :
+  // 6
+  // department_id
+  // :
+  // 9
+  // effective_from
+  // :
+  // "2025-06-27T00:00:00.000Z"
+  // effective_to
+  // :
+  // "2025-06-27T00:00:00.000Z"
+  // employee_id
+  // :
+  // 30
+  // hrms_d_employee
+  // :
+  // {id: 30, employee_code: "EMP-00601", first_name: "Test", last_name: "Employee", gender: "M",…}
+  // hrms_d_employee_pay_component_assignment_line
+  // :
+  // [{id: 3, parent_id: 9, line_num: 0, pay_component_id: 40, amount: "0", type_value: "0",…}]
+  // id
+  // :
+  // 9
+  // log_inst
+  // :
+  // 1
+  // pay_grade_id
+  // :
+  // 4
+  // pay_grade_level
+  // :
+  // 4
+  // position_id
+  // :
+  // 0
+  // remarks
+  // :
+  // "aXQWCQW"
+  // status
+  // :
+  // "Y"
+  // updatedate
+  // :
+  // null
+  // updatedby
+  // :
+  // null
+  // work_life_entry
+  // :
+  // 0
+  // work_life_entry_pay_header
+  // :
+  // null
 
-  //   id                                            Int
-  // employee_id                                   Int
-  // effective_from                                DateTime
-  // effective_to                                  DateTime
-  // department_id                                 Int
-  // branch_id                                     Int
-  // position_id                                   Int
-  // pay_grade_id                                  Int
-  // pay_grade_level                               Int
-  // allowance_group                               String
-  // work_life_entry                               Int
-  // status                                        String
-  // remarks                                       String
   const columns = [
     {
       title: "Employee",
-      dataIndex: "basic_salary_employee",
+      dataIndex: "hrms_d_employee",
       render: (text) => <div>{text?.full_name}</div>,
       sorter: (a, b) =>
-        (a?.basic_salary_employee?.full_name || "").localeCompare(
-          b?.basic_salary_employee?.full_name || ""
+        (a?.hrms_d_employee?.full_name || "").localeCompare(
+          b?.hrms_d_employee?.full_name || ""
         ),
     },
     {
