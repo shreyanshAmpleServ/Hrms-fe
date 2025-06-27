@@ -33,6 +33,25 @@ const LetterTypeMaster = () => {
 
   const dispatch = useDispatch();
 
+  const handleDownload = (url, filename) => {
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/octet-stream", // Treat as a binary file
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute("download", filename || "file.jpg"); // Force download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => console.error("Download failed:", error));
+  };
+
   const columns = [
     {
       title: "Letter Type Name",
@@ -42,9 +61,87 @@ const LetterTypeMaster = () => {
         (a.letter_name || "").localeCompare(b.letter_name || ""),
     },
     {
-      title: "Template Path",
+      title: "Attachment",
       dataIndex: "template_path",
-      render: (text) => text || "-",
+      render: (text, record) => {
+        const extension = text
+          ?.split(".")
+          ?.pop()
+          ?.split("?")?.[0]
+          ?.split("#")?.[0]
+          ?.toLowerCase();
+        const imageExtensions = [".jpg", ".jpeg", ".png", ".avif"]; // Fixed ".jpeg" spelling
+
+        return (
+          <>
+            {["jpeg", "jpg", "png"]?.includes(extension) ? (
+              <div
+                className="dropdown-item"
+                onClick={() => handleDownload(text, `${record?.filename}`)}
+                style={{ width: "3rem", padding: "2px" }}
+                to={text}
+              >
+                {imageExtensions.includes(`.${extension}`) ? (
+                  <img
+                    src={text}
+                    alt="Preview"
+                    style={{
+                      width: "2rem",
+                      height: "2rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-.5"
+                    style={{
+                      width: "3rem",
+                      height: "3rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <i style={{ fontSize: "28px" }} className=" ti ti-pdf" />
+                  </div>
+                )}{" "}
+              </div>
+            ) : (
+              <Link
+                target="_blank"
+                className="dropdown-item"
+                style={{ width: "3rem", padding: "2px" }}
+                to={text}
+              >
+                {imageExtensions.includes(`.${extension}`) ? (
+                  <img
+                    src={text}
+                    alt="Preview"
+                    style={{
+                      width: "2rem",
+                      height: "2rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-.5"
+                    style={{
+                      width: "2rem",
+                      height: "2rem",
+                      margin: "0px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <i style={{ fontSize: "28px" }} className="ti ti-pdf" />
+                  </div>
+                )}
+              </Link>
+            )}
+          </>
+        );
+      },
       sorter: (a, b) =>
         (a.template_path || "").localeCompare(b.template_path || ""),
     },
