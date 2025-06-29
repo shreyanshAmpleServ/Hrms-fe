@@ -114,7 +114,7 @@ const Candidate = () => {
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
-      title: "Application Source",
+      title: "Source",
       dataIndex: "candidate_application_source",
       render: (text) => text?.source_name || "-",
     },

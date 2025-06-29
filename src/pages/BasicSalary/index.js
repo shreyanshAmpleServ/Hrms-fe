@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
-import Table from "../../components/common/dataTable/index";
+import Table from "../../components/common/dataTableNew/index";
 import usePermissions from "../../components/common/Permissions.js/index.js";
 import SearchBar from "../../components/datatable/SearchBar.js";
 import SortDropdown from "../../components/datatable/SortDropDown.js";
@@ -25,7 +25,6 @@ const BasicSalary = () => {
     usePermissions("Basic Salary");
 
   const dispatch = useDispatch();
-
 
   const columns = [
     {
@@ -56,7 +55,9 @@ const BasicSalary = () => {
       dataIndex: "hrms_d_employee",
       render: (text) => text?.hrms_employee_department?.department_name || "-",
       sorter: (a, b) =>
-        (a?.hrms_d_employee?.hrms_employee_department?.department_name || "").localeCompare(
+        (
+          a?.hrms_d_employee?.hrms_employee_department?.department_name || ""
+        ).localeCompare(
           b?.hrms_d_employee?.hrms_employee_department?.department_name || ""
         ),
     },
@@ -72,16 +73,30 @@ const BasicSalary = () => {
     {
       title: "Position",
       dataIndex: "hrms_d_employee",
-      render: (text) => text?.hrms_employee_designation?.designation_name || "-",
+      render: (text) =>
+        text?.hrms_employee_designation?.designation_name || "-",
       sorter: (a, b) =>
-        (a?.hrms_d_employee?.hrms_employee_designation?.designation_name || "").localeCompare(
+        (
+          a?.hrms_d_employee?.hrms_employee_designation?.designation_name || ""
+        ).localeCompare(
           b?.hrms_d_employee?.hrms_employee_designation?.designation_name || ""
         ),
     },
     {
       title: "Pay Grade",
       dataIndex: "pay_grade_id",
-      render: (text) => text?.name || "-",
+      render: (text) =>
+        text === 1
+          ? "Grade A - ₹15,000 to ₹25,000"
+          : text === 2
+            ? "Grade B - ₹25,001 to ₹40,000"
+            : text === 3
+              ? "Grade C - ₹40,001 to ₹60,000"
+              : text === 4
+                ? "Grade D - ₹60,001 to ₹90,000"
+                : text === 5
+                  ? "Grade E - ₹90,001 and above"
+                  : "-",
       sorter: (a, b) =>
         (a?.pay_grade_id?.name || "").localeCompare(
           b?.pay_grade_id?.name || ""
@@ -90,13 +105,35 @@ const BasicSalary = () => {
     {
       title: "Pay Grade Level",
       dataIndex: "pay_grade_level",
-      render: (text) => text || "-",
+      render: (text) =>
+        text === 1
+          ? "Level 1 - Entry"
+          : text === 2
+            ? "Level 2 - Junior"
+            : text === 3
+              ? "Level 3 - Mid"
+              : text === 4
+                ? "Level 4 - Senior"
+                : text === 5
+                  ? "Level 5 - Executive"
+                  : "-",
       sorter: (a, b) => a?.pay_grade_level - b?.pay_grade_level,
     },
     {
       title: "Allowance Group",
       dataIndex: "allowance_group",
-      render: (text) => text || "-",
+      render: (text) =>
+        text === "1"
+          ? "Standard Allowance"
+          : text === "2"
+            ? "Executive Allowance"
+            : text === "3"
+              ? "Managerial Allowance"
+              : text === "4"
+                ? "Field Staff Allowance"
+                : text === "5"
+                  ? "Technical Staff Allowance"
+                  : "-",
       sorter: (a, b) =>
         (a?.allowance_group || "").localeCompare(b?.allowance_group || ""),
     },
@@ -121,48 +158,48 @@ const BasicSalary = () => {
 
     ...(isUpdate || isDelete
       ? [
-        {
-          title: "Actions",
-          dataIndex: "actions",
-          render: (_, record) => (
-            <div className="dropdown table-action">
-              <Link
-                to="#"
-                className="action-icon"
-                data-bs-toggle="dropdown"
-                aria-expanded="true"
-              >
-                <i className="fa fa-ellipsis-v"></i>
-              </Link>
-              <div className="dropdown-menu dropdown-menu-right">
-                {isUpdate && (
-                  <Link
-                    className="dropdown-item edit-popup"
-                    to="#"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvas_add_edit_basic_salary"
-                    onClick={() => {
-                      setSelected(record);
-                      setMode("edit");
-                    }}
-                  >
-                    <i className="ti ti-edit text-blue"></i> Edit
-                  </Link>
-                )}
-                {isDelete && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    onClick={() => handleDeleteBasicSalary(record)}
-                  >
-                    <i className="ti ti-trash text-danger"></i> Delete
-                  </Link>
-                )}
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (_, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_basic_salary"
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteBasicSalary(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ),
-        },
-      ]
+            ),
+          },
+        ]
       : []),
   ];
 
