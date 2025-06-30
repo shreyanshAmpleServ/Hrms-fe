@@ -54,7 +54,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
         sent_on: Notifications.sent_on
           ? new Date(Notifications.sent_on)
           : new Date(),
-        status: Notifications.status || "",
+        status: Notifications.status || "Panding",
       });
     } else {
       // Add mode
@@ -64,7 +64,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
         message_body: "",
         channel: "",
         sent_on: new Date(),
-        status: "",
+        status: "Panding",
       });
     }
   }, [Notifications, reset]);

@@ -10,8 +10,12 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchtravelReimbursement } from "../../redux/TravelReimbursement";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageTravelReimbursement from "./ManageTravelReimbursement";
+import ManageStatus from "./ManageStatus/index.js";
 
 const TravelReimbursement = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedtravelReimbursement, setSelectedtravelReimbursement] =
     useState(null);
@@ -77,9 +81,10 @@ const TravelReimbursement = () => {
     {
       title: "Employee Name",
       dataIndex: "travel_expense_employee",
-      render: (text, record) =>
+      render: (_text, record) =>
         record?.travel_expense_employee?.full_name || "-",
     },
+
     {
       title: "Travel Purpose",
       dataIndex: "travel_purpose",
@@ -160,50 +165,91 @@ const TravelReimbursement = () => {
       dataIndex: "total_amount",
       render: (text) => (text ? `₹${text}` : "-"),
     },
-    {
-      title: "Approved By",
-      dattIndex: "travel_expense_approver",
-      render: (record) => record?.travel_expense_approver?.full_name || "-", // assuming relation
-    },
+
     {
       title: "Approval Status",
       dataIndex: "approval_status",
-      render: (text) => text || "-",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "R"
+              ? "bg-warning"
+              : value === "A"
+                ? "bg-success"
+                : value === "P"
+                  ? "bg-danger"
+                  : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Pending"
+            : value === "A"
+              ? "Approved"
+              : value === "R"
+                ? "Rejected"
+                : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) =>
+        (a.approval_status || "").localeCompare(b.approval_status || ""),
     },
-    ...(isDelete || isUpdate
+
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.approval_status === "P"
+                        ? "Approve/Reject"
+                        : record.approval_status === "R"
+                          ? "Pending/Approve"
+                          : record.approval_status === "A"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedtravelReimbursement(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeletetravelReimbursement(a)}
+                      onClick={() => handleDeletetravelReimbursement(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -329,8 +375,8 @@ const TravelReimbursement = () => {
           </div>
         </div>
         <ManageTravelReimbursement
-          settravelReimbursement={setSelectedtravelReimbursement}
-          travelReimbursement={selectedtravelReimbursement}
+          settravelReimbursement={setSelected}
+          travelReimbursement={selected}
         />
       </div>
       <DeleteConfirmation
@@ -338,6 +384,7 @@ const TravelReimbursement = () => {
         setShowModal={setShowDeleteModal}
         travelReimbursementId={selectedtravelReimbursement?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

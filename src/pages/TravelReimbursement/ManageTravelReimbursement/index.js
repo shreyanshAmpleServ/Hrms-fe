@@ -31,8 +31,7 @@ const ManagetravelReimbursement = ({
       end_date: new Date(),
       destination: "",
       total_amount: "",
-      approved_by: "",
-      approval_status: "",
+      approval_status: "Panding",
       travel_mode: "",
       advance_amount: "",
       expense_breakdown: "",
@@ -44,11 +43,7 @@ const ManagetravelReimbursement = ({
     },
   });
 
-  useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
-
-  useEffect(() => {
+  React.useEffect(() => {
     if (travelReimbursement) {
       reset({
         employee_id: travelReimbursement?.employee_id || "",
@@ -57,8 +52,7 @@ const ManagetravelReimbursement = ({
         end_date: travelReimbursement?.end_date || "",
         destination: travelReimbursement?.destination || "",
         total_amount: travelReimbursement?.total_amount || "",
-        approved_by: travelReimbursement?.approved_by || "",
-        approval_status: travelReimbursement?.approval_status || "",
+        approval_status: travelReimbursement?.approval_status || "Panding",
         travel_mode: travelReimbursement?.travel_mode || "",
         advance_amount: travelReimbursement?.advance_amount || "",
         expense_breakdown: travelReimbursement?.expense_breakdown || "",
@@ -69,12 +63,27 @@ const ManagetravelReimbursement = ({
         remarks: travelReimbursement?.remarks || "",
       });
     } else {
-      reset();
+      reset({
+        employee_id: "",
+        travel_purpose: "",
+        start_date: new Date(),
+        end_date: new Date(),
+        destination: "",
+        total_amount: "",
+        approval_status: "Panding",
+        travel_mode: "",
+        advance_amount: "",
+        expense_breakdown: "",
+        attachment_path: "",
+        currency: "",
+        exchange_rate: "",
+        final_approved_amount: "",
+        remarks: "",
+      });
     }
   }, [travelReimbursement, reset]);
 
   const { employee } = useSelector((state) => state.employee || {});
-  // const { users } = useSelector((state) => state.users || {});
 
   const { loading } = useSelector((state) => state.travelReimbursement || {});
 
@@ -83,17 +92,9 @@ const ManagetravelReimbursement = ({
     value: emp.id,
   }));
 
-  // const userOptions = users?.data?.map((u) => ({
-  //   label: u.full_name,
-  //   value: u.id,
-  // }));
-
-  const statusOptions = [
-    { label: "Pending", value: "Pending" },
-    { label: "Approved", value: "Approved" },
-    { label: "Rejected", value: "Rejected" },
-  ];
-
+  useEffect(() => {
+    dispatch(fetchEmployee({ searchValue }));
+  }, [dispatch, searchValue]);
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -129,6 +130,24 @@ const ManagetravelReimbursement = ({
       console.error("Error in submission", error);
     }
   };
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        settravelReimbursement(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [settravelReimbursement]);
 
   return (
     <div
@@ -185,7 +204,7 @@ const ManagetravelReimbursement = ({
             </div>
 
             {/* Approved By */}
-            <div className="col-md-6 mb-3">
+            {/* <div className="col-md-6 mb-3">
               <label className="col-form-label">
                 Approved By<span className="text-danger">*</span>
               </label>
@@ -215,38 +234,8 @@ const ManagetravelReimbursement = ({
                   {errors.approved_by.message}
                 </small>
               )}
-            </div>
-            <div className="col-md-6 mb-3">
-              <label className="col-form-label">
-                Created By<span className="text-danger">*</span>
-              </label>
-              <Controller
-                name="created_by"
-                control={control}
-                rules={{ required: "Employee is required" }}
-                render={({ field }) => {
-                  const selected = (employeeOptions || []).find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
-              />
-              {errors.created_by && (
-                <small className="text-danger">
-                  {errors.created_by.message}
-                </small>
-              )}
-            </div>
+            </div> */}
+
             {/* Travel Mode */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">Travel Mode</label>
@@ -489,37 +478,6 @@ const ManagetravelReimbursement = ({
               )}
             </div>
 
-            {/* Approval Status */}
-            <div className="col-md-6 mb-3">
-              <label className="col-form-label">
-                Approval Status<span className="text-danger">*</span>
-              </label>
-              <Controller
-                name="approval_status"
-                control={control}
-                rules={{ required: "Status is required" }}
-                render={({ field }) => {
-                  const selected = statusOptions.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={statusOptions}
-                      placeholder="Select status"
-                      value={selected || null}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
-              />
-              {errors.approval_status && (
-                <small className="text-danger">
-                  {errors.approval_status.message}
-                </small>
-              )}
-            </div>
             {/* Expense Breakdown */}
             <div className="col-md-12 mb-3">
               <label className="col-form-label">Expense Breakdown</label>

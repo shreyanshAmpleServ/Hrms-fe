@@ -10,8 +10,11 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchAssetAssignment } from "../../redux/AssetAssignment/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageAssetAssignment from "./ManageAssetAssignment/index.js";
-
+import ManageStatus from "./ManageStatus/index.js";
 const AssetAssignment = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedAssetAssignment, setSelectedAssetAssignment] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -92,17 +95,17 @@ const AssetAssignment = () => {
       dataIndex: "serial_number",
       render: (text) => text || "-",
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => (
-        <p
-          className={`text-capitalize ${text === "available" ? "text-success" : text === "assigned" ? "text-primary" : text === "in_use" ? "text-warning" : text === "under_maintenance" ? "text-info" : text === "damaged" ? "text-danger" : text === "lost" ? "text-danger" : text === "disposed" ? "text-danger" : text === "returned" ? "text-success" : ""}`}
-        >
-          {text}
-        </p>
-      ),
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   render: (text) => (
+    //     <p
+    //       className={`text-capitalize ${text === "available" ? "text-success" : text === "assigned" ? "text-primary" : text === "in_use" ? "text-warning" : text === "under_maintenance" ? "text-info" : text === "damaged" ? "text-danger" : text === "lost" ? "text-danger" : text === "disposed" ? "text-danger" : text === "returned" ? "text-success" : ""}`}
+    //     >
+    //       {text}
+    //     </p>
+    //   ),
+    // },
     {
       title: "Issued On",
       dataIndex: "issued_on",
@@ -113,40 +116,109 @@ const AssetAssignment = () => {
       dataIndex: "returned_on",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
-    ...(isDelete || isUpdate
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "A"
+              ? "bg-primary"
+              : value === "Assigned"
+                ? "bg-info"
+                : value === "In Use"
+                  ? "bg-secondary"
+                  : value === "Under Maintenance"
+                    ? "bg-warning"
+                    : value === "D"
+                      ? "bg-danger"
+                      : value === "L"
+                        ? "bg-dark"
+                        : value === "Disposed"
+                          ? "bg-secondary"
+                          : value === "R"
+                            ? "bg-success"
+                            : "bg-secondary"
+          }`}
+        >
+          {value === "A"
+            ? "Available"
+            : value === "Assigned"
+              ? "Assigned"
+              : value === "In Use"
+                ? "In Use"
+                : value === "Under Maintenance"
+                  ? "Under Maintenance"
+                  : value === "D"
+                    ? "Damaged"
+                    : value === "L"
+                      ? "Lost"
+                      : value === "Disposed"
+                        ? "Disposed"
+                        : value === "R"
+                          ? "Returned"
+                          : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+    },
+
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.status === "I"
+                        ? "Pending/Progress"
+                        : record.status === "P"
+                          ? "Pending/Completed"
+                          : record.status === "C"
+                            ? "Pending/Completed"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedAssetAssignment(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteAssetAssignment(a)}
+                      onClick={() => handleDeleteAssetAssignment(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -272,8 +344,8 @@ const AssetAssignment = () => {
           </div>
         </div>
         <ManageAssetAssignment
-          setAssetAssignment={setSelectedAssetAssignment}
-          assetAssignment={selectedAssetAssignment}
+          setAssetAssignment={setSelected}
+          assetAssignment={selected}
         />
       </div>
       <DeleteConfirmation
@@ -281,6 +353,7 @@ const AssetAssignment = () => {
         setShowModal={setShowDeleteModal}
         assetAssignmentId={selectedAssetAssignment?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

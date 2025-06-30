@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 /** travelReimbursement travelReimbursement
 
  * Fetch all time sheet with optional filters (search, date range, pagination).
@@ -130,6 +130,29 @@ export const fetchtravelReimbursementById = createAsyncThunk(
   }
 );
 
+export const updateTravelReimbursementStatus = createAsyncThunk(
+  "travelReimbursement/updateTravelReimbursementStatus",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const response = await toast.promise(
+        apiClient.patch(`/v1/travel-expense/${id}/status`, data),
+        {
+          loading: "Updating travel reimbursement status...",
+          success: "Travel reimbursement status updated successfully",
+          error: "Failed to update travel reimbursement status",
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || {
+          message: "Failed to update travel reimbursement status",
+        }
+      );
+    }
+  }
+);
+
 const travelReimbursementSlice = createSlice({
   name: "travelReimbursement",
   initialState: {
@@ -242,6 +265,25 @@ const travelReimbursementSlice = createSlice({
         state.travelReimbursementDetail = action.payload.data; // Consider renaming to travelReimbursementDetail
       })
       .addCase(fetchtravelReimbursementById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+
+      .addCase(updateTravelReimbursementStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateTravelReimbursementStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.travelReimbursement?.data?.findIndex(
+          (item) => item.id === action.payload.data.id
+        );
+        if (index !== -1) {
+          state.travelReimbursement.data[index] = action.payload.data;
+        }
+        state.success = action.payload.message;
+      })
+      .addCase(updateTravelReimbursementStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

@@ -29,9 +29,9 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
       asset_type_id: assetAssignment?.asset_assignment_type?.id || "",
       asset_name: assetAssignment?.asset_name || "",
       serial_number: assetAssignment?.serial_number || "",
-      issued_on: assetAssignment?.issued_on || new Date().toISOString(),
+      issued_on: assetAssignment?.issued_on || new Date(),
       returned_on: assetAssignment?.returned_on || "",
-      status: assetAssignment?.status || "",
+      status: assetAssignment?.status || "Pending",
     });
   }, [assetAssignment, reset]);
 
@@ -47,16 +47,16 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     label: i?.full_name,
     value: i?.id,
   }));
-  const assetStatusOptions = [
-    { value: "available", label: "Available" },
-    { value: "assigned", label: "Assigned" },
-    { value: "in_use", label: "In Use" },
-    { value: "under_maintenance", label: "Under Maintenance" },
-    { value: "damaged", label: "Damaged" },
-    { value: "lost", label: "Lost" },
-    { value: "disposed", label: "Disposed" },
-    { value: "returned", label: "Returned" },
-  ];
+  // const assetStatusOptions = [
+  //   { value: "available", label: "Available" },
+  //   { value: "assigned", label: "Assigned" },
+  //   { value: "in_use", label: "In Use" },
+  //   { value: "under_maintenance", label: "Under Maintenance" },
+  //   { value: "damaged", label: "Damaged" },
+  //   { value: "lost", label: "Lost" },
+  //   { value: "disposed", label: "Disposed" },
+  //   { value: "returned", label: "Returned" },
+  // ];
 
   React.useEffect(() => {
     dispatch(fetchassets_type());
@@ -226,7 +226,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
                       Status
@@ -270,7 +270,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                       </small>
                     )}
                   </div>
-                </div>
+                </div> */}
                 <div className="col-md-6">
                   <label className="col-form-label">
                     Asset Name<span className="text-danger">*</span>
@@ -359,33 +359,6 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                       {errors.issued_on.message}
                     </small>
                   )}
-                </div>
-                <div className="col-md-6">
-                  <label className="col-form-label">Returned Date</label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <Controller
-                      name="returned_on"
-                      control={control}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          className="form-control"
-                          placeholderText="Select Returned Date"
-                          selected={field.value}
-                          value={
-                            field.value
-                              ? moment(field.value).format("DD-MM-YYYY")
-                              : null
-                          }
-                          onChange={field.onChange}
-                          dateFormat="DD-MM-YYYY"
-                        />
-                      )}
-                    />
-                  </div>
                 </div>
               </div>
             </div>
