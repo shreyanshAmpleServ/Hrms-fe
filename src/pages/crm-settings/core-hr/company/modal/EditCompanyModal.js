@@ -23,19 +23,33 @@ const EditCompanyModal = ({ company }) => {
       company_code: company?.company_code || "",
       contact_email: company?.contact_email || "",
       contact_phone: company?.contact_phone || "",
-      currency_code: Number(company?.currency_code) || "",
+      currency_code: company?.currency_code || "",
       contact_person: company?.contact_person || "",
       country_id: company?.country_id || null,
       financial_year_start: company?.financial_year_start || "",
       timezone: company?.timezone || "",
       address: company?.address || "",
+      is_active: company?.is_active || "Y",
     },
   });
 
   useEffect(() => {
-    reset({ ...company });
+    if (company) {
+      reset({
+        company_name: company.company_name || "",
+        company_code: company.company_code || "",
+        contact_email: company.contact_email || "",
+        contact_phone: company.contact_phone || "",
+        currency_code: company.currency_code || "",
+        contact_person: company.contact_person || "",
+        country_id: company.country_id || null,
+        financial_year_start: company.financial_year_start || "",
+        timezone: company.timezone || "",
+        address: company.address || "",
+        is_active: company.is_active || "Y",
+      });
+    }
   }, [company, reset]);
-
   React.useEffect(() => {
     dispatch(fetchCountries());
   }, [dispatch]);
@@ -49,12 +63,13 @@ const EditCompanyModal = ({ company }) => {
   React.useEffect(() => {
     dispatch(fetchCurrencies());
   }, [dispatch]);
+
   const { currencies } = useSelector((state) => state.currencies);
 
   const CurrenciesList = useMemo(() => {
     return (
       currencies?.data?.map((item) => ({
-        value: item.id,
+        value: item.currency_code,
         label: `${item.currency_code} ( ${item.currency_name} )`,
       })) || []
     );
@@ -64,7 +79,7 @@ const EditCompanyModal = ({ company }) => {
     const closeButton = document.getElementById("close_company_edit_btn");
     try {
       await dispatch(
-        updateCompany({ id: company.id, companyData: data }),
+        updateCompany({ id: company.id, companyData: data })
       ).unwrap();
       closeButton.click();
       reset();
@@ -192,7 +207,7 @@ const EditCompanyModal = ({ company }) => {
                               value={
                                 CountriesList?.find(
                                   (option) =>
-                                    option.value === watch("country_id"),
+                                    option.value === watch("country_id")
                                 ) || ""
                               }
                             />
@@ -229,7 +244,7 @@ const EditCompanyModal = ({ company }) => {
                               value={
                                 CurrenciesList.find(
                                   (option) =>
-                                    option.value === watch("currency_code"),
+                                    option.value === watch("currency_code")
                                 ) || ""
                               }
                             />
@@ -287,8 +302,60 @@ const EditCompanyModal = ({ company }) => {
                         <label className="col-form-label">Timezone</label>
                         <input
                           type="text"
+                          placeholder="Enter Timezone"
                           className="form-control"
                           {...register("timezone")}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6 mb-3">
+                      <label className="col-form-label">Status</label>
+                      <div className="d-flex align-items-center mt-2">
+                        <Controller
+                          name="is_active"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="d-flex">
+                              <div className="me-3">
+                                <input
+                                  type="radio"
+                                  className="form-check-input"
+                                  id="status_active"
+                                  name="is_active"
+                                  value="Y"
+                                  checked={field.value === "Y"}
+                                  onChange={(e) => {
+                                    field.onChange("Y");
+                                  }}
+                                />
+                                <label
+                                  htmlFor="status_active"
+                                  className="form-check-label ms-1"
+                                >
+                                  Active
+                                </label>
+                              </div>
+                              <div>
+                                <input
+                                  type="radio"
+                                  className="form-check-input"
+                                  id="status_inactive"
+                                  name="is_active"
+                                  value="N"
+                                  checked={field.value === "N"}
+                                  onChange={(e) => {
+                                    field.onChange("N");
+                                  }}
+                                />
+                                <label
+                                  htmlFor="status_inactive"
+                                  className="form-check-label ms-1"
+                                >
+                                  Inactive
+                                </label>
+                              </div>
+                            </div>
+                          )}
                         />
                       </div>
                     </div>

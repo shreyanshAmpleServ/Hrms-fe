@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -20,15 +21,8 @@ const CurrenciesList = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Currency"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Currency");
 
   const dispatch = useDispatch();
 
@@ -36,13 +30,20 @@ const CurrenciesList = () => {
     {
       title: "Currency Name",
       dataIndex: "currency_name",
-      render: (_text, record) => <Link to={`#`}>{record.currency_name}</Link>,
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (_text, record) => (
+        <Link to={`#`}>{record.currency_name || "-"}</Link>
+      ),
+      sorter: (a, b) =>
+        (a.currency_name || "").localeCompare(b.currency_name || ""),
     },
     {
       title: "Currency Code",
       dataIndex: "currency_code",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (_text, record) => (
+        <Link to={`#`}>{record.currency_code || "-"}</Link>
+      ),
+      sorter: (a, b) =>
+        (a.currency_code || "").localeCompare(b.currency_code || ""),
     },
     {
       title: "Created Date",
@@ -66,7 +67,7 @@ const CurrenciesList = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     ...(isUpdate || isDelete
       ? [

@@ -23,11 +23,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       reset({
         rating_value: initialData.rating_value || "",
         rating_description: initialData.rating_description || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         rating_value: "",
         rating_description: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -37,6 +39,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     const finalData = {
       rating_value: Number(data?.rating_value),
       rating_description: data?.rating_description,
+      is_active: data?.is_active,
     };
     if (mode === "add") {
       dispatch(addrating_scale(finalData));
@@ -114,6 +117,31 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {errors.rating_description.message}
                     </small>
                   )}
+                </div>
+              </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
                 </div>
               </div>
             </div>

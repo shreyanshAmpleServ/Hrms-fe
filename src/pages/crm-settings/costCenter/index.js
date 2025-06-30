@@ -1,33 +1,21 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTable/index";
-import FlashMessage from "../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-
-import moment from "moment";
-
+import usePermissions from "../../../components/common/Permissions.js";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { Helmet } from "react-helmet-async";
 import { deleteCostCenter, fetchCostCenter } from "../../../redux/costCenter";
-import { clearMessages } from "../../../redux/taxSetUp";
+import DeleteAlert from "./alert/DeleteAlert";
 import ManageTaxModal from "./modal/ManageTaxModal";
 
 const CostCenter = () => {
-  const [mode, setMode] = useState("add"); // 'add' or 'edit'
-
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Cost Center"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Cost Center");
 
   const dispatch = useDispatch();
   const columns = [
@@ -39,42 +27,30 @@ const CostCenter = () => {
     {
       title: "External Code",
       dataIndex: "external_code",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => a.external_code.localeCompare(b.external_code),
     },
     {
       title: "Dimension",
       dataIndex: "dimension_id",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
-    // {
-    //   title: "Account",
-    //   dataIndex: "account_name",
-    //   sorter: (a, b) => a.account_name.localeCompare(b.account_name),
-    // },
     {
       title: "Valid From",
       dataIndex: "validFrom",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
       sorter: (a, b) => new Date(a.validFrom) - new Date(b.validFrom),
     },
     {
       title: "Valid To",
       dataIndex: "validTo",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.validTo) - new Date(b.validTo),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     {
       title: "Status",
@@ -92,14 +68,13 @@ const CostCenter = () => {
           )}
         </div>
       ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
     ...(isUpdate || isDelete
       ? [
           {
             title: "Actions",
             dataIndex: "actions",
-            render: (text, record) => (
+            render: (_text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -118,7 +93,6 @@ const CostCenter = () => {
                       data-bs-target="#offcanvas_add_edit_tax_setup"
                       onClick={() => {
                         setSelectedTax(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit
@@ -141,12 +115,9 @@ const CostCenter = () => {
       : []),
   ];
 
-  const {
-    costCenter: taxs,
-    loading,
-    error,
-    success,
-  } = useSelector((state) => state.costCenter);
+  const { costCenter: costCenters, loading } = useSelector(
+    (state) => state.costCenter
+  );
 
   React.useEffect(() => {
     dispatch(fetchCostCenter());
@@ -160,7 +131,7 @@ const CostCenter = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = taxs?.data || [];
+    let data = costCenters?.data || [];
     if (searchText) {
       data = data.filter((item) =>
         columns.some((col) =>
@@ -181,7 +152,7 @@ const CostCenter = () => {
       );
     }
     return data;
-  }, [searchText, taxs, columns, sortOrder]);
+  }, [searchText, costCenters, columns, sortOrder]);
 
   const handleDeleteTax = (tax) => {
     setSelectedTax(tax);
@@ -193,7 +164,6 @@ const CostCenter = () => {
   const deleteData = () => {
     if (selectedTax) {
       dispatch(deleteCostCenter(selectedTax.id));
-      // navigate(`/taxs`);
       setShowDeleteModal(false);
     }
   };
@@ -205,21 +175,6 @@ const CostCenter = () => {
         <meta name="Tax Setup" content="This is Tax Setup page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -228,7 +183,7 @@ const CostCenter = () => {
                   <h4 className="page-title">
                     Cost Center
                     <span className="count-title">
-                      {taxs?.data?.length || 0}
+                      {costCenters?.data?.length || 0}
                     </span>
                   </h4>
                 </div>
@@ -288,7 +243,6 @@ const CostCenter = () => {
         </div>
       </div>
 
-      {/* <AddEditModal mode={mode} initialData={selectedTax} /> */}
       <ManageTaxModal tax={selectedTax} setTax={setSelectedTax} />
       <DeleteAlert
         label="Cost Center"

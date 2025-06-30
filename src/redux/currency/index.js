@@ -38,7 +38,7 @@ export const addCurrencies = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add Currencies"
+        error.response?.data || "Failed to add Currency"
       );
     }
   }
@@ -52,9 +52,9 @@ export const updateCurrencies = createAsyncThunk(
       const response = await toast.promise(
         apiClient.put(`/v1/currencies/${id}`, CurrenciesData),
         {
-          loading: "Updating Currencies...",
-          success: "Currencies updated successfully",
-          error: "Failed to update Currencies",
+          loading: "Updating Currency...",
+          success: "Currency updated successfully",
+          error: "Failed to update Currency",
         }
       );
       return response.data;
@@ -66,7 +66,7 @@ export const updateCurrencies = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update Currencies"
+        error.response?.data || "Failed to update Currency"
       );
     }
   }
@@ -80,18 +80,18 @@ export const deleteCurrencies = createAsyncThunk(
       const response = await toast.promise(
         apiClient.delete(`/v1/currencies/${id}`),
         {
-          loading: "Deleting Currencies...",
-          success: "Currencies deleted successfully",
-          error: "Failed to delete Currencies",
+          loading: "Deleting Currency...",
+          success: "Currency deleted successfully",
+          error: "Failed to delete Currency",
         }
       );
       return {
         data: { id },
-        message: response.data.message || "Currencies deleted successfully",
+        message: response.data.message || "Currency deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete Currencies"
+        error.response?.data || "Failed to delete Currency"
       );
     }
   }
@@ -103,10 +103,10 @@ export const fetchCurrenciesById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/currencies/${id}`);
-      return response.data; // Returns the Currencies details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch Currencies"
+        error.response?.data || "Failed to fetch Currency"
       );
     }
   }

@@ -2,9 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 import toast from "react-hot-toast";
 
-// tax_relief Slice
-
-// Fetch All tax_relief
 export const fetchTaxSlab = createAsyncThunk(
   "taxSlab/fetchTaxSlab",
   async (datas, thunkAPI) => {
@@ -23,7 +20,6 @@ export const fetchTaxSlab = createAsyncThunk(
   }
 );
 
-// Add an tax_relief
 export const addTaxSlab = createAsyncThunk(
   "taxSlab/addTaxSlab",
   async (data, thunkAPI) => {
@@ -45,7 +41,6 @@ export const addTaxSlab = createAsyncThunk(
   }
 );
 
-// Update an tax_relief
 export const updateTaxSlab = createAsyncThunk(
   "taxSlab/updateTaxSlab",
   async ({ id, data }, thunkAPI) => {
@@ -73,7 +68,6 @@ export const updateTaxSlab = createAsyncThunk(
   }
 );
 
-// Delete an tax_relief
 export const deleteTaxSlab = createAsyncThunk(
   "taxSlab/deleteTaxSlab",
   async (id, thunkAPI) => {
@@ -145,13 +139,13 @@ const taxSlabSlice = createSlice({
       })
       .addCase(updateTaxSlab.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.taxSlab?.findIndex(
+        const index = state.taxSlab?.data?.findIndex(
           (data) => data.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.taxSlab[index] = action.payload.data;
+          state.taxSlab.data[index] = action.payload.data;
         } else {
-          state.taxSlab = [...state.taxSlab, action.payload.data];
+          state.taxSlab = [...state.taxSlab.data, action.payload.data];
         }
         state.success = action.payload.message;
       })
@@ -165,7 +159,7 @@ const taxSlabSlice = createSlice({
       })
       .addCase(deleteTaxSlab.fulfilled, (state, action) => {
         state.loading = false;
-        const filterData = state.taxSlab.filter(
+        const filterData = state.taxSlab.data.filter(
           (data) => data.id !== action.payload.data.id
         );
         state.taxSlab = filterData;

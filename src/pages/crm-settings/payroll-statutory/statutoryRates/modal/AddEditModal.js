@@ -35,6 +35,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     label: "(" + emnt.code + ") " + emnt.name,
   }));
 
+  const selectedCountry = CountriesList?.find(
+    (option) => String(option.value) === String(watch("country_code"))
+  );
+
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -217,23 +221,19 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     <Controller
                       name="country_code"
                       control={control}
-                      rules={{ required: "Country is required" }} // Validation rule
+                      rules={{ required: "Country is required" }}
                       render={({ field }) => (
                         <Select
                           {...field}
                           options={CountriesList}
-                          placeholder="Choose"
-                          isDisabled={!CountriesList.length} // Disable if no stages are available
+                          placeholder="Choose Country"
+                          isDisabled={!CountriesList.length}
                           classNamePrefix="react-select"
                           className="select2"
                           onChange={(selectedOption) =>
                             field.onChange(selectedOption?.value || null)
-                          } // Send only value
-                          value={
-                            CountriesList?.find(
-                              (option) => option.value === watch("country_code")
-                            ) || ""
                           }
+                          value={selectedCountry}
                         />
                       )}
                     />
@@ -247,7 +247,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
 
               {/* Status */}
-              <div className="mb-0">
+              <div className="mb-3">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
                   <div className="me-2">

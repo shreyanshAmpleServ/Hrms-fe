@@ -6,15 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deletetax_Regime,
-  fetchtax_Regime,
-} from "../../../../redux/taxRegime";
+import { deletetax_Regime, fetchtax_Regime } from "../../../../redux/taxRegime";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
@@ -26,15 +22,7 @@ const TaxRegime = () => {
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Tax Regime",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Tax Regime");
 
   const dispatch = useDispatch();
 
@@ -49,11 +37,22 @@ const TaxRegime = () => {
     {
       title: "Country",
       dataIndex: "regime_country",
-      render: (text) => text?.name || "",
+      render: (text) => text?.name || "-",
       sorter: (a, b) =>
         (a.regime_country?.name || "").localeCompare(
-          b.regime_country?.name || "",
+          b.regime_country?.name || ""
         ),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) =>
+        text === "Y" ? (
+          <span className="badge bg-success">Active</span>
+        ) : (
+          <span className="badge bg-danger">Inactive</span>
+        ),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     {
       title: "Created Date",
@@ -108,9 +107,7 @@ const TaxRegime = () => {
       : []),
   ];
 
-  const { tax_Regime, loading, error, success } = useSelector(
-    (state) => state.taxRegime,
-  );
+  const { tax_Regime, loading } = useSelector((state) => state.taxRegime);
 
   React.useEffect(() => {
     dispatch(fetchtax_Regime({ search: searchText }));
@@ -135,7 +132,7 @@ const TaxRegime = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -148,11 +145,11 @@ const TaxRegime = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -181,21 +178,6 @@ const TaxRegime = () => {
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">

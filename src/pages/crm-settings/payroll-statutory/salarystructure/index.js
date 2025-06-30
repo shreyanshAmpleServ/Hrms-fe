@@ -25,7 +25,7 @@ const SalaryStructure = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Salary Structure",
+    (i) => i?.module_name === "Salary Structure"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -41,6 +41,16 @@ const SalaryStructure = () => {
       dataIndex: "structure_name",
       render: (_text, record) => <Link to={`#`}>{record.structure_name}</Link>,
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) =>
+        text === "Y" ? (
+          <span className="badge bg-success">Active</span>
+        ) : (
+          <span className="badge bg-danger">Inactive</span>
+        ),
     },
     {
       title: "Created Date",
@@ -96,7 +106,7 @@ const SalaryStructure = () => {
   ];
 
   const { salary_structure, loading } = useSelector(
-    (state) => state.salaryStructure,
+    (state) => state.salaryStructure
   );
 
   React.useEffect(() => {
@@ -122,7 +132,7 @@ const SalaryStructure = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -135,11 +145,11 @@ const SalaryStructure = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

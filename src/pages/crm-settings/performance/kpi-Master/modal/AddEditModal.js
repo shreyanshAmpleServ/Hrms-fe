@@ -20,11 +20,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       reset({
         kpi_name: initialData.kpi_name || "",
         description: initialData.description || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         kpi_name: "",
         description: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -65,7 +67,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   KPI Name <span className="text-danger">*</span>
@@ -112,8 +113,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 )}
               </div>
 
-              {/* Status */}
-              {/* <div className="mb-0">
+              <div className="mb-3">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
                   <div className="me-2">
@@ -140,12 +140,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
-              </div> */}
+              </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

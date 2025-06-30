@@ -1,12 +1,11 @@
 // Required imports
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { fetchEmployee } from "../../../../redux/Employee";
 import { addUser } from "../../../../redux/manage-user";
 import { fetchRoles } from "../../../../redux/roles";
-import { fetchEmployee } from "../../../../redux/Employee";
-import Search from "antd/es/transfer/search";
 
 const AddUserModal = () => {
   const dispatch = useDispatch();
@@ -19,7 +18,6 @@ const AddUserModal = () => {
 
   const [showEmployeeDetails, setShowEmployeeDetails] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
   const {
@@ -48,9 +46,6 @@ const AddUserModal = () => {
     dispatch(fetchRoles());
     dispatch(fetchEmployee());
   }, [dispatch]);
-  useEffect(() => {
-    searchValue && dispatch(fetchEmployee({ Search: searchValue }));
-  }, [dispatch, searchValue]);
 
   useEffect(() => {
     if (showEmployeeDetails && selectedEmployee) {
@@ -190,7 +185,7 @@ const AddUserModal = () => {
                   rules={
                     showEmployeeDetails && { required: "Employee is required" }
                   }
-                  render={({ field }) => {
+                  render={() => {
                     return (
                       <Select
                         options={employees}

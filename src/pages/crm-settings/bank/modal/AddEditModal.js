@@ -17,9 +17,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      reset({ bank_name: initialData.bank_name || "" });
+      reset({
+        bank_name: initialData.bank_name || "",
+        is_active: initialData.is_active || "Y",
+      });
     } else {
-      reset({ bank_name: "" });
+      reset({ bank_name: "", is_active: "Y" });
     }
   }, [mode, initialData, reset]);
 
@@ -28,7 +31,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (mode === "add") {
       dispatch(addbank(data));
     } else if (mode === "edit" && initialData) {
-      dispatch(updatebank({ id: initialData.id, ankData: data }));
+      dispatch(updatebank({ id: initialData.id, bankData: data }));
     }
     reset();
     closeButton?.click();
@@ -72,6 +75,38 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 {errors.bank_name && (
                   <small className="text-danger">
                     {errors.bank_name.message}
+                  </small>
+                )}
+              </div>
+              <div className="mb-0">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active", {
+                        required: "Status is required.",
+                      })}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
+                {errors.is_active && (
+                  <small className="text-danger">
+                    {errors.is_active.message}
                   </small>
                 )}
               </div>

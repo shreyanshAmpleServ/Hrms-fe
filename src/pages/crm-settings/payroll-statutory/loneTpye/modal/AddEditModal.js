@@ -21,11 +21,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       reset({
         loan_name: initialData.loan_name || "",
         interest_rate: initialData.interest_rate || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         loan_name: "",
         interest_rate: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -41,7 +43,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updateloan_type({
           id: initialData.id,
           loan_typeData: finalData,
-        }),
+        })
       );
     }
     reset();
@@ -119,8 +121,39 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </small>
                 )}
               </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active", {
+                        required: "Status is required.",
+                      })}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
+                {errors.is_active && (
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
+                )}
+              </div>
             </div>
-
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

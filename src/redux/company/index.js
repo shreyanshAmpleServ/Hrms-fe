@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast";
 
 // Fetch All Company
 export const fetchCompany = createAsyncThunk(
@@ -28,7 +29,14 @@ export const addCompany = createAsyncThunk(
   "company/addCompany",
   async (companyData, thunkAPI) => {
     try {
-      const response = await apiClient.post("/v1/company", companyData);
+      const response = await toast.promise(
+        apiClient.post("/v1/company", companyData),
+        {
+          loading: "Adding company...",
+          success: "Company added successfully",
+          error: "Failed to add company",
+        }
+      );
       return response.data; // Returns the newly added company
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -41,10 +49,17 @@ export const addCompany = createAsyncThunk(
 // Update a Company
 export const updateCompany = createAsyncThunk(
   "company/updateCompany",
-  async ({ companyData }, thunkAPI) => {
+  async ({ id, companyData }, thunkAPI) => {
+    console.log(id, companyData);
     try {
-      const { id, ...data } = companyData;
-      const response = await apiClient.put(`/v1/company/${id}`, { ...data });
+      const response = await toast.promise(
+        apiClient.put(`/v1/company/${id}`, companyData),
+        {
+          loading: "Updating company...",
+          success: "Company updated successfully",
+          error: "Failed to update company",
+        }
+      );
       return response.data; // Returns the updated company
     } catch (error) {
       if (error.response?.status === 404) {
@@ -65,7 +80,14 @@ export const deleteCompany = createAsyncThunk(
   "company/deleteCompany",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/company/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/company/${id}`),
+        {
+          loading: "Deleting company...",
+          success: "Company deleted successfully",
+          error: "Failed to delete company",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "Company deleted successfully",

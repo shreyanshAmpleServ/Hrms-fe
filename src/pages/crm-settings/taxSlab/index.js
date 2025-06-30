@@ -4,118 +4,84 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTable/index";
-import FlashMessage from "../../../components/common/modals/FlashMessage";
 import DeleteAlert from "./alert/DeleteAlert";
 
 import moment from "moment";
 
+import { Helmet } from "react-helmet-async";
+import usePermissions from "../../../components/common/Permissions.js";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-// import { clearMessages, fetchManufacturer } from "../../../redux/manufacturer";
-import {
-  clearMessages,
-  deleteTaxSlab,
-  fetchTaxSlab,
-} from "../../../redux/taxSlab";
+import { deleteTaxSlab, fetchTaxSlab } from "../../../redux/taxSlab";
 import ManageTaxModal from "./modal/ManageTaxModal";
-import { Helmet } from "react-helmet-async";
 
 const TaxSlab = () => {
-  const [mode, setMode] = useState("add"); // 'add' or 'edit'
-
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Tax Slab"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Tax Slab");
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Rule Type",
       dataIndex: "rule_type",
-      // render: (text, record) => <Link to={`#`}>{record.name}</Link>,
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a, b) => (a.rule_type || "").localeCompare(b.rule_type || ""),
     },
-    // {
-    //   title: "Category",
-    //   dataIndex: "category",
-    //   // render: (text, record) => (
-    //   //   <Link to={`#`}>{record.name}</Link>
-    //   // ),
-    //   sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-    // },
+
     {
       title: "Slab Min",
       dataIndex: "slab_min",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.slab_min || "").localeCompare(b.slab_min || ""),
     },
     {
       title: "Slab Max",
       dataIndex: "slab_max",
-      sorter: (a, b) => a.account_name.localeCompare(b.account_name),
+      sorter: (a, b) => a.slab_max.localeCompare(b.slab_max),
     },
     {
       title: "Rate",
       dataIndex: "rate",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) => (a.rate || "").localeCompare(b.rate || ""),
     },
     {
       title: "Flat Amount",
       dataIndex: "flat_amount",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.flat_amount || "").localeCompare(b.flat_amount || ""),
     },
     {
       title: "Formula Text",
       dataIndex: "formula_text",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      sorter: (a, b) =>
+        (a.formula_text || "").localeCompare(b.formula_text || ""),
     },
     {
       title: "Effective From",
       dataIndex: "effective_from",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
       sorter: (a, b) => new Date(a.validFrom) - new Date(b.validFrom),
     },
     {
       title: "Effective To",
       dataIndex: "effective_to",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.effective_from) - new Date(b.effective_from),
     },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     {
       title: "Status",
       dataIndex: "is_active",
-      render: (text) => (
-        <div>
-          {text === "Y" ? (
-            <span className="badge badge-pill badge-status bg-success">
-              Active
-            </span>
-          ) : (
-            <span className="badge badge-pill badge-status bg-danger">
-              Inactive
-            </span>
-          )}
-        </div>
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+      render: (text) =>
+        text === "Y" ? (
+          <span className="badge bg-success">Active</span>
+        ) : (
+          <span className="badge bg-danger">Inactive</span>
+        ),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     ...(isUpdate || isDelete
       ? [
@@ -141,7 +107,6 @@ const TaxSlab = () => {
                       data-bs-target="#offcanvas_add_edit_tax_setup"
                       onClick={() => {
                         setSelectedTax(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit
@@ -164,12 +129,7 @@ const TaxSlab = () => {
       : []),
   ];
 
-  const {
-    taxSlab: taxs,
-    loading,
-    error,
-    success,
-  } = useSelector((state) => state.taxSlab);
+  const { taxSlab: taxs, loading } = useSelector((state) => state.taxSlab);
 
   React.useEffect(() => {
     dispatch(fetchTaxSlab());
@@ -183,7 +143,7 @@ const TaxSlab = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = taxs;
+    let data = taxs?.data || [];
     if (searchText) {
       data = data.filter((item) =>
         columns.some((col) =>
@@ -196,11 +156,11 @@ const TaxSlab = () => {
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
@@ -216,7 +176,6 @@ const TaxSlab = () => {
   const deleteData = () => {
     if (selectedTax) {
       dispatch(deleteTaxSlab(selectedTax.id));
-      // navigate(`/taxs`);
       setShowDeleteModal(false);
     }
   };
@@ -228,21 +187,6 @@ const TaxSlab = () => {
         <meta name="Tax Setup" content="This is Tax Setup page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -250,7 +194,9 @@ const TaxSlab = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Tax Slab
-                    <span className="count-title">{taxs?.length || 0}</span>
+                    <span className="count-title">
+                      {taxs?.data?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -309,7 +255,6 @@ const TaxSlab = () => {
         </div>
       </div>
 
-      {/* <AddEditModal mode={mode} initialData={selectedTax} /> */}
       <ManageTaxModal tax={selectedTax} setTax={setSelectedTax} />
       <DeleteAlert
         label="Tax Slab"

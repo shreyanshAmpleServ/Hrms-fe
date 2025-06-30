@@ -27,7 +27,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       });
     } else {
       reset({
-        category_name: "",
+        name: "",
         is_active: "Y",
       });
     }
@@ -48,7 +48,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       dispatch(
         updateemployee_category({
           id: initialData.id,
-          employee_categoeyData: {
+          employee_categoryData: {
             category_name: data.name,
             is_active: data.is_active,
           },

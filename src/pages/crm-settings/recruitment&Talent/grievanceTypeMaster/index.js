@@ -25,7 +25,7 @@ const GrievanceTypeMaster = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Grievance Type",
+    (i) => i?.module_name === "Grievance Type"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -43,7 +43,30 @@ const GrievanceTypeMaster = () => {
       sorter: (a, b) =>
         a.grievance_type_name.localeCompare(b.grievance_type_name),
     },
-
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <>
+          {text === "Y" ? (
+            <span className="badge badge-pill badge-status bg-success">
+              Active
+            </span>
+          ) : (
+            <span className="badge badge-pill badge-status bg-danger">
+              Inactive
+            </span>
+          )}
+        </>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    },
+    {
+      title: "Created Date",
+      dataIndex: "createdate",
+      render: (text) => moment(text).format("DD-MM-YYYY"),
+      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
+    },
     ...(isUpdate || isDelete
       ? [
           {
@@ -92,7 +115,7 @@ const GrievanceTypeMaster = () => {
   ];
 
   const { grievance_type, loading } = useSelector(
-    (state) => state.grievanceType,
+    (state) => state.grievanceType
   );
 
   React.useEffect(() => {
@@ -118,7 +141,7 @@ const GrievanceTypeMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -131,11 +154,11 @@ const GrievanceTypeMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;

@@ -9,17 +9,12 @@ import { Link, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTable/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
 import UnauthorizedImage from "../../../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../../../components/datatable/DateRangePickerComponent";
 import ExportData from "../../../../components/datatable/ExportData";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deleteCompany,
-  fetchCompany,
-} from "../../../../redux/company";
+import { deleteCompany, fetchCompany } from "../../../../redux/company";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddCompanyModal from "./modal/AddCompanyModal";
 import EditCompanyModal from "./modal/EditCompanyModal";
@@ -37,7 +32,7 @@ const Company = () => {
   const [paginationData, setPaginationData] = useState();
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Company",
+    (i) => i?.module_name === "Company"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -50,70 +45,94 @@ const Company = () => {
       {
         title: "Company Name",
         dataIndex: "company_name",
-        render: (text, record) => (
-          <Link to={`/company/${record.id}`}>{record.company_name}</Link>
-        ),
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        render: (_, record) => {
+          return (
+            <Link to={`/company/${record.id}`}>{record.company_name}</Link>
+          );
+        },
+        sorter: (a, b) =>
+          (a.company_name || "").localeCompare(b.company_name || ""),
       },
       {
         title: "Company Code",
         dataIndex: "company_code",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        sorter: (a, b) =>
+          (a.company_code || "").localeCompare(b.company_code || ""),
       },
       {
         title: "Currency Code",
         dataIndex: "currency_code",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        sorter: (a, b) =>
+          (a.currency_code || "").localeCompare(b.currency_code || ""),
       },
       {
         title: "Financial Year Start",
         dataIndex: "financial_year_start",
-        render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+        render: (text) => <>{moment(text).format("DD-MM-YYYY") || "-"}</>,
         sorter: (a, b) =>
           new Date(a.financial_year_start) - new Date(b.financial_year_start),
       },
       {
         title: "Address",
         dataIndex: "address",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        sorter: (a, b) => (a.address || "").localeCompare(b.address || ""),
       },
       {
         title: "Contact Person",
         dataIndex: "contact_person",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        sorter: (a, b) =>
+          (a.contact_person || "").localeCompare(b.contact_person || ""),
       },
       {
         title: "Country Id",
         dataIndex: "country_id",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        sorter: (a, b) =>
+          (a.country_id || "").localeCompare(b.country_id || ""),
       },
       {
         title: "Contact Phone",
         dataIndex: "contact_phone",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        sorter: (a, b) =>
+          (a.contact_phone || "").localeCompare(b.contact_phone || ""),
       },
       {
         title: "Contact Email",
         dataIndex: "contact_email",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
-      },
-      {
-        title: "Createdate",
-        dataIndex: "createdate",
-        render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        sorter: (a, b) =>
+          (a.contact_email || "").localeCompare(b.contact_email || ""),
       },
       {
         title: "Timezone",
         dataIndex: "timezone",
-        sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
+        render: (text) => <>{text || "-"}</>,
+        sorter: (a, b) => (a.timezone || "").localeCompare(b.timezone || ""),
       },
+      {
+        title: "Status",
+        dataIndex: "is_active",
+        render: (text) => (
+          <span
+            className={text === "Y" ? "badge bg-success" : "badge bg-danger"}
+          >
+            {text === "Y" ? "Active" : "Inactive"}
+          </span>
+        ),
+        sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
+      },
+      {
+        title: "Createdate",
+        dataIndex: "createdate",
+        render: (text) => <div>{moment(text).format("DD-MM-YYYY") || "-"}</div>,
+        sorter: (a, b) =>
+          (a.createdate || "").localeCompare(b.createdate || ""),
+      },
+
       ...(isUpdate || isDelete
         ? [
             {
               title: "Actions",
               dataIndex: "actions",
-              render: (text, record) => (
+              render: (_, record) => (
                 <div className="dropdown table-action">
                   <Link
                     to="#"
@@ -144,14 +163,6 @@ const Company = () => {
                         <i className="ti ti-trash text-danger"></i> Delete
                       </Link>
                     )}
-                    {isView && (
-                      <Link
-                        className="dropdown-item"
-                        to={`/company/${record?.id}`}
-                      >
-                        <i className="ti ti-eye text-blue-light"></i> Preview
-                      </Link>
-                    )}
                   </div>
                 </div>
               ),
@@ -159,13 +170,11 @@ const Company = () => {
           ]
         : []),
     ],
-    [isUpdate, isDelete, isView],
+    [isUpdate, isDelete, isView]
   );
 
   const navigate = useNavigate();
-  const { company, loading, error, success } = useSelector(
-    (state) => state.company,
-  );
+  const { company, loading } = useSelector((state) => state.company);
 
   React.useEffect(() => {
     dispatch(fetchCompany({ search: searchText, ...selectedDateRange }));
@@ -192,7 +201,7 @@ const Company = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -232,7 +241,7 @@ const Company = () => {
     doc.autoTable({
       head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ),
       startY: 20,
     });
@@ -258,21 +267,6 @@ const Company = () => {
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
-          {error && (
-            <FlashMessage
-              type="error"
-              message={error}
-              onClose={() => dispatch(clearMessages())}
-            />
-          )}
-          {success && (
-            <FlashMessage
-              type="success"
-              message={success}
-              onClose={() => dispatch(clearMessages())}
-            />
-          )}
-
           <div className="row">
             <div className="col-md-12">
               {/* Page Header */}

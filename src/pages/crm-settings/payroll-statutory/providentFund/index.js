@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -23,15 +24,8 @@ const ProvidentFund = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Provident Fund",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Provident Fund");
 
   const dispatch = useDispatch();
 
@@ -39,24 +33,34 @@ const ProvidentFund = () => {
     {
       title: "Provident Fund Name",
       dataIndex: "pf_name",
-      render: (_text, record) => <Link to={`#`}>{record.pf_name}</Link>,
+      render: (text) => text || "-",
       sorter: (a, b) => (a.pf_name || "").localeCompare(b.pf_name || ""),
     },
     {
       title: "Employer Contribution",
       dataIndex: "employer_contribution",
+      render: (text) => text || "-",
       sorter: (a, b) =>
-        (a.employer_contribution || "").localeCompare(
-          b.employer_contribution || "",
-        ),
+        (a.employer_contribution || 0) - (b.employer_contribution || 0),
     },
     {
       title: "Employee Contribution",
       dataIndex: "employee_contribution",
       sorter: (a, b) =>
         (a.employee_contribution || "").localeCompare(
-          b.employee_contribution || "",
+          b.employee_contribution || ""
         ),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) =>
+        text === "Y" ? (
+          <span className="badge bg-success">Active</span>
+        ) : (
+          <span className="badge bg-danger">Inactive</span>
+        ),
+      sorter: (a, b) => (a.is_active || "").localeCompare(b.is_active || ""),
     },
     {
       title: "Create Date",
@@ -112,7 +116,7 @@ const ProvidentFund = () => {
   ];
 
   const { provident_fund, loading } = useSelector(
-    (state) => state.providentFund,
+    (state) => state.providentFund
   );
 
   React.useEffect(() => {
@@ -138,7 +142,7 @@ const ProvidentFund = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -151,11 +155,11 @@ const ProvidentFund = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;

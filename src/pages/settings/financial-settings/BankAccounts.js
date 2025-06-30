@@ -1,16 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { all_routes } from "../../../routes/all_routes";
 import CollapseHeader from "../../../components/common/collapse-header";
 import BankAccountsModal from "../../../components/common/modals/bank_accounts";
+import { all_routes } from "../../../routes/all_routes";
 
 const BankAccounts = () => {
   const route = all_routes;
-  const [isActive, setIsActive] = useState("HDFC");
-
-  const setActive = (theme) => {
-    setIsActive(theme);
-  };
 
   return (
     <div className="page-wrapper">

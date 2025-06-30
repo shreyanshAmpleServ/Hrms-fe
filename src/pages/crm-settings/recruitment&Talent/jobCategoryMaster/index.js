@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -21,15 +22,8 @@ const JobCategoryMaster = () => {
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending");
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Job Category",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Job Category");
 
   const dispatch = useDispatch();
 
@@ -40,6 +34,24 @@ const JobCategoryMaster = () => {
       render: (text) => text || "-",
       sorter: (a, b) =>
         (a.job_category_name || "").localeCompare(b.job_category_name || ""),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <>
+          {text === "Y" ? (
+            <span className="badge badge-pill badge-status bg-success">
+              Active
+            </span>
+          ) : (
+            <span className="badge badge-pill badge-status bg-danger">
+              Inactive
+            </span>
+          )}
+        </>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
     {
       title: "Created Date",
@@ -96,7 +108,7 @@ const JobCategoryMaster = () => {
   ];
 
   const { job_category, loading } = useSelector(
-    (state) => state.jobCategoryMaster,
+    (state) => state.jobCategoryMaster
   );
 
   React.useEffect(() => {
@@ -122,7 +134,7 @@ const JobCategoryMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -135,11 +147,11 @@ const JobCategoryMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;

@@ -64,14 +64,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   }));
 
   useEffect(() => {
-    const convertToYN = (value) => {
-      if (value === true) return "Y";
-      if (value === false) return "N";
-      return value || "N";
-    };
-
     reset({
-      auto_fill: convertToYN(initialData?.auto_fill),
+      auto_fill: initialData?.auto_fill || "N",
       column_order: initialData?.column_order || "",
       component_code: initialData?.component_code || "",
       component_name: initialData?.component_name || "",
@@ -81,27 +75,27 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       cost_center3_id: initialData?.cost_center3_id || "",
       cost_center4_id: initialData?.cost_center4_id || "",
       cost_center5_id: initialData?.cost_center5_id || "",
-      contributes_to_nssf: initialData?.contributes_to_nssf,
-      contributes_to_paye: initialData?.contributes_to_paye,
+      contributes_to_nssf: initialData?.contributes_to_nssf || "N",
+      contributes_to_paye: initialData?.contributes_to_paye || "N",
       default_formula: initialData?.default_formula || "",
       execution_order: initialData?.execution_order || "",
       factor: initialData?.factor || "",
-      formula_editable: initialData?.formula_editable,
+      formula_editable: initialData?.formula_editable || "N",
       gl_account_id: initialData?.gl_account_id || "",
-      is_advance: initialData?.is_advance,
-      is_grossable: initialData?.is_grossable,
-      is_overtime_related: initialData?.is_overtime_related,
-      is_recurring: initialData?.is_recurring,
-      is_statutory: initialData?.is_statutory,
-      is_taxable: initialData?.is_taxable,
-      is_worklife_related: initialData?.is_worklife_related,
+      is_advance: initialData?.is_advance || "N",
+      is_grossable: initialData?.is_grossable || "N",
+      is_overtime_related: initialData?.is_overtime_related || "N",
+      is_recurring: initialData?.is_recurring || "N",
+      is_statutory: initialData?.is_statutory || "N",
+      is_taxable: initialData?.is_taxable || "N",
+      is_worklife_related: initialData?.is_worklife_related || "N",
       is_active: initialData?.is_active || "Y",
       pay_or_deduct: initialData?.pay_or_deduct || "P",
       payable_glaccount_id: initialData?.payable_glaccount_id || "",
       project_id: initialData?.project_id || "",
       tax_code_id: initialData?.tax_code_id || "",
-      unpaid_leave: initialData?.unpaid_leave,
-      visible_in_payslip: initialData?.visible_in_payslip,
+      unpaid_leave: initialData?.unpaid_leave || "N",
+      visible_in_payslip: initialData?.visible_in_payslip || "N",
     });
   }, [mode, initialData, reset]);
 
@@ -536,7 +530,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -556,10 +550,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
-                      onChange={(e) =>
-                        field.onChange(e.target.checked ? "Y" : "N")
-                      }
+                      checked={field.value === "Y" ? true : false}
+                      onChange={(e) => field.onChange(e.target.checked)}
                     />
                   )}
                 />
@@ -577,7 +569,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -597,7 +589,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -618,7 +610,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -638,7 +630,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -659,7 +651,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -679,7 +671,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -700,7 +692,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -720,7 +712,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -740,7 +732,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -761,7 +753,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }
@@ -781,7 +773,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       type="checkbox"
                       className="form-check-input"
-                      value={field.value === "Y" ? true : false}
+                      checked={field.value === "Y" ? true : false}
                       onChange={(e) =>
                         field.onChange(e.target.checked ? "Y" : "N")
                       }

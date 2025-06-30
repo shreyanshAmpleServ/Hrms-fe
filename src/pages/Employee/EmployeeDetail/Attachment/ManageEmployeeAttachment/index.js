@@ -1,6 +1,6 @@
 import React from "react";
-import toast from "react-hot-toast";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Select from "react-select";
@@ -31,15 +31,6 @@ const ManageEmployeeAttachment = ({
       document_path: "",
     });
   }, [employeeAttachment, reset]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
 
   const employeeAttachmentTypes = [
     { value: "Resume", label: "Resume" },
@@ -146,7 +137,7 @@ const ManageEmployeeAttachment = ({
                           control={control}
                           rules={{ required: "Attachment is required!" }}
                           render={({
-                            field: { onChange, value, ...field },
+                            field: { onChange, _value, ...field },
                           }) => (
                             <input
                               {...field}

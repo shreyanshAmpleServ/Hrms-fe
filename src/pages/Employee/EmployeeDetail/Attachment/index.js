@@ -4,7 +4,6 @@ import {
   FileImageFilled,
   FilePdfFilled,
   FileWordFilled,
-  PlusCircleOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, Table, Tooltip } from "antd";
 import moment from "moment";

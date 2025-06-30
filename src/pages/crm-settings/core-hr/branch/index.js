@@ -1,25 +1,17 @@
-import "bootstrap-daterangepicker/daterangepicker.css";
-
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import FlashMessage from "../../../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deletebranch,
-  fetchbranch,
-} from "../../../../redux/branch";
+import { deletebranch, fetchbranch } from "../../../../redux/branch";
+import DeleteAlert from "./alert/DeleteAlert";
+import AddEditModal from "./modal/AddEditModal";
+import usePermissions from "../../../../components/common/Permissions.js";
 
 const BranchList = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
@@ -28,15 +20,8 @@ const BranchList = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const [selectedIndustry, setSelectedIndustry] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Branch",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Branch");
 
   const dispatch = useDispatch();
 
@@ -44,24 +29,39 @@ const BranchList = () => {
     {
       title: "Branch Name",
       dataIndex: "branch_name",
-      render: (text, record) => <Link to={`#`}>{record.branch_name}</Link>,
+      render: (_, record) => <Link to={`#`}>{record?.branch_name}</Link>,
       sorter: (a, b) => a.branch_name.localeCompare(b.branch_name),
     },
     {
       title: "Company Name",
       dataIndex: "branch_company",
-      render: (text) => text.company_name,
+      render: (text) => text?.company_name || "-",
     },
     {
       title: "Company Code",
       dataIndex: "branch_company",
-      render: (text) => text.company_code,
+      render: (text) => text?.company_code || "-",
     },
     {
       title: "Location",
       dataIndex: "location",
-      render: (text, record) => <Link to={`#`}>{record.location}</Link>,
+      render: (_, record) => <Link to={`#`}>{record?.location || "-"}</Link>,
       sorter: (a, b) => a.location.localeCompare(b.location),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (_, record) =>
+        record?.is_active === "Y" ? (
+          <span className="badge bg-success">Active</span>
+        ) : (
+          <span className="badge bg-danger">Inactive</span>
+        ),
+    },
+    {
+      title: "Created Date",
+      dataIndex: "createddate",
+      render: (text) => moment(text).format("DD-MM-YYYY"),
     },
     ...(isUpdate || isDelete
       ? [
@@ -110,9 +110,7 @@ const BranchList = () => {
       : []),
   ];
 
-  const { branch, loading, error, success } = useSelector(
-    (state) => state.branch,
-  );
+  const { branch, loading } = useSelector((state) => state.branch);
 
   React.useEffect(() => {
     dispatch(fetchbranch({ search: searchText }));
@@ -134,7 +132,7 @@ const BranchList = () => {
       pageSize,
     }));
     dispatch(
-      fetchbranch({ search: searchText, page: currentPage, size: pageSize }),
+      fetchbranch({ search: searchText, page: currentPage, size: pageSize })
     );
   };
 
@@ -146,11 +144,11 @@ const BranchList = () => {
     let data = branch?.data || [];
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -175,21 +173,6 @@ const BranchList = () => {
         <meta name="branch" content="This is banks page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">

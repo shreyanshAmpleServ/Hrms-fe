@@ -10,18 +10,13 @@ import * as XLSX from "xlsx";
 import CollapseHeader from "../../components/common/collapse-header";
 import { countryList } from "../../components/common/data/json/countriesData";
 import Table from "../../components/common/dataTable/index";
-import FlashMessage from "../../components/common/modals/FlashMessage";
 import usePermissions from "../../components/common/Permissions.js/index.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent";
 import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deleteProject,
-  fetchProjects,
-} from "../../redux/projects";
+import { deleteProject, fetchProjects } from "../../redux/projects";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddProjectModal from "./modal/AddProjectModal";
 import EditProjectModal from "./modal/EditProjectModal";
@@ -52,37 +47,40 @@ const ProjectList = () => {
     {
       title: "Code",
       dataIndex: "code",
-      sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
+      sorter: (a, b) => a.code.localeCompare(b.code),
     },
     {
       title: "Employee",
       dataIndex: "projects_employee_detail",
       render: (text) => <span>{text?.full_name || "--"}</span>,
-      sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
+      sorter: (a, b) =>
+        a.projects_employee_detail.full_name.localeCompare(
+          b.projects_employee_detail.full_name
+        ),
     },
     {
       title: "Is Locked",
       dataIndex: "locked",
       render: (text) => <span>{text === "Y" ? "Yes" : "No"}</span>,
-      sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
+      sorter: (a, b) => a.locked.localeCompare(b.locked),
     },
     {
       title: "Valid From",
       dataIndex: "valid_from",
       render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
-      sorter: (a, b) => moment(a.startDate).diff(moment(b.startDate)),
+      sorter: (a, b) => moment(a.valid_from).diff(moment(b.valid_from)),
     },
     {
       title: "Valid To",
       render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
       dataIndex: "valid_to",
-      sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
+      sorter: (a, b) => moment(a.valid_to).diff(moment(b.valid_to)),
     },
     {
       title: "Created Date",
       render: (text) => <span>{moment(text).format("DD MMM YYYY")}</span>,
       dataIndex: "createdDate",
-      sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
+      sorter: (a, b) => moment(a.createdDate).diff(moment(b.createdDate)),
     },
     {
       title: "Status",
@@ -107,7 +105,7 @@ const ProjectList = () => {
           {
             title: "Actions",
             dataIndex: "actions",
-            render: (text, record) => (
+            render: (_text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
@@ -157,9 +155,7 @@ const ProjectList = () => {
   React.useEffect(() => {
     dispatch(fetchProjects({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
-  const { projects, loading, error, success } = useSelector(
-    (state) => state.projects
-  );
+  const { projects, loading } = useSelector((state) => state.projects);
   React.useEffect(() => {
     setPaginationData({
       currentPage: projects?.currentPage,
@@ -261,21 +257,6 @@ const ProjectList = () => {
         <meta name="Projects" content="This is Projects page of DCC HRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">

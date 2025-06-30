@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -23,15 +24,9 @@ const GoalCategoryMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Goal Category Master"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Goal Category Master"
+  );
 
   const dispatch = useDispatch();
 
@@ -43,11 +38,29 @@ const GoalCategoryMaster = () => {
       sorter: (a, b) =>
         (a.category_name || "").localeCompare(b.category_name || ""),
     },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <div>
+          {text === "Y" ? (
+            <span className="badge badge-pill badge-status bg-success">
+              Active
+            </span>
+          ) : (
+            <span className="badge badge-pill badge-status bg-danger">
+              Inactive
+            </span>
+          )}
+        </div>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => moment(text).format("YYYY-MM-DD"),
+      render: (text) => moment(text).format("DD-MM-YYYY"),
       sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
 
@@ -138,11 +151,11 @@ const GoalCategoryMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;

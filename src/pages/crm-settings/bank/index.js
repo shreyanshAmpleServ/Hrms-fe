@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTableNew/index";
+import usePermissions from "../../../components/common/Permissions.js";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
@@ -18,15 +19,7 @@ const BanksList = () => {
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending");
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Bank",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Bank");
 
   const dispatch = useDispatch();
 
@@ -37,11 +30,21 @@ const BanksList = () => {
       render: (text) => text,
       sorter: (a, b) => (a.bank_name || "").localeCompare(b.bank_name || ""),
     },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) =>
+        text === "Y" ? (
+          <span className="badge bg-success">Active</span>
+        ) : (
+          <span className="badge bg-danger">Inactive</span>
+        ),
+    },
 
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => <span>{moment(text).format("DD-MMM-YYYY")}</span>,
+      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
       sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     ...(isUpdate || isDelete
@@ -65,7 +68,7 @@ const BanksList = () => {
                       className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="modal"
-                      data-bs-target="#add_edit_manufacturer_modal"
+                      data-bs-target="#add_edit_bank_modal"
                       onClick={() => {
                         setSelectedIndustry(record);
                         setMode("edit");
@@ -113,7 +116,7 @@ const BanksList = () => {
       pageSize,
     }));
     dispatch(
-      fetchbank({ search: searchText, page: currentPage, size: pageSize }),
+      fetchbank({ search: searchText, page: currentPage, size: pageSize })
     );
   };
 
@@ -126,11 +129,11 @@ const BanksList = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

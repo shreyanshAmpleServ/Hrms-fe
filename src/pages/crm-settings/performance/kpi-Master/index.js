@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -14,20 +15,11 @@ import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
 const KpiMaster = () => {
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = React.useState("add");
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "KPI Master",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
-
+  const [sortOrder, setSortOrder] = React.useState("ascending");
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("KPI Master");
   const dispatch = useDispatch();
 
   const columns = [
@@ -40,14 +32,44 @@ const KpiMaster = () => {
     {
       title: "Description ",
       dataIndex: "description",
+      render: (text) => (
+        <p
+          title={text || ""}
+          style={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            maxWidth: "300px",
+          }}
+        >
+          {text || ""}
+        </p>
+      ),
       sorter: (a, b) =>
         (a.description || "").localeCompare(b.description || ""),
     },
-
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <div>
+          {text === "Y" ? (
+            <span className="badge badge-pill badge-status bg-success">
+              Active
+            </span>
+          ) : (
+            <span className="badge badge-pill badge-status bg-danger">
+              Inactive
+            </span>
+          )}
+        </div>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    },
     {
       title: "Created Date",
       dataIndex: "createdate",
-      render: (text) => moment(text).format("YYYY-MM-DD"),
+      render: (text) => moment(text).format("DD-MM-YYYY"),
       sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     ...(isUpdate || isDelete
@@ -118,7 +140,7 @@ const KpiMaster = () => {
       pageSize,
     }));
     dispatch(
-      fetchkpi({ search: searchText, page: currentPage, size: pageSize }),
+      fetchkpi({ search: searchText, page: currentPage, size: pageSize })
     );
   };
 
@@ -131,11 +153,11 @@ const KpiMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

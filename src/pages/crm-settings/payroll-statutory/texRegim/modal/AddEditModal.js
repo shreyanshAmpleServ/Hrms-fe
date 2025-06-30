@@ -38,11 +38,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       reset({
         regime_name: initialData.regime_name || "",
         country_code: initialData.country_code || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         regime_name: "",
         country_code: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -145,7 +147,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 </div>
               </div>
               {/* Status */}
-              {/* <div className="mb-0">
+              <div className="mb-3">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
                   <div className="me-2">
@@ -172,9 +174,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
-              </div> */}
+              </div>
             </div>
 
             {/* Footer */}

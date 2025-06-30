@@ -20,9 +20,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      reset({ grievance_type_name: initialData.grievance_type_name || "" });
+      reset({
+        grievance_type_name: initialData.grievance_type_name || "",
+        is_active: initialData.is_active || "Y",
+      });
     } else {
-      reset({ grievance_type_name: "" });
+      reset({ grievance_type_name: "", is_active: "Y" });
     }
   }, [mode, initialData, reset]);
 
@@ -87,6 +90,31 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     {errors.grievance_type_name.message}
                   </small>
                 )}
+              </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
               </div>
             </div>
 

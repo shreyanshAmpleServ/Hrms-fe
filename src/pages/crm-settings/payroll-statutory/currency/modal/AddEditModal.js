@@ -21,9 +21,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       reset({
         currency_name: initialData.currency_name || "",
         currency_code: initialData.currency_code || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
-      reset({ currency_name: "", currency_code: "" });
+      reset({ currency_name: "", currency_code: "", is_active: "Y" });
     }
   }, [mode, initialData, reset]);
 
@@ -44,7 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add  Currencies" : "Edit Currencies"}
+              {mode === "add" ? "Add  Currency" : "Edit Currency"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -102,6 +103,38 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     </small>
                   )}
                 </div>
+              </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active", {
+                        required: "Status is required.",
+                      })}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
+                {errors.is_active && (
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
+                )}
               </div>
             </div>
 

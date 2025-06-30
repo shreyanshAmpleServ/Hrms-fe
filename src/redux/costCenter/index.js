@@ -49,7 +49,7 @@ export const updateCostCenter = createAsyncThunk(
   async ({ id, data }, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.put(`/v1/costCenter/${id}`, data),
+        apiClient.put(`/v1/cost-center/${id}`, data),
         {
           loading: "Cost center updating...",
           success: (res) =>
@@ -81,7 +81,7 @@ export const deleteCostCenter = createAsyncThunk(
   "costCenter/deleteCostCenter",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/costCenter/${id}`);
+      const response = await apiClient.delete(`/v1/cost-center/${id}`);
       toast.success(
         response.data.message || "Cost center deleted successfully"
       );
@@ -103,7 +103,7 @@ export const fetchCostCenterById = createAsyncThunk(
   "costCenter/fetchCostCenterById",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/costCenter/${id}`);
+      const response = await apiClient.get(`/v1/cost-center/${id}`);
       return response.data; // Returns the cost center details
     } catch (error) {
       return thunkAPI.rejectWithValue(

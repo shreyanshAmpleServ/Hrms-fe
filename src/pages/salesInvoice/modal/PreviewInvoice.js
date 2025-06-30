@@ -1,22 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import DatePicker from "react-datepicker";
-import { Controller, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
-import { OrderStatusOptions } from "../../../components/common/selectoption/selectoption";
-import { fetchCurrencies } from "../../../redux/currency";
-import {
-  addOrder,
-  fetchOrderCode,
-  fetchSalesType,
-  updateOrder,
-} from "../../../redux/order";
-import { fetchTaxSetup } from "../../../redux/taxSetUp";
-import { fetchVendors } from "../../../redux/vendor";
-import ManageOrderItemModal from "./ManageOrderItemModal";
 import { Button } from "antd";
-import { Margin, usePDF } from "react-to-pdf";
 import moment from "moment";
+import React, { useState } from "react";
+import { Margin, usePDF } from "react-to-pdf";
 
 const initialItem = [
   {
@@ -60,14 +45,14 @@ const PreviewPurchaseOrder = ({ order, setOrder, formatNumber }) => {
           line_tax: Number(item?.line_tax) || 0,
           total_bef_disc: Number(item?.total_bef_disc) || 0,
           total_amount: Number(item?.total_amount) || 0,
-        })),
+        }))
       );
     }
   }, [order]);
 
   React.useEffect(() => {
     const offcanvasElement = document.getElementById(
-      "offcanvas_preview_sales_invoice",
+      "offcanvas_preview_sales_invoice"
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -76,12 +61,12 @@ const PreviewPurchaseOrder = ({ order, setOrder, formatNumber }) => {
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
-        handleModalClose,
+        handleModalClose
       );
       return () => {
         offcanvasElement.removeEventListener(
           "hidden.bs.offcanvas",
-          handleModalClose,
+          handleModalClose
         );
       };
     }
@@ -268,7 +253,7 @@ const PreviewPurchaseOrder = ({ order, setOrder, formatNumber }) => {
                     </thead>
                     <tbody>
                       {itemNumber.length &&
-                        itemNumber?.map((i, index) => (
+                        itemNumber?.map((i) => (
                           <tr>
                             <td>
                               <div className="input-table input-table-descripition">

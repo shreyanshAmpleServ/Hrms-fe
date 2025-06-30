@@ -138,14 +138,14 @@ const Profile = () => {
               required: true,
               disable: true,
               value: userDetail?.email,
-              onChanges: (e) => {},
+              onChanges: (_e) => {},
             },
             {
               label: "Role",
               required: true,
               disable: true,
               value: userDetail?.role,
-              onChanges: (e) => {},
+              onChanges: (_e) => {},
             },
             {
               label: "Phone",
@@ -295,13 +295,6 @@ const PageHeader = ({ title, children }) => (
         <div className="head-icons">{children}</div>
       </div>
     </div>
-  </div>
-);
-
-const SectionHeader = ({ title, description }) => (
-  <div className="border-bottom mb-3 pb-3">
-    <h5 className="fw-semibold mb-1">{title}</h5>
-    <p>{description}</p>
   </div>
 );
 

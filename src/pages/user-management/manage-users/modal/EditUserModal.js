@@ -212,19 +212,19 @@ const EditUserModal = ({ user }) => {
                   rules={
                     showEmployeeDetails && { required: "Employee is required" }
                   }
-                  render={({ field }) => {
+                  render={() => {
                     return (
                       <Select
                         options={employees}
                         isLoading={employeeLoading}
                         onChange={(empOption) => {
                           setValue("employee_id", empOption?.value); // 👈 this sets form field
-                          setSelectedEmployee(empOption?.data); // 👈 this is for autofill
+                          setSelectedEmployee(empOption?.data);
                         }}
                         value={
                           employees?.find(
                             (e) => e.value === watch("employee_id")
-                          ) || null // 👈 pre-select employee
+                          ) || null
                         }
                         placeholder="Choose Employee"
                         className="employee_id"

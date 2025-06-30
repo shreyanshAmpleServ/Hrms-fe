@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
+import usePermissions from "../../../../components/common/Permissions.js";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -23,15 +24,8 @@ const RatingScaleMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Rating Scale",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Rating Scale");
 
   const dispatch = useDispatch();
 
@@ -49,11 +43,40 @@ const RatingScaleMaster = () => {
     {
       title: "Rating Description",
       dataIndex: "rating_description",
-      render: (text) => text || "-",
+      render: (text) => (
+        <p
+          title={text || ""}
+          style={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            maxWidth: "300px",
+          }}
+        >
+          {text || ""}
+        </p>
+      ),
       sorter: (a, b) =>
         (a.rating_description || "").localeCompare(b.rating_description || ""),
     },
-
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <>
+          {text === "Y" ? (
+            <span className="badge badge-pill badge-status bg-success">
+              Active
+            </span>
+          ) : (
+            <span className="badge badge-pill badge-status bg-danger">
+              Inactive
+            </span>
+          )}
+        </>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    },
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -94,7 +117,7 @@ const RatingScaleMaster = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteIndustry(record)}
+                      onClick={() => handleDeleteRatingScale(record)}
                     >
                       <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
@@ -108,7 +131,7 @@ const RatingScaleMaster = () => {
   ];
 
   const { rating_scale, loading } = useSelector(
-    (state) => state.ratingScaleMaster,
+    (state) => state.ratingScaleMaster
   );
 
   React.useEffect(() => {
@@ -134,7 +157,7 @@ const RatingScaleMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -147,18 +170,18 @@ const RatingScaleMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
   }, [searchText, rating_scale, columns, sortOrder]);
 
-  const handleDeleteIndustry = (industry) => {
-    setSelected(industry);
+  const handleDeleteRatingScale = (ratingScale) => {
+    setSelected(ratingScale);
     setShowDeleteModal(true);
   };
 

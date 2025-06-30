@@ -1,13 +1,10 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { all_routes } from "../../routes/all_routes";
-import ImageWithBasePath from "../../components/common/imageWithBasePath";
-import { deleteCompany } from "../../redux/companies";
-import EditCompanyModal from "./modal/EditProjectModal";
-import DeleteAlert from "./alert/DeleteAlert";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { deleteCompany } from "../../redux/companies";
+import DeleteAlert from "./alert/DeleteAlert";
+import EditCompanyModal from "./modal/EditProjectModal";
 
 const ProjectsGrid = ({ data }) => {
   const dispatch = useDispatch();

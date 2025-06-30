@@ -86,7 +86,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const employee = useSelector((state) => state.employee.employee);
   const { currencies } = useSelector((state) => state.currencies);
 
-  // Form hook
   const {
     handleSubmit,
     formState: { errors },
@@ -111,10 +110,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     },
   });
 
-  // Watch employee_id to trigger auto-population
   const watchedEmployeeId = watch("employee_id");
 
-  // Memoized options lists
   const currencyList = useMemo(() => {
     return (
       currencies?.data?.map((item) => ({
@@ -190,7 +187,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     );
   }, [pay_component, basicSalaryData]);
 
-  // Auto-populate department and designation when employee changes
   useEffect(() => {
     if (employee?.data && watchedEmployeeId) {
       const selectedEmployee = employee.data.find(
@@ -204,7 +200,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     }
   }, [employee, watchedEmployeeId, setValue]);
 
-  // Initial data fetch
   useEffect(() => {
     dispatch(fetchdepartment());
     dispatch(fetchbranch());
@@ -215,29 +210,23 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     dispatch(fetchCurrencies());
   }, [dispatch]);
 
-  // Fetch detail data for edit mode
   useEffect(() => {
     if (mode === "edit" && initialData?.id) {
       dispatch(fetchBasicSalaryById(initialData.id));
     }
   }, [mode, initialData?.id, dispatch]);
 
-  // Set basic salary data from API response
+  const assignmentLine =
+    basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line;
+
   useEffect(() => {
-    if (
-      mode === "edit" &&
-      basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line
-    ) {
+    if (mode === "edit" && assignmentLine) {
       setBasicSalaryData(
-        basicSalaryDetail.hrms_d_employee_pay_component_assignment_line.length >
-          0
-          ? basicSalaryDetail.hrms_d_employee_pay_component_assignment_line
-          : initialBasicSalary
+        assignmentLine.length > 0 ? assignmentLine : initialBasicSalary
       );
     }
-  }, [mode, basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line]);
+  }, [mode, assignmentLine]);
 
-  // Reset form based on mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -277,7 +266,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     }
   }, [mode, initialData, reset]);
 
-  // Modal close handler
   const handleModalClose = useCallback(() => {
     reset();
     setSelected(null);
@@ -285,17 +273,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     setEmployeeData(null);
   }, [reset, setSelected]);
 
-  // Add new basic salary row
   const handleAddBasicSalary = useCallback(() => {
     setBasicSalaryData((prev) => [...prev, ...initialBasicSalary]);
   }, []);
 
-  // Handle basic salary data changes - Fixed the logic
   const handleChangeBasicSalary = useCallback(
     (identifier, field, value) => {
       setBasicSalaryData((prevData) => {
         return prevData.map((item, index) => {
-          // Use index-based identification for new rows, pay_component_id for existing ones
           const shouldUpdate = item.pay_component_id
             ? item.pay_component_id === Number(identifier)
             : index === identifier;
@@ -336,7 +321,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   updatedItem.unpaid_leave = payComponent.unpaid_leave;
                   updatedItem.contributes_to_nssf =
                     payComponent.contributes_to_nssf;
-                  updatedItem.currency_id = payComponent.currency_id;
                   updatedItem.contributes_to_paye =
                     payComponent.contributes_to_paye;
                   updatedItem.gl_account_id = payComponent.gl_account_id;
@@ -378,14 +362,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     );
   }, []);
 
-  // Table columns configuration - Fixed the render functions
   const columns = useMemo(
     () => [
       {
         title: "Pay Component",
         dataIndex: "component_name",
         key: "component_name",
-        render: (text, record, index) => (
+        render: (_, record, index) => (
           <AntdSelect
             options={[
               ...paycomponentList,
@@ -415,7 +398,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         title: "Currency",
         dataIndex: "currency_id",
         key: "currency_id",
-        render: (text, record, index) => (
+        render: (_, record, index) => (
           <AntdSelect
             options={currencyList}
             style={{ width: "200px" }}
@@ -435,7 +418,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         title: "Amount",
         dataIndex: "amount",
         key: "amount",
-        render: (text, record, index) => (
+        render: (_, record, index) => (
           <input
             type="number"
             className="form-control form-control-sm"
@@ -624,7 +607,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         title: "Action",
         dataIndex: "action",
         key: "action",
-        render: (text, record, index) => (
+        render: (_, record, index) => (
           <button
             type="button"
             className="btn btn-sm btn-danger"
@@ -645,7 +628,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     ]
   );
 
-  // Form submission handler
   const onSubmit = useCallback(
     (data) => {
       const closeButton = document.getElementById(
@@ -684,7 +666,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     [basicSalaryData, dispatch, initialData, mode, handleModalClose]
   );
 
-  // Cleanup event listener
   useEffect(() => {
     const offcanvasElement = document.getElementById(
       "offcanvas_add_edit_basic_salary"
@@ -709,7 +690,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       id="offcanvas_add_edit_basic_salary"
       tabIndex={-1}
     >
-      {/* Header */}
       <div className="offcanvas-header border-bottom">
         <h5 className="offcanvas-title">
           {mode === "add" ? "Add" : "Edit"} Basic Salary
@@ -725,10 +705,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         </button>
       </div>
 
-      {/* Body */}
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Employee Information Section */}
           <div className="row mb-4">
             <div className="col-md-4 mb-3">
               <label className="form-label">
@@ -970,6 +948,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   />
                 )}
               />
+              {errors.work_life_entry && (
+                <div className="invalid-feedback d-block">
+                  {errors.work_life_entry.message}
+                </div>
+              )}
             </div>
             <div className="col-md-4 mb-3">
               <label className="form-label">
@@ -1049,10 +1032,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     onChange={(option) => {
                       field.onChange(option?.value || "");
                     }}
-                    value={statusList.find(
-                      (option) =>
-                        String(option.value) === String(watch("status")?.label)
-                    )}
+                    value={
+                      statusList.find(
+                        (option) => String(option.value) === String(field.va)
+                      )?.label
+                    }
                   />
                 )}
               />
@@ -1103,7 +1087,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             </div>
           </div>
 
-          {/* Footer Actions */}
           <div className="d-flex justify-content-end gap-2 pt-3 border-top">
             <button
               type="button"

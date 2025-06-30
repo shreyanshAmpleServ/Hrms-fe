@@ -1,20 +1,16 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-import React, { useCallback, useMemo } from "react";
+import moment from "moment";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CollapseHeader from "../../../../components/common/collapse-header";
 import Table from "../../../../components/common/dataTableNew/index";
-import DeleteAlert from "../../../OfferLetters/alert/DeleteAlert";
-import AddEditModal from "../../../OfferLetters/modal/AddEditModal";
-import moment from "moment";
-import { Helmet } from "react-helmet-async";
-import SearchBar from "../../../../components/datatable/SearchBar";
-import SortDropdown from "../../../../components/datatable/SortDropDown";
 import {
   deleteoffer_letter,
   fetchoffer_letter,
 } from "../../../../redux/offerLetters";
+import DeleteAlert from "../../../OfferLetters/alert/DeleteAlert";
 import ManageStatus from "../../../OfferLetters/ManageStatus";
+import AddEditModal from "../../../OfferLetters/modal/AddEditModal";
 
 const CandidateOfferLetters = ({ candidateDetail }) => {
   const [open, setOpen] = React.useState(false);
@@ -174,18 +170,20 @@ const CandidateOfferLetters = ({ candidateDetail }) => {
       <div className="card">
         <div className="card-header p-4 d-flex justify-content-between align-items-center">
           <h4 className="card-title">Offer Letters</h4>
-          <Link
-            to=""
-            className="btn btn-primary"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#add_edit_offer_letter_modal"
-            onClick={() => {
-              setMode("add with candidate");
-            }}
-          >
-            <i className="ti ti-square-rounded-plus me-2" />
-            Add Offer Letter
-          </Link>
+          {isCreate && (
+            <Link
+              to=""
+              className="btn btn-primary"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#add_edit_offer_letter_modal"
+              onClick={() => {
+                setMode("add with candidate");
+              }}
+            >
+              <i className="ti ti-square-rounded-plus me-2" />
+              Add Offer Letter
+            </Link>
+          )}
         </div>
         <div className="card-body">
           <div className="table-responsive custom-table">

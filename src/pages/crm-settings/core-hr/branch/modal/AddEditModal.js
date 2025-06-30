@@ -14,7 +14,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const {
     register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
     reset,
@@ -170,6 +169,31 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     {errors.location.message}
                   </small>
                 )}
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center mt-2">
+                  <div className="me-3">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
               </div>
             </div>
 

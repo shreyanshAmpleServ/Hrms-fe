@@ -30,6 +30,7 @@ const AddCompanyModal = () => {
       contact_email: "",
       financial_year_start: null,
       timezone: "",
+      is_active: "Y",
     },
   });
 
@@ -52,7 +53,7 @@ const AddCompanyModal = () => {
   const CurrenciesList = useMemo(() => {
     return (
       currencies?.data?.map((item) => ({
-        value: item.id,
+        value: item.currency_code,
         label: `${item.currency_code} ( ${item.currency_name} )`,
       })) || []
     );
@@ -129,13 +130,22 @@ const AddCompanyModal = () => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">Company Code</label>
+                        <label className="col-form-label">
+                          Company Code <span className="text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           placeholder="Enter Company Code"
                           className="form-control"
-                          {...register("company_code")}
+                          {...register("company_code", {
+                            required: "Company code is required",
+                          })}
                         />
+                        {errors.company_code && (
+                          <small className="text-danger">
+                            {errors.company_code.message}
+                          </small>
+                        )}
                       </div>
                     </div>
 
@@ -284,6 +294,31 @@ const AddCompanyModal = () => {
                           className="form-control"
                           {...register("timezone")}
                         />
+                      </div>
+                    </div>
+                    <div className="col-md-6 mb-3">
+                      <label className="col-form-label">Status</label>
+                      <div className="d-flex align-items-center mt-2">
+                        <div className="me-3">
+                          <input
+                            type="radio"
+                            className="status-radio"
+                            id="active"
+                            value="Y"
+                            {...register("is_active")}
+                          />
+                          <label htmlFor="active">Active</label>
+                        </div>
+                        <div>
+                          <input
+                            type="radio"
+                            className="status-radio"
+                            id="inactive"
+                            value="N"
+                            {...register("is_active")}
+                          />
+                          <label htmlFor="inactive">Inactive</label>
+                        </div>
                       </div>
                     </div>
                     <div className="col-md-12">

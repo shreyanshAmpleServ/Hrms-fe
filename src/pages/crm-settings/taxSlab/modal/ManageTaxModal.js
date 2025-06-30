@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import moment from "moment";
+import React from "react";
 import DatePicker from "react-datepicker";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addTaxSlab, updateTaxSlab } from "../../../../redux/taxSlab";
 
 const ManageTaxModal = ({ tax, setTax }) => {
   const dispatch = useDispatch();
-  const [searchValue, setSearchValue] = useState("");
   const { loading } = useSelector((state) => state.taxs);
 
-  // React Hook Form setup
   const {
     control,
     register,
@@ -43,8 +42,8 @@ const ManageTaxModal = ({ tax, setTax }) => {
         rate: tax?.rate || 0,
         flat_amount: tax?.flat_amount || 0,
         formula_text: tax?.formula_text || "",
-        effective_from: tax?.effective_from || new Date(),
-        effective_to: tax?.effective_to || new Date(),
+        effective_from: tax?.effective_from || new Date().toISOString(),
+        effective_to: tax?.effective_to || new Date().toISOString(),
         is_active: tax?.is_active || "Y",
       });
     } else {
@@ -56,8 +55,8 @@ const ManageTaxModal = ({ tax, setTax }) => {
         rate: 0,
         flat_amount: 0,
         formula_text: "",
-        effective_from: new Date(),
-        effective_to: new Date(),
+        effective_from: new Date().toISOString(),
+        effective_to: new Date().toISOString(),
         is_active: "Y",
       });
     }
@@ -136,6 +135,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <input
                   type="text"
                   className="form-control"
+                  placeholder="Enter Rule Type"
                   {...register("rule_type", {
                     required: "Name is required",
                   })}
@@ -156,6 +156,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <input
                   type="number"
                   className="form-control"
+                  placeholder="Enter Rate"
                   {...register("rate", {
                     required: "rate is required",
                   })}
@@ -176,6 +177,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <input
                   type="number"
                   className="form-control"
+                  placeholder="Enter Slab Min"
                   {...register("slab_min", {
                     required: "Slab min is required",
                   })}
@@ -198,6 +200,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <input
                   type="number"
                   className="form-control"
+                  placeholder="Enter Slab Max"
                   {...register("slab_max", {
                     required: "Slab max is required",
                   })}
@@ -218,6 +221,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <input
                   type="number"
                   className="form-control"
+                  placeholder="Enter Flat Amount"
                   {...register("flat_amount", {
                     required: "Flat amount is required",
                   })}
@@ -237,8 +241,11 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 </label>
                 <DatePicker
                   className="form-control"
+                  placeholder="Enter Effective From"
                   selected={watch("effective_from")}
-                  onChange={(date) => setValue("effective_from", date)}
+                  onChange={(date) =>
+                    setValue("effective_from", date.toISOString())
+                  }
                   dateFormat="yyyy-MM-dd"
                 />
               </div>
@@ -249,15 +256,25 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <label className="col-form-label">
                   Effective To<span className="text-danger">*</span>
                 </label>
-                <DatePicker
-                  className="form-control"
-                  selected={watch("effective_to")}
-                  onChange={(date) => setValue("effective_to", date)}
-                  dateFormat="yyyy-MM-dd"
-                  minDate={watch("effective_from")}
+                <Controller
+                  control={control}
+                  name="effective_to"
+                  render={({ field }) => (
+                    <DatePicker
+                      className="form-control"
+                      placeholder="Enter Effective To"
+                      value={
+                        field.value
+                          ? moment(field.value).format("YYYY-MM-DD")
+                          : ""
+                      }
+                      onChange={(date) => field.onChange(date)}
+                      minDate={watch("effective_to")}
+                    />
+                  )}
                 />
               </div>
-            </div>{" "}
+            </div>
             {/* Status */}
             <div className="col-md-6">
               <div className="mb-3 mt-1">
@@ -301,9 +318,10 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 </label>
                 <textarea
                   className="form-control"
-                  rows={3} // You can increase this to 5 or 6 if needed
+                  rows={3}
+                  placeholder="Enter Formula Text"
                   {...register("formula_text", {
-                    required: "formula_text is required",
+                    required: "Formula text is required",
                   })}
                 />
                 {errors.formula_text && (

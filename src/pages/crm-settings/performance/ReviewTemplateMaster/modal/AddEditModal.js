@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,7 +9,6 @@ import {
   addreview_template,
   updatereview_template,
 } from "../../../../../redux/reviewTemplateMaster";
-import moment from "moment";
 
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.reviewTemplateMaster);
@@ -29,11 +29,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         valid_from:
           new Date(initialData.valid_from).toISOString() ||
           new Date().toISOString(),
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         template_name: "",
         valid_from: new Date().toISOString(),
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -131,9 +133,33 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   )}
                 </div>
               </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Footer */}
             <div className="modal-footer">
               <div className="d-flex align-items-center justify-content-end m-0">
                 <Link

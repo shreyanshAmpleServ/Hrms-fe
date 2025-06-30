@@ -12,48 +12,25 @@ const ProjectDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
-    // Fetch the contact details when the component mounts
     dispatch(fetchProjectById(id));
   }, [id, dispatch]);
-  // Get the contact details from Redux store
   const { projectDetail, loading } = useSelector((state) => state.projects);
 
   const route = all_routes;
 
-  const badgeClasses = [
-    "badge-soft-success",
-    "badge-soft-warning",
-    "badge-soft-info",
-    "badge-soft-danger",
-    "badge-soft-primary",
-    "badge-soft-secondary",
-  ];
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const handleDeleteCompany = () => {
+  const handleDeleteProject = () => {
     setShowDeleteModal(true);
   };
   const deleteData = () => {
     if (projectDetail) {
-      dispatch(deleteProject(projectDetail.id)); // Dispatch the delete action
-      // navigate(`/companies`); // Navigate to the specified route
-      setShowDeleteModal(false); // Close the modal
+      dispatch(deleteProject(projectDetail.id));
+      setShowDeleteModal(false);
     }
-  };
-  // Social icons mapping
-  const socialIcons = {
-    facebook: "fa-brands fa-facebook-f",
-    instagram: "fa-brands fa-instagram",
-    linkedin: "fa-brands fa-linkedin",
-    skype: "fa-brands fa-skype",
-    twitter: "fa-brands fa-twitter",
-    whatsapp: "fa-brands fa-whatsapp",
   };
 
   return (
     <>
-      {/* Page Wrapper */}
-
       <div className="page-wrapper position-relative">
         {loading ? (
           <div
@@ -80,7 +57,6 @@ const ProjectDetail = () => {
           <div className="content">
             <div className="row">
               <div className="col-md-12">
-                {/* Page Header */}
                 <div className="page-header">
                   <div className="row align-items-center">
                     <div className="col-sm-4">
@@ -93,12 +69,10 @@ const ProjectDetail = () => {
                     </div>
                   </div>
                 </div>
-                {/* /Page Header */}
               </div>
             </div>
             <div className="row">
               <div className="col-md-12">
-                {/* Contact User */}
                 <div className="contact-head">
                   <div className="row align-items-center">
                     <div className="col-sm-6">
@@ -134,21 +108,6 @@ const ProjectDetail = () => {
                   <div className="card-body pb-2">
                     <div className="d-flex align-items-center justify-content-between flex-wrap">
                       <div className="d-flex align-items-center mb-2">
-                        {/* <div className="avatar avatar-xxl online online-sm me-3 flex-shrink-0">
-                        {projectDetail?.logo ? (
-                          <img
-                            src={projectDetail?.logo}
-                            alt="Company Logo"
-                            className="preview"
-                          />
-                        ) : (
-                          <ImageWithBasePath
-                            src="assets/img/profiles/avatar-14.jpg"
-                            alt="Company Logo"
-                          />
-                        )}
-                        <span className="status online" />
-                      </div> */}
                         <div>
                           <h5 className="mb-1">{projectDetail?.name}</h5>
                           <p className="mb-2">{projectDetail?.projectTiming}</p>
@@ -175,7 +134,7 @@ const ProjectDetail = () => {
                             <Link
                               className="dropdown-item"
                               to="#"
-                              onClick={() => handleDeleteCompany(true)}
+                              onClick={() => handleDeleteProject()}
                             >
                               <i className="ti ti-trash text-danger" />
                               Delete
@@ -186,9 +145,7 @@ const ProjectDetail = () => {
                     </div>
                   </div>
                 </div>
-                {/* /Contact User */}
               </div>
-              {/* Contact Sidebar */}
               <div className="col-xl-3 theiaStickySidebar">
                 <div className="card">
                   <div className="card-body p-3">
@@ -230,17 +187,11 @@ const ProjectDetail = () => {
                   </div>
                 </div>
               </div>
-              {/* /Contact Sidebar */}
-              {/* Contact Details */}
               <ProjectActvities project={projectDetail?.name} />
-              {/* /Contact Details */}
             </div>
           </div>
         )}
       </div>
-      {/* /Page Wrapper */}
-      {/* Delete Contact */}
-      {/* Include the Delete Contact Modal */}
       <DeleteAlert
         label="Project"
         showModal={showDeleteModal}
@@ -248,11 +199,7 @@ const ProjectDetail = () => {
         selectedCompany={projectDetail}
         onDelete={deleteData}
       />
-      {/* /Delete Contact */}
-
-      {/* Edit Contact */}
       <EditProjectModal project={projectDetail} />
-      {/* /Edit Contact */}
     </>
   );
 };

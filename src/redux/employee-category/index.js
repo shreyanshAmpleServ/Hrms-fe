@@ -18,7 +18,7 @@ export const fetchemployee_category = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch employee_categorys"
+        error.response?.data || "Failed to fetch employee categorys"
       );
     }
   }
@@ -32,7 +32,7 @@ export const addemployee_category = createAsyncThunk(
       const response = await toast.promise(
         apiClient.post("/v1/employee-category", employee_categoryData),
         {
-          loading: "Adding employee_category...",
+          loading: "Adding employee category...",
           success: "Employee category added successfully",
           error: "Failed to add employee category",
         }
@@ -54,7 +54,7 @@ export const updateemployee_category = createAsyncThunk(
       const response = await toast.promise(
         apiClient.put(`/v1/employee-category/${id}`, employee_categoryData),
         {
-          loading: "Updating employee_category...",
+          loading: "Updating employee category...",
           success: "Employee category updated successfully",
           error: "Failed to update employee category",
         }
@@ -68,7 +68,7 @@ export const updateemployee_category = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update employee_category"
+        error.response?.data || "Failed to update employee category"
       );
     }
   }
@@ -82,7 +82,7 @@ export const deleteemployee_category = createAsyncThunk(
       const response = await toast.promise(
         apiClient.delete(`/v1/employee-category/${id}`),
         {
-          loading: "Deleting employee_category...",
+          loading: "Deleting employee category...",
           success: "Employee category deleted successfully",
           error: "Failed to delete employee category",
         }
@@ -90,11 +90,11 @@ export const deleteemployee_category = createAsyncThunk(
       return {
         data: { id },
         message:
-          response.data.message || "employee_category deleted successfully",
+          response.data.message || "employee category deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete employee_category"
+        error.response?.data || "Failed to delete employee category"
       );
     }
   }

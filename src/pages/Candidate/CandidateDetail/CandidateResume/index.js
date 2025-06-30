@@ -146,11 +146,13 @@ const CandidateResume = ({ candidateDetail }) => {
       <div className="card">
         <div className="card-header p-4 d-flex justify-content-between align-items-center">
           <h4 className="card-title">Resume</h4>
-          <AddButton
-            label="Add Resume"
-            id="add_edit_resume_upload_modal"
-            setMode={() => setMode("add")}
-          />
+          {isCreate && (
+            <AddButton
+              label="Add Resume"
+              id="add_edit_resume_upload_modal"
+              setMode={() => setMode("add")}
+            />
+          )}
         </div>
         <div className="card-body">
           <div className="table-responsive custom-table">
