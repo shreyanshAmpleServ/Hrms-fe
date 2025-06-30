@@ -26,6 +26,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   }, []);
 
   const {
+    watch,
     register,
     handleSubmit,
     formState: { errors },
@@ -112,6 +113,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     setSelected(null);
     closeButton?.click();
   };
+
+  console.log(watch("is_statutory"));
 
   return (
     <div
@@ -551,7 +554,9 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       type="checkbox"
                       className="form-check-input"
                       checked={field.value === "Y" ? true : false}
-                      onChange={(e) => field.onChange(e.target.checked)}
+                      onChange={(e) =>
+                        field.onChange(e.target.checked ? "Y" : "N")
+                      }
                     />
                   )}
                 />
