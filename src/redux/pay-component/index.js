@@ -133,7 +133,7 @@ const pay_componentsSlice = createSlice({
       })
       .addCase(addpay_component.fulfilled, (state, action) => {
         state.loading = false;
-        if (action.payload.data) {
+        if (state.pay_component.data) {
           state.pay_component = {
             ...state.pay_component,
             data: [action.payload.data, ...state.pay_component.data],
@@ -142,7 +142,7 @@ const pay_componentsSlice = createSlice({
         } else {
           state.pay_component = {
             ...state.pay_component,
-            data: [...state.pay_component.data],
+            data: [action.payload.data],
           };
           state.success = action.payload.message;
         }
