@@ -10,8 +10,12 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchHelpdeskTicket } from "../../redux/HelpdeskTicket/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageHelpdeskTicket from "./ManageHelpdeskTicket/index.js";
+import ManageStatus from "./ManageStatus/index.js";
 
 const HelpdeskTicket = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedHelpdeskTicket, setSelectedHelpdeskTicket] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -98,51 +102,104 @@ const HelpdeskTicket = () => {
       dataIndex: "submitted_on",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
-    },
+
     {
       title: "Assigned To",
       dataIndex: "helpdesk_assign_to",
       render: (text) => text?.full_name || "-",
     },
 
-    ...(isDelete || isUpdate
+    {
+      title: "Approval Status",
+      dataIndex: "status",
+      render: (value) => (
+        <div
+          className={`text-capitalize badge ${
+            value === "P"
+              ? "bg-warning"
+              : value === "O"
+                ? "bg-primary"
+                : value === "In"
+                  ? "bg-info"
+                  : value === "R"
+                    ? "bg-success"
+                    : value === "C"
+                      ? "bg-dark"
+                      : "bg-secondary"
+          }`}
+        >
+          {value === "P"
+            ? "Pending"
+            : value === "O"
+              ? "Open"
+              : value === "In"
+                ? "In Progress"
+                : value === "R"
+                  ? "Resolved"
+                  : value === "C"
+                    ? "Closed"
+                    : value || "—"}
+        </div>
+      ),
+      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+    },
+
+    ...(isUpdate || isDelete
       ? [
           {
-            title: "Action",
-            render: (text, a) => (
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-expanded="true"
                 >
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
                   {isUpdate && (
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      onClick={() => {
+                        setSelected(record);
+                        setOpen(true);
+                      }}
+                    >
+                      <i className="ti ti-settings text-blue"></i>
+                      {record.approval_status === "P"
+                        ? "Approve/Reject"
+                        : record.approval_status === "R"
+                          ? "Pending/Approve"
+                          : record.approval_status === "A"
+                            ? "Reject/Pending"
+                            : "Manage Status"}
+                    </Link>
+                  )}
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add"
-                      onClick={() => setSelectedHelpdeskTicket(a)}
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
                     >
-                      <i className="ti ti-edit text-blue" /> Edit
+                      <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteHelpdeskTicket(a)}
+                      onClick={() => handleDeleteHelpdeskTicket(record)}
                     >
-                      <i className="ti ti-trash text-danger" /> Delete
+                      <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
                   )}
                 </div>
@@ -268,8 +325,8 @@ const HelpdeskTicket = () => {
           </div>
         </div>
         <ManageHelpdeskTicket
-          setHelpdeskTicket={setSelectedHelpdeskTicket}
-          helpdeskTicket={selectedHelpdeskTicket}
+          setHelpdeskTicket={setSelected}
+          helpdeskTicket={selected}
         />
       </div>
       <DeleteConfirmation
@@ -277,6 +334,7 @@ const HelpdeskTicket = () => {
         setShowModal={setShowDeleteModal}
         helpdeskTicketId={selectedHelpdeskTicket?.id}
       />
+      <ManageStatus selected={selected} open={open} setOpen={setOpen} />
     </>
   );
 };

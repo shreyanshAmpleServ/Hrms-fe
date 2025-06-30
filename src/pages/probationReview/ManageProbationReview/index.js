@@ -17,6 +17,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
   const {
     control,
     handleSubmit,
+    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -24,7 +25,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
       employee_id: "",
       probation_end_date: new Date().toISOString(),
       review_notes: "",
-      confirmation_status: "",
+      confirmation_status: "Panding",
       confirmation_date: new Date().toISOString(),
       review_meeting_date: new Date().toISOString(),
       performance_rating: "",
@@ -48,7 +49,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
         probation_end_date:
           probationReview.probation_end_date || new Date().toISOString(),
         review_notes: probationReview.review_notes || "",
-        confirmation_status: probationReview.confirmation_status || "",
+        confirmation_status: probationReview.confirmation_status || "Panding",
         confirmation_date:
           probationReview.confirmation_date || new Date().toISOString(),
         review_meeting_date:
@@ -69,7 +70,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
         employee_id: "",
         probation_end_date: new Date().toISOString(),
         review_notes: "",
-        confirmation_status: "",
+        confirmation_status: "Panding",
         confirmation_date: new Date().toISOString(),
         review_meeting_date: new Date().toISOString(),
         performance_rating: "",
@@ -86,7 +87,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
   const { employee } = useSelector((state) => state.employee || {});
   const { loading } = useSelector((state) => state.probationReview || {});
 
-  const employeeOptions = employee?.data?.map((emp) => ({
+  const EmployeeList = employee?.data?.map((emp) => ({
     label: emp.full_name,
     value: emp.id,
   }));
@@ -162,30 +163,28 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
             {/* Employee */}
-            <div className="col-md-6 mb-3">
+            <div className="col-md-6">
               <label className="col-form-label">
-                Employee<span className="text-danger">*</span>
+                Employee <span className="text-danger">*</span>
               </label>
               <Controller
                 name="employee_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
-                render={({ field }) => {
-                  const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={EmployeeList}
+                    placeholder="Choose Employee"
+                    isDisabled={!EmployeeList.length}
+                    classNamePrefix="react-select"
+                    className="select2"
+                    onChange={(option) => field.onChange(option?.value || "")}
+                    value={EmployeeList.find(
+                      (option) => option.value === watch("employee_id")
+                    )}
+                  />
+                )}
               />
               {errors.employee_id && (
                 <small className="text-danger">
@@ -202,13 +201,13 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = employeeOptions?.find(
+                  const selected = EmployeeList?.find(
                     (opt) => opt.value === field.value
                   );
                   return (
                     <Select
                       {...field}
-                      options={employeeOptions}
+                      options={EmployeeList}
                       placeholder="Select Employee"
                       value={selected || null}
                       onInputChange={setSearchValue}

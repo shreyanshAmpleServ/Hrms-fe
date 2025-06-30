@@ -275,7 +275,7 @@ const DailyAttendance = () => {
                   </div>
                 </div>
 
-                <div className="card-body">
+                <div className="card-body z-3">
                   <>
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex" style={{ width: "250px" }}>

@@ -5,7 +5,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { createpayslip, updatepayslip } from "../../../redux/payslipViewer";
-
 import { fetchEmployee } from "../../../redux/Employee";
 
 const AddEditModal = ({ setpayslip, payslip }) => {

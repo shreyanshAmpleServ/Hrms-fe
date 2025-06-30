@@ -22,13 +22,13 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
 
   const { loading } = useSelector((state) => state.helpdeskTicket || {});
 
-  const statusOptions = [
-    { value: "open", label: "Open" },
-    { value: "in_progress", label: "In Progress" },
-    { value: "resolved", label: "Resolved" },
-    { value: "closed", label: "Closed" },
-    { value: "pending", label: "Pending" },
-  ];
+  // const statusOptions = [
+  //   { value: "open", label: "Open" },
+  //   { value: "in_progress", label: "In Progress" },
+  //   { value: "resolved", label: "Resolved" },
+  //   { value: "closed", label: "Closed" },
+  //   { value: "pending", label: "Pending" },
+  // ];
 
   const priorityOptions = [
     { value: "low", label: "Low" },
@@ -51,7 +51,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
       employee_id: helpdeskTicket?.employee_id || "",
       ticket_subject: helpdeskTicket?.ticket_subject || "",
       ticket_type: helpdeskTicket?.ticket_type || "",
-      status: helpdeskTicket?.status || "",
+      status: helpdeskTicket?.status || "Panding",
       priority: helpdeskTicket?.priority || "",
       assigned_to: helpdeskTicket?.assigned_to || "",
       description: helpdeskTicket?.description || "",
@@ -183,7 +183,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                   </div>
                 </div>
 
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <label className="col-form-label">
                     Status <span className="text-danger">*</span>
                   </label>
@@ -212,7 +212,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                       </small>
                     )}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="col-md-6">
                   <label className="col-form-label">
