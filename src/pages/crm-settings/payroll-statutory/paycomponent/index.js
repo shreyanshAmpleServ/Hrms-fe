@@ -264,48 +264,48 @@ const Paycomponent = () => {
     },
     ...(isUpdate || isDelete
       ? [
-        {
-          title: "Actions",
-          dataIndex: "actions",
-          render: (_text, record) => (
-            <div className="dropdown table-action">
-              <Link
-                to="#"
-                className="action-icon"
-                data-bs-toggle="dropdown"
-                aria-expanded="true"
-              >
-                <i className="fa fa-ellipsis-v"></i>
-              </Link>
-              <div className="dropdown-menu dropdown-menu-right">
-                {isUpdate && (
-                  <Link
-                    className="dropdown-item edit-popup"
-                    to="#"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvas_add"
-                    onClick={() => {
-                      setSelected(record);
-                      setMode("edit");
-                    }}
-                  >
-                    <i className="ti ti-edit text-blue"></i> Edit
-                  </Link>
-                )}
-                {isDelete && (
-                  <Link
-                    className="dropdown-item"
-                    to="#"
-                    onClick={() => handleDeleteIndustry(record)}
-                  >
-                    <i className="ti ti-trash text-danger"></i> Delete
-                  </Link>
-                )}
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (_text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add"
+                      onClick={() => {
+                        setSelected(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ),
-        },
-      ]
+            ),
+          },
+        ]
       : []),
   ];
 

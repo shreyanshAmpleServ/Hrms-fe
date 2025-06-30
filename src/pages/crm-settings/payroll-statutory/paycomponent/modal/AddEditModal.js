@@ -53,7 +53,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     label: item?.name,
   }));
 
-  const taxSlabOptions = taxSlab?.map((item) => ({
+  const taxSlabOptions = taxSlab?.data?.map((item) => ({
     value: item?.id,
     label: item?.rule_type,
   }));
