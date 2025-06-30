@@ -15,6 +15,14 @@ import {
 } from "../../../../redux/letterType";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
+import { Button } from "antd";
+import {
+  FileExcelFilled,
+  FileFilled,
+  FileImageFilled,
+  FilePdfFilled,
+  FileWordFilled,
+} from "@ant-design/icons";
 
 const LetterTypeMaster = () => {
   const [mode, setMode] = React.useState("add");
@@ -63,87 +71,65 @@ const LetterTypeMaster = () => {
     {
       title: "Attachment",
       dataIndex: "template_path",
-      render: (text, record) => {
-        const extension = text
-          ?.split(".")
-          ?.pop()
-          ?.split("?")?.[0]
-          ?.split("#")?.[0]
-          ?.toLowerCase();
-        const imageExtensions = [".jpg", ".jpeg", ".png", ".avif"]; // Fixed ".jpeg" spelling
-
-        return (
-          <>
-            {["jpeg", "jpg", "png"]?.includes(extension) ? (
-              <div
-                className="dropdown-item"
-                onClick={() => handleDownload(text, `${record?.filename}`)}
-                style={{ width: "3rem", padding: "2px" }}
-                to={text}
-              >
-                {imageExtensions.includes(`.${extension}`) ? (
-                  <img
-                    src={text}
-                    alt="Preview"
-                    style={{
-                      width: "2rem",
-                      height: "2rem",
-                      margin: "0px",
-                      borderRadius: "5px",
-                    }}
-                  />
-                ) : (
-                  <div
-                    className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-.5"
-                    style={{
-                      width: "3rem",
-                      height: "3rem",
-                      margin: "0px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <i style={{ fontSize: "28px" }} className=" ti ti-pdf" />
-                  </div>
-                )}{" "}
-              </div>
+      render: (text) => {
+        return text ? (
+          <a
+            href={text}
+            target="_blank"
+            rel="noreferrer"
+            className="d-flex align-items-center gap-2"
+          >
+            {text.split(".").pop()?.toLowerCase() === "pdf" ? (
+              <Button className="rounded-circle bg-danger p-2">
+                <FilePdfFilled />
+              </Button>
+            ) : text.split(".").pop()?.toLowerCase() === "jpg" ||
+              text.split(".").pop()?.toLowerCase() === "jpeg" ||
+              text.split(".").pop()?.toLowerCase() === "png" ? (
+              <Button className="rounded-circle bg-primary p-2">
+                <FileImageFilled />
+              </Button>
+            ) : text.split(".").pop()?.toLowerCase() === "doc" ||
+              text.split(".").pop()?.toLowerCase() === "docx" ? (
+              <Button className="rounded-circle bg-success p-2">
+                <FileWordFilled />
+              </Button>
+            ) : text.split(".").pop()?.toLowerCase() === "xls" ||
+              text.split(".").pop()?.toLowerCase() === "xlsx" ? (
+              <Button className="rounded-circle bg-success p-2">
+                <FileExcelFilled />
+              </Button>
             ) : (
-              <Link
-                target="_blank"
-                className="dropdown-item"
-                style={{ width: "3rem", padding: "2px" }}
-                to={text}
-              >
-                {imageExtensions.includes(`.${extension}`) ? (
-                  <img
-                    src={text}
-                    alt="Preview"
-                    style={{
-                      width: "2rem",
-                      height: "2rem",
-                      margin: "0px",
-                      borderRadius: "5px",
-                    }}
-                  />
-                ) : (
-                  <div
-                    className="text-light bg-danger h1 d-flex justify-content-center align-itms-center  pt-.5"
-                    style={{
-                      width: "2rem",
-                      height: "2rem",
-                      margin: "0px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <i style={{ fontSize: "28px" }} className="ti ti-pdf" />
-                  </div>
-                )}
-              </Link>
+              <Button className="rounded-circle bg-primary p-2">
+                <FileFilled />
+              </Button>
             )}
-          </>
+            {text.split("/").pop().split("-").pop()}
+          </a>
+        ) : (
+          <p className="text-danger">No Document</p>
         );
       },
       sorter: (a, b) =>
         (a.template_path || "").localeCompare(b.template_path || ""),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <>
+          {text === "Y" ? (
+            <span className="badge badge-pill badge-status bg-success">
+              Active
+            </span>
+          ) : (
+            <span className="badge badge-pill badge-status bg-danger">
+              Inactive
+            </span>
+          )}
+        </>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
     {
       title: "Created Date",

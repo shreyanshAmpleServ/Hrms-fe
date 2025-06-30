@@ -29,6 +29,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           ? new Date(initialData.close_date)
           : null,
         description: initialData.description || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
@@ -36,6 +37,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         launch_date: null,
         close_date: null,
         description: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -49,7 +51,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         updatesurvey({
           id: initialData?.id,
           surveyData: data,
-        }),
+        })
       );
     }
     reset();
@@ -110,6 +112,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 </label>
                 <textarea
                   type="text"
+                  rows={3}
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
                   placeholder="Enter Description"
                   {...register("description", {
@@ -178,6 +181,31 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {errors.close_date.message}
                     </small>
                   )}
+                </div>
+              </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
                 </div>
               </div>
             </div>

@@ -20,9 +20,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      reset({ doc_type: initialData.doc_type || "" });
+      reset({
+        doc_type: initialData.doc_type || "",
+        is_active: initialData.is_active || "Y",
+      });
     } else {
-      reset({ doc_type: "" });
+      reset({ doc_type: "", is_active: "Y" });
     }
   }, [mode, initialData, reset]);
 
@@ -83,6 +86,31 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     {errors.doc_type.message}
                   </small>
                 )}
+              </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
               </div>
             </div>
 

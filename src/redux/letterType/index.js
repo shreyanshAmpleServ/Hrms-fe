@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast";
 
 // letterType Slice
 
@@ -28,7 +29,14 @@ export const addlatter_type = createAsyncThunk(
   "latter_type/addlatter_type",
   async (latter_typeData, thunkAPI) => {
     try {
-      const response = await apiClient.post("/v1/latter-type", latter_typeData);
+      const response = await toast.promise(
+        apiClient.post("/v1/latter-type", latter_typeData),
+        {
+          loading: "Adding letter type...",
+          success: "Letter type added successfully",
+          error: "Failed to add letter type",
+        }
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -43,9 +51,13 @@ export const updatelatter_type = createAsyncThunk(
   "latter_type/updatelatter_type",
   async ({ id, latter_typeData }, thunkAPI) => {
     try {
-      const response = await apiClient.put(
-        `/v1/latter-type/${id}`,
-        latter_typeData
+      const response = await toast.promise(
+        apiClient.put(`/v1/latter-type/${id}`, latter_typeData),
+        {
+          loading: "Updating letter type...",
+          success: "Letter type updated successfully",
+          error: "Failed to update letter type",
+        }
       );
       return response.data;
     } catch (error) {
@@ -67,7 +79,14 @@ export const deletelatter_type = createAsyncThunk(
   "latter_type/deletelatter_type",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/latter-type/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/latter-type/${id}`),
+        {
+          loading: "Deleting letter type...",
+          success: "Letter type deleted successfully",
+          error: "Failed to delete letter type",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "latter_type deleted successfully",

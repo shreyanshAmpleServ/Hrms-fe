@@ -22,12 +22,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     if (mode === "edit" && initialData) {
       reset({
         letter_name: initialData.letter_name || "",
-        template_path: initialData.template_path || "",
+        template_path: null,
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         letter_name: "",
         template_path: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -36,7 +38,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     const closeButton = document.getElementById("close_latter_type_modal");
     const formData = new FormData();
     formData.append("letter_name", data.letter_name);
-    formData.append("template_path", data.template_path[0]);
+    formData.append(
+      "template_path",
+      data.template_path ? data.template_path[0] : null
+    );
+    formData.append("is_active", data.is_active);
     if (mode === "add") {
       dispatch(addlatter_type(formData));
     } else if (mode === "edit" && initialData) {
@@ -94,13 +100,20 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
               <div className="mb-3">
                 <label className="col-form-label">
-                  Attachment<span className="text-danger">*</span>
+                  Attachment{" "}
+                  {!initialData ? <span className="text-danger">*</span> : null}
                 </label>
                 <input
                   type="file"
                   className={`form-control ${errors.template_path ? "is-invalid" : ""}`}
                   {...register("template_path", {
-                    required: "Template path is required.",
+                    required: initialData ? false : true,
+                    validate: (value) => {
+                      if (!value && mode === "add") {
+                        return "Template path is required.";
+                      }
+                      return true;
+                    },
                   })}
                 />
                 {errors.template_path && (
@@ -108,6 +121,31 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     {errors.template_path.message}
                   </small>
                 )}
+              </div>
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
               </div>
             </div>
 

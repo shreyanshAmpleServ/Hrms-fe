@@ -127,7 +127,7 @@ const DisciplinaryPenaltyMaster = () => {
       : []),
   ];
 
-  const { disciplinary_penalty, loading, error, success } = useSelector(
+  const { disciplinary_penalty, loading } = useSelector(
     (state) => state.disciplinary_penalty
   );
 
@@ -162,17 +162,16 @@ const DisciplinaryPenaltyMaster = () => {
     setSearchText(e.target.value);
   }, []);
 
-  console.log("con", disciplinary_penalty);
   const filteredData = useMemo(() => {
     let data = disciplinary_penalty?.data || [];
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
