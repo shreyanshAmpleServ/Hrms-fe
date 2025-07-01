@@ -38,7 +38,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     { label: "December", value: "December" },
   ];
 
-  const { loading } = useSelector((state) => state.leaveEncashment || {});
+  const { loading } = useSelector((state) => state.wpsFileGenerator || {});
 
   React.useEffect(() => {
     if (selected) {

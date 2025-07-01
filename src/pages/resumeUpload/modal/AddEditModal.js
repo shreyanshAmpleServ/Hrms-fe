@@ -25,7 +25,7 @@ const AddEditModal = ({ mode = "add", initialData = null, candidate_id }) => {
 
   useEffect(() => {
     if (!candidate_id) {
-      dispatch(fetchCandidate());
+      dispatch(fetchCandidate({ is_active: true }));
     }
   }, [candidate_id]);
 

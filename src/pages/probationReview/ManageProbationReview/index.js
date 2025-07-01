@@ -39,7 +39,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
   });
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   useEffect(() => {
@@ -92,11 +92,6 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
     value: emp.id,
   }));
 
-  // const statusOptions = [
-  //   { label: "Confirmed", value: "Confirmed" },
-  //   { label: "Extended", value: "Extended" },
-  //   { label: "Terminated", value: "Terminated" },
-  // ];
   const statusOption = [
     { label: "Yes", value: "true" },
     { label: "No", value: "false" },

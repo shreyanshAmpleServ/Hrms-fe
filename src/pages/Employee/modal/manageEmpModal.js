@@ -139,16 +139,16 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const { loading } = useSelector((state) => state.contacts);
 
   React.useEffect(() => {
-    dispatch(fetchemploymentType());
-    dispatch(fetchdesignation());
-    dispatch(fetchdepartment());
-    dispatch(fetchbank());
-    dispatch(fetchCountries());
-    dispatch(fetchCurrencies());
+    dispatch(fetchemploymentType({ is_active: true }));
+    dispatch(fetchdesignation({ is_active: true }));
+    dispatch(fetchdepartment({ is_active: true }));
+    dispatch(fetchbank({ is_active: true }));
+    dispatch(fetchCountries({ is_active: true }));
+    dispatch(fetchCurrencies({ is_active: true }));
   }, [dispatch]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchEmployee }));
+    dispatch(fetchEmployee({ search: searchEmployee, is_active: true }));
   }, [searchEmployee, dispatch]);
 
   const { employee, loading: loadingEmployee } = useSelector(
@@ -393,7 +393,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Code
+                          Employee Code
                           <span className="text-danger">*</span>
                         </label>
                         <input
@@ -781,7 +781,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
 
                     <div className="col-md-4">
                       <div className="mb-3">
-                        <label className="col-form-label">WorkLocation</label>
+                        <label className="col-form-label">Work Location</label>
                         <input
                           type="text"
                           className="form-control"

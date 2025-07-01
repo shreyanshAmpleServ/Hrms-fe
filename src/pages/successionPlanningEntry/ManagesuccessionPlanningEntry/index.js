@@ -45,8 +45,8 @@ const ManagesuccessionPlanning = ({
   });
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-    dispatch(fetchRoles({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchRoles({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   useEffect(() => {

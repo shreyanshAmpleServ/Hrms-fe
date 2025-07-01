@@ -26,7 +26,7 @@ const ManagetravelReimbursement = ({
   }));
 
   React.useEffect(() => {
-    dispatch(fetchCurrencies());
+    dispatch(fetchCurrencies({ is_active: true }));
   }, [dispatch]);
 
   const {
@@ -105,7 +105,7 @@ const ManagetravelReimbursement = ({
   }));
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');

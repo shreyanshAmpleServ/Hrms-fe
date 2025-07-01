@@ -33,8 +33,6 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
   const { loading } = useSelector((state) => state.leaveEncashment || {});
 
   React.useEffect(() => {
-    console.log("Reset chal raha hai, data -->", leaveEncashment);
-
     if (leaveEncashment) {
       reset({
         employee_id: leaveEncashment.employee_id || "",
@@ -59,7 +57,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
   }, [leaveEncashment, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
@@ -72,7 +70,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
   }));
 
   useEffect(() => {
-    dispatch(fetchLeaveType({ searchValue }));
+    dispatch(fetchLeaveType({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { leaveType, loading: leaveTypeLoading } = useSelector(

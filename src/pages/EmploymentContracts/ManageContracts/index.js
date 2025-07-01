@@ -57,7 +57,7 @@ const ManageContracts = ({ setContract, contract, candidate_id }) => {
 
   React.useEffect(() => {
     if (!candidate_id) {
-      dispatch(fetchCandidate({ searchValue }));
+      dispatch(fetchCandidate({ search: searchValue, is_active: true }));
     }
   }, [searchValue, candidate_id]);
 

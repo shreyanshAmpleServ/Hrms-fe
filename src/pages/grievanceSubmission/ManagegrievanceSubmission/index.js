@@ -69,8 +69,8 @@ const ManagegrievanceSubmission = ({
   }, [grievanceSubmission, reset]);
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-    dispatch(fetchgrievance_type());
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchgrievance_type({ is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

@@ -20,7 +20,6 @@ export const EmployeeByDesignations = ({ data }) => {
         data: data?.values || [],
         backgroundColor: "#0000ff",
         borderRadius: 4,
-        barThickness: 10,
         categoryPercentage: 0.5,
         barPercentage: 0.8,
       },

@@ -54,6 +54,15 @@ const StatesList = () => {
         ),
     },
     {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <span className={`badge ${text === "Y" ? "bg-success" : "bg-danger"}`}>
+          {text === "Y" ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
+    {
       title: "Created Date",
       dataIndex: "createdate",
       render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,

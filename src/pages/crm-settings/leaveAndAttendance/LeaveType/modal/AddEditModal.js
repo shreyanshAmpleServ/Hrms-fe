@@ -31,6 +31,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         carry_forward: initialData?.carry_forward || false,
         for_gender: initialData?.for_gender || "",
         prorate_allowed: initialData?.prorate_allowed === "Y" ? true : false,
+        is_active: initialData?.is_active || "Y",
       });
     } else {
       reset({
@@ -40,6 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         carry_forward: false,
         for_gender: "",
         prorate_allowed: false,
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -57,6 +59,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           carry_forward: data?.carry_forward || false,
           for_gender: data?.for_gender || "",
           prorate_allowed: data?.prorate_allowed ? "Y" : "N",
+          is_active: data?.is_active || "Y",
         })
       );
     } else if (mode === "edit" && initialData) {
@@ -70,6 +73,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             carry_forward: data?.carry_forward || false,
             for_gender: data?.for_gender || "",
             prorate_allowed: data?.prorate_allowed ? "Y" : "N",
+            is_active: data?.is_active || "Y",
           },
         })
       );
@@ -228,6 +232,34 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     {...register("prorate_allowed")}
                   />
                   <label className="col-form-label">Prorate Allowed</label>
+                </Col>
+              </Row>
+              {/* Status */}
+              <Row className="mb-3">
+                <Col md={6}>
+                  <label className="col-form-label">Status</label>
+                  <div className="d-flex align-items-center">
+                    <div className="me-2">
+                      <input
+                        type="radio"
+                        className="status-radio"
+                        id="active"
+                        value="Y"
+                        {...register("is_active")}
+                      />
+                      <label htmlFor="active">Active</label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        className="status-radio"
+                        id="inactive"
+                        value="N"
+                        {...register("is_active")}
+                      />
+                      <label htmlFor="inactive">Inactive</label>
+                    </div>
+                  </div>
                 </Col>
               </Row>
             </div>

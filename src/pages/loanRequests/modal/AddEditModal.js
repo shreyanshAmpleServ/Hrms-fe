@@ -26,8 +26,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   // Fetch employees
   useEffect(() => {
-    dispatch(fetchEmployee());
-    dispatch(fetchloan_type()); // fetch loan types
+    dispatch(fetchEmployee({ is_active: true }));
+    dispatch(fetchloan_type({ is_active: true })); // fetch loan types
   }, [dispatch]);
 
   const employee = useSelector((state) => state.employee.employee);

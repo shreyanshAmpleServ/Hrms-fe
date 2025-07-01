@@ -22,14 +22,6 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
 
   const { loading } = useSelector((state) => state.helpdeskTicket || {});
 
-  // const statusOptions = [
-  //   { value: "open", label: "Open" },
-  //   { value: "in_progress", label: "In Progress" },
-  //   { value: "resolved", label: "Resolved" },
-  //   { value: "closed", label: "Closed" },
-  //   { value: "pending", label: "Pending" },
-  // ];
-
   const priorityOptions = [
     { value: "low", label: "Low" },
     { value: "medium", label: "Medium" },
@@ -60,7 +52,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
   }, [helpdeskTicket, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

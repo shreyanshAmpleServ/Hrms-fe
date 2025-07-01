@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
@@ -7,8 +8,6 @@ import {
   createrecognitionAwards,
   updaterecognitionAwards,
 } from "../../../redux/RecognitionAwards";
-
-import DatePicker from "react-datepicker";
 
 const ManageRecognitionAwards = ({
   setrecognitionAwards,
@@ -33,7 +32,7 @@ const ManageRecognitionAwards = ({
   });
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   useEffect(() => {

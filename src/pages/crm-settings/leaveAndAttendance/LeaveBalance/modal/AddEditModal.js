@@ -76,6 +76,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     reset,
     control,
     watch,
+    register,
   } = useForm();
 
   useEffect(() => {
@@ -405,7 +406,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 </small>
               )}
             </Col>
-            <Col md={6}>
+            {/* <Col md={6}>
               <label className="col-form-label">
                 Status
                 <span className="text-danger"> *</span>
@@ -436,9 +437,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               {errors.status && (
                 <small className="text-danger">{errors.status.message}</small>
               )}
-            </Col>
-          </Row>
-          <Row className="mb-3">
+            </Col> */}
             <Col md={6}>
               <label className="col-form-label">
                 Start Date<span className="text-danger"> *</span>
@@ -474,6 +473,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 </small>
               )}
             </Col>
+          </Row>
+          <Row className="mb-3">
             <Col md={6}>
               <label className="col-form-label">
                 End Date<span className="text-danger"> *</span>
@@ -508,7 +509,34 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               )}
             </Col>
           </Row>
-
+          {/* Status */}
+          <Row className="mb-3">
+            <Col md={6}>
+              <label className="col-form-label">Status</label>
+              <div className="d-flex align-items-center">
+                <div className="me-2">
+                  <input
+                    type="radio"
+                    className="status-radio"
+                    id="active"
+                    value="Y"
+                    {...register("status")}
+                  />
+                  <label htmlFor="active">Active</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    className="status-radio"
+                    id="inactive"
+                    value="N"
+                    {...register("status")}
+                  />
+                  <label htmlFor="inactive">Inactive</label>
+                </div>
+              </div>
+            </Col>
+          </Row>
           <div className="table-responsive mb-3 custom-table">
             <Table
               dataSource={leaveBalanceData || []}

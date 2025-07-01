@@ -38,7 +38,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     (state) => state.designation || {}
   );
   useEffect(() => {
-    dispatch(fetchdesignation());
+    dispatch(fetchdesignation({ is_active: true }));
   }, []);
 
   const designationOptions = designation?.data?.map((i) => ({
@@ -50,7 +50,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     (state) => state.applicationSource || {}
   );
   useEffect(() => {
-    dispatch(fetchApplicationSource());
+    dispatch(fetchApplicationSource({ is_active: true }));
   }, []);
 
   const applicationSourceOptions = applicationSource?.data?.map((i) => ({
@@ -62,7 +62,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     (state) => state.interviewStages || {}
   );
   useEffect(() => {
-    dispatch(fetchInterviewStages());
+    dispatch(fetchInterviewStages({ is_active: true }));
   }, []);
 
   const interviewStageOptions = interviewStages?.data?.map((i) => ({
@@ -80,7 +80,7 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
   }));
 
   useEffect(() => {
-    dispatch(fetchJobPosting());
+    dispatch(fetchJobPosting({ is_active: true }));
   }, []);
 
   const noShowFlagOptions = [

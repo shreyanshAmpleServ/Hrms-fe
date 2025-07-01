@@ -45,7 +45,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
   }, [workLifeEventLog, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
@@ -58,7 +58,7 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
   }));
 
   useEffect(() => {
-    dispatch(fetchwork_life({ searchValue }));
+    dispatch(fetchwork_life({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { work_life, loading: workLifeEventTypeLoading } = useSelector(

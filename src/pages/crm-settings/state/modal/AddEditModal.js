@@ -38,7 +38,7 @@ const AddEditModal = ({
       reset({
         name: initialData.name || "",
         country_code: initialData.country_code || null,
-        is_active: initialData.is_active,
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
@@ -58,7 +58,7 @@ const AddEditModal = ({
         addState({
           name: data.name,
           country_code: data.country_code,
-          is_active: data.is_active,
+          is_active: data.is_active || "Y",
         })
       );
     } else if (mode === "edit" && initialData) {
@@ -68,7 +68,7 @@ const AddEditModal = ({
           stateData: {
             name: data.name,
             country_code: data.country_code,
-            is_active: data.is_active,
+            is_active: data.is_active || "Y",
           },
         })
       );
@@ -151,6 +151,32 @@ const AddEditModal = ({
                 {errors.name && (
                   <small className="text-danger">{errors.name.message}</small>
                 )}
+              </div>
+              {/* Status */}
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
               </div>
             </div>
 

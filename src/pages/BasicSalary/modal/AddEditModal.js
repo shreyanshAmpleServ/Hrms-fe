@@ -201,13 +201,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   }, [employee, watchedEmployeeId, setValue]);
 
   useEffect(() => {
-    dispatch(fetchdepartment());
-    dispatch(fetchbranch());
-    dispatch(fetchdesignation());
-    dispatch(fetchEmployee());
-    dispatch(fetchpay_component());
-    dispatch(fetchWorkLifeEventLog());
-    dispatch(fetchCurrencies());
+    dispatch(fetchdepartment({ is_active: true }));
+    dispatch(fetchbranch({ is_active: true }));
+    dispatch(fetchdesignation({ is_active: true }));
+    dispatch(fetchEmployee({ is_active: true }));
+    dispatch(fetchpay_component({ is_active: true }));
+    dispatch(fetchWorkLifeEventLog({ is_active: true }));
+    dispatch(fetchCurrencies({ is_active: true }));
   }, [dispatch]);
 
   useEffect(() => {

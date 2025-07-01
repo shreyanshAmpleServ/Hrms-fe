@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
-import Table from "../../../../components/common/dataTable/index";
+import Table from "../../../../components/common/dataTableNew/index";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -77,6 +77,16 @@ const LeaveTypeList = () => {
           : a.prorate_allowed
             ? -1
             : 1,
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <span className={`badge ${text === "Y" ? "bg-success" : "bg-danger"}`}>
+          {text === "Y" ? "Active" : "Inactive"}
+        </span>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
 
     ...(isUpdate || isDelete

@@ -1,13 +1,13 @@
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useEffect } from "react";
+import ReactDatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addShift, updateShift } from "../../../../../redux/Shift";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import { TimePicker } from "antd";
 import ReactSelect from "react-select";
 import { fetchdepartment } from "../../../../../redux/department";
+import { addShift, updateShift } from "../../../../../redux/Shift";
 
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.shift);
@@ -34,15 +34,26 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   }, [dispatch]);
 
   const watchHalfDayWorking = watch("half_day_working");
+  const halfDayOnOptions = [
+    { label: "Monday", value: "1" },
+    { label: "Tuesday", value: "2" },
+    { label: "Wednesday", value: "3" },
+    { label: "Thursday", value: "4" },
+    { label: "Friday", value: "5" },
+    { label: "Saturday", value: "6" },
+    { label: "Sunday", value: "7" },
+  ];
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         shift_name: initialData.shift_name || "",
         start_time: initialData.start_time
-          ? dayjs(initialData.start_time)
-          : null,
-        end_time: initialData.end_time ? dayjs(initialData.end_time) : null,
+          ? initialData.start_time
+          : new Date("2025-01-01 09:00:00").toLocaleTimeString(),
+        end_time: initialData.end_time
+          ? initialData.end_time
+          : new Date("2025-01-01 18:00:00").toLocaleTimeString(),
         lunch_time: initialData.lunch_time || "",
         daily_working_hours: initialData.daily_working_hours || "",
         department_id: initialData.department_id || "",
@@ -50,12 +61,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         half_day_working: initialData.half_day_working || "N",
         half_day_on: initialData.half_day_on || "",
         remarks: initialData.remarks || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         shift_name: "",
-        start_time: null,
-        end_time: null,
+        start_time: new Date("2025-01-01 09:00:00").toLocaleTimeString(),
+        end_time: new Date("2025-01-01 18:00:00").toLocaleTimeString(),
         lunch_time: "",
         daily_working_hours: "",
         department_id: "",
@@ -63,6 +75,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         half_day_working: "N",
         half_day_on: "",
         remarks: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -80,8 +93,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
     const formattedData = {
       ...data,
-      start_time: data.start_time ? data.start_time.format("HH:mm:ss") : "",
-      end_time: data.end_time ? data.end_time.format("HH:mm:ss") : "",
+      start_time: data.start_time ? data.start_time : "",
+      end_time: data.end_time ? data.end_time : "",
       half_day_on: data.half_day_working === "N" ? null : data.half_day_on,
     };
 
@@ -161,13 +174,18 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       control={control}
                       rules={{ required: "Start time is required." }}
                       render={({ field }) => (
-                        <TimePicker
+                        <ReactDatePicker
                           {...field}
+                          showTimeSelect
+                          showTimeSelectOnly
+                          timeIntervals={15}
+                          timeCaption="Time"
                           placeholder="Select Start Time"
                           className={`form-control ${errors.start_time ? "is-invalid" : ""}`}
-                          format="HH:mm:ss"
                           value={field.value}
-                          onChange={field.onChange}
+                          onChange={(date) =>
+                            field.onChange(date.toLocaleTimeString())
+                          }
                         />
                       )}
                     />
@@ -193,13 +211,18 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       control={control}
                       rules={{ required: "End time is required." }}
                       render={({ field }) => (
-                        <TimePicker
+                        <ReactDatePicker
                           {...field}
+                          showTimeSelect
+                          showTimeSelectOnly
+                          timeIntervals={15}
+                          timeCaption="Time"
                           placeholder="Select End Time"
                           className={`form-control ${errors.end_time ? "is-invalid" : ""}`}
-                          format="HH:mm:ss"
                           value={field.value}
-                          onChange={field.onChange}
+                          onChange={(date) => {
+                            field.onChange(date.toLocaleTimeString());
+                          }}
                         />
                       )}
                     />
@@ -340,17 +363,17 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     name="half_day_working"
                     control={control}
                     render={({ field }) => (
-                      <div className="form-check">
+                      <div className="form-check form-switch">
                         <input
                           type="checkbox"
-                          className="form-check-input"
+                          className="form-check-input form-switch"
                           {...field}
                           checked={field.value === "Y"}
                           onChange={(e) =>
                             field.onChange(e.target.checked ? "Y" : "N")
                           }
                         />
-                        <label className="form-check-label">
+                        <label className="form-check-label ms-2">
                           Half Day Working
                         </label>
                       </div>
@@ -375,24 +398,21 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       render={({ field }) => (
                         <ReactSelect
                           {...field}
-                          options={[
-                            { label: "Monday", value: "1" },
-                            { label: "Tuesday", value: "2" },
-                            { label: "Wednesday", value: "3" },
-                            { label: "Thursday", value: "4" },
-                            { label: "Friday", value: "5" },
-                            { label: "Saturday", value: "6" },
-                            { label: "Sunday", value: "7" },
-                          ]}
+                          options={halfDayOnOptions}
                           placeholder="Select Half Day On"
                           classNamePrefix="react-select"
                           className={errors.half_day_on ? "is-invalid" : ""}
                           value={
                             field.value
-                              ? { label: field.value, value: field.value }
+                              ? {
+                                  label: halfDayOnOptions.find(
+                                    (option) => option.value === field.value
+                                  )?.label,
+                                  value: field.value,
+                                }
                               : null
                           }
-                          onChange={(opt) => field.onChange(opt?.value || "")}
+                          onChange={(opt) => field.onChange(opt?.value)}
                         />
                       )}
                     />
@@ -404,15 +424,49 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </div>
                 )}
               </div>
+              {/* Status */}
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
+              </div>
 
               {/* Remarks */}
               <div className="mb-3">
-                <label className="col-form-label">Remarks</label>
+                <label className="col-form-label">
+                  Remarks{" "}
+                  <span className="text-muted">(Max 255 characters)</span>
+                </label>
                 <textarea
                   className="form-control"
                   rows="3"
                   placeholder="Enter remarks (optional)"
-                  {...register("remarks")}
+                  {...register("remarks", {
+                    maxLength: {
+                      value: 255,
+                      message: "Remarks must be less than 255 characters.",
+                    },
+                  })}
                 />
               </div>
             </div>

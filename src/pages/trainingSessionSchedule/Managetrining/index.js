@@ -100,15 +100,10 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
   ];
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-    dispatch(fetchdepartment({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchdepartment({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
-  useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
-
-  // ✅ Get employee state from Redux
   const { employee } = useSelector((state) => state.employee || {});
 
   const { department } = useSelector((state) => state.department);

@@ -22,12 +22,6 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
 
   const { loading } = useSelector((state) => state.advancePayment || {});
 
-  // const statusOptions = [
-  //   { value: "pending", label: "Pending" },
-  //   { value: "approved", label: "Approved" },
-  //   { value: "rejected", label: "Rejected" },
-  // ];
-
   React.useEffect(() => {
     if (advancePayment) {
       reset({
@@ -58,7 +52,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
   }, [advancePayment, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

@@ -7,11 +7,12 @@ export const fetchCurrencies = createAsyncThunk(
   "currencies/fetchCurrencies",
   async (data, thunkAPI) => {
     try {
-      const params = {
-        search: data?.search || "",
-        page: data?.page || 1,
-        size: data?.size || 10,
-      };
+      let params = {};
+      if (data?.search) params.search = data?.search;
+      if (data?.page) params.page = data?.page;
+      if (data?.size) params.size = data?.size;
+      if (data?.is_active) params.is_active = data?.is_active;
+
       const response = await apiClient.get("/v1/currencies", { params });
       return response.data;
     } catch (error) {

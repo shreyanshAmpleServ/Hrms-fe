@@ -7,12 +7,13 @@ import toast from "react-hot-toast";
  */
 export const fetchLeaveBalanceByEmployee = createAsyncThunk(
   "leaveBalance/fetchLeaveBalanceByEmployee",
-  async (req, thunkAPI) => {
+  async (datas, thunkAPI) => {
     try {
-      const params = {
-        employeeId: req?.employeeId || "",
-        leaveTypeId: req?.leaveTypeId || "",
-      };
+      let params = {};
+      if (datas?.employeeId) params.employeeId = datas?.employeeId;
+      if (datas?.leaveTypeId) params.leaveTypeId = datas?.leaveTypeId;
+      if (datas?.is_active) params.is_active = datas?.is_active;
+
       const response = await apiClient.get("/v1/leave-balance-by-employee", {
         params,
       });
@@ -28,12 +29,14 @@ export const fetchLeaveBalance = createAsyncThunk(
   "leaveBalance/fetchLeaveBalance",
   async (datas, thunkAPI) => {
     try {
+      let params = {};
+      if (datas?.page) params.page = datas?.page;
+      if (datas?.size) params.size = datas?.size;
+      if (datas?.search) params.search = datas?.search;
+      if (datas?.is_active) params.is_active = datas?.is_active;
+
       const response = await apiClient.get("/v1/leave-balance", {
-        params: {
-          page: datas?.page || 1,
-          limit: datas?.limit || 10,
-          search: datas?.search || "",
-        },
+        params,
       });
       return response.data;
     } catch (error) {

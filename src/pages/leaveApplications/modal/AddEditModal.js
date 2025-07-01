@@ -29,8 +29,8 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee());
-    dispatch(fetchLeaveType());
+    dispatch(fetchEmployee({ is_active: true }));
+    dispatch(fetchLeaveType({ is_active: true }));
   }, [dispatch]);
 
   const employee = useSelector((state) => state.employee.employee);

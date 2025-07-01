@@ -43,7 +43,7 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
   }, [warningLetters, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
@@ -56,7 +56,7 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
   }));
 
   React.useEffect(() => {
-    dispatch(fetchlatter_type());
+    dispatch(fetchlatter_type({ is_active: true }));
   }, [dispatch]);
 
   const { latter_type } = useSelector((state) => state.letterTypeMaster);
@@ -65,8 +65,6 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
     label: i?.letter_name,
     value: i?.id,
   }));
-
-  console.log(letterTypes);
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');

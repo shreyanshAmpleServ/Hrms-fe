@@ -36,7 +36,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
   }, [assetAssignment, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
@@ -59,7 +59,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
   // ];
 
   React.useEffect(() => {
-    dispatch(fetchassets_type());
+    dispatch(fetchassets_type({ is_active: true }));
   }, [dispatch]);
 
   const { assets_type, loading: assetTypeLoading } = useSelector(

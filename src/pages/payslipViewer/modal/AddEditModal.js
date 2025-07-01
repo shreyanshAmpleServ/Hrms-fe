@@ -61,7 +61,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
   }, [payslip, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
@@ -72,19 +72,6 @@ const AddEditModal = ({ setpayslip, payslip }) => {
     label: i?.full_name,
     value: i?.id,
   }));
-
-  const adjustmentTypes = [
-    { value: "Bonus", label: "Bonus" },
-    { value: "Incentive", label: "Incentive" },
-    { value: "Overtime", label: "Overtime" },
-    { value: "Leave Encashment", label: "Leave Encashment" },
-    { value: "Salary Advance", label: "Salary Advance" },
-    { value: "Loan Deduction", label: "Loan Deduction" },
-    { value: "Tax Adjustment", label: "Tax Adjustment" },
-    { value: "Reimbursement", label: "Reimbursement" },
-    { value: "Correction", label: "Correction" },
-    { value: "Other", label: "Other" },
-  ];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');

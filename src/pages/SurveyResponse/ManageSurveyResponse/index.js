@@ -41,11 +41,11 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   }, [surveyResponse, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   React.useEffect(() => {
-    dispatch(fetchsurvey());
+    dispatch(fetchsurvey({ is_active: true }));
   }, [dispatch]);
 
   const { survey, loading: surveyLoading } = useSelector(

@@ -21,6 +21,7 @@ export const fetchbranch = createAsyncThunk(
       if (data?.search) params.search = data?.search;
       if (data?.page) params.page = data?.page;
       if (data?.size) params.size = data?.size;
+      if (data?.is_active) params.is_active = data?.is_active;
 
       const response = await apiClient.get("/v1/branch", { params });
       return response.data;

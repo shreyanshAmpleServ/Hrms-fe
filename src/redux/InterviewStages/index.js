@@ -9,13 +9,14 @@ export const fetchInterviewStages = createAsyncThunk(
   "interviewStages/fetchInterviewStages",
   async (datas, thunkAPI) => {
     try {
-      const params = {
-        search: datas?.search || "",
-        page: datas?.page || "",
-        size: datas?.size || "",
-        startDate: datas?.startDate?.toISOString() || "",
-        endDate: datas?.endDate?.toISOString() || "",
-      };
+      let params = {};
+      if (datas?.search) params.search = datas?.search;
+      if (datas?.page) params.page = datas?.page;
+      if (datas?.size) params.size = datas?.size;
+      if (datas?.startDate) params.startDate = datas?.startDate?.toISOString();
+      if (datas?.endDate) params.endDate = datas?.endDate?.toISOString();
+      if (datas?.is_active) params.is_active = datas?.is_active;
+
       const response = await apiClient.get("/v1/interview-stage", {
         params,
       });

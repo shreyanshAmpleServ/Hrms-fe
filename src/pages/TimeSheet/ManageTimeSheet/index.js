@@ -49,7 +49,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   }, [timeSheet, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(
@@ -62,7 +62,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   }));
 
   useEffect(() => {
-    dispatch(fetchLeaveType({ searchValue }));
+    dispatch(fetchLeaveType({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 
   const onSubmit = async (data) => {
