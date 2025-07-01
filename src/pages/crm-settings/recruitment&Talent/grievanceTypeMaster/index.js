@@ -15,6 +15,7 @@ import {
 } from "../../../../redux/grievanceTypeMaster";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
+import usePermissions from "../../../../components/common/Permissions.js";
 
 const GrievanceTypeMaster = () => {
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
@@ -23,15 +24,9 @@ const GrievanceTypeMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Grievance Type"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Grievance Type Master"
+  );
 
   const dispatch = useDispatch();
 

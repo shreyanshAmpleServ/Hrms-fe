@@ -22,7 +22,8 @@ const AwardTypeMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Award Type");
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Award Type Master");
 
   const dispatch = useDispatch();
 

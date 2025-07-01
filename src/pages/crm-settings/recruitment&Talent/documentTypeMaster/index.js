@@ -25,8 +25,9 @@ const DocumentTypeMaster = () => {
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
-  const { isCreate, isUpdate, isDelete, isView } =
-    usePermissions("Document Type");
+  const { isCreate, isUpdate, isDelete, isView } = usePermissions(
+    "Document Type Master"
+  );
 
   const dispatch = useDispatch();
 

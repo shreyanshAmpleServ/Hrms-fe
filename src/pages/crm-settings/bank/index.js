@@ -19,7 +19,7 @@ const BanksList = () => {
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending");
-  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Bank");
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Banks");
 
   const dispatch = useDispatch();
 

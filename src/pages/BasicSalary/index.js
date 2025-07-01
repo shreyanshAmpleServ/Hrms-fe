@@ -22,7 +22,7 @@ const BasicSalary = () => {
   const [paginationData, setPaginationData] = useState();
 
   const { isView, isCreate, isUpdate, isDelete } =
-    usePermissions("Basic Salary");
+    usePermissions("Basic Payroll");
 
   const dispatch = useDispatch();
 

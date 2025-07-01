@@ -24,8 +24,9 @@ const RatingScaleMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const { isView, isCreate, isUpdate, isDelete } =
-    usePermissions("Rating Scale");
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Rating Scale Master"
+  );
 
   const dispatch = useDispatch();
 

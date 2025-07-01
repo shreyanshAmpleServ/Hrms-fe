@@ -22,8 +22,9 @@ const JobCategoryMaster = () => {
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending");
-  const { isView, isCreate, isUpdate, isDelete } =
-    usePermissions("Job Category");
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Job Category Master"
+  );
 
   const dispatch = useDispatch();
 

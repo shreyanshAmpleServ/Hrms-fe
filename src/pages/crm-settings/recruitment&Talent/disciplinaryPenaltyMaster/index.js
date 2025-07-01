@@ -26,7 +26,7 @@ const DisciplinaryPenaltyMaster = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const { isView, isCreate, isUpdate, isDelete } = usePermissions(
-    "Disciplinary Penalty"
+    "Disciplinary Penalty Master"
   );
 
   const dispatch = useDispatch();

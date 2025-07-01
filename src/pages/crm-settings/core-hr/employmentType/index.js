@@ -25,7 +25,7 @@ const Employee_TypeList = () => {
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const { isView, isCreate, isUpdate, isDelete } =
-    usePermissions("Employee Type");
+    usePermissions("Employment Type");
 
   const dispatch = useDispatch();
 

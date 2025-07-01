@@ -25,7 +25,7 @@ const AssetTypeMaster = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer",
+    (i) => i?.module_name === "Asset Type Master"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -103,7 +103,7 @@ const AssetTypeMaster = () => {
   ];
 
   const { assets_type, loading } = useSelector(
-    (state) => state.assetTypeMaster,
+    (state) => state.assetTypeMaster
   );
 
   React.useEffect(() => {
@@ -129,7 +129,7 @@ const AssetTypeMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -142,11 +142,11 @@ const AssetTypeMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;

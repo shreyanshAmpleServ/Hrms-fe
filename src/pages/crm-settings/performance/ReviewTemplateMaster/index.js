@@ -24,8 +24,9 @@ const ReviewTemplateMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const { isView, isCreate, isUpdate, isDelete } =
-    usePermissions("Review Template");
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Review Template Master"
+  );
 
   const dispatch = useDispatch();
 

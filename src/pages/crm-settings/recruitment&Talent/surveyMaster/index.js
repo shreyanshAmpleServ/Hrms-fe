@@ -21,7 +21,8 @@ const SurveyMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const { isCreate, isUpdate, isDelete, isView } = usePermissions("Survey");
+  const { isCreate, isUpdate, isDelete, isView } =
+    usePermissions("Survey Master");
 
   const dispatch = useDispatch();
 

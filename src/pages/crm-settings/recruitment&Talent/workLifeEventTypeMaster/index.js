@@ -25,7 +25,7 @@ const WorkLifeEventTypeMaster = () => {
   const [selected, setSelected] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const { isView, isCreate, isUpdate, isDelete } = usePermissions(
-    "Work Life Event Type"
+    "Work Life Event Type Master"
   );
 
   const dispatch = useDispatch();

@@ -159,7 +159,7 @@ import WorkLifeEventLog from "../pages/WorkLifeEventLog";
 import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import BasicSalary from "../pages/BasicSalary";
-
+import DashboardEmployee from "../pages/DashboardEmployee/Employee";
 export { Dashboard, Login };
 const route = all_routes;
 
@@ -169,6 +169,12 @@ export const privateRoutes = [
     element: <AdminDashboard />,
     route: Route,
     title: "Admin Dashboard",
+  },
+  {
+    path: route.dashboardEmployee,
+    element: <DashboardEmployee />,
+    route: Route,
+    title: "dashboard Employee",
   },
   {
     path: route.leads,
@@ -247,7 +253,7 @@ export const privateRoutes = [
     path: route.hrLetter,
     element: <HRLetterList />,
     route: Route,
-    title: "HR Letter",
+    title: "HR Letters",
   },
   {
     path: route.branch,
@@ -495,7 +501,7 @@ export const privateRoutes = [
     path: route.candidates,
     element: <Candidate />,
     route: Route,
-    title: "Candidate",
+    title: "Candidates",
   },
   {
     path: route.modules,
