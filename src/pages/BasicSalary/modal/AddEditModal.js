@@ -43,7 +43,12 @@ export const payGradeList = [
   { value: "5", label: "Grade E - ₹90,001 and above" },
 ];
 
-const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
+const AddEditModal = ({
+  mode = "add",
+  initialData = null,
+  setSelected,
+  employee_id,
+}) => {
   const initialComponent = [
     {
       parent_id: "",
@@ -211,11 +216,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     dispatch(fetchdepartment());
     dispatch(fetchbranch({ is_active: true }));
     dispatch(fetchdesignation());
-    dispatch(fetchEmployee({ is_active: true }));
+    if (!employee_id) {
+      dispatch(fetchEmployee({ is_active: true }));
+    }
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (mode === "edit" && initialData?.id) {
