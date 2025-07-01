@@ -125,12 +125,12 @@ const Sidebar = () => {
 
   // Memoized filtered data to improve performance
   const filteredSidebarData = useMemo(() => {
-    if (!search) return SidebarData;
+    if (!search) return SidebarData(user?.role);
 
-    return SidebarData.filter((mainLabel) =>
+    return SidebarData(user?.role).filter((mainLabel) =>
       searchInAllLevels(mainLabel, search)
     );
-  }, [search, SidebarData]);
+  }, [search, SidebarData(user?.role)]);
 
   useEffect(() => {
     setSubopen(localStorage.getItem("menuOpened"));

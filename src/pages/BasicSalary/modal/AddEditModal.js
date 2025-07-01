@@ -219,13 +219,24 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const assignmentLine =
     basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line;
 
+  const autoFillPayComponent = useMemo(() => {
+    return pay_component?.data
+      ?.filter((item) => item.auto_fill === "Y")
+      .map((item) => ({
+        ...item,
+        pay_component_id: item.id,
+      }));
+  }, [pay_component]);
+
   useEffect(() => {
     if (mode === "edit" && assignmentLine) {
       setBasicSalaryData(
         assignmentLine.length > 0 ? assignmentLine : initialBasicSalary
       );
+    } else if (mode === "add") {
+      setBasicSalaryData(autoFillPayComponent || initialBasicSalary);
     }
-  }, [mode, assignmentLine]);
+  }, [mode, assignmentLine, autoFillPayComponent]);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
