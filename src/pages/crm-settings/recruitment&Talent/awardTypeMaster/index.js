@@ -22,7 +22,7 @@ const AwardTypeMaster = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Award Type",
+    (i) => i?.module_name === "Award Type Master"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -124,7 +124,7 @@ const AwardTypeMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -137,11 +137,11 @@ const AwardTypeMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;

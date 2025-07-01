@@ -24,15 +24,32 @@ const Login = () => {
       setErrMsg(error.message);
     }
   }, [error]);
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   const result = await dispatch(loginUser({ email: username, password }));
+  //   // const result = await dispatch(registerUser({ email:username, password }));
+
+  //   if (loginUser.fulfilled.match(result)) {
+  //     navigate("/dashboard");
+  //   }
+  // };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+
     const result = await dispatch(loginUser({ email: username, password }));
-    // const result = await dispatch(registerUser({ email:username, password }));
 
     if (loginUser.fulfilled.match(result)) {
-      navigate("/dashboard");
+      const role = result.payload.data.role;
+
+      if (role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/dashboard-employee");
+      }
     }
   };
+
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {

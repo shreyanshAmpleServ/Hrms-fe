@@ -1,5 +1,6 @@
 export const all_routes = {
   dasshboard: "/dashboard",
+  dashboardEmployee: "/dashboard-employee",
 
   register: "/register",
   login: "/login",

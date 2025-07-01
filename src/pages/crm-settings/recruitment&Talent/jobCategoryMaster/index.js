@@ -23,7 +23,7 @@ const JobCategoryMaster = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Job Category",
+    (i) => i?.module_name === "Job Category Master"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -96,7 +96,7 @@ const JobCategoryMaster = () => {
   ];
 
   const { job_category, loading } = useSelector(
-    (state) => state.jobCategoryMaster,
+    (state) => state.jobCategoryMaster
   );
 
   React.useEffect(() => {
@@ -122,7 +122,7 @@ const JobCategoryMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -135,11 +135,11 @@ const JobCategoryMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

@@ -25,7 +25,7 @@ const RatingScaleMaster = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Rating Scale",
+    (i) => i?.module_name === "Rating Scale Master"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -108,7 +108,7 @@ const RatingScaleMaster = () => {
   ];
 
   const { rating_scale, loading } = useSelector(
-    (state) => state.ratingScaleMaster,
+    (state) => state.ratingScaleMaster
   );
 
   React.useEffect(() => {
@@ -134,7 +134,7 @@ const RatingScaleMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -147,11 +147,11 @@ const RatingScaleMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

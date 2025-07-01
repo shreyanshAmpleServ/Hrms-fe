@@ -25,7 +25,7 @@ const ReviewTemplateMaster = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Review Template",
+    (i) => i?.module_name === "Review Template Master"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -104,7 +104,7 @@ const ReviewTemplateMaster = () => {
   ];
 
   const { review_template, loading } = useSelector(
-    (state) => state.reviewTemplateMaster,
+    (state) => state.reviewTemplateMaster
   );
 
   React.useEffect(() => {
@@ -131,7 +131,7 @@ const ReviewTemplateMaster = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -144,11 +144,11 @@ const ReviewTemplateMaster = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;

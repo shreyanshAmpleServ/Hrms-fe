@@ -1104,7 +1104,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           </div>
 
           {/* Footer Actions */}
-          <div className="d-flex justify-content-end gap-2 pt-3 border-top">
+          <div className="d-flex justify-content-end  gap-2 pt-3 border-top ">
             <button
               type="button"
               data-bs-dismiss="offcanvas"
