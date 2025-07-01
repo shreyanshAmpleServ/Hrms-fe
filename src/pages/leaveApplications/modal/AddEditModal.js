@@ -159,8 +159,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     }
   }, []);
 
-  console.log(leaveBalanceByEmployee);
-
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
