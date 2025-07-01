@@ -14,6 +14,9 @@ import "../src/style/icon/ionic/ionicons.css";
 import "../src/style/icon/tabler-icons/webfont/tabler-icons.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js";
 
+console.error = () => {};
+console.warn = () => {};
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>

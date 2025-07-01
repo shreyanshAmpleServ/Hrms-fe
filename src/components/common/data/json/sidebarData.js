@@ -2,8 +2,6 @@ import { all_routes } from "../../../../routes/all_routes";
 const route = all_routes;
 
 export const SidebarData = (userType) => {
-  console.log(userType, "mkx");
-
   return [
     {
       label: "HRMS",
@@ -116,7 +114,7 @@ export const SidebarData = (userType) => {
               submenu: false,
             },
             {
-              label: "Basic Payroll",
+              label: "Component Assignment",
               link: route.basicPayroll,
               showSubRoute: false,
               submenu: false,

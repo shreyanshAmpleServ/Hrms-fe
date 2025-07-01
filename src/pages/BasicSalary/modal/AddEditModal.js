@@ -44,7 +44,7 @@ export const payGradeList = [
 ];
 
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
-  const initialBasicSalary = [
+  const initialComponent = [
     {
       parent_id: "",
       line_num: "",
@@ -68,17 +68,24 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       cost_center3_id: "",
       cost_center4_id: "",
       cost_center5_id: "",
+      cost_center1_name: "",
+      cost_center2_name: "",
+      cost_center3_name: "",
+      cost_center4_name: "",
+      cost_center5_name: "",
+      project_name: "",
+      tax_code_name: "",
       column_order: "",
     },
   ];
-  const [basicSalaryData, setBasicSalaryData] = useState(initialBasicSalary);
+  const [basicSalaryData, setBasicSalaryData] = useState(initialComponent);
   const [employeeData, setEmployeeData] = useState(null);
   const dispatch = useDispatch();
 
   const { department } = useSelector((state) => state.department);
   const { branch } = useSelector((state) => state.branch);
   const { designation } = useSelector((state) => state.designation);
-  const { loading, basicSalaryDetail } = useSelector(
+  const { basicSalaryDetail, loading } = useSelector(
     (state) => state.basicSalary
   );
   const { workLifeEventLog } = useSelector((state) => state.workLifeEventLog);
@@ -201,9 +208,9 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   }, [employee, watchedEmployeeId, setValue]);
 
   useEffect(() => {
-    dispatch(fetchdepartment({ is_active: true }));
+    dispatch(fetchdepartment());
     dispatch(fetchbranch({ is_active: true }));
-    dispatch(fetchdesignation({ is_active: true }));
+    dispatch(fetchdesignation());
     dispatch(fetchEmployee({ is_active: true }));
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
@@ -219,24 +226,40 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const assignmentLine =
     basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line;
 
-  const autoFillPayComponent = useMemo(() => {
+  const components = useMemo(() => {
     return pay_component?.data
       ?.filter((item) => item.auto_fill === "Y")
       .map((item) => ({
         ...item,
         pay_component_id: item.id,
+        cost_center1_name: item.pay_component_cost_center1?.name,
+        cost_center2_name: item.pay_component_cost_center2?.name,
+        cost_center3_name: item.pay_component_cost_center3?.name,
+        cost_center4_name: item.pay_component_cost_center4?.name,
+        cost_center5_name: item.pay_component_cost_center5?.name,
+        project_name: item.pay_component_project?.name,
+        tax_code_name: item.pay_component_tax?.rule_type,
       }));
   }, [pay_component]);
 
   useEffect(() => {
     if (mode === "edit" && assignmentLine) {
-      setBasicSalaryData(
-        assignmentLine.length > 0 ? assignmentLine : initialBasicSalary
-      );
+      const data = assignmentLine?.map((item) => ({
+        ...item,
+        pay_component_id: item.pay_component_id,
+        cost_center1_name: item.pay_component_line_cost_center1?.name,
+        cost_center2_name: item.pay_component_line_cost_center2?.name,
+        cost_center3_name: item.pay_component_line_cost_center3?.name,
+        cost_center4_name: item.pay_component_line_cost_center4?.name,
+        cost_center5_name: item.pay_component_line_cost_center5?.name,
+        project_name: item.pay_component_line_project?.name,
+        tax_code_name: item.pay_component_line_tax_slab?.rule_type,
+      }));
+      setBasicSalaryData(data || initialComponent);
     } else if (mode === "add") {
-      setBasicSalaryData(autoFillPayComponent || initialBasicSalary);
+      setBasicSalaryData(components || initialComponent);
     }
-  }, [mode, assignmentLine, autoFillPayComponent]);
+  }, [mode, assignmentLine, components]);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -273,19 +296,19 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         status: "Active",
         remarks: "",
       });
-      setBasicSalaryData(initialBasicSalary);
+      setBasicSalaryData(initialComponent);
     }
   }, [mode, initialData, reset]);
 
   const handleModalClose = useCallback(() => {
     reset();
     setSelected(null);
-    setBasicSalaryData(initialBasicSalary);
+    setBasicSalaryData(initialComponent);
     setEmployeeData(null);
   }, [reset, setSelected]);
 
   const handleAddBasicSalary = useCallback(() => {
-    setBasicSalaryData((prev) => [...prev, ...initialBasicSalary]);
+    setBasicSalaryData((prev) => [...prev, ...initialComponent]);
   }, []);
 
   const handleChangeBasicSalary = useCallback(
@@ -316,8 +339,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 if (payComponent) {
                   updatedItem.component_name = payComponent.component_name;
                   updatedItem.component_code = payComponent.component_code;
-                  updatedItem.component_type =
-                    payComponent.component_type || "O";
+                  updatedItem.component_type = "O";
                   updatedItem.amount = payComponent.amount || 0;
                   updatedItem.auto_fill = payComponent.auto_fill;
                   updatedItem.is_taxable = payComponent.is_taxable;
@@ -348,6 +370,20 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   updatedItem.cost_center3_id = payComponent.cost_center3_id;
                   updatedItem.cost_center4_id = payComponent.cost_center4_id;
                   updatedItem.cost_center5_id = payComponent.cost_center5_id;
+                  updatedItem.cost_center1_name =
+                    payComponent.pay_component_cost_center1?.name;
+                  updatedItem.cost_center2_name =
+                    payComponent.pay_component_cost_center2?.name;
+                  updatedItem.cost_center3_name =
+                    payComponent.pay_component_cost_center3?.name;
+                  updatedItem.cost_center4_name =
+                    payComponent.pay_component_cost_center4?.name;
+                  updatedItem.cost_center5_name =
+                    payComponent.pay_component_cost_center5?.name;
+                  updatedItem.project_name =
+                    payComponent.pay_component_project?.name;
+                  updatedItem.tax_code_name =
+                    payComponent.pay_component_tax?.name;
                   updatedItem.column_order = payComponent.column_order;
                 }
                 break;
@@ -532,14 +568,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       },
       {
         title: "Project",
-        dataIndex: "project_id",
-        key: "project_id",
+        dataIndex: "project_name",
+        key: "project_name",
         render: (text) => text || "-",
       },
       {
         title: "Tax Code",
-        dataIndex: "tax_code_id",
-        key: "tax_code_id",
+        dataIndex: "tax_code_name",
+        key: "tax_code_name",
         render: (text) => text || "-",
       },
       {
@@ -580,32 +616,32 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       },
       {
         title: "Cost Center 1",
-        dataIndex: "cost_center1_id",
-        key: "cost_center1_id",
+        dataIndex: "cost_center1_name",
+        key: "cost_center1_name",
         render: (text) => text || "-",
       },
       {
         title: "Cost Center 2",
-        dataIndex: "cost_center2_id",
-        key: "cost_center2_id",
+        dataIndex: "cost_center2_name",
+        key: "cost_center2_name",
         render: (text) => text || "-",
       },
       {
         title: "Cost Center 3",
-        dataIndex: "cost_center3_id",
-        key: "cost_center3_id",
+        dataIndex: "cost_center3_name",
+        key: "cost_center3_name",
         render: (text) => text || "-",
       },
       {
         title: "Cost Center 4",
-        dataIndex: "cost_center4_id",
-        key: "cost_center4_id",
+        dataIndex: "cost_center4_name",
+        key: "cost_center4_name",
         render: (text) => text || "-",
       },
       {
         title: "Cost Center 5",
-        dataIndex: "cost_center5_id",
-        key: "cost_center5_id",
+        dataIndex: "cost_center5_name",
+        key: "cost_center5_name",
         render: (text) => text || "-",
       },
       {
@@ -703,7 +739,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="offcanvas-title">
-          {mode === "add" ? "Add" : "Edit"} Basic Salary
+          {mode === "add" ? "Add" : "Edit"} Component Assignment
         </h5>
         <button
           type="button"

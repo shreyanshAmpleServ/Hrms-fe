@@ -275,7 +275,7 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
                       name="attachment_path"
                       control={control}
                       rules={{ required: "Attachment is required!" }}
-                      render={({ field: { value, onChange, ...field } }) => (
+                      render={({ field: { _, onChange, ...field } }) => (
                         <input
                           {...field}
                           type="file"

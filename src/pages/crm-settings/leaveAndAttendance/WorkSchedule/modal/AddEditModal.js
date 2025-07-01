@@ -11,7 +11,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.WorkScheduleTemp);
   const {
     register,
-    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -39,7 +38,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     const closeButton = document.getElementById(
       "close_btn_add_edit_work_schedule_modal"
     );
-    console.log("DAta", data);
+
     if (mode === "add") {
       dispatch(
         addWorkScheduleTemp({

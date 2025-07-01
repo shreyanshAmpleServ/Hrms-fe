@@ -146,7 +146,12 @@ const BasicSalary = () => {
     {
       title: "Status",
       dataIndex: "status",
-      render: (text) => text || "-",
+      render: (text) =>
+        text === "Active" ? (
+          <span className="badge bg-success">Active</span>
+        ) : (
+          <span className="badge bg-danger">Inactive</span>
+        ),
       sorter: (a, b) => (a?.status || "").localeCompare(b?.status || ""),
     },
     {
@@ -266,7 +271,7 @@ const BasicSalary = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Basic Salary</title>
+        <title>DCC HRMS - Component Assignment</title>
         <meta
           name="basicSalary"
           content="This is basicSalary page of DCC HRMS."
@@ -279,7 +284,7 @@ const BasicSalary = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Basic Salary
+                    Component Assignment
                     <span className="count-title">
                       {basicSalary?.data?.length || 0}
                     </span>
@@ -299,7 +304,7 @@ const BasicSalary = () => {
                     <SearchBar
                       searchText={searchText}
                       handleSearch={handleSearch}
-                      label="Search Basic Salary"
+                      label="Search Component Assignment"
                     />
                   </div>
                   {isCreate && (
@@ -312,7 +317,7 @@ const BasicSalary = () => {
                         onClick={() => setMode("add")}
                       >
                         <i className="ti ti-square-rounded-plus me-2" />
-                        Add Basic Salary
+                        Add Component Assignment
                       </Link>
                     </div>
                   )}
@@ -350,7 +355,7 @@ const BasicSalary = () => {
         setSelected={setSelected}
       />
       <DeleteAlert
-        label="Basic Salary"
+        label="Component Assignment"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         onDelete={deleteData}

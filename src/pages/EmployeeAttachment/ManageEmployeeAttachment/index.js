@@ -211,7 +211,7 @@ const ManageEmployeeAttachment = ({
                       name="document_path"
                       control={control}
                       rules={{ required: "Attachment is required!" }}
-                      render={({ field: { onChange, value, ...field } }) => (
+                      render={({ field: { onChange, ...field } }) => (
                         <input
                           {...field}
                           type="file"

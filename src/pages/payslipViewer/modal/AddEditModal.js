@@ -4,8 +4,8 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { createpayslip, updatepayslip } from "../../../redux/payslipViewer";
 import { fetchEmployee } from "../../../redux/Employee";
+import { createpayslip, updatepayslip } from "../../../redux/payslipViewer";
 
 const AddEditModal = ({ setpayslip, payslip }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -14,7 +14,6 @@ const AddEditModal = ({ setpayslip, payslip }) => {
     control,
     handleSubmit,
     reset,
-    watch,
     register,
     formState: { errors },
   } = useForm();
@@ -78,10 +77,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
     try {
       payslip
         ? await dispatch(
-            updatepayslip({
-              id: payslip.id,
-              payslipData: { ...data },
-            })
+            updatepayslip({ id: payslip.id, payslipData: { ...data } })
           ).unwrap()
         : await dispatch(createpayslip({ ...data })).unwrap();
       closeButton.click();

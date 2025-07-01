@@ -80,7 +80,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee());
+    dispatch(fetchEmployee({ is_active: true }));
   }, []);
 
   const employee = useSelector((state) => state.employee.employee);
@@ -94,11 +94,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       })) || [],
     [employee]
   );
-
-  const statusOptions = [
-    { value: "Y", label: "Active" },
-    { value: "N", label: "Inactive" },
-  ];
 
   const handleAddLeaveBalance = () => {
     setLeaveBalanceData([...leaveBalanceData, initialLeaveBalance]);
