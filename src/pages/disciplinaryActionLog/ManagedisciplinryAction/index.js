@@ -75,7 +75,7 @@ const ManagedisciplinryAction = ({
   }, [disciplinryAction, reset]);
 
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
     dispatch(
       fetchdisciplinary_penalty({ search: searchValue, is_active: true })
     );

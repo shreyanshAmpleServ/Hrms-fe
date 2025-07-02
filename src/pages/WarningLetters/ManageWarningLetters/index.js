@@ -43,7 +43,7 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
   }, [warningLetters, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

@@ -29,7 +29,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee({ is_active: true }));
+    dispatch(fetchEmployee({ status: "Active" }));
     dispatch(fetchLeaveType({ is_active: true }));
   }, [dispatch]);
 

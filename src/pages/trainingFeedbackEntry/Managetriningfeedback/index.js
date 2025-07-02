@@ -28,7 +28,7 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   });
 
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
     dispatch(fetchtrainingSession({ is_active: true }));
   }, [dispatch, searchValue]);
 

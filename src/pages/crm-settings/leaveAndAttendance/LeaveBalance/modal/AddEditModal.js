@@ -80,7 +80,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee({ is_active: true }));
+    dispatch(fetchEmployee({ status: "Active" }));
   }, []);
 
   const employee = useSelector((state) => state.employee.employee);

@@ -69,7 +69,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
   }, [Notifications, reset]);
 
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
   }, [dispatch, searchValue]);
 
   const onSubmit = async (data) => {

@@ -41,7 +41,7 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   }, [surveyResponse, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
   }, [dispatch, searchValue]);
 
   React.useEffect(() => {

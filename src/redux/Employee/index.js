@@ -13,7 +13,7 @@ export const fetchEmployee = createAsyncThunk(
       if (datas?.size) params.size = datas?.size;
       if (datas?.startDate) params.startDate = datas?.startDate?.toISOString();
       if (datas?.endDate) params.endDate = datas?.endDate?.toISOString();
-      if (datas?.is_active) params.is_active = datas?.is_active;
+      if (datas?.status) params.status = datas?.status;
 
       const response = await apiClient.get("/v1/employee", { params });
       return response.data; // Returns a list of employee

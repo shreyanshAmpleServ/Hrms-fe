@@ -26,7 +26,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   // Fetch employees
   useEffect(() => {
-    dispatch(fetchEmployee({ is_active: true }));
+    dispatch(fetchEmployee({ status: "Active" }));
     dispatch(fetchloan_type({ is_active: true })); // fetch loan types
   }, [dispatch]);
 

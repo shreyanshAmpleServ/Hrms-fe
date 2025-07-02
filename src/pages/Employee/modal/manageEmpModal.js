@@ -148,7 +148,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   }, [dispatch]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchEmployee, is_active: true }));
+    dispatch(fetchEmployee({ search: searchEmployee, status: "Active" }));
   }, [searchEmployee, dispatch]);
 
   const { employee, loading: loadingEmployee } = useSelector(

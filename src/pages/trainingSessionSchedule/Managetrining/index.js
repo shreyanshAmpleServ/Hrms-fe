@@ -100,7 +100,7 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
   ];
 
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
     dispatch(fetchdepartment({ search: searchValue, is_active: true }));
   }, [dispatch, searchValue]);
 

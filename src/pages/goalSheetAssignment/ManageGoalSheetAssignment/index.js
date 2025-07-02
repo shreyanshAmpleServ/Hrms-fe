@@ -57,7 +57,7 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   // ];
 
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, is_active: true }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
     dispatch(fetchAppraisalEntries({ is_active: true }));
     dispatch(fetchgoal_category({ is_active: true }));
   }, [dispatch, searchValue]);

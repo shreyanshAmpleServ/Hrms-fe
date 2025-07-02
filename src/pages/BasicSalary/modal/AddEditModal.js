@@ -217,7 +217,7 @@ const AddEditModal = ({
     dispatch(fetchbranch({ is_active: true }));
     dispatch(fetchdesignation());
     if (!employee_id) {
-      dispatch(fetchEmployee({ is_active: true }));
+      dispatch(fetchEmployee({ status: "Active" }));
     }
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));

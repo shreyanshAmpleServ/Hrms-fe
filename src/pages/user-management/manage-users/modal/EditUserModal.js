@@ -45,7 +45,7 @@ const EditUserModal = ({ user }) => {
 
   useEffect(() => {
     dispatch(fetchRoles({ is_active: true }));
-    dispatch(fetchEmployee({ is_active: true }));
+    dispatch(fetchEmployee({ status: "Active" }));
   }, [dispatch]);
 
   // Set user data once employee data is ready
