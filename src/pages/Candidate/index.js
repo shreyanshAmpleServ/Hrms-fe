@@ -61,7 +61,7 @@ const Candidate = () => {
 
   const data = candidate?.data;
 
-  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Candidate");
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions("Candidates");
 
   const columns = [
     {

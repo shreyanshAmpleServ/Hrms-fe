@@ -160,6 +160,7 @@ import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import BasicSalary from "../pages/BasicSalary";
 import DashboardEmployee from "../pages/DashboardEmployee/Employee";
+import LoanEmi from "../pages/LoanEmi";
 export { Dashboard, Login };
 const route = all_routes;
 
@@ -851,6 +852,12 @@ export const privateRoutes = [
     element: <LoanRequests />,
     route: Route,
     title: "Loan Requests",
+  },
+  {
+    path: route.loanEmi,
+    element: <LoanEmi />,
+    route: Route,
+    title: "Loan Emi",
   },
 
   {

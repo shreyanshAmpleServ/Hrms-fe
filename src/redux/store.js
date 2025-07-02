@@ -130,7 +130,8 @@ import hrLettersReducer from "./HRLetters";
 import taxSlabReducer from "./taxSlab";
 import costCenterReducer from "./costCenter";
 import basicSalaryReducer from "./BasicSalary";
-
+import employeeDashboardReducer from "./employeeDashboard";
+import LoanEmiReducer from "./LoanEmi";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -264,6 +265,8 @@ const store = configureStore({
     taxSlab: taxSlabReducer,
     costCenter: costCenterReducer,
     basicSalary: basicSalaryReducer,
+    employeeDashboard: employeeDashboardReducer,
+    loan_Emi: LoanEmiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

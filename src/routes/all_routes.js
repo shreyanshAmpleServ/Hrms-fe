@@ -82,7 +82,7 @@ export const all_routes = {
   payslipViewer: "/payslip-viewer",
   loanRequests: "/loan-requests",
   loneType: "/lone-type",
-
+  loanEmi: "/loan-emi",
   // Employment Contracts
   employmentContracts: "/employment-contracts",
 
