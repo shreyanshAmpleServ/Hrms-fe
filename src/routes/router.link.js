@@ -160,6 +160,8 @@ import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import BasicSalary from "../pages/BasicSalary";
 import DashboardEmployee from "../pages/DashboardEmployee/Employee";
+import MidMonthPayroll from "../pages/MidMonthPayroll";
+import OverTimePayroll from "../pages/OverTimePayroll";
 export { Dashboard, Login };
 const route = all_routes;
 
@@ -175,6 +177,18 @@ export const privateRoutes = [
     element: <DashboardEmployee />,
     route: Route,
     title: "dashboard Employee",
+  },
+  {
+    path: route.midMonthPayroll,
+    element: <MidMonthPayroll />,
+    route: Route,
+    title: "Mid Month Payroll",
+  },
+  {
+    path: route.overTimePayroll,
+    element: <OverTimePayroll />,
+    route: Route,
+    title: "Over Time Payroll",
   },
   {
     path: route.leads,

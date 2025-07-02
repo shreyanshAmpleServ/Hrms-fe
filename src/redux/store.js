@@ -130,6 +130,8 @@ import hrLettersReducer from "./HRLetters";
 import taxSlabReducer from "./taxSlab";
 import costCenterReducer from "./costCenter";
 import basicSalaryReducer from "./BasicSalary";
+import midMonthPayrollReducer from "./MidMonthPayroll";
+import overtimePayrollReducer from "./OverTimePayroll";
 
 const store = configureStore({
   reducer: {
@@ -264,6 +266,8 @@ const store = configureStore({
     taxSlab: taxSlabReducer,
     costCenter: costCenterReducer,
     basicSalary: basicSalaryReducer,
+    midMonthPayroll: midMonthPayrollReducer,
+    overtimePayroll: overtimePayrollReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

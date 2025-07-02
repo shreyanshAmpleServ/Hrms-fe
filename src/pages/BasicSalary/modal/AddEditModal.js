@@ -18,13 +18,16 @@ import { fetchdesignation } from "../../../redux/designation";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchpay_component } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
+import DeleteAlert from "../alert/DeleteAlert";
+import toast from "react-hot-toast";
 
 export const allowanceGroupList = [
   { value: "1", label: "Standard Allowance" },
   { value: "2", label: "Executive Allowance" },
   { value: "3", label: "Managerial Allowance" },
   { value: "4", label: "Field Staff Allowance" },
-  { value: "5", label: "Technical Staff Allowance" },
+  { value: "5", label: "Housing Allowance" },
+  { value: "6", label: "Technical Staff Allowance" },
 ];
 
 export const payGradeLevelList = [
@@ -85,6 +88,7 @@ const AddEditModal = ({
   ];
   const [basicSalaryData, setBasicSalaryData] = useState(initialComponent);
   const [employeeData, setEmployeeData] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(null);
   const dispatch = useDispatch();
 
   const { department } = useSelector((state) => state.department);
@@ -354,6 +358,7 @@ const AddEditModal = ({
                   updatedItem.is_recurring = payComponent.is_recurring;
                   updatedItem.is_advance = payComponent.is_advance;
                   updatedItem.is_grossable = payComponent.is_grossable;
+                  updatedItem.type_value = payComponent.type_value;
                   updatedItem.is_overtime_related =
                     payComponent.is_overtime_related;
                   updatedItem.is_worklife_related =
@@ -406,15 +411,17 @@ const AddEditModal = ({
     [pay_component?.data]
   );
 
-  const handleDeleteBasicSalary = useCallback((identifier) => {
+  const handleDeleteBasicSalary = useCallback(() => {
     setBasicSalaryData((prev) =>
       prev.filter((item, index) =>
         item.pay_component_id
-          ? item.pay_component_id !== identifier
-          : index !== identifier
+          ? item.pay_component_id !== showDeleteModal
+          : index !== showDeleteModal
       )
     );
-  }, []);
+    setShowDeleteModal(null);
+    toast.success("Pay Component deleted successfully");
+  }, [showDeleteModal]);
 
   const columns = useMemo(
     () => [
@@ -489,12 +496,49 @@ const AddEditModal = ({
           />
         ),
       },
+      // {
+      //   title: "Code",
+      //   dataIndex: "component_code",
+      //   key: "component_code",
+      //   render: (text) => text || "-",
+      // },
+
       {
-        title: "Code",
-        dataIndex: "component_code",
-        key: "component_code",
-        render: (text) => text || "-",
+        title: "Taxable",
+        dataIndex: "is_taxable",
+        key: "is_taxable",
+        render: (text) => (text === "Y" ? "Yes" : "No"),
       },
+      // {
+      //   title: "Is Statutory?",
+      //   dataIndex: "is_statutory",
+      //   key: "is_statutory",
+      //   render: (text) => (text === "Y" ? "Yes" : "No"),
+      // },
+      // {
+      //   title: "Is Recurring?",
+      //   dataIndex: "is_recurring",
+      //   key: "is_recurring",
+      //   render: (text) => (text === "Y" ? "Yes" : "No"),
+      // },
+      // {
+      //   title: "Is Advance?",
+      //   dataIndex: "is_advance",
+      //   key: "is_advance",
+      //   render: (text) => (text === "Y" ? "Yes" : "No"),
+      // },
+      {
+        title: "Grossable",
+        dataIndex: "is_grossable",
+        key: "is_grossable",
+        render: (text) => (text === "Y" ? "Yes" : "No"),
+      },
+      // {
+      //   title: "Is Overtime Related?",
+      //   dataIndex: "is_overtime_related",
+      //   key: "is_overtime_related",
+      //   render: (text) => (text === "Y" ? "Yes" : "No"),
+      // },
       {
         title: "Type",
         dataIndex: "component_type",
@@ -502,75 +546,45 @@ const AddEditModal = ({
         render: (text) => text || "-",
       },
       {
-        title: "Auto Fill",
-        dataIndex: "auto_fill",
-        key: "auto_fill",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
+        title: "Type Value",
+        dataIndex: "type_value",
+        key: "type_value",
+        render: (text) => text || "-",
       },
+      // {
+      //   title: "Is Worklife Related?",
+      //   dataIndex: "is_worklife_related",
+      //   key: "is_worklife_related",
+      //   render: (text) => (text === "Y" ? "Yes" : "No"),
+      // },
+      // {
+      //   title: "Is Unpaid Leave?",
+      //   dataIndex: "unpaid_leave",
+      //   key: "unpaid_leave",
+      //   render: (text) => (text === "Y" ? "Yes" : "No"),
+      // },
       {
-        title: "Is Taxable?",
-        dataIndex: "is_taxable",
-        key: "is_taxable",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Statutory?",
-        dataIndex: "is_statutory",
-        key: "is_statutory",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Recurring?",
-        dataIndex: "is_recurring",
-        key: "is_recurring",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Advance?",
-        dataIndex: "is_advance",
-        key: "is_advance",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Grossable?",
-        dataIndex: "is_grossable",
-        key: "is_grossable",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Overtime Related?",
-        dataIndex: "is_overtime_related",
-        key: "is_overtime_related",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Worklife Related?",
-        dataIndex: "is_worklife_related",
-        key: "is_worklife_related",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Unpaid Leave?",
-        dataIndex: "unpaid_leave",
-        key: "unpaid_leave",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Is Contributes to NSSF?",
+        title: "NSSF",
         dataIndex: "contributes_to_nssf",
         key: "contributes_to_nssf",
         render: (text) => (text === "Y" ? "Yes" : "No"),
       },
-      {
-        title: "Is Contributes to PayE?",
-        dataIndex: "contributes_to_paye",
-        key: "contributes_to_paye",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
+      // {
+      //   title: "Is Contributes to PayE?",
+      //   dataIndex: "contributes_to_paye",
+      //   key: "contributes_to_paye",
+      //   render: (text) => (text === "Y" ? "Yes" : "No"),
+      // },
       {
         title: "GL Account",
         dataIndex: "gl_account_id",
         key: "gl_account_id",
+        render: (text) => text || "-",
+      },
+      {
+        title: "Payable GL Account",
+        dataIndex: "payable_glaccount_id",
+        key: "payable_glaccount_id",
         render: (text) => text || "-",
       },
       {
@@ -586,12 +600,6 @@ const AddEditModal = ({
         render: (text) => text || "-",
       },
       {
-        title: "Payable GL Account",
-        dataIndex: "payable_glaccount_id",
-        key: "payable_glaccount_id",
-        render: (text) => text || "-",
-      },
-      {
         title: "Pay or Deduct",
         dataIndex: "pay_or_deduct",
         key: "pay_or_deduct",
@@ -601,24 +609,6 @@ const AddEditModal = ({
         title: "Factor",
         dataIndex: "factor",
         key: "factor",
-        render: (text) => text || "-",
-      },
-      {
-        title: "Execution Order",
-        dataIndex: "execution_order",
-        key: "execution_order",
-        render: (text) => text || "-",
-      },
-      {
-        title: "Formula Editable",
-        dataIndex: "formula_editable",
-        key: "formula_editable",
-        render: (text) => (text === "Y" ? "Yes" : "No"),
-      },
-      {
-        title: "Default Formula",
-        dataIndex: "default_formula",
-        key: "default_formula",
         render: (text) => text || "-",
       },
       {
@@ -652,12 +642,6 @@ const AddEditModal = ({
         render: (text) => text || "-",
       },
       {
-        title: "Column Order",
-        dataIndex: "column_order",
-        key: "column_order",
-        render: (text) => text || "-",
-      },
-      {
         title: "Action",
         dataIndex: "action",
         key: "action",
@@ -665,9 +649,9 @@ const AddEditModal = ({
           <button
             type="button"
             className="btn btn-sm btn-danger"
-            onClick={() =>
-              handleDeleteBasicSalary(record.pay_component_id || index)
-            }
+            onClick={() => {
+              setShowDeleteModal(record.pay_component_id || index);
+            }}
           >
             Delete
           </button>
@@ -1168,6 +1152,12 @@ const AddEditModal = ({
           </div>
         </form>
       </div>
+      <DeleteAlert
+        showModal={showDeleteModal !== null}
+        setShowModal={setShowDeleteModal}
+        onDelete={handleDeleteBasicSalary}
+        label="Pay Component"
+      />
 
       <style>{`
         input::-webkit-outer-spin-button,

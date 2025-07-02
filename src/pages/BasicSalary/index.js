@@ -132,8 +132,10 @@ const BasicSalary = () => {
               : text === "4"
                 ? "Field Staff Allowance"
                 : text === "5"
-                  ? "Technical Staff Allowance"
-                  : "-",
+                  ? "Housing Allowance"
+                  : text === "6"
+                    ? "Technical Staff Allowance"
+                    : "-",
       sorter: (a, b) =>
         (a?.allowance_group || "").localeCompare(b?.allowance_group || ""),
     },

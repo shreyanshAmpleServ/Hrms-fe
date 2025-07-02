@@ -109,6 +109,8 @@ export const all_routes = {
   loanRequests: "/loan-requests",
   loneType: "/lone-type",
   monthlyPayroll: "/monthly-payroll-processing",
+  midMonthPayroll: "/mid-month-payroll-processing",
+  overTimePayroll: "/overtime-payroll-processing",
   payslipViewer: "/payslip-viewer",
   wpsFileGenerator: "/wps-file-generator",
 

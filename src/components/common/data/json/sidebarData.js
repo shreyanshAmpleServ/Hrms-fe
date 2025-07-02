@@ -114,6 +114,18 @@ export const SidebarData = (userType) => {
               submenu: false,
             },
             {
+              label: "Mid Month Payroll Processing",
+              link: route.midMonthPayroll,
+              showSubRoute: false,
+              submenu: false,
+            },
+            {
+              label: "Over Time Payroll Processing",
+              link: route.overTimePayroll,
+              showSubRoute: false,
+              submenu: false,
+            },
+            {
               label: "Component Assignment",
               link: route.basicPayroll,
               showSubRoute: false,
