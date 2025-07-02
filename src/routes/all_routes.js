@@ -123,11 +123,11 @@ export const all_routes = {
   trainingSessionSchedule: "/training-session-schedule",
 
   // HRMS - RECOGNITION & AWARDS
-  recognitionAwards: "/Recognition-Awards",
+  recognitionAwards: "/recognition-awards",
 
   // HRMS - DISCIPLINARY & GRIEVANCE
   disciplinaryActionLog: "/disciplinary-action-log",
-  grievanceSubmission: "/grievance-Submission",
+  grievanceSubmission: "/grievance-submission",
   warningLetters: "/warning-letters",
 
   // HRMS - SUGGESTIONS, SURVEYS, EVENTS
