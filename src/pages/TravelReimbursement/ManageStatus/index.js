@@ -22,15 +22,13 @@ const ManageStatus = ({ open, setOpen, selected }) => {
     formState: { isSubmitting },
   } = useForm({
     defaultValues: {
-      approval_status: selected?.approval_status || "Pending",
-      // rejection_reason: selected?.rejection_reason || "",
+      status: selected?.status || "P",
     },
   });
 
   useEffect(() => {
     if (selected) {
-      setValue("approval_status", selected.approval_status);
-      // setValue("rejection_reason", selected.rejection_reason);
+      setValue("status", selected.status);
     }
   }, [selected]);
 
@@ -39,8 +37,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
       updateTravelReimbursementStatus({
         id: selected.id,
         data: {
-          approval_status: data.approval_status,
-          // rejection_reason: data.rejection_reason,
+          status: data.status,
         },
       })
     );
@@ -70,7 +67,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                   Approval Status <span className="text-danger">*</span>
                 </label>
                 <Controller
-                  name="approval_status"
+                  name="status"
                   control={control}
                   rules={{ required: "Status is required" }}
                   render={({ field }) => {
@@ -98,10 +95,8 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                     );
                   }}
                 />
-                {errors?.approval_status && (
-                  <small className="text-danger">
-                    {errors.approval_status.message}
-                  </small>
+                {errors?.status && (
+                  <small className="text-danger">{errors.status.message}</small>
                 )}
               </div>
             </div>

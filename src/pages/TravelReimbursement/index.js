@@ -174,12 +174,12 @@ const TravelReimbursement = () => {
         <div
           className={`text-capitalize badge ${
             value === "R"
-              ? "bg-warning"
+              ? "bg-danger"
               : value === "A"
                 ? "bg-success"
                 : value === "P"
-                  ? "bg-danger"
-                  : "bg-secondary"
+                  ? "bg-warning"
+                  : "bg-warning"
           }`}
         >
           {value === "P"
@@ -188,7 +188,7 @@ const TravelReimbursement = () => {
               ? "Approved"
               : value === "R"
                 ? "Rejected"
-                : value || "—"}
+                : value || "Pending"}
         </div>
       ),
       sorter: (a, b) =>

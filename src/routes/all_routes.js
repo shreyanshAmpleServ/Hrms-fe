@@ -146,7 +146,7 @@ export const all_routes = {
   helpdeskTicket: "/helpdesk-ticket",
   notifications: "/notifications",
   notificationsLog: "/notifications-log",
-  travelReimbursementClaims: "/travel-Reimbursement-Claims",
+  travelReimbursementClaims: "/travel-reimbursement-claims",
 
   // HRMS - MEDICAL
   medicalRecord: "/medical-record",

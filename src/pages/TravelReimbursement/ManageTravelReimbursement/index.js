@@ -20,6 +20,7 @@ const ManagetravelReimbursement = ({
   const { currencies, loading: currencyLoading } = useSelector(
     (state) => state.currencies
   );
+
   const currencyOptions = currencies?.data?.map((currency) => ({
     label: currency.currency_code + " - " + currency.currency_name,
     value: currency.id,
@@ -43,7 +44,7 @@ const ManagetravelReimbursement = ({
       end_date: new Date(),
       destination: "",
       total_amount: "",
-      approval_status: "Panding",
+      approval_status: "P",
       travel_mode: "",
       advance_amount: "",
       expense_breakdown: "",
@@ -64,7 +65,7 @@ const ManagetravelReimbursement = ({
         end_date: travelReimbursement?.end_date || "",
         destination: travelReimbursement?.destination || "",
         total_amount: travelReimbursement?.total_amount || "",
-        approval_status: travelReimbursement?.approval_status || "Panding",
+        approval_status: travelReimbursement?.approval_status || "P",
         travel_mode: travelReimbursement?.travel_mode || "",
         advance_amount: travelReimbursement?.advance_amount || "",
         expense_breakdown: travelReimbursement?.expense_breakdown || "",
@@ -82,7 +83,7 @@ const ManagetravelReimbursement = ({
         end_date: new Date(),
         destination: "",
         total_amount: "",
-        approval_status: "Panding",
+        approval_status: "P",
         travel_mode: "",
         advance_amount: "",
         expense_breakdown: "",
@@ -502,10 +503,20 @@ const ManagetravelReimbursement = ({
 
             {/* Expense Breakdown */}
             <div className="col-md-12 mb-3">
-              <label className="col-form-label">Expense Breakdown</label>
+              <label className="col-form-label">
+                Expense Breakdown{" "}
+                <span className="text-muted">(Max 255 characters)</span>
+              </label>
               <Controller
                 name="expense_breakdown"
                 control={control}
+                rules={{
+                  maxLength: {
+                    value: 255,
+                    message:
+                      "Expense Breakdown must be less than 255 characters",
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
                     className="form-control"
@@ -518,10 +529,18 @@ const ManagetravelReimbursement = ({
             </div>
             {/* Remarks */}
             <div className="col-md-12 mb-3">
-              <label className="col-form-label">Remarks</label>
+              <label className="col-form-label">
+                Remarks <span className="text-muted">(Max 255 characters)</span>
+              </label>
               <Controller
                 name="remarks"
                 control={control}
+                rules={{
+                  maxLength: {
+                    value: 255,
+                    message: "Remarks must be less than 255 characters",
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
                     className="form-control"
