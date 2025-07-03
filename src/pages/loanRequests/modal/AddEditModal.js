@@ -51,17 +51,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         const emiDate = moment(startDate).add(i + 1, "months");
         mergedEmiSchedule.push({
           id:
-            loanRequestDetail.loan_emi_loan_request &&
-            loanRequestDetail.loan_emi_loan_request[i]?.id
-              ? loanRequestDetail.loan_emi_loan_request[i].id
+            loanRequestDetail?.loan_emi_loan_request &&
+            loanRequestDetail?.loan_emi_loan_request[i]?.id
+              ? loanRequestDetail?.loan_emi_loan_request[i].id
               : "",
           due_month: emiDate.format("MMMM"),
           due_year: String(emiDate.year()),
           emi_amount: emi_months ? (amount / emi_months).toFixed(2) : "0.00",
           status:
-            loanRequestDetail.loan_emi_loan_request &&
-            loanRequestDetail.loan_emi_loan_request[i]?.status
-              ? loanRequestDetail.loan_emi_loan_request[i].status
+            loanRequestDetail?.loan_emi_loan_request &&
+            loanRequestDetail?.loan_emi_loan_request[i]?.status
+              ? loanRequestDetail?.loan_emi_loan_request[i].status
               : "U",
         });
       }
@@ -86,12 +86,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     watch("amount"),
     loanRequestDetail,
   ]);
-
-  useEffect(() => {
-    if (loanRequestDetail) {
-      setEmiSchedule(loanRequestDetail.loan_emi_loan_request);
-    }
-  }, [loanRequestDetail]);
 
   console.log(emiSchedule);
 
