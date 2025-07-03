@@ -1,19 +1,18 @@
+import { Checkbox } from "antd";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createWorkLifeEventLog,
   updateWorkLifeEventLog,
 } from "../../../redux/WorkLifeEventLog";
 import { fetchwork_life } from "../../../redux/workLifeEventTypeMaster";
-import { Checkbox } from "antd";
 
 const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -44,22 +43,9 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
     }
   }, [workLifeEventLog, reset]);
 
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
-
   useEffect(() => {
-    dispatch(fetchwork_life({ search: searchValue, is_active: true }));
-  }, [dispatch, searchValue]);
+    dispatch(fetchwork_life({ is_active: true }));
+  }, [dispatch]);
 
   const { work_life, loading: workLifeEventTypeLoading } = useSelector(
     (state) => state.workLifeEvent || {}
@@ -144,30 +130,11 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value || null}
+                            onChange={(option) => field.onChange(option.value)}
                           />
                         );
                       }}

@@ -119,9 +119,9 @@ const ManageEmployeeAttachment = ({
                             />
                           )}
                         />
-                        {errors.status && (
+                        {errors.document_type && (
                           <small className="text-danger">
-                            {errors.status.message}
+                            {errors.document_type.message}
                           </small>
                         )}
                       </div>

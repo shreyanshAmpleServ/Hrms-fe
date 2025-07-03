@@ -4,8 +4,8 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import { fetchCurrencies } from "../../../redux/currency";
-import { fetchEmployee } from "../../../redux/Employee";
 import {
   createOverTimePayroll,
   updateOverTimePayroll,
@@ -13,14 +13,12 @@ import {
 import { fetchpay_component } from "../../../redux/pay-component";
 
 const ManageOverTimePayroll = ({ setOverTimePayroll, overtimePayroll }) => {
-  const [searchValue, setSearchValue] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
     reset,
-    watch,
     register,
     formState: { errors },
   } = useForm();
@@ -34,12 +32,6 @@ const ManageOverTimePayroll = ({ setOverTimePayroll, overtimePayroll }) => {
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
   }, []);
-
-  useEffect(() => {
-    if (watch("employee_id")) {
-      setSelectedEmployee(watch("employee_id"));
-    }
-  }, [watch("employee_id")]);
 
   const payComponentOptions = pay_component?.data?.map((item) => ({
     value: item?.id,
@@ -109,20 +101,6 @@ const ManageOverTimePayroll = ({ setOverTimePayroll, overtimePayroll }) => {
         overtimePayroll?.execution_date || new Date().toISOString(),
     });
   }, [overtimePayroll, reset]);
-
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-    record: i,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -206,29 +184,16 @@ const ManageOverTimePayroll = ({ setOverTimePayroll, overtimePayroll }) => {
                       name="employee_id"
                       control={control}
                       rules={{ required: "Employee is required" }}
-                      render={({ field }) => {
-                        const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
-                        setSelectedEmployee(selectedEmployee?.record);
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedEmployee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                          />
-                        );
-                      }}
+                      render={({ field }) => (
+                        <EmployeeSelect
+                          {...field}
+                          value={field.value}
+                          onChange={(i) => {
+                            field.onChange(i?.value);
+                            setSelectedEmployee(i?.meta);
+                          }}
+                        />
+                      )}
                     />
                     {errors.employee_id && (
                       <small className="text-danger">
@@ -673,7 +638,6 @@ const ManageOverTimePayroll = ({ setOverTimePayroll, overtimePayroll }) => {
                       name="remarks"
                       control={control}
                       rules={{
-                        required: "Remarks is required!",
                         maxLength: {
                           value: 255,
                           message:

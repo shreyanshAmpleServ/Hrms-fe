@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   empStatusOptions,
   genderOptions,
@@ -16,11 +17,7 @@ import { fetchCountries } from "../../../redux/country";
 import { fetchCurrencies } from "../../../redux/currency";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
-import {
-  createEmployee,
-  fetchEmployee,
-  updateEmployee,
-} from "../../../redux/Employee";
+import { createEmployee, updateEmployee } from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
 import ManageAddress from "./createAddress";
 
@@ -65,7 +62,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const [selectedLogo, setSelectedLogo] = useState();
   const [manageAddress, setManageAddress] = useState(initialAddress);
   const [stateOptions, setStateOptions] = useState([]);
-  const [searchEmployee, setSearchEmployee] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -147,14 +143,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     dispatch(fetchCurrencies({ is_active: true }));
   }, [dispatch]);
 
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchEmployee, status: "Active" }));
-  }, [searchEmployee, dispatch]);
-
-  const { employee, loading: loadingEmployee } = useSelector(
-    (state) => state.employee
-  );
-
   const { bank } = useSelector((state) => state.bank);
 
   const { employmentType } = useSelector((state) => state.employmentType);
@@ -176,10 +164,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const bankOptions = bank?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.bank_name,
-  }));
-  const employeeOptions = employee?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.full_name,
   }));
 
   const onSubmit = async (data) => {
@@ -798,24 +782,9 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           name="manager_id"
                           control={control}
                           render={({ field }) => (
-                            <Select
-                              {...field}
-                              options={employeeOptions}
-                              placeholder="Choose Manager"
-                              classNamePrefix="react-select"
-                              isLoading={loadingEmployee}
-                              onInputChange={(value) => {
-                                setSearchEmployee(value);
-                              }}
-                              value={
-                                employeeOptions?.find(
-                                  (option) =>
-                                    option.value === watch("manager_id")
-                                ) || ""
-                              }
-                              onChange={(selectedOption) => {
-                                field.onChange(selectedOption?.value || null);
-                              }}
+                            <EmployeeSelect
+                              value={field.value}
+                              onChange={(i) => field.onChange(i?.value)}
                             />
                           )}
                         />

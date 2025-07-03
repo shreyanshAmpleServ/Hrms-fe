@@ -1,17 +1,16 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createSurveyResponse,
   updateSurveyResponse,
 } from "../../../redux/SurveyResponse";
 import { fetchsurvey } from "../../../redux/surveyMaster";
 const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -41,10 +40,6 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   }, [surveyResponse, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
-
-  React.useEffect(() => {
     dispatch(fetchsurvey({ is_active: true }));
   }, [dispatch]);
 
@@ -53,15 +48,6 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   );
   const surveyTypes = survey?.data?.map((i) => ({
     label: i?.survey_title,
-    value: i?.id,
-  }));
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
     value: i?.id,
   }));
 
@@ -138,34 +124,13 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
                       name="employee_id"
                       control={control}
                       rules={{ required: "Employee is required" }}
-                      render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
+                      render={({ field }) => (
+                        <EmployeeSelect
+                          {...field}
+                          value={field.value}
+                          onChange={(opt) => field.onChange(opt?.value)}
+                        />
+                      )}
                     />
                     {errors.employee_id && (
                       <small className="text-danger">
@@ -185,9 +150,6 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
                       control={control}
                       rules={{ required: "Survey type is required" }}
                       render={({ field }) => {
-                        const selectedDeal = surveyTypes?.find(
-                          (surveyType) => surveyType.value === field.value
-                        );
                         return (
                           <Select
                             {...field}
@@ -196,19 +158,10 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
                             placeholder="Select Survey Type"
                             classNamePrefix="react-select"
                             isLoading={surveyLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
+                            value={field.value}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)
                             }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
                           />
                         );
                       }}

@@ -36,6 +36,7 @@ const EmployeeList = () => {
         search: searchValue,
         ...selectedDateRange,
         filter: filter,
+        page: 1,
       })
     );
   }, [dispatch, searchValue, selectedDateRange, filter]);

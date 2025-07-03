@@ -9,7 +9,7 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js"
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchtrainingSession } from "../../redux/trainingSessionSchedule";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import Managetraining from "./Managetrining";
+import Managetraining from "./ManageTraining";
 import ManageStatus from "./ManageStatus/index.js";
 const TrainingSessionSchedule = () => {
   const [open, setOpen] = React.useState(false);

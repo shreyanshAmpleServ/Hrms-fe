@@ -1,19 +1,31 @@
+import moment from "moment";
 import React, { useEffect, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
-  addloan_requests,
-  updateloan_requests,
+  addLoanRequest,
+  fetchLoanRequestById,
+  updateLoanRequest,
 } from "../../../redux/loanRequests";
-import { fetchEmployee } from "../../../redux/Employee";
-import { fetchloan_type } from "../../../redux/loneType"; // assume you have fetchloan_type redux
-import moment from "moment";
-import DatePicker from "react-datepicker";
+import { fetchloan_type } from "../../../redux/loneType";
+import Table from "../../../components/common/dataTableNew/index";
+import { fetchCurrencies } from "../../../redux/currency";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
-  const { loading } = useSelector((state) => state.loan_requests);
   const dispatch = useDispatch();
+  const { loading, loanRequestDetail } = useSelector(
+    (state) => state.loan_requests
+  );
+  const [emiSchedule, setEmiSchedule] = React.useState([]);
+
+  useEffect(() => {
+    if (mode === "edit" && initialData) {
+      dispatch(fetchLoanRequestById(initialData.id));
+    }
+  }, [mode, initialData, dispatch]);
 
   const {
     register,
@@ -24,23 +36,66 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset,
   } = useForm();
 
-  // Fetch employees
   useEffect(() => {
-    dispatch(fetchEmployee({ status: "Active" }));
-    dispatch(fetchloan_type({ is_active: true })); // fetch loan types
+    dispatch(fetchloan_type({ is_active: true }));
   }, [dispatch]);
 
-  const employee = useSelector((state) => state.employee.employee);
-  const loan_type = useSelector((state) => state.loan_type?.loan_type);
+  useEffect(() => {
+    const startDate = moment(watch("start_date"));
+    const emi_months = Number(watch("emi_months"));
+    const amount = Number(watch("amount"));
 
-  const EmployeeList = useMemo(
-    () =>
-      employee?.data?.map((item) => ({
-        value: item.id,
-        label: item.first_name + " " + (item.last_name || ""),
-      })) || [],
-    [employee]
-  );
+    if (watch("amount") || watch("emi_months")) {
+      const mergedEmiSchedule = [];
+      for (let i = 0; i < emi_months; i++) {
+        const emiDate = moment(startDate).add(i + 1, "months");
+        mergedEmiSchedule.push({
+          id:
+            loanRequestDetail.loan_emi_loan_request &&
+            loanRequestDetail.loan_emi_loan_request[i]?.id
+              ? loanRequestDetail.loan_emi_loan_request[i].id
+              : "",
+          due_month: emiDate.format("MMMM"),
+          due_year: String(emiDate.year()),
+          emi_amount: emi_months ? (amount / emi_months).toFixed(2) : "0.00",
+          status:
+            loanRequestDetail.loan_emi_loan_request &&
+            loanRequestDetail.loan_emi_loan_request[i]?.status
+              ? loanRequestDetail.loan_emi_loan_request[i].status
+              : "U",
+        });
+      }
+      setEmiSchedule(mergedEmiSchedule);
+    } else {
+      const emiSchedule = [];
+      for (let i = 0; i < emi_months; i++) {
+        const emiDate = moment(startDate).add(i + 1, "months");
+        emiSchedule.push({
+          id: "",
+          due_month: emiDate.format("MMMM"),
+          due_year: String(emiDate.year()),
+          emi_amount: emi_months ? (amount / emi_months).toFixed(2) : "0.00",
+          status: "U",
+        });
+      }
+      setEmiSchedule(emiSchedule);
+    }
+  }, [
+    watch("start_date"),
+    watch("emi_months"),
+    watch("amount"),
+    loanRequestDetail,
+  ]);
+
+  useEffect(() => {
+    if (loanRequestDetail) {
+      setEmiSchedule(loanRequestDetail.loan_emi_loan_request);
+    }
+  }, [loanRequestDetail]);
+
+  console.log(emiSchedule);
+
+  const loan_type = useSelector((state) => state.loan_type?.loan_type);
 
   const LoanTypeList = useMemo(
     () =>
@@ -50,61 +105,79 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       })) || [],
     [loan_type]
   );
-  // const Status = [
-  //   { label: "Pending", value: "pending" },
-  //   { label: "Approved", value: "approved" },
-  //   { label: "Rejected", value: "rejected" },
-  // ];
+
+  const { currencies } = useSelector((state) => state.currencies);
+
+  React.useEffect(() => {
+    dispatch(fetchCurrencies());
+  }, []);
+
+  const CurrencyList = useMemo(
+    () =>
+      currencies?.data?.map((item) => ({
+        value: item.id,
+        label: item.currency_name,
+      })) || [],
+    [currencies]
+  );
 
   useEffect(() => {
-    if (mode === "edit" && initialData) {
-      reset({
-        employee_id: initialData.employee_id || "",
-        loan_type_id: initialData.loan_type_id || "",
-        amount: initialData.amount || "",
-        emi_months: initialData.emi_months || "",
-        status: initialData.status || "pending",
-        request_date: initialData.request_date || new Date(),
-      });
-    } else {
-      reset({
-        employee_id: "",
-        loan_type_id: "",
-        amount: "",
-        emi_months: "",
-        status: "pending",
-        request_date: new Date(),
-      });
-    }
+    reset({
+      employee_id: initialData?.employee_id || "",
+      loan_type_id: initialData?.loan_type_id || "",
+      amount: initialData?.amount || "",
+      emi_months: initialData?.emi_months || "",
+      currency: initialData?.currency || "",
+      status: initialData?.status || "P",
+      start_date: initialData?.start_date || new Date().toDateString(),
+    });
   }, [mode, initialData, reset]);
 
   const onSubmit = (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
-
-    const formattedData = {
+    const loanRequestData = {
       ...data,
-      request_date: data.request_date ? new Date(data.request_date) : null,
+      start_date: data.start_date ? new Date(data.start_date) : null,
       amount: Number(data.amount),
       emi_months: Number(data.emi_months),
+      emi_schedule: emiSchedule,
     };
 
     if (mode === "add") {
-      dispatch(addloan_requests(formattedData));
+      dispatch(addLoanRequest(loanRequestData));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateloan_requests({
+        updateLoanRequest({
           id: initialData.id,
-          loan_requestsData: formattedData,
+          loanRequestData: loanRequestData,
         })
       );
     }
-
     reset();
     closeButton?.click();
   };
 
-  // console.log("Employee : ", EmployeeList)
-  // console.log("LoanTypeList : ", LoanTypeList)
+  const columns = [
+    {
+      title: "Month",
+      dataIndex: "due_month",
+      render: (text) => <span>{text ? text : "0.00"} </span>,
+    },
+    {
+      title: "Year",
+      dataIndex: "due_year",
+    },
+    {
+      title: "Amount",
+      dataIndex: "emi_amount",
+      render: (text) => <span>{text ? text : "0.00"} </span>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (text) => <span>{text === "P" ? "Paid" : "Unpaid"} </span>,
+    },
+  ];
 
   return (
     <div
@@ -127,7 +200,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       </div>
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
-          {/* Employee */}
           <div className="col-md-6 mb-3">
             <label className="col-form-label">
               Employee <span className="text-danger">*</span>
@@ -137,16 +209,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               control={control}
               rules={{ required: "Employee is required" }}
               render={({ field }) => (
-                <Select
+                <EmployeeSelect
                   {...field}
-                  options={EmployeeList}
-                  placeholder="Select Employee"
-                  isDisabled={!EmployeeList.length}
-                  classNamePrefix="react-select"
-                  onChange={(option) => field.onChange(option?.value || null)}
-                  value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id")
-                  )}
+                  onChange={(i) => field.onChange(i?.value)}
+                  value={field.value}
                 />
               )}
             />
@@ -157,7 +223,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             )}
           </div>
 
-          {/* Loan Type */}
           <div className="col-md-6 mb-3">
             <label className="col-form-label">
               Loan Type <span className="text-danger">*</span>
@@ -186,54 +251,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </small>
             )}
           </div>
-
-          {/* Amount */}
           <div className="col-md-6 mb-3">
             <label className="form-label">
-              Amount <span className="text-danger">*</span>
-            </label>
-            <input
-              type="number"
-              placeholder="Amount"
-              className="form-control"
-              {...register("amount", {
-                required: "Amount is required",
-                min: 1,
-              })}
-            />
-            {errors.amount && (
-              <small className="text-danger">{errors.amount.message}</small>
-            )}
-          </div>
-
-          {/* EMI Months */}
-          <div className="col-md-6 mb-3">
-            <label className="form-label">
-              EMI Months <span className="text-danger">*</span>
-            </label>
-            <input
-              type="number"
-              placeholder="EMI Months"
-              className="form-control"
-              {...register("emi_months", {
-                required: "EMI months is required",
-                min: 1,
-              })}
-            />
-            {errors.emi_months && (
-              <small className="text-danger">{errors.emi_months.message}</small>
-            )}
-          </div>
-
-          {/* Request Date */}
-          <div className="col-md-6 mb-3">
-            <label className="form-label">
-              Request Date <span className="text-danger">*</span>
+              Start Date <span className="text-danger">*</span>
             </label>
             <Controller
-              name="request_date"
+              name="start_date"
               control={control}
-              rules={{ required: "Date is required" }}
+              rules={{ required: "Start Date is required" }}
               render={({ field }) => (
                 <DatePicker
                   {...field}
@@ -245,51 +270,81 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     field.onChange(date);
                   }}
                   className="form-control"
-                  dateFormat="dd-MM-yyyy"
-                  placeholderText="Select Request Date"
+                  placeholderText="Select Start Date"
                 />
               )}
             />
-            {errors.request_date && (
-              <small className="text-danger">
-                {errors.request_date.message}
-              </small>
+            {errors.start_date && (
+              <small className="text-danger">{errors.start_date.message}</small>
             )}
           </div>
 
-          {/* Status */}
-          {/* <div className="col-md-6 mb-3">
-            <label className="form-label">Status</label>
+          <div className="col-md-6 mb-3">
+            <label className="col-form-label">
+              Currency <span className="text-danger">*</span>
+            </label>
             <Controller
-              name="status"
+              name="currency"
               control={control}
-              rules={{ required: "Approved Status is required" }}
-              render={({ field }) => {
-                const selectedDeal = Status?.find(
-                  (employee) => employee.value === field.value
-                );
-                return (
-                  <Select
-                    {...field}
-                    className="select"
-                    options={Status}
-                    placeholder="Select  Status"
-                    value={selectedDeal || null}
-                    classNamePrefix="react-select"
-                    onChange={(selectedOption) =>
-                      field.onChange(selectedOption.value)
-                    }
-                    styles={{
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9999,
-                      }),
-                    }}
-                  />
-                );
-              }}
+              rules={{ required: "Currency is required" }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={CurrencyList}
+                  placeholder="Select Currency"
+                  isDisabled={!CurrencyList.length}
+                  classNamePrefix="react-select"
+                  onChange={(option) => field.onChange(option?.value || "")}
+                  value={CurrencyList.find(
+                    (option) => option.value === watch("currency")
+                  )}
+                />
+              )}
             />
-          </div> */}
+            {errors.currency && (
+              <small className="text-danger">{errors.currency.message}</small>
+            )}
+          </div>
+
+          <div className="col-md-6 mb-3">
+            <label className="form-label">
+              Amount <span className="text-danger">*</span>
+            </label>
+            <input
+              type="number"
+              placeholder="Enter Amount"
+              className="form-control"
+              {...register("amount", {
+                required: "Amount is required",
+                min: 1,
+              })}
+            />
+            {errors.amount && (
+              <small className="text-danger">{errors.amount.message}</small>
+            )}
+          </div>
+
+          <div className="col-md-6 mb-3">
+            <label className="form-label">
+              EMI Months <span className="text-danger">*</span>
+            </label>
+            <input
+              type="number"
+              placeholder="Enter EMI Months"
+              className="form-control"
+              {...register("emi_months", {
+                required: "EMI months is required",
+                min: 1,
+              })}
+            />
+            {errors.emi_months && (
+              <small className="text-danger">{errors.emi_months.message}</small>
+            )}
+          </div>
+
+          <div className="col-md-12 mb-3">
+            <Table columns={columns} dataSource={emiSchedule} />
+          </div>
 
           <div className="col-md-12 text-end">
             <button

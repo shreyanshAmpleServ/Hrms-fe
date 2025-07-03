@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createprobationReview,
   updateprobationReview,
 } from "../../../redux/ProbationReview";
 
 const ManageProbationReview = ({ setprobationReview, probationReview }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const {
     control,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -37,10 +35,6 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
       reviewer_id: "",
     },
   });
-
-  useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
 
   useEffect(() => {
     if (probationReview) {
@@ -84,13 +78,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
     }
   }, [probationReview, reset]);
 
-  const { employee } = useSelector((state) => state.employee || {});
   const { loading } = useSelector((state) => state.probationReview || {});
-
-  const EmployeeList = employee?.data?.map((emp) => ({
-    label: emp.full_name,
-    value: emp.id,
-  }));
 
   const statusOption = [
     { label: "Yes", value: "true" },
@@ -167,17 +155,10 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => (
-                  <Select
+                  <EmployeeSelect
                     {...field}
-                    options={EmployeeList}
-                    placeholder="Choose Employee"
-                    isDisabled={!EmployeeList.length}
-                    classNamePrefix="react-select"
-                    className="select2"
-                    onChange={(option) => field.onChange(option?.value || "")}
-                    value={EmployeeList.find(
-                      (option) => option.value === watch("employee_id")
-                    )}
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
                   />
                 )}
               />
@@ -189,28 +170,19 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
             </div>
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
-                Reviewer<span className="text-danger">*</span>
+                Reviewer<span className="text-danger"> *</span>
               </label>
               <Controller
                 name="reviewer_id"
                 control={control}
-                rules={{ required: "Employee is required" }}
-                render={({ field }) => {
-                  const selected = EmployeeList?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={EmployeeList}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                rules={{ required: "Reviewer is required" }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
+                  />
+                )}
               />
               {errors.reviewer_id && (
                 <small className="text-danger">
@@ -243,38 +215,6 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                 </small>
               )}
             </div>
-
-            {/* Confirmation Status */}
-            {/* <div className="col-md-6 mb-3">
-              <label className="col-form-label">
-                Confirmation Status<span className="text-danger">*</span>
-              </label>
-              <Controller
-                name="confirmation_status"
-                control={control}
-                rules={{ required: "Status is required" }}
-                render={({ field }) => {
-                  const selected = statusOptions.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={statusOptions}
-                      value={selected || null}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                      placeholder="Select Status"
-                    />
-                  );
-                }}
-              />
-              {errors.confirmation_status && (
-                <small className="text-danger">
-                  {errors.confirmation_status.message}
-                </small>
-              )}
-            </div> */}
 
             {/* Confirmation Date */}
             <div className="col-md-6 mb-3">
@@ -375,6 +315,11 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   />
                 )}
               />
+              {errors.extended_till_date && (
+                <small className="text-danger">
+                  {errors.extended_till_date.message}
+                </small>
+              )}
             </div>
 
             {/* Next Review Date */}
@@ -393,13 +338,19 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   />
                 )}
               />
+              {errors.next_review_date && (
+                <small className="text-danger">
+                  {errors.next_review_date.message}
+                </small>
+              )}
             </div>
 
             {/* Final Remarks */}
             <div className="col-12 mb-3">
               <label className="col-form-label">
                 Final Remarks{" "}
-                <small className="text-muted">(Max 255 characters)</small>
+                <span className="text-muted">(max 255 characters)</span>
+                <span className="text-danger">*</span>
               </label>
               <Controller
                 name="final_remarks"
@@ -408,7 +359,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   maxLength: {
                     value: 255,
                     message:
-                      "Final remarks must be less than or equal to 255 characters",
+                      "Final Remarks must be less than or equal to 255 characters",
                   },
                 }}
                 render={({ field }) => (
@@ -421,23 +372,29 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                   />
                 )}
               />
+              {errors.final_remarks && (
+                <small className="text-danger">
+                  {errors.final_remarks.message}
+                </small>
+              )}
             </div>
 
             {/* Review Notes */}
             <div className="col-12 mb-3">
               <label className="col-form-label">
                 Review Notes{" "}
-                <small className="text-muted">(Max 255 characters)</small>
+                <span className="text-muted">(max 255 characters)</span>
+                <span className="text-danger">*</span>
               </label>
               <Controller
                 name="review_notes"
                 control={control}
                 rules={{
-                  required: " Review Notes is required!",
+                  required: "Review Notes is required!",
                   maxLength: {
                     value: 255,
                     message:
-                      " Review Notes must be less than or equal to 255 characters",
+                      "Review Notes must be less than or equal to 255 characters",
                   },
                 }}
                 render={({ field }) => (
@@ -446,26 +403,32 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                     rows={3}
                     maxLength={255}
                     className="form-control"
-                    placeholder="Enter  Review Notes "
+                    placeholder="Enter Review Notes"
                   />
                 )}
               />
+              {errors.review_notes && (
+                <small className="text-danger">
+                  {errors.review_notes.message}
+                </small>
+              )}
             </div>
 
             <div className="col-12 mb-3">
               <label className="col-form-label">
-                Extension Required{" "}
-                <small className="text-muted">(Max 255 characters)</small>
+                Extension Reason{" "}
+                <span className="text-muted">(max 255 characters)</span>
+                <span className="text-danger">*</span>
               </label>
               <Controller
                 name="extension_reason"
                 control={control}
                 rules={{
-                  required: "Extension Required is required!",
+                  required: "Extension Reason is required!",
                   maxLength: {
                     value: 255,
                     message:
-                      "Extension Required must be less than or equal to 255 characters",
+                      "Extension Reason must be less than or equal to 255 characters",
                   },
                 }}
                 render={({ field }) => (
@@ -474,10 +437,15 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
                     rows={3}
                     maxLength={255}
                     className="form-control"
-                    placeholder="Enter Extension Required"
+                    placeholder="Enter Extension Reason"
                   />
                 )}
               />
+              {errors.extension_reason && (
+                <small className="text-danger">
+                  {errors.extension_reason.message}
+                </small>
+              )}
             </div>
           </div>
 

@@ -1,22 +1,18 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
 import Table from "../../components/common/dataTableNew/index";
-import FlashMessage from "../../components/common/modals/FlashMessage";
-import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-import moment from "moment";
-import { Helmet } from "react-helmet-async";
+import usePermissions from "../../components/common/Permissions.js";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
-import {
-  clearMessages,
-  deleteloan_requests,
-  fetchloan_requests,
-} from "../../redux/loanRequests";
+import { deleteLoanRequest, fetchLoanRequest } from "../../redux/loanRequests";
+import DeleteAlert from "./alert/DeleteAlert";
 import ManageStatus from "./ManageStatus";
+import AddEditModal from "./modal/AddEditModal";
 
 const LoanRequests = () => {
   const [open, setOpen] = React.useState(false);
@@ -25,15 +21,8 @@ const LoanRequests = () => {
   const [paginationData, setPaginationData] = React.useState();
   const [searchText, setSearchText] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+
+  const { isView, isUpdate, isDelete } = usePermissions("Loan Requests");
 
   const dispatch = useDispatch();
 
@@ -50,16 +39,25 @@ const LoanRequests = () => {
     {
       title: "Loan Type",
       dataIndex: "loan_types",
-      render: (value) => <div>{value?.loan_name || "—"}</div>, // assuming loan_types is an object with loan_name
+      render: (value) => <div>{value?.loan_name || "—"}</div>,
       sorter: (a, b) =>
         (a.loan_types?.loan_name || "").localeCompare(
           b.loan_type?.loan_name || ""
         ),
     },
     {
+      title: "Currency",
+      dataIndex: "loan_req_currency",
+      render: (value) => value?.currency_code || "—",
+      sorter: (a, b) =>
+        (a.loan_req_currency?.currency_code || "").localeCompare(
+          b.loan_req_currency?.currency_code || ""
+        ),
+    },
+    {
       title: "Amount",
       dataIndex: "amount",
-      render: (value) => <div>₹ {Number(value).toLocaleString()}</div>,
+      render: (value) => value || "0",
       sorter: (a, b) => a.amount - b.amount,
     },
     {
@@ -67,17 +65,11 @@ const LoanRequests = () => {
       dataIndex: "emi_months",
       sorter: (a, b) => a.emi_months - b.emi_months,
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "status",
-    //   render: (value) => <div>{value || "Pending"}</div>,
-    //   sorter: (a, b) => a.status.localeCompare(b.status),
-    // },
     {
-      title: "Requested On",
-      dataIndex: "request_date",
+      title: "Start Date",
+      dataIndex: "start_date",
       render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-      sorter: (a, b) => new Date(a.request_date) - new Date(b.request_date),
+      sorter: (a, b) => new Date(a.start_date) - new Date(b.start_date),
     },
     {
       title: "Status",
@@ -85,22 +77,22 @@ const LoanRequests = () => {
       render: (value) => (
         <div
           className={`text-capitalize badge ${
-            value === "R"
+            value.startsWith("P")
               ? "bg-warning"
-              : value === "A"
+              : value.startsWith("A")
                 ? "bg-success"
-                : value === "P"
+                : value.startsWith("R")
                   ? "bg-danger"
                   : "bg-secondary"
           }`}
         >
-          {value === "P"
+          {value.startsWith("P")
             ? "Pending"
-            : value === "A"
+            : value.startsWith("A")
               ? "Approved"
-              : value === "R"
+              : value.startsWith("R")
                 ? "Rejected"
-                : value || "—"}
+                : "Pending"}
         </div>
       ),
       sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
@@ -159,7 +151,7 @@ const LoanRequests = () => {
                     <Link
                       className="dropdown-item"
                       to="#"
-                      onClick={() => handleDeleteIndustry(record)}
+                      onClick={() => handleDeleteLoanRequest(record)}
                     >
                       <i className="ti ti-trash text-danger"></i> Delete
                     </Link>
@@ -172,21 +164,19 @@ const LoanRequests = () => {
       : []),
   ];
 
-  const { loan_requests, loading, error, success } = useSelector(
-    (state) => state.loan_requests
-  );
+  const { loanRequest, loading } = useSelector((state) => state.loan_requests);
 
   React.useEffect(() => {
-    dispatch(fetchloan_requests({ search: searchText }));
+    dispatch(fetchLoanRequest({ search: searchText }));
   }, [dispatch, searchText]);
   React.useEffect(() => {
     setPaginationData({
-      currentPage: loan_requests?.currentPage,
-      totalPage: loan_requests?.totalPages,
-      totalCount: loan_requests?.totalCount,
-      pageSize: loan_requests?.size,
+      currentPage: loanRequest?.currentPage,
+      totalPage: loanRequest?.totalPages,
+      totalCount: loanRequest?.totalCount,
+      pageSize: loanRequest?.size,
     });
-  }, [loan_requests]);
+  }, [loanRequest]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -195,7 +185,7 @@ const LoanRequests = () => {
       pageSize,
     }));
     dispatch(
-      fetchloan_requests({
+      fetchLoanRequest({
         search: searchText,
         page: currentPage,
         size: pageSize,
@@ -208,7 +198,7 @@ const LoanRequests = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = loan_requests?.data || [];
+    let data = loanRequest?.data || [];
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
@@ -220,19 +210,18 @@ const LoanRequests = () => {
       );
     }
     return data;
-  }, [searchText, loan_requests, columns, sortOrder]);
+  }, [searchText, loanRequest, columns, sortOrder]);
 
-  const handleDeleteIndustry = (industry) => {
-    setSelectedIndustry(industry);
+  const handleDeleteLoanRequest = (loanRequest) => {
+    setSelectedLoanRequest(loanRequest);
     setShowDeleteModal(true);
   };
 
-  const [selectedIndustry, setSelectedIndustry] = React.useState(null);
+  const [selectedLoanRequest, setSelectedLoanRequest] = React.useState(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
-    if (selectedIndustry) {
-      dispatch(deleteloan_requests(selectedIndustry.id));
-      // navigate(`/loan_requests`);
+    if (selectedLoanRequest) {
+      dispatch(deleteLoanRequest(selectedLoanRequest.id));
       setShowDeleteModal(false);
     }
   };
@@ -242,26 +231,11 @@ const LoanRequests = () => {
       <Helmet>
         <title>DCC HRMS - Loan Requests</title>
         <meta
-          name="DepanrtmentList"
-          content="This is loan_requests page of DCC HRMS."
+          name="Loan Requests"
+          content="This is loan Requests page of DCC HRMS."
         />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header">
@@ -270,7 +244,7 @@ const LoanRequests = () => {
                   <h4 className="page-title">
                     Loan Requests
                     <span className="count-title">
-                      {loan_requests?.totalCount || 0}
+                      {loanRequest?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -285,17 +259,16 @@ const LoanRequests = () => {
               <div className="card-header">
                 <div className="row align-items-center">
                   <div className="col-sm-8">
-                    <div className="icon-form mb-3 mb-sm-6">
+                    <div className="icon-form mb-sm-6">
                       <SearchBar
                         searchText={searchText}
                         handleSearch={handleSearch}
-                        label="Search lone Requests"
+                        label="Search Loan Requests"
                       />
                     </div>
                   </div>
 
-                  {/* Add Offer Letter button aligned to the right at the end */}
-                  <div className="col-sm-2 ms-auto">
+                  <div className="col-sm-4 justify-content-end d-flex">
                     <Link
                       to=""
                       className="btn btn-primary"
@@ -304,7 +277,7 @@ const LoanRequests = () => {
                       onClick={() => setMode("add")}
                     >
                       <i className="ti ti-square-rounded-plus me-2" />
-                      Add Lone Requests
+                      Add Loan Requests
                     </Link>
                   </div>
                 </div>
@@ -338,10 +311,9 @@ const LoanRequests = () => {
 
       <AddEditModal mode={mode} initialData={selected} />
       <DeleteAlert
-        label="lone Requests"
+        label="Loan Request"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedIndustry={selectedIndustry}
         onDelete={deleteData}
       />
       <ManageStatus selected={selected} open={open} setOpen={setOpen} />

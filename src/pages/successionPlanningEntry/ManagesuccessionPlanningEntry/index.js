@@ -1,21 +1,20 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
+import { fetchRoles } from "../../../redux/roles";
 import {
   createsuccessionPlanning,
   updatesuccessionPlanning,
 } from "../../../redux/successionPlanningEntry";
-import DatePicker from "react-datepicker";
-import { fetchRoles } from "../../../redux/roles";
 
 const ManagesuccessionPlanning = ({
   setsuccessionPlanning,
   successionPlanning,
 }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const {
@@ -45,9 +44,8 @@ const ManagesuccessionPlanning = ({
   });
 
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-    dispatch(fetchRoles({ search: searchValue, is_active: true }));
-  }, [dispatch, searchValue]);
+    dispatch(fetchRoles({ is_active: true }));
+  }, [dispatch]);
 
   useEffect(() => {
     if (successionPlanning) {
@@ -89,13 +87,8 @@ const ManagesuccessionPlanning = ({
     }
   }, [successionPlanning, reset]);
 
-  const { employee } = useSelector((state) => state.employee || {});
   const { loading } = useSelector((state) => state.successionPlanning || {});
 
-  const employeeOptions = employee?.data?.map((emp) => ({
-    label: emp.full_name,
-    value: emp.id,
-  }));
   const { roles, loading: rolesLoading } = useSelector((state) => state.roles);
 
   const roleOptions = roles?.map((role) => ({
@@ -160,22 +153,14 @@ const ManagesuccessionPlanning = ({
                 name="current_holder_id"
                 control={control}
                 rules={{ required: "Current holder is required" }}
-                render={({ field }) => {
-                  const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    placeholder="Select Potential Successor"
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
+                  />
+                )}
               />
               {errors.current_holder_id && (
                 <small className="text-danger">
@@ -193,22 +178,14 @@ const ManagesuccessionPlanning = ({
                 name="potential_successor_id"
                 control={control}
                 rules={{ required: "Potential successor is required" }}
-                render={({ field }) => {
-                  const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Successor"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    placeholder="Select Current Holder"
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
+                  />
+                )}
               />
               {errors.potential_successor_id && (
                 <small className="text-danger">
@@ -229,7 +206,7 @@ const ManagesuccessionPlanning = ({
                     {...field}
                     type="text"
                     className="form-control"
-                    placeholder="Enter critical_position"
+                    placeholder="Enter Critical Position"
                   />
                 )}
               />
@@ -472,22 +449,14 @@ const ManagesuccessionPlanning = ({
                 name="last_updated_by_hr"
                 control={control}
                 rules={{ required: "Last Updated By HR is required" }}
-                render={({ field }) => {
-                  const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    placeholder="Select Last Updated By HR"
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
+                  />
+                )}
               />
               {errors.last_updated_by_hr && (
                 <small className="text-danger">
@@ -503,22 +472,14 @@ const ManagesuccessionPlanning = ({
                 name="evaluated_by"
                 control={control}
                 rules={{ required: "Evaluated By is required" }}
-                render={({ field }) => {
-                  const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    placeholder="Select Evaluated By"
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
+                  />
+                )}
               />
               {errors.evaluated_by && (
                 <small className="text-danger">

@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import { fetchCurrencies } from "../../../redux/currency";
-import { fetchEmployee } from "../../../redux/Employee";
 import {
   createtravelReimbursement,
   updatetravelReimbursement,
 } from "../../../redux/TravelReimbursement";
+import moment from "moment";
 
 const ManagetravelReimbursement = ({
   settravelReimbursement,
   travelReimbursement,
 }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const { currencies, loading: currencyLoading } = useSelector(
@@ -96,18 +96,8 @@ const ManagetravelReimbursement = ({
     }
   }, [travelReimbursement, reset]);
 
-  const { employee } = useSelector((state) => state.employee || {});
-
   const { loading } = useSelector((state) => state.travelReimbursement || {});
 
-  const employeeOptions = employee?.data?.map((emp) => ({
-    label: emp.full_name,
-    value: emp.id,
-  }));
-
-  useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -194,18 +184,12 @@ const ManagetravelReimbursement = ({
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = (employeeOptions || []).find(
-                    (opt) => opt.value === field.value
-                  );
                   return (
-                    <Select
+                    <EmployeeSelect
                       {...field}
-                      options={employeeOptions}
                       placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
+                      value={field.value || null}
                       onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
                     />
                   );
                 }}
@@ -287,18 +271,25 @@ const ManagetravelReimbursement = ({
             {/* Attachment Path */}
 
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Attachment</label>
+              <label className="col-form-label">
+                Attachment{" "}
+                {!travelReimbursement && <span className="text-danger">*</span>}
+              </label>
               <input
                 type="file"
                 className={`form-control ${errors.attachment_path ? "is-invalid" : ""}`}
                 accept=".pdf"
                 {...register("attachment_path", {
-                  required: "Attachment file is required.",
-                  validate: {
-                    isPdf: (files) =>
-                      files[0]?.type === "application/pdf" ||
-                      "Only PDF files are allowed.",
-                  },
+                  required: travelReimbursement
+                    ? false
+                    : "Attachment file is required.",
+                  validate: travelReimbursement
+                    ? false
+                    : {
+                        isPdf: (files) =>
+                          files[0]?.type === "application/pdf" ||
+                          "Only PDF files are allowed.",
+                      },
                 })}
               />
               {errors.attachment_path && (
@@ -430,10 +421,13 @@ const ManagetravelReimbursement = ({
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    selected={field.value ? new Date(field.value) : null}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : null
+                    }
                     onChange={(date) => field.onChange(date)}
                     className="form-control"
-                    dateFormat="dd-MM-yyyy"
                     placeholderText="Select Start Date"
                   />
                 )}
@@ -457,10 +451,13 @@ const ManagetravelReimbursement = ({
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    selected={field.value ? new Date(field.value) : null}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : null
+                    }
                     onChange={(date) => field.onChange(date)}
                     className="form-control"
-                    dateFormat="dd-MM-yyyy"
                     placeholderText="Select End Date"
                   />
                 )}

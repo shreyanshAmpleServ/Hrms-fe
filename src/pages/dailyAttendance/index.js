@@ -1,17 +1,16 @@
-import Table from "../../components/common/dataTableNew/index.js";
 import moment from "moment";
-import Select from "react-select";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
+import Table from "../../components/common/dataTableNew/index.js";
+import EmployeeSelect from "../../components/common/EmployeeSelect/index.js";
 import usePermissions from "../../components/common/Permissions.js/index.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchAttendaceSummary } from "../../redux/AttendanceByEmployee/index.js";
 import { fetchdailyAttendance } from "../../redux/dailyAttendance";
-import { fetchEmployee } from "../../redux/Employee";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManagedailyAttendance from "./ManagedailyAttendance/index.js";
 
@@ -33,25 +32,11 @@ const DailyAttendance = () => {
   const { AttendaceSummarys, loading: loadinSummary } = useSelector(
     (state) => state.AttendaceSummarys || {}
   );
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employeeOptions = [
-    { label: "All Employees", value: null },
-    ...(employee?.data?.map((i) => ({
-      label: i.full_name,
-      value: i.id,
-    })) || []),
-  ];
 
   const { isView, isCreate, isUpdate, isDelete } = usePermissions(
     "Daily Attendance Entry"
   );
 
-  useEffect(() => {
-    dispatch(fetchEmployee({ searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
   React.useEffect(() => {
     selectedEmployee &&
       dispatch(
@@ -62,6 +47,7 @@ const DailyAttendance = () => {
         })
       );
   }, [dispatch, searchValue, selectedDateRange, selectedEmployee]);
+
   React.useEffect(() => {
     dispatch(
       fetchAttendaceSummary({
@@ -279,22 +265,11 @@ const DailyAttendance = () => {
                   <>
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex" style={{ width: "250px" }}>
-                        <Select
-                          style={{ width: "250px" }}
-                          options={employeeOptions}
-                          value={
-                            employeeOptions.find(
-                              (opt) => opt.value === selectedEmployee
-                            ) || employeeOptions[0]
-                          }
+                        <EmployeeSelect
+                          value={selectedEmployee}
                           onChange={(option) =>
                             setSelectedEmployee(option.value)
                           }
-                          isLoading={employeeLoading}
-                          placeholder="Select Employee"
-                          onInputChange={(input) => setSearchValue(input)}
-                          className="w-100"
-                          classNamePrefix="react-select"
                         />
                       </div>
                       <div className="d-flex align-items-center flex-wrap row-gap-2">

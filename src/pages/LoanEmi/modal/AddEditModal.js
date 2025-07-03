@@ -2,10 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import {
-  addloan_requests,
-  updateloan_requests,
-} from "../../../redux/loanRequests";
+import { addLoanRequest, updateLoanRequest } from "../../../redux/loanRequests";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchloan_type } from "../../../redux/loneType"; // assume you have fetchloan_type redux
 import moment from "moment";
@@ -89,12 +86,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     };
 
     if (mode === "add") {
-      dispatch(addloan_requests(formattedData));
+      dispatch(addLoanRequest(formattedData));
     } else if (mode === "edit" && initialData) {
       dispatch(
-        updateloan_requests({
+        updateLoanRequest({
           id: initialData.id,
-          loan_requestsData: formattedData,
+          loanRequestData: formattedData,
         })
       );
     }

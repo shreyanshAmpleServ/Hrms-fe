@@ -1,17 +1,16 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createHelpdeskTicket,
   updateHelpdeskTicket,
 } from "../../../redux/HelpdeskTicket";
 
 const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -50,19 +49,6 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
       submitted_on: helpdeskTicket?.submitted_on || new Date().toISOString(),
     });
   }, [helpdeskTicket, reset]);
-
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -139,30 +125,11 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedEmployee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value}
+                            onChange={(i) => field.onChange(i?.value)}
                           />
                         );
                       }}
@@ -174,37 +141,6 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                     )}
                   </div>
                 </div>
-
-                {/* <div className="col-md-6">
-                  <label className="col-form-label">
-                    Status <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="status"
-                      control={control}
-                      rules={{ required: "Status is required!" }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          className="select"
-                          options={statusOptions}
-                          placeholder="Select Status"
-                          classNamePrefix="react-select"
-                          value={statusOptions.find(
-                            (x) => x.value === field.value
-                          )}
-                          onChange={(option) => field.onChange(option.value)}
-                        />
-                      )}
-                    />
-                    {errors.status && (
-                      <small className="text-danger">
-                        {errors.status.message}
-                      </small>
-                    )}
-                  </div>
-                </div> */}
 
                 <div className="col-md-6">
                   <label className="col-form-label">
@@ -341,27 +277,12 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                       control={control}
                       rules={{ required: "Assigned to is required" }}
                       render={({ field }) => {
-                        const selectedAssignee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
                             placeholder="Select Assignee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            value={selectedAssignee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value}
+                            onChange={(i) => field.onChange(i?.value)}
                           />
                         );
                       }}
@@ -382,8 +303,14 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                 <div className="mb-3">
                   <Controller
                     name="description"
+                    rules={{
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Description must be less than or equal to 255 characters",
+                      },
+                    }}
                     control={control}
-                    rules={{ required: "Description is required!" }}
                     render={({ field }) => (
                       <textarea
                         rows={3}

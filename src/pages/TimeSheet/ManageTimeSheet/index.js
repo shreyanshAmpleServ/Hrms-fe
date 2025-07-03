@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import moment from "moment";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
-import { fetchLeaveType } from "../../../redux/LeaveType";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import { createTimeSheet, updateTimeSheet } from "../../../redux/TimeSheet";
-import moment from "moment";
+import { fetchProjects } from "../../../redux/projects";
 
 const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -19,7 +18,7 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
   } = useForm({
     defaultValues: {
       employee_id: "",
-      project_name: "",
+      project_id: "",
       hours_worked: "",
       work_date: new Date().toISOString(),
       task_description: "",
@@ -28,42 +27,39 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
 
   const { loading } = useSelector((state) => state.timeSheet || {});
 
-  React.useEffect(() => {
-    if (timeSheet) {
-      reset({
-        employee_id: timeSheet.employee_id || "",
-        project_name: timeSheet.project_name || "",
-        hours_worked: timeSheet.hours_worked || "",
-        work_date: timeSheet.work_date || new Date().toISOString(),
-        task_description: timeSheet.task_description || "",
-      });
-    } else {
-      reset({
-        employee_id: "",
-        project_name: "",
-        hours_worked: "",
-        work_date: new Date().toISOString(),
-        task_description: "",
-      });
-    }
-  }, [timeSheet, reset]);
-
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
+  const { projects, loading: projectLoading } = useSelector(
+    (state) => state.projects || {}
   );
 
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
+  const projectOptions = projects?.data?.map((i) => ({
+    label: i?.name || "",
     value: i?.id,
   }));
 
+  React.useEffect(() => {
+    reset({
+      employee_id: timeSheet?.employee_id || "",
+      work_date: timeSheet?.work_date || new Date().toISOString(),
+      project_name: timeSheet?.project_name || "",
+      task_description: timeSheet?.task_description || "",
+      hours_worked: timeSheet?.hours_worked || "",
+      approved_by: timeSheet?.approved_by || "",
+      approved_on: timeSheet?.approved_on || "",
+      project_id: timeSheet?.project_id || "",
+      remarks: timeSheet?.remarks || "",
+      status: timeSheet?.status || "Draft",
+      task_id: timeSheet?.task_id || "",
+      billable_flag: timeSheet?.billable_flag || "",
+      work_location: timeSheet?.work_location || "",
+      submission_date: timeSheet?.submission_date || "",
+      approval_status: timeSheet?.approval_status || "P",
+      timesheet_type: timeSheet?.timesheet_type || "",
+    });
+  }, [timeSheet, reset]);
+
   useEffect(() => {
-    dispatch(fetchLeaveType({ search: searchValue, is_active: true }));
-  }, [dispatch, searchValue]);
+    dispatch(fetchProjects({ is_active: true }));
+  }, [dispatch]);
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -140,30 +136,11 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value}
+                            onChange={(opt) => field.onChange(opt?.value)}
                           />
                         );
                       }}
@@ -182,17 +159,23 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                       <span className="text-danger"> *</span>
                     </label>
                     <Controller
-                      name="project_name"
+                      name="project_id"
                       control={control}
                       rules={{ required: "Project name is required" }}
                       render={({ field }) => {
                         return (
-                          <input
+                          <Select
                             {...field}
-                            className="form-control"
-                            placeholder="Enter Project Name"
-                            value={field.value}
-                            onChange={field.onChange}
+                            options={projectOptions}
+                            placeholder="Select Project"
+                            classNamePrefix="react-select"
+                            isLoading={projectLoading}
+                            value={
+                              projectOptions?.find(
+                                (opt) => opt.value === field.value
+                              ) || null
+                            }
+                            onChange={(opt) => field.onChange(opt?.value)}
                           />
                         );
                       }}
@@ -247,12 +230,10 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                             ? moment(field.value).format("DD-MM-YYYY")
                             : ""
                         }
-                        selected={field.value ? new Date(field.value) : null}
                         onChange={(date) => {
                           field.onChange(date);
                         }}
                         className="form-control"
-                        dateFormat="dd-MM-yyyy"
                         placeholderText="Select Uploaded Date"
                       />
                     )}
@@ -291,10 +272,10 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                     )}
                   />
                   {/* {errors.description && (
-                    <small className="text-danger">
-                      {errors.description.message}
-                    </small>
-                  )} */}
+                      <small className="text-danger">
+                        {errors.description.message}
+                      </small>
+                    )} */}
                 </div>
               </div>
             </div>

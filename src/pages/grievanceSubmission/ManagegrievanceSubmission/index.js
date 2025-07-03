@@ -1,10 +1,10 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   creategrievanceSubmission,
   updategrievanceSubmission,
@@ -15,7 +15,6 @@ const ManagegrievanceSubmission = ({
   setgrievanceSubmission,
   grievanceSubmission,
 }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -69,20 +68,10 @@ const ManagegrievanceSubmission = ({
   }, [grievanceSubmission, reset]);
 
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
     dispatch(fetchgrievance_type({ is_active: true }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
+  }, [dispatch]);
 
   const { grievance_type } = useSelector((state) => state.grievanceType || {});
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
 
   const grievanceTypeOptions = grievance_type?.data?.map((i) => ({
     label: i?.grievance_type_name,
@@ -167,27 +156,13 @@ const ManagegrievanceSubmission = ({
                     name="employee_id"
                     control={control}
                     rules={{ required: "Employee is required" }}
-                    render={({ field }) => {
-                      const selectedEmployee = employees?.find(
-                        (emp) => emp.value === field.value
-                      );
-                      return (
-                        <Select
-                          {...field}
-                          className="select"
-                          options={employees}
-                          placeholder="Select Employee"
-                          isLoading={employeeLoading}
-                          classNamePrefix="react-select"
-                          value={selectedEmployee || null}
-                          onInputChange={setSearchValue}
-                          onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{
-                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
-                          }}
-                        />
-                      );
-                    }}
+                    render={({ field }) => (
+                      <EmployeeSelect
+                        {...field}
+                        value={field.value}
+                        onChange={(i) => field.onChange(i?.value)}
+                      />
+                    )}
                   />
                   {errors.employee_id && (
                     <small className="text-danger">
@@ -195,7 +170,7 @@ const ManagegrievanceSubmission = ({
                     </small>
                   )}
                 </div>
-                {/* 
+
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Status</label>
                   <Controller
@@ -220,9 +195,8 @@ const ManagegrievanceSubmission = ({
                       />
                     )}
                   />
-                </div> */}
+                </div>
 
-                {/* Grievance Type */}
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">
                     Grievance Type <span className="text-danger">*</span>
@@ -231,25 +205,16 @@ const ManagegrievanceSubmission = ({
                     name="grievance_type"
                     control={control}
                     rules={{ required: "Grievance type is required" }}
-                    render={({ field }) => {
-                      const selectedGrievance = grievanceTypeOptions?.find(
-                        (gt) => gt.value === field.value
-                      );
-                      return (
-                        <Select
-                          {...field}
-                          className="select"
-                          options={grievanceTypeOptions}
-                          placeholder="Select Grievance Type"
-                          classNamePrefix="react-select"
-                          value={selectedGrievance || null}
-                          onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{
-                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
-                          }}
-                        />
-                      );
-                    }}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={grievanceTypeOptions}
+                        placeholder="Select Grievance Type"
+                        classNamePrefix="react-select"
+                        value={field.value}
+                        onChange={(i) => field.onChange(i?.value)}
+                      />
+                    )}
                   />
                   {errors.grievance_type && (
                     <small className="text-danger">
@@ -258,7 +223,6 @@ const ManagegrievanceSubmission = ({
                   )}
                 </div>
 
-                {/* Resolved On */}
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Resolved On</label>
                   <Controller
@@ -281,7 +245,6 @@ const ManagegrievanceSubmission = ({
                   />
                 </div>
 
-                {/* Submitted On */}
                 <div className="col-md-6 mb-3">
                   <label className="col-form-label">Submitted On</label>
                   <Controller
@@ -309,29 +272,17 @@ const ManagegrievanceSubmission = ({
                   <Controller
                     name="assigned_to"
                     control={control}
-                    render={({ field }) => {
-                      const selectedUser = employees?.find(
-                        (emp) => emp.value === field.value
-                      );
-                      return (
-                        <Select
-                          {...field}
-                          options={employees}
-                          placeholder="Assigned To"
-                          value={selectedUser || null}
-                          onInputChange={setSearchValue}
-                          onChange={(opt) => field.onChange(opt?.value)}
-                          classNamePrefix="react-select"
-                          styles={{
-                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
-                          }}
-                        />
-                      );
-                    }}
+                    render={({ field }) => (
+                      <EmployeeSelect
+                        {...field}
+                        placeholder="Assigned To"
+                        value={field.value}
+                        onChange={(i) => field.onChange(i?.value)}
+                      />
+                    )}
                   />
                 </div>
 
-                {/* Anonymous */}
                 <div className="col-md-6 mb-3">
                   <Controller
                     name="anonymous"
@@ -354,16 +305,17 @@ const ManagegrievanceSubmission = ({
                   <label className="col-form-label">
                     Resolution Notes{" "}
                     <small className="text-muted">(Max 255 characters)</small>
+                    <span className="text-danger">*</span>
                   </label>
                   <Controller
                     name="resolution_notes"
                     control={control}
                     rules={{
-                      required: "Description is required!",
+                      required: "Resolution notes is required!",
                       maxLength: {
                         value: 255,
                         message:
-                          "Description must be less than or equal to 255 characters",
+                          "Resolution notes must be less than or equal to 255 characters",
                       },
                     }}
                     render={({ field }) => (
@@ -376,11 +328,11 @@ const ManagegrievanceSubmission = ({
                       />
                     )}
                   />
-                  {/* {errors.resolution_notes && (
+                  {errors.resolution_notes && (
                     <small className="text-danger">
                       {errors.resolution_notes.message}
                     </small>
-                  )} */}
+                  )}
                 </div>
 
                 {/* Description */}
@@ -390,7 +342,6 @@ const ManagegrievanceSubmission = ({
                     name="description"
                     control={control}
                     rules={{
-                      required: "Description is required!",
                       maxLength: {
                         value: 255,
                         message:

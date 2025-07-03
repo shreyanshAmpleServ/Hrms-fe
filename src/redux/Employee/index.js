@@ -168,11 +168,24 @@ export const updateEmployeeEducation = createAsyncThunk(
   }
 );
 
+export const employeeOptionsFn = createAsyncThunk(
+  "employee/employeeOptions",
+  async (thunkAPI) => {
+    try {
+      const response = await apiClient.get("/v1/employee-options");
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data);
+    }
+  }
+);
+
 const employeesSlice = createSlice({
   name: "employee",
   initialState: {
     employee: {},
     employeeDetail: null,
+    employeeOptions: [],
     loading: false,
     error: null,
     success: null,
@@ -301,6 +314,17 @@ const employeesSlice = createSlice({
       .addCase(updateEmployeeEducation.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+      })
+      .addCase(employeeOptionsFn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(employeeOptionsFn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.employeeOptions = action.payload.data;
+      })
+      .addCase(employeeOptionsFn.rejected, (state) => {
+        state.loading = false;
       });
   },
 });

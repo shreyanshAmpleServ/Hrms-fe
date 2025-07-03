@@ -1,10 +1,10 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createdisciplinryAction,
   updatedisciplinryAction,
@@ -15,7 +15,6 @@ const ManagedisciplinryAction = ({
   setdisciplinryAction,
   disciplinryAction,
 }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -55,7 +54,7 @@ const ManagedisciplinryAction = ({
           )?.value || "",
         effective_from:
           disciplinryAction.effective_from || new Date().toISOString(),
-        status: disciplinryAction.status || "Pending",
+        status: disciplinryAction?.status || "Pending",
       });
     } else {
       reset({
@@ -74,25 +73,13 @@ const ManagedisciplinryAction = ({
     }
   }, [disciplinryAction, reset]);
 
-  useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-    dispatch(
-      fetchdisciplinary_penalty({ search: searchValue, is_active: true })
-    );
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
   const { disciplinary_penalty, loading: diciplinaryloading } = useSelector(
     (state) => state.disciplinary_penalty || {}
   );
 
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
+  useEffect(() => {
+    dispatch(fetchdisciplinary_penalty({ is_active: true }));
+  }, [dispatch]);
 
   const penaltyOptions = (disciplinary_penalty?.data || []).map((p) => ({
     label: p?.description,
@@ -175,23 +162,11 @@ const ManagedisciplinryAction = ({
                     control={control}
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
-                      const selectedEmployee = employees?.find(
-                        (emp) => emp.value === field.value
-                      );
                       return (
-                        <Select
+                        <EmployeeSelect
                           {...field}
-                          className="select"
-                          options={employees}
-                          placeholder="Select Employee"
-                          isLoading={employeeLoading}
-                          classNamePrefix="react-select"
-                          value={selectedEmployee || null}
-                          onInputChange={setSearchValue}
-                          onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{
-                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
-                          }}
+                          value={field.value}
+                          onChange={(i) => field.onChange(i?.value)}
                         />
                       );
                     }}
@@ -340,23 +315,11 @@ const ManagedisciplinryAction = ({
                     control={control}
                     rules={{ required: "Employee is required" }}
                     render={({ field }) => {
-                      const selectedEmployee = employees?.find(
-                        (emp) => emp.value === field.value
-                      );
                       return (
-                        <Select
+                        <EmployeeSelect
                           {...field}
-                          className="select"
-                          options={employees}
-                          placeholder="Select Employee"
-                          isLoading={employeeLoading}
-                          classNamePrefix="react-select"
-                          value={selectedEmployee || null}
-                          onInputChange={setSearchValue}
-                          onChange={(opt) => field.onChange(opt?.value)}
-                          styles={{
-                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
-                          }}
+                          value={field.value}
+                          onChange={(i) => field.onChange(i?.value)}
                         />
                       );
                     }}
@@ -368,36 +331,11 @@ const ManagedisciplinryAction = ({
                   )}
                 </div>
 
-                {/* <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Status</label>
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={[
-                          { value: "Pending", label: "Pending" },
-                          { value: "Resolved", label: "Resolved" },
-                          { value: "Closed", label: "Closed" },
-                        ]}
-                        placeholder="Select Status"
-                        classNamePrefix="react-select"
-                        value={
-                          field.value
-                            ? { label: field.value, value: field.value }
-                            : null
-                        }
-                        onChange={(opt) => field.onChange(opt.value)}
-                      />
-                    )}
-                  />
-                </div> */}
-
                 <div className="col-12 mb-3">
                   <label className="col-form-label">
                     Committee Notes{" "}
-                    <small className="text-muted">(Max 255 characters)</small>
+                    <small className="text-muted">(Max 255 characters)</small>{" "}
+                    <span className="text-danger">*</span>
                   </label>
                   <Controller
                     name="committee_notes"
@@ -420,12 +358,18 @@ const ManagedisciplinryAction = ({
                       />
                     )}
                   />
+                  {errors.committee_notes && (
+                    <small className="text-danger">
+                      {errors.committee_notes.message}
+                    </small>
+                  )}
                 </div>
 
                 <div className="col-12 mb-3">
                   <label className="col-form-label">
                     Incident Description{" "}
-                    <small className="text-muted">(Max 255 characters)</small>
+                    <small className="text-muted">(Max 255 characters)</small>{" "}
+                    <span className="text-danger">*</span>
                   </label>
                   <Controller
                     name="incident_description"

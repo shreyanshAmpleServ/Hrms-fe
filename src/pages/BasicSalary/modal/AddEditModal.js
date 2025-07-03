@@ -1,10 +1,10 @@
 import { Select as AntdSelect, Button } from "antd";
 import moment from "moment";
+import Select from "react-select";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
 import Table from "../../../components/common/dataTableNew/index";
 import {
   createBasicSalary,
@@ -15,11 +15,11 @@ import { fetchbranch } from "../../../redux/branch";
 import { fetchCurrencies } from "../../../redux/currency";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
-import { fetchEmployee } from "../../../redux/Employee";
 import { fetchpay_component } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
 import toast from "react-hot-toast";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 
 export const allowanceGroupList = [
   { value: "1", label: "Standard Allowance" },
@@ -46,12 +46,7 @@ export const payGradeList = [
   { value: "5", label: "Grade E - ₹90,001 and above" },
 ];
 
-const AddEditModal = ({
-  mode = "add",
-  initialData = null,
-  setSelected,
-  employee_id,
-}) => {
+const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const initialComponent = [
     {
       parent_id: "",
@@ -99,7 +94,7 @@ const AddEditModal = ({
   );
   const { workLifeEventLog } = useSelector((state) => state.workLifeEventLog);
   const { pay_component } = useSelector((state) => state.payComponent);
-  const employee = useSelector((state) => state.employee.employee);
+
   const { currencies } = useSelector((state) => state.currencies);
 
   const {
@@ -108,7 +103,6 @@ const AddEditModal = ({
     reset,
     control,
     watch,
-    setValue,
   } = useForm({
     defaultValues: {
       employee_id: "",
@@ -125,8 +119,6 @@ const AddEditModal = ({
       remarks: "",
     },
   });
-
-  const watchedEmployeeId = watch("employee_id");
 
   const currencyList = useMemo(() => {
     return (
@@ -164,16 +156,6 @@ const AddEditModal = ({
     );
   }, [designation]);
 
-  const employeeList = useMemo(
-    () =>
-      employee?.data?.map((item) => ({
-        value: item.id,
-        label: item.full_name,
-        data: item,
-      })) || [],
-    [employee]
-  );
-
   const statusList = [
     { value: "Active", label: "Active" },
     { value: "Inactive", label: "Inactive" },
@@ -204,25 +186,10 @@ const AddEditModal = ({
   }, [pay_component, basicSalaryData]);
 
   useEffect(() => {
-    if (employee?.data && watchedEmployeeId) {
-      const selectedEmployee = employee.data.find(
-        (item) => item.id === watchedEmployeeId
-      );
-      if (selectedEmployee) {
-        setEmployeeData(selectedEmployee);
-        setValue("department_id", selectedEmployee.department_id || "");
-        setValue("position_id", selectedEmployee.designation_id || "");
-      }
-    }
-  }, [employee, watchedEmployeeId, setValue]);
-
-  useEffect(() => {
     dispatch(fetchdepartment());
     dispatch(fetchbranch({ is_active: true }));
     dispatch(fetchdesignation());
-    if (!employee_id) {
-      dispatch(fetchEmployee({ status: "Active" }));
-    }
+
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
@@ -755,20 +722,13 @@ const AddEditModal = ({
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => (
-                  <Select
+                  <EmployeeSelect
                     {...field}
-                    options={employeeList}
-                    placeholder="Choose Employee"
-                    isDisabled={!employeeList.length}
-                    classNamePrefix="react-select"
-                    className="select2"
-                    onChange={(option) => {
-                      field.onChange(option?.value || "");
+                    value={field.value}
+                    onChange={(i) => {
+                      field.onChange(i?.value);
+                      setEmployeeData(i?.meta);
                     }}
-                    value={employeeList.find(
-                      (option) =>
-                        String(option.value) === String(watch("employee_id"))
-                    )}
                   />
                 )}
               />

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import { fetchAppraisalEntries } from "../../../redux/AppraisalsEntries";
-import { fetchEmployee } from "../../../redux/Employee";
 import { fetchgoal_category } from "../../../redux/goalCategoryMaster";
 import {
   creategoalSheet,
@@ -13,7 +13,6 @@ import {
 
 const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
   const dispatch = useDispatch();
-  const [searchValue, setSearchValue] = useState("");
 
   const {
     control,
@@ -22,26 +21,18 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
     formState: { errors },
   } = useForm();
 
-  const { employee } = useSelector((state) => state.employee || {});
   const { appraisalEntries, loading: appraisalLoading } = useSelector(
     (state) => state.appraisalEntries || {}
   );
-  console.log("appraisalEntries:", appraisalEntries);
 
   const { goal_category } = useSelector(
     (state) => state.goalCategoryMaster || {}
   );
-  console.log("goalCategoryMaster:", goal_category);
 
   const { loading } = useSelector((state) => state.goalSheet || {});
 
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
-
   const appraisalEntriesList = (appraisalEntries?.data || []).map((i) => ({
-    label: i?.review_period, // or `full_name` if that's correct
+    label: i?.review_period,
     value: i?.id,
   }));
 
@@ -50,17 +41,10 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
     value: i?.id,
   }));
 
-  // const statusOptions = [
-  //   { value: "pending", label: "Pending" },
-  //   { value: "in_progress", label: "In Progress" },
-  //   { value: "completed", label: "Completed" },
-  // ];
-
   useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
     dispatch(fetchAppraisalEntries({ is_active: true }));
     dispatch(fetchgoal_category({ is_active: true }));
-  }, [dispatch, searchValue]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (goalSheet) {
@@ -79,7 +63,6 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
         status: goalSheet.status || "panding",
       });
     } else {
-      // Add mode
       reset({
         employee_id: "",
         appraisal_cycle_id: "",
@@ -160,15 +143,10 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => (
-                  <Select
+                  <EmployeeSelect
                     {...field}
-                    options={employees}
-                    placeholder="Select Employee"
-                    onInputChange={(val) => setSearchValue(val)}
-                    value={
-                      employees?.find((e) => e.value === field.value) || null
-                    }
-                    onChange={(opt) => field.onChange(opt.value)}
+                    value={field.value}
+                    onChange={(i) => field.onChange(i?.value)}
                   />
                 )}
               />

@@ -115,7 +115,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{selected ? "Update " : "Add "} Appraisal Entries</h4>
+          <h4>{selected ? "Update " : "Add "} WPS File Generator</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"

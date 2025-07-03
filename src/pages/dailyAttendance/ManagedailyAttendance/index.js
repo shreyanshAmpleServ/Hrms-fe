@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createdailyAttendance,
   updatedailyAttendance,
-} from "../../../redux/dailyAttendance"; // Ensure this slice exists
+} from "../../../redux/dailyAttendance";
 
 const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const {
@@ -23,9 +22,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
   });
 
   const { loading } = useSelector((state) => state.dailyAttendance || {});
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
 
   const statusOptions = [
     { value: "Present", label: "Present" },
@@ -34,14 +30,8 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
     { value: "Late", label: "Late" },
   ];
 
-  const employees = employee?.data?.map((i) => ({
-    label: `${i.full_name}`,
-    value: i?.id,
-  }));
-
   React.useEffect(() => {
     if (dailyAttendance) {
-      // Edit mode
       reset({
         employee_id: dailyAttendance?.employee_id || "",
         attendance_date: dailyAttendance?.attendance_date
@@ -53,14 +43,11 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
         check_out_time: dailyAttendance?.check_out_time
           ? new Date(dailyAttendance.check_out_time)
           : null,
-        // status:
-        //   statusOptions.find((opt) => opt.value === dailyAttendance?.status) ||
-        //   null,
+
         status: dailyAttendance.status || "",
         remarks: dailyAttendance?.remarks || "",
       });
     } else {
-      // Add mode – blank form
       reset({
         employee_id: "",
         attendance_date: new Date(),
@@ -71,10 +58,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
       });
     }
   }, [dailyAttendance, reset]);
-
-  useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -137,7 +120,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-            {/* Employee */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
                 Employee <span className="text-danger">*</span>
@@ -147,19 +129,11 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = employees?.find(
-                    (emp) => emp.value === field.value
-                  );
                   return (
-                    <Select
+                    <EmployeeSelect
                       {...field}
-                      options={employees}
-                      placeholder="Select Employee"
-                      isLoading={employeeLoading}
-                      value={selected || null}
-                      onInputChange={setSearchValue}
+                      value={field.value}
                       onChange={(option) => field.onChange(option.value)}
-                      classNamePrefix="react-select"
                     />
                   );
                 }}
@@ -171,7 +145,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
               )}
             </div>
 
-            {/* Attendance Date */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
                 Attendance Date <span className="text-danger">*</span>
@@ -198,7 +171,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
               )}
             </div>
 
-            {/* Check-in */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
                 Check-In Time <span className="text-danger">*</span>
@@ -229,7 +201,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
               )}
             </div>
 
-            {/* Check-out */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
                 Check-Out Time <span className="text-danger">*</span>
@@ -260,7 +231,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
               )}
             </div>
 
-            {/* Status */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
                 Status <span className="text-danger">*</span>
@@ -287,7 +257,6 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
               )}
             </div>
 
-            {/* Remarks */}
             <div className="col-md-12 mb-3">
               <label className="col-form-label">
                 Remarks <span className="text-muted">(max 255 characters)</span>

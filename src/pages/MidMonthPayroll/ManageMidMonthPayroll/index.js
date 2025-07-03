@@ -4,72 +4,29 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
+import { fetchCostCenter } from "../../../redux/costCenter";
+import { fetchCurrencies } from "../../../redux/currency";
 import {
   createMidMonthPayroll,
   updateMidMonthPayroll,
 } from "../../../redux/MidMonthPayroll";
-import { fetchEmployee } from "../../../redux/Employee";
-import { fetchProjects } from "../../../redux/projects";
-import { fetchCostCenter } from "../../../redux/costCenter";
 import { fetchpay_component } from "../../../redux/pay-component";
-import { fetchCurrencies } from "../../../redux/currency";
+import { fetchProjects } from "../../../redux/projects";
 
 const ManageMidMonthPayroll = ({ setMidMonthPayroll, midMonthPayroll }) => {
-  const [searchValue, setSearchValue] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
     reset,
-    watch,
     register,
     formState: { errors },
   } = useForm();
 
   const { loading } = useSelector((state) => state.midMonthPayroll || {});
 
-  //  const midMonthPayrollData = {
-  //    approved1: "N",
-  //    approver1_id: null,
-  //    component_id: 41,
-  //    cost_center1_id: 3,
-  //    cost_center2_id: 5,
-  //    cost_center3_id: 5,
-  //    cost_center4_id: 5,
-  //    cost_center5_id: 5,
-  //    createdate: "2025-07-02T09:42:58.840Z",
-  //    createdby: 61,
-  //    doc_date: "2025-06-23T00:00:00.000Z",
-  //    employee_email: "john@example.com",
-  //    employee_id: 15,
-  //    execution_date: "2025-06-24T00:00:00.000Z",
-  //    id: 8,
-  //    je_transid: null,
-  //    log_inst: 1,
-  //    midmonth_payroll_processing_center1: { id: 3, name: "IT Department" },
-  //    midmonth_payroll_processing_center2: { id: 5, name: "IT Department" },
-  //    midmonth_payroll_processing_center3: { id: 5, name: "IT Department" },
-  //    midmonth_payroll_processing_center4: { id: 5, name: "IT Department" },
-  //    midmonth_payroll_processing_center5: { id: 5, name: "IT Department" },
-  //    midmonth_payroll_processing_component: {
-  //      id: 41,
-  //      component_name: "Provident Fund (PF)",
-  //    },
-  //    midmonth_payroll_processing_employee: { id: 15, full_name: "bdhbjs" },
-  //    net_pay: "18500",
-  //    pay_currency: "INR",
-  //    pay_date: "2025-06-28T00:00:00.000Z",
-  //    payroll_month: 6,
-  //    payroll_week: 3,
-  //    payroll_year: 2025,
-  //    processed: "N",
-  //    project_id: 4,
-  //    remarks: "Mid-month payout for project-based role",
-  //    status: "Pending",
-  //    updatedate: null,
-  //    updatedby: null,
-  //  };
   const { projects } = useSelector((state) => state.projects);
   const { costCenter } = useSelector((state) => state.costCenter);
   const { pay_component } = useSelector((state) => state.payComponent);
@@ -81,12 +38,6 @@ const ManageMidMonthPayroll = ({ setMidMonthPayroll, midMonthPayroll }) => {
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
   }, []);
-
-  useEffect(() => {
-    if (watch("employee_id")) {
-      setSelectedEmployee(watch("employee_id"));
-    }
-  }, [watch("employee_id")]);
 
   const projectOptions = projects?.data?.map((item) => ({
     value: item?.id,
@@ -159,20 +110,6 @@ const ManageMidMonthPayroll = ({ setMidMonthPayroll, midMonthPayroll }) => {
       status: midMonthPayroll?.status || "Pending",
     });
   }, [midMonthPayroll, reset]);
-
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-    record: i,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -257,25 +194,14 @@ const ManageMidMonthPayroll = ({ setMidMonthPayroll, midMonthPayroll }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
-                        setSelectedEmployee(selectedEmployee?.record);
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedEmployee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
+                            value={field.value}
+                            onChange={(i) => {
+                              field.onChange(i?.value);
+                              setSelectedEmployee(i?.meta);
+                            }}
                           />
                         );
                       }}
