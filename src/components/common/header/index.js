@@ -60,6 +60,7 @@ const Header = () => {
     try {
       // Dispatch logoutUser thunk
       await dispatch(logoutUser()).unwrap(); // Ensures proper error handling
+      localStorage.clear();
       navigate(route?.login); // Redirect to login page
     } catch (error) {
       console.error("Logout failed:", error);
