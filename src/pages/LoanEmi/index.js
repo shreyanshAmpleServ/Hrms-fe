@@ -13,12 +13,12 @@ import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {
   clearMessages,
-  deleteloan_requests,
-  fetchloan_requests,
-} from "../../redux/loanRequests";
+  deleteloan_Emi,
+  fetchloan_Emi,
+} from "../../redux/LoanEmi";
 import ManageStatus from "./ManageStatus";
 
-const LoanRequests = () => {
+const LoanEmi = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
   const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
@@ -27,7 +27,7 @@ const LoanRequests = () => {
   const [sortOrder, setSortOrder] = React.useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Manufacturer"
+    (i) => i?.module_name === "loan Emi"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -146,7 +146,7 @@ const LoanRequests = () => {
                       className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_loan_requests_modal"
+                      data-bs-target="#add_edit_loan_Emi_modal"
                       onClick={() => {
                         setSelected(record);
                         setMode("edit");
@@ -172,21 +172,21 @@ const LoanRequests = () => {
       : []),
   ];
 
-  const { loan_requests, loading, error, success } = useSelector(
-    (state) => state.loan_requests
+  const { loan_Emi, loading, error, success } = useSelector(
+    (state) => state.loan_Emi
   );
 
   React.useEffect(() => {
-    dispatch(fetchloan_requests({ search: searchText }));
+    dispatch(fetchloan_Emi({ search: searchText }));
   }, [dispatch, searchText]);
   React.useEffect(() => {
     setPaginationData({
-      currentPage: loan_requests?.currentPage,
-      totalPage: loan_requests?.totalPages,
-      totalCount: loan_requests?.totalCount,
-      pageSize: loan_requests?.size,
+      currentPage: loan_Emi?.currentPage,
+      totalPage: loan_Emi?.totalPages,
+      totalCount: loan_Emi?.totalCount,
+      pageSize: loan_Emi?.size,
     });
-  }, [loan_requests]);
+  }, [loan_Emi]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -195,7 +195,7 @@ const LoanRequests = () => {
       pageSize,
     }));
     dispatch(
-      fetchloan_requests({
+      fetchloan_Emi({
         search: searchText,
         page: currentPage,
         size: pageSize,
@@ -208,7 +208,7 @@ const LoanRequests = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = loan_requests?.data || [];
+    let data = loan_Emi?.data || [];
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
@@ -220,7 +220,7 @@ const LoanRequests = () => {
       );
     }
     return data;
-  }, [searchText, loan_requests, columns, sortOrder]);
+  }, [searchText, loan_Emi, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelectedIndustry(industry);
@@ -231,8 +231,8 @@ const LoanRequests = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
     if (selectedIndustry) {
-      dispatch(deleteloan_requests(selectedIndustry.id));
-      // navigate(`/loan_requests`);
+      dispatch(deleteloan_Emi(selectedIndustry.id));
+      // navigate(`/loan_Emi`);
       setShowDeleteModal(false);
     }
   };
@@ -240,11 +240,8 @@ const LoanRequests = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>DCC HRMS - Loan Requests</title>
-        <meta
-          name="DepanrtmentList"
-          content="This is loan_requests page of DCC HRMS."
-        />
+        <title>DCC HRMS - Loan EMI</title>
+        <meta name="Loan EMI" content="This is loan_Emi page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -268,9 +265,9 @@ const LoanRequests = () => {
               <div className="row align-items-center">
                 <div className="col-8">
                   <h4 className="page-title">
-                    Loan Requests
+                    Loan EMI
                     <span className="count-title">
-                      {loan_requests?.totalCount || 0}
+                      {loan_Emi?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -289,7 +286,7 @@ const LoanRequests = () => {
                       <SearchBar
                         searchText={searchText}
                         handleSearch={handleSearch}
-                        label="Search lone Requests"
+                        label="Search lone EMI"
                       />
                     </div>
                   </div>
@@ -300,11 +297,11 @@ const LoanRequests = () => {
                       to=""
                       className="btn btn-primary"
                       data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_loan_requests_modal"
+                      data-bs-target="#add_edit_loan_Emi_modal"
                       onClick={() => setMode("add")}
                     >
                       <i className="ti ti-square-rounded-plus me-2" />
-                      Add Lone Requests
+                      Add Offer Letter
                     </Link>
                   </div>
                 </div>
@@ -338,7 +335,7 @@ const LoanRequests = () => {
 
       <AddEditModal mode={mode} initialData={selected} />
       <DeleteAlert
-        label="lone Requests"
+        label="lone Emi"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         selectedIndustry={selectedIndustry}
@@ -349,4 +346,4 @@ const LoanRequests = () => {
   );
 };
 
-export default LoanRequests;
+export default LoanEmi;

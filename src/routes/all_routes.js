@@ -4,7 +4,7 @@ export const all_routes = {
   register: "/register",
 
   // DASHBOARDS
-  dasshboard: "/dashboard",
+  dashboard: "/dashboard",
   dashboardEmployee: "/dashboard-employee",
   dealsDashboard: "/dashboard/deals-dashboard",
   leadsDashboard: "/dashboard/leads-dashboard",
@@ -41,8 +41,10 @@ export const all_routes = {
   calls: "/calls",
 
   // CRM - PROJECTS
-  projects: "/projects",
-  projectDetails: "/projects/:id",
+  jobPosting: "/job-posting",
+  employee: "/employee",
+  addEmployee: "/add-employee",
+  employeeDetails: "/employee/:id",
 
   // CRM - OTHERS
   campaigns: "/campaigns",
@@ -76,13 +78,9 @@ export const all_routes = {
   workLifeEventTypeMaster: "/work-life-event-type-master",
 
   // HRMS - EMPLOYEE MANAGEMENT
-  addEmployee: "/add-employee",
-  appointmentLetter: "/appointment-letters",
   candidates: "/candidates",
   candidateDetail: "/candidate/:id",
-  employee: "/employee",
   employeeAttachment: "/employee-attachments",
-  employeeDetails: "/employee/:id",
   employmentContracts: "/employment-contracts",
   exitClearance: "/exit-clearance",
   exitInterview: "/exit-interview",
@@ -210,7 +208,6 @@ export const all_routes = {
 
   // SETTINGS - FINANCIAL
   bankAccounts: "/financial-settings/bank-accounts",
-  // currencies: "/financial-settings/currencies",
   paymentGateways: "/financial-settings/payment-gateways",
   taxRates: "/financial-settings/tax-rates",
 
@@ -229,6 +226,8 @@ export const all_routes = {
   callResult: "/call-result",
   callPurpose: "/call-purpose",
   callType: "/call-types",
+  projects: "/projects",
+  projectDetails: "/projects/:id",
   state: "/state",
   country: "/country",
 };

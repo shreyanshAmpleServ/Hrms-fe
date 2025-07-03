@@ -133,6 +133,8 @@ import basicSalaryReducer from "./BasicSalary";
 import midMonthPayrollReducer from "./MidMonthPayroll";
 import overtimePayrollReducer from "./OverTimePayroll";
 
+import employeeDashboardReducer from "./employeeDashboard";
+import LoanEmiReducer from "./LoanEmi";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -268,6 +270,8 @@ const store = configureStore({
     basicSalary: basicSalaryReducer,
     midMonthPayroll: midMonthPayrollReducer,
     overtimePayroll: overtimePayrollReducer,
+    employeeDashboard: employeeDashboardReducer,
+    loan_Emi: LoanEmiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

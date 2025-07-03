@@ -12,8 +12,8 @@ export const SidebarData = (userType) => {
         {
           label: "Dashboard",
           link: userType?.includes("admin")
-            ? route.dasshboard
-            : route.employeeDashboard,
+            ? route.dashboard
+            : route.dashboardEmployee,
           icon: "ti ti-layout-dashboard",
           showSubRoute: false,
           submenu: false,
@@ -146,6 +146,12 @@ export const SidebarData = (userType) => {
             {
               label: "Loan Requests",
               link: route.loanRequests,
+              showSubRoute: false,
+              submenu: false,
+            },
+            {
+              label: "Loan Emi",
+              link: route.loanEmi,
               showSubRoute: false,
               submenu: false,
             },

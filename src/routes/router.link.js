@@ -162,12 +162,13 @@ import BasicSalary from "../pages/BasicSalary";
 import DashboardEmployee from "../pages/DashboardEmployee/Employee";
 import MidMonthPayroll from "../pages/MidMonthPayroll";
 import OverTimePayroll from "../pages/OverTimePayroll";
+import LoanEmi from "../pages/LoanEmi";
 export { Dashboard, Login };
 const route = all_routes;
 
 export const privateRoutes = [
   {
-    path: route.dasshboard,
+    path: route.dashboard,
     element: <AdminDashboard />,
     route: Route,
     title: "Admin Dashboard",
@@ -865,6 +866,12 @@ export const privateRoutes = [
     element: <LoanRequests />,
     route: Route,
     title: "Loan Requests",
+  },
+  {
+    path: route.loanEmi,
+    element: <LoanEmi />,
+    route: Route,
+    title: "Loan Emi",
   },
 
   {

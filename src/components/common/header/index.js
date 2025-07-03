@@ -83,10 +83,10 @@ const Header = () => {
           onMouseEnter={toggleExpandMenu}
           onMouseLeave={toggleExpandMenu2}
         >
-          <Link to={route.dasshboard} className="logo logo-normal">
+          <Link to={route.dashboard} className="logo logo-normal">
             <Logo />
           </Link>
-          <Link to={route.dasshboard} className="logo-small">
+          <Link to={route.dashboard} className="logo-small">
             <ImageWithBasePath src={hrmsLogo} alt="Logo" />
           </Link>
           <Link id="toggle_btn" to="#" onClick={toggleMiniSidebar}>
@@ -488,7 +488,7 @@ const Header = () => {
               </Link>
               <div className={` dropdown-menu  menu-drop-user `}>
                 <div className="profilename">
-                  <Link className="dropdown-item" to={route.dasshboard}>
+                  <Link className="dropdown-item" to={route.dashboard}>
                     <i className="ti ti-layout-2" /> Dashboard
                   </Link>
                   <Link className="dropdown-item" to={route.profile}>
@@ -528,7 +528,7 @@ const Header = () => {
             <i className="fa fa-ellipsis-v" />
           </Link>
           <div className={` dropdown-menu `}>
-            <Link className="dropdown-item" to={route.dasshboard}>
+            <Link className="dropdown-item" to={route.dashboard}>
               <i className="ti ti-layout-2" /> Dashboard
             </Link>
             <Link className="dropdown-item" to={route.profile}>

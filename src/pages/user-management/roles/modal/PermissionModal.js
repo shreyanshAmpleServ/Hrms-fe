@@ -7,7 +7,7 @@ import {
   addPermissions,
   fetchPermissions,
 } from "../../../../redux/permissions";
-
+import { permissionsSearch } from "../../../../redux/permissions";
 export const PermissionModal = ({
   permissionModal,
   setPermissionModal,
@@ -15,6 +15,7 @@ export const PermissionModal = ({
 }) => {
   const dispatch = useDispatch();
   const [updatedData, setUpdatedData] = useState([]);
+  const [search, setSearch] = useState("");
 
   const { permissions, loading } = useSelector((state) => state.permissions);
   useEffect(() => {
@@ -44,7 +45,7 @@ export const PermissionModal = ({
                     [permissionType]: checked,
                   },
           }
-        : item,
+        : item
     );
     setUpdatedData({
       role_id: updatedData?.role_id,
@@ -229,7 +230,7 @@ export const PermissionModal = ({
             className="modal-dialog modal-dialog-centered"
             style={{ width: "100%" }}
           >
-            <div className="modal-content" style={{ width: "100%" }}>
+            <div className="modal-content" style={{ width: "130%" }}>
               <div className="modal-body" style={{ width: "100%" }}>
                 <div>
                   <div className="d-flex justify-content-between align-content-center">
@@ -250,7 +251,19 @@ export const PermissionModal = ({
                       />
                     </Link>
                   </div>
-                  <hr className="border-dark" />
+                  <div className="position-relative icon-form  mt-2">
+                    <span className="form-icon">
+                      <i className="ti ti-search" />
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Search menus..."
+                      className="form-control"
+                      onChange={(e) => setSearch(e.target.value)} // search state update ho raha
+                      value={search}
+                    />
+                  </div>
+                  {/* <hr className="border-dark" /> */}
                   <div
                     className="d-flex  flex-wrap "
                     style={{ height: "70vh", overflow: "auto" }}
@@ -268,8 +281,12 @@ export const PermissionModal = ({
                       }}
                     >
                       <Table
-                        className="customs-table border-dark"
-                        dataSource={updatedData?.permissions}
+                        className="customs-table border-dark mt-2"
+                        dataSource={updatedData?.permissions?.filter((item) =>
+                          item?.module_name
+                            ?.toLowerCase()
+                            .includes(search.toLowerCase())
+                        )}
                         columns={columns}
                         loading={loading}
                         border={true}

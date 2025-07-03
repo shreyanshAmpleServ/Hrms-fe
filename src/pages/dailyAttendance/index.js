@@ -50,7 +50,7 @@ const DailyAttendance = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ searchValue, status: "Active" }));
   }, [dispatch, searchValue]);
   React.useEffect(() => {
     selectedEmployee &&

@@ -28,7 +28,7 @@ import { fetchEmployeeByStatus } from "../../redux/Dashboards/EmployeeByStatus";
 import { fetchUpcomingBirthdays } from "../../redux/Dashboards/UpcomingBirthdays";
 import { fetchUpcomingAnniversaries } from "../../redux/Dashboards/UpcomingAnniversaries";
 import { fetchAttendanceOverview } from "../../redux/Dashboards/AttendanceOverview";
-
+import DashboardFetch from "./Components/DashboardFetch";
 const notifications = [
   {
     image: "image1.jpg",
@@ -190,53 +190,43 @@ const DashboardEmployee = () => {
       <div className="page-wrapper">
         <div className="content">
           <div className="row">
-            <div className="col-md-12">
-              <div className="">
-                <div className="col-md-12">
-                  <div className="page-header mb-0">
-                    <div className="row align-items-center">
-                      <div className="col-sm-4">
-                        <h3 className="page-title fw-bold mb-0">
-                          Employee Dashboard
-                        </h3>
-                      </div>
-                      <div className="col-sm-8 text-sm-end">
-                        <div className="head-icons">
-                          <CollapseHeader />
-                        </div>
-                      </div>
+            <div className="">
+              <div className="col-md-12">
+                <div className="page-header mb-0">
+                  <div className="row align-items-center">
+                    {/* <div className="col-sm-4">
+                      <h3 className="page-title fw-bold mb-0">
+                        Employee Dashboard
+                      </h3>
+                    </div> */}
+                    <div className="col-sm-12 text-sm-end">
+                      <div className="head-icon"></div>
+                      <CollapseHeader />
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="card shadow-sm">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center justify-content-between flex-wrap">
-                      <div className="d-flex align-items-center mb-2">
-                        <div className="avatar avatar-xl rounded online online-sm me-3 flex-shrink-0">
-                          <img
-                            src={image1}
-                            alt="Company Logo"
-                            className="preview rounded-circle"
-                          />
-                          <span className="status online" />
-                        </div>
-                        <div>
-                          <h4 className="mb-2 text-capitalize">
-                            Welcome Back, Employee
-                          </h4>
-                          <p
-                            style={{ fontSize: "14px" }}
-                            className="mb-0 text-capitalize"
-                          >
-                            You have 21 Pending Approvals & 14 Leave Requests
-                          </p>
-                        </div>
+              {/* <div className="card shadow-sm mt-4">
+                <div className="card-body">
+                  <div className="d-flex align-items-center justify-content-between flex-wrap">
+                    <div className="d-flex align-items-center">
+                      <div>
+                        <h4 className="mb-2 text-capitalize">
+                          Welcome Back, employee-dashboard
+                        </h4>
+                        <p
+                          style={{ fontSize: "14px" }}
+                          className="mb-0 text-capitalize"
+                        >
+                          You have 21 Pending Approvals & 14 Leave Requests
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="row">
+              </div> */}
+              {/* <div className="row">
                   {numberData.map((item, i) => (
                     <div key={i} className="col-md-6 col-lg-3 h-100">
                       <div className="card shadow-sm">
@@ -257,12 +247,12 @@ const DashboardEmployee = () => {
                       </div>
                     </div>
                   ))}
-                </div>
+                </div> */}
 
-                <EmployeeDept data={employeeByDepartment} />
+              {/* <EmployeeDept data={employeeByDepartment} />
                 <EmployeeByDesignations data={employeeByDesignations} />
-                <EmployeeByStatus data={employeeByStatus} />
-
+                <EmployeeByStatus data={employeeByStatus} /> */}
+              {/* 
                 <div className="row">
                   <div className="col-md-6">
                     <div className="card shadow-sm">
@@ -298,13 +288,9 @@ const DashboardEmployee = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <ActBirth
-                  upcomingBirthdays={upcomingBirthdays}
-                  upcomingAnniversaries={upcomingAnniversaries}
-                />
-                <div className="col-lg-12">
+              {/* <div className="col-lg-12">
                   <div className="card shadow-sm w-100">
                     <div className="d-flex flex-column">
                       <div className="row d-flex align-items-center p-3">
@@ -341,12 +327,17 @@ const DashboardEmployee = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </div> */}
             </div>
           </div>
+          <DashboardFetch />
+
+          <ActBirth
+            upcomingBirthdays={upcomingBirthdays}
+            upcomingAnniversaries={upcomingAnniversaries}
+          />
         </div>
-      </div>{" "}
+      </div>
     </>
   );
 };
