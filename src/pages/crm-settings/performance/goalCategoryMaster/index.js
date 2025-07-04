@@ -213,7 +213,7 @@ const GoalCategoryMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Goal Category"
+                        label="Create"
                         id="add_edit_goal_category_modal"
                         setMode={() => setMode("add")}
                       />

@@ -234,7 +234,7 @@ const ResumeUpload = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Resume Upload"
+                        label="Create "
                         id="add_edit_resume_upload_modal"
                         setMode={() => setMode("add")}
                       />

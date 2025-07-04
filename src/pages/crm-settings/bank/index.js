@@ -188,7 +188,7 @@ const BanksList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Bank"
+                        label="Create"
                         id="add_edit_bank_modal"
                         setMode={() => setMode("add")}
                       />

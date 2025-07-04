@@ -1,6 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const ExportData = ({ exportToPDF, exportToExcel,isCreate=true, id, label }) => {
+const ExportData = ({
+  exportToPDF,
+  exportToExcel,
+  isCreate = true,
+  id,
+  label,
+}) => {
   return (
     <div className="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
       <div className="dropdown me-2">
@@ -25,15 +31,17 @@ const ExportData = ({ exportToPDF, exportToExcel,isCreate=true, id, label }) => 
           </ul>
         </div>
       </div>
-      {isCreate &&<Link
-        to="#"
-        className="btn btn-primary"
-        data-bs-toggle="offcanvas"
-        data-bs-target={`#${id}`}
-      >
-        <i className="ti ti-square-rounded-plus me-2" />
-        {label}
-      </Link>}
+      {isCreate && (
+        <Link
+          to="#"
+          className="btn btn-primary"
+          data-bs-toggle="offcanvas"
+          data-bs-target={`#${id}`}
+        >
+          <i className="ti ti-square-rounded-plus me-2" />
+          {label}
+        </Link>
+      )}
     </div>
   );
 };

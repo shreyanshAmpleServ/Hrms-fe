@@ -211,7 +211,7 @@ const EmployeeCategoryList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Employee Category"
+                        label="Create"
                         id="add_edit_employee_category_modal"
                         setMode={() => setMode("add")}
                       />

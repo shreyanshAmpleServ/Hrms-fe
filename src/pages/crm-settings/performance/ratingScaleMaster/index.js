@@ -233,7 +233,7 @@ const RatingScaleMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add  Rating Scale Master"
+                        label="Create"
                         id="add_edit_rating_scale_modal"
                         setMode={() => setMode("add")}
                       />

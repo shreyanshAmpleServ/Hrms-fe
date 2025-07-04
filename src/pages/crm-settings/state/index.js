@@ -222,7 +222,7 @@ const StatesList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add State"
+                        label="Create"
                         id="add_edit_state_modal"
                         setMode={() => setMode("add")}
                       />

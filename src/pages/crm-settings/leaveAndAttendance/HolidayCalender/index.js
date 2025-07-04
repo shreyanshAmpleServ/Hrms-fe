@@ -209,7 +209,7 @@ const HolidayCalenderList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Holiday"
+                        label="Create"
                         id="add_edit_holiday_calender_modal"
                         setMode={() => setMode("add")}
                       />

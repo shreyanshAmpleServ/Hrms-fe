@@ -211,7 +211,7 @@ const SurveyMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Survey"
+                        label="Create"
                         id="add_edit_survey_modal"
                         setMode={() => setMode("add")}
                       />

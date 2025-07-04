@@ -208,7 +208,7 @@ const TaxRegime = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Tax Regime"
+                        label="Create"
                         id="add_edit_tax_Regime_modal"
                         setMode={() => setMode("add")}
                       />

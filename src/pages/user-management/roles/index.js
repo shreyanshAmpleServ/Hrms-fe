@@ -25,7 +25,7 @@ const RolesPermissions = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Roles & Permission",
+    (i) => i?.module_name === "Roles & Permission"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role").toLowerCase() === "admin";
   const isView = isAdmin ? true : allPermissions?.view;
@@ -125,14 +125,14 @@ const RolesPermissions = () => {
           ]
         : []),
     ],
-    [isUpdate, isDelete],
+    [isUpdate, isDelete]
   );
 
   const { roles, loading, error, success } = useSelector(
-    (state) => state.roles,
+    (state) => state.roles
   );
   const { error: errorPermission, success: successPermission } = useSelector(
-    (state) => state.permissions,
+    (state) => state.permissions
   );
 
   React.useEffect(() => {
@@ -150,7 +150,7 @@ const RolesPermissions = () => {
     (e) => {
       setSearchText(e.target.value);
     },
-    [setSearchText],
+    [setSearchText]
   );
 
   const filteredData = useMemo(() => {
@@ -161,17 +161,17 @@ const RolesPermissions = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
+            .includes(searchText.toLowerCase())
+        )
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -247,7 +247,7 @@ const RolesPermissions = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Role"
+                        label="Create"
                         id="add_edit_role_modal"
                         setMode={() => setMode("add")}
                       />

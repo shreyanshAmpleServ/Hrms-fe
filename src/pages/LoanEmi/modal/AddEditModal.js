@@ -5,7 +5,7 @@ import Select from "react-select";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 
-import { fetchloan_requests } from "../../../redux/loanRequests";
+import { fetchLoanRequest } from "../../../redux/loanRequests";
 import { fetchEmployee } from "../../../redux/Employee";
 import { fetchpayslip } from "../../../redux/payslipViewer";
 import { addloanEmi, updateloanEmi } from "../../../redux/LoanEmi";
@@ -31,7 +31,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   useEffect(() => {
     dispatch(fetchEmployee());
-    dispatch(fetchloan_requests());
+    dispatch(fetchLoanRequest());
     dispatch(fetchpayslip());
   }, [dispatch]);
 

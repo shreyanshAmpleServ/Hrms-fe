@@ -266,7 +266,7 @@ const ShiftList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Shift"
+                        label="Create"
                         id="add_edit_shift_modal"
                         setMode={() => setMode("add")}
                       />

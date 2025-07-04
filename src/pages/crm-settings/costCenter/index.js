@@ -210,9 +210,10 @@ const CostCenter = () => {
                           className="btn btn-primary"
                           data-bs-toggle="offcanvas"
                           data-bs-target={`#offcanvas_add_edit_tax_setup`}
+                          style={{ width: "100px" }}
                         >
                           <i className="ti ti-square-rounded-plus me-2" />
-                          Add Cost Center
+                          Create
                         </Link>{" "}
                       </div>
                     </div>

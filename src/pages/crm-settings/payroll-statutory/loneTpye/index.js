@@ -199,7 +199,7 @@ const LoanType = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Loan Type"
+                        label="Create"
                         id="add_edit_loan_type_modal"
                         setMode={() => setMode("add")}
                       />

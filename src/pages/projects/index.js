@@ -289,7 +289,7 @@ const ProjectList = () => {
                     <ExportData
                       exportToPDF={exportToPDF}
                       exportToExcel={exportToExcel}
-                      label="Add Projects"
+                      label="Create "
                       isCreate={isCreate}
                       id="offcanvas_add_project"
                     />

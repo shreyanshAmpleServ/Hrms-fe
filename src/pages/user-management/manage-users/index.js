@@ -314,7 +314,7 @@ const ManageUsers = () => {
                     <ExportData
                       exportToPDF={exportToPDF}
                       exportToExcel={exportToExcel}
-                      label="Add Users"
+                      label="Export Users"
                       isCreate={isCreate}
                       id="offcanvas_add_user"
                     />
