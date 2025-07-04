@@ -62,6 +62,15 @@ const LeaveBalance = () => {
       sorter: (a, b) =>
         moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (text) => (
+        <span className={`badge ${text === "Y" ? "bg-success" : "bg-danger"}`}>
+          {text === "Y" ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
     ...(isUpdate || isDelete
       ? [
           {

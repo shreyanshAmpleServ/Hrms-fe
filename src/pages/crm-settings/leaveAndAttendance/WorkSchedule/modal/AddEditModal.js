@@ -11,7 +11,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.WorkScheduleTemp);
   const {
     register,
-    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -24,11 +23,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       reset({
         template_name: initialData.template_name || "",
         description: initialData.description || "",
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
         template_name: "",
         description: "",
+        is_active: "Y",
       });
     }
   }, [mode, initialData, reset]);
@@ -37,12 +38,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     const closeButton = document.getElementById(
       "close_btn_add_edit_work_schedule_modal"
     );
-    console.log("DAta", data);
+
     if (mode === "add") {
       dispatch(
         addWorkScheduleTemp({
           template_name: data.template_name,
           description: data?.description || "",
+          is_active: data?.is_active || "Y",
         })
       );
     } else if (mode === "edit" && initialData) {
@@ -52,6 +54,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           reqData: {
             template_name: data.template_name,
             description: data?.description || "",
+            is_active: data?.is_active || "Y",
           },
         })
       );
@@ -190,6 +193,32 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 )}
               </div>
               </div> */}
+              {/* Status */}
+              <div className="mb-3">
+                <label className="col-form-label">Status</label>
+                <div className="d-flex align-items-center">
+                  <div className="me-2">
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="active"
+                      value="Y"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="active">Active</label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      className="status-radio"
+                      id="inactive"
+                      value="N"
+                      {...register("is_active")}
+                    />
+                    <label htmlFor="inactive">Inactive</label>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Footer */}

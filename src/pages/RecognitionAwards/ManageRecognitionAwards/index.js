@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createrecognitionAwards,
   updaterecognitionAwards,
 } from "../../../redux/RecognitionAwards";
 
-import DatePicker from "react-datepicker";
-
 const ManageRecognitionAwards = ({
   setrecognitionAwards,
   recognitionAwards,
 }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const {
@@ -31,10 +28,6 @@ const ManageRecognitionAwards = ({
       nominated_by: "",
     },
   });
-
-  useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
 
   useEffect(() => {
     if (recognitionAwards) {
@@ -60,13 +53,7 @@ const ManageRecognitionAwards = ({
     }
   }, [recognitionAwards, reset]);
 
-  const { employee } = useSelector((state) => state.employee || {});
   const { loading } = useSelector((state) => state.recognitionAwards || {});
-
-  const employeeOptions = employee?.data?.map((emp) => ({
-    label: emp.full_name,
-    value: emp.id,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -131,28 +118,19 @@ const ManageRecognitionAwards = ({
             {/* Employee */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
-                Employee<span className="text-danger">*</span>
+                Employee<span className="text-danger"> *</span>
               </label>
               <Controller
                 name="employee_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
-                render={({ field }) => {
-                  const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
+                  />
+                )}
               />
               {errors.employee_id && (
                 <small className="text-danger">
@@ -164,35 +142,56 @@ const ManageRecognitionAwards = ({
             {/* Nominated By */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
-                Nominated By<span className="text-danger">*</span>
+                Nominated By<span className="text-danger"> *</span>
               </label>
               <Controller
                 name="nominated_by"
                 control={control}
-                rules={{ required: "Message  nominated by is required" }}
-                render={({ field }) => {
-                  const selected = employeeOptions?.find(
-                    (opt) => opt.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      options={employeeOptions}
-                      placeholder="Select Nominated By"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
-                      onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
-                    />
-                  );
-                }}
+                rules={{ required: "Nominated by is required" }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    value={field.value}
+                    onChange={(opt) => field.onChange(opt?.value)}
+                  />
+                )}
               />
+              {errors.nominated_by && (
+                <small className="text-danger">
+                  {errors.nominated_by.message}
+                </small>
+              )}
             </div>
 
             {/* Award Title */}
             <div className="col-md-6 mb-3">
               <label className="col-form-label">
-                Award Date <span className="text-danger">*</span>
+                Award Title <span className="text-danger"> *</span>
+              </label>
+              <Controller
+                name="award_title"
+                control={control}
+                rules={{ required: "Award title is required" }}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Award Title"
+                  />
+                )}
+              />
+              {errors.award_title && (
+                <small className="text-danger">
+                  {errors.award_title.message}
+                </small>
+              )}
+            </div>
+
+            {/* Award Title */}
+            <div className="col-md-6 mb-3">
+              <label className="col-form-label">
+                Award Date <span className="text-danger"> *</span>
               </label>
               <Controller
                 name="award_date"
@@ -249,13 +248,12 @@ const ManageRecognitionAwards = ({
             <div className="col-12 mb-3">
               <label className="col-form-label">
                 Description{" "}
-                <small className="text-muted">(Max 255 characters)</small>
+                <span className="text-muted">(max 255 characters)</span>
               </label>
               <Controller
                 name="description"
                 control={control}
                 rules={{
-                  required: "Description is required!",
                   maxLength: {
                     value: 255,
                     message:
@@ -273,6 +271,11 @@ const ManageRecognitionAwards = ({
                 )}
               />
             </div>
+            {errors.description && (
+              <small className="text-danger">
+                {errors.description.message}
+              </small>
+            )}
           </div>
 
           <div className="d-flex justify-content-end">

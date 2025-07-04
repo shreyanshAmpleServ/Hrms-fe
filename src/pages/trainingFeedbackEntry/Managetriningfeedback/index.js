@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createtrainingFeedback,
   updatetrainingFeedback,
@@ -10,7 +11,6 @@ import {
 import { fetchtrainingSession } from "../../../redux/trainingSessionSchedule";
 
 const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const {
@@ -28,9 +28,8 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   });
 
   useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-    dispatch(fetchtrainingSession());
-  }, [dispatch, searchValue]);
+    dispatch(fetchtrainingSession({ is_active: true }));
+  }, [dispatch]);
 
   useEffect(() => {
     if (trainingFeedback) {
@@ -50,16 +49,10 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
     }
   }, [trainingFeedback, reset]);
 
-  const { employee } = useSelector((state) => state.employee || {});
   const { trainingSession } = useSelector(
     (state) => state.trainingSession || {}
   );
   const { loading } = useSelector((state) => state.trainingFeedback || {});
-
-  const employeeOptions = employee?.data?.map((emp) => ({
-    label: emp.full_name,
-    value: emp.id,
-  }));
 
   const trainingOptions = trainingSession?.data?.map((t) => ({
     label: t.training_title,
@@ -137,18 +130,11 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = (employeeOptions || []).find(
-                    (opt) => opt.value === field.value
-                  );
                   return (
-                    <Select
+                    <EmployeeSelect
                       {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
+                      value={field.value || null}
                       onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
                     />
                   );
                 }}

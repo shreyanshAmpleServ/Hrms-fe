@@ -5,9 +5,11 @@ import toast from "react-hot-toast";
 // Fetch All Countries
 export const fetchCountries = createAsyncThunk(
   "countries/fetchCountries",
-  async (_, thunkAPI) => {
+  async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get("/v1/countries");
+      let params = {};
+      if (datas?.is_active) params.is_active = datas?.is_active;
+      const response = await apiClient.get("/v1/countries", { params });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(

@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   addleave_application,
   updateleave_application,
@@ -29,8 +29,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee());
-    dispatch(fetchLeaveType());
+    dispatch(fetchLeaveType({ is_active: true }));
   }, [dispatch]);
 
   const employee = useSelector((state) => state.employee.employee);
@@ -159,8 +158,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     }
   }, []);
 
-  console.log(leaveBalanceByEmployee);
-
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -216,17 +213,10 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               control={control}
               rules={{ required: "Employee is required" }}
               render={({ field }) => (
-                <Select
+                <EmployeeSelect
                   {...field}
-                  options={EmployeeList}
-                  placeholder="Choose Employee"
-                  isDisabled={!EmployeeList.length}
-                  classNamePrefix="react-select"
-                  className="select2"
-                  onChange={(option) => field.onChange(option?.value || "")}
-                  value={EmployeeList.find(
-                    (option) => option.value === watch("employee_id")
-                  )}
+                  onChange={(i) => field.onChange(i?.value)}
+                  value={field.value}
                 />
               )}
             />

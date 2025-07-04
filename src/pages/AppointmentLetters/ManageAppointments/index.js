@@ -51,7 +51,7 @@ const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
 
   React.useEffect(() => {
     if (!candidate_id) {
-      dispatch(fetchCandidate({ search: searchValue }));
+      dispatch(fetchCandidate({ search: searchValue, is_active: true }));
     }
   }, [searchValue, candidate_id]);
 
@@ -65,7 +65,7 @@ const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
   }));
 
   React.useEffect(() => {
-    dispatch(fetchdesignation({ searchValue: searchDesignation }));
+    dispatch(fetchdesignation({ search: searchDesignation, is_active: true }));
   }, [searchDesignation]);
 
   const { designation, loading: designationLoading } = useSelector(

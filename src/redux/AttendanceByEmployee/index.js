@@ -11,10 +11,8 @@ export const fetchAttendaceSummary = createAsyncThunk(
           search: datas?.search || "",
           page: datas?.page || "",
           size: datas?.size || "",
-          startDate: datas?.startDate?.toISOString() || "",
-          endDate: datas?.endDate?.toISOString() || "",
-          //   related_type: datas?.filteredType || "",
-          //   employee_id: datas?.employee_id || "", // support By Employee
+          startDate: datas?.startDate || "",
+          endDate: datas?.endDate || "",
         },
       });
       return response.data;

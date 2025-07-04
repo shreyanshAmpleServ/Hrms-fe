@@ -1,32 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import { fetchCurrencies } from "../../../redux/currency";
-import { fetchEmployee } from "../../../redux/Employee";
 import {
   createtravelReimbursement,
   updatetravelReimbursement,
 } from "../../../redux/TravelReimbursement";
+import moment from "moment";
 
 const ManagetravelReimbursement = ({
   settravelReimbursement,
   travelReimbursement,
 }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const { currencies, loading: currencyLoading } = useSelector(
     (state) => state.currencies
   );
+
   const currencyOptions = currencies?.data?.map((currency) => ({
     label: currency.currency_code + " - " + currency.currency_name,
     value: currency.id,
   }));
 
   React.useEffect(() => {
-    dispatch(fetchCurrencies());
+    dispatch(fetchCurrencies({ is_active: true }));
   }, [dispatch]);
 
   const {
@@ -43,7 +44,7 @@ const ManagetravelReimbursement = ({
       end_date: new Date(),
       destination: "",
       total_amount: "",
-      approval_status: "Panding",
+      approval_status: "P",
       travel_mode: "",
       advance_amount: "",
       expense_breakdown: "",
@@ -64,7 +65,7 @@ const ManagetravelReimbursement = ({
         end_date: travelReimbursement?.end_date || "",
         destination: travelReimbursement?.destination || "",
         total_amount: travelReimbursement?.total_amount || "",
-        approval_status: travelReimbursement?.approval_status || "Panding",
+        approval_status: travelReimbursement?.approval_status || "P",
         travel_mode: travelReimbursement?.travel_mode || "",
         advance_amount: travelReimbursement?.advance_amount || "",
         expense_breakdown: travelReimbursement?.expense_breakdown || "",
@@ -82,7 +83,7 @@ const ManagetravelReimbursement = ({
         end_date: new Date(),
         destination: "",
         total_amount: "",
-        approval_status: "Panding",
+        approval_status: "P",
         travel_mode: "",
         advance_amount: "",
         expense_breakdown: "",
@@ -95,18 +96,8 @@ const ManagetravelReimbursement = ({
     }
   }, [travelReimbursement, reset]);
 
-  const { employee } = useSelector((state) => state.employee || {});
-
   const { loading } = useSelector((state) => state.travelReimbursement || {});
 
-  const employeeOptions = employee?.data?.map((emp) => ({
-    label: emp.full_name,
-    value: emp.id,
-  }));
-
-  useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -193,18 +184,12 @@ const ManagetravelReimbursement = ({
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => {
-                  const selected = (employeeOptions || []).find(
-                    (opt) => opt.value === field.value
-                  );
                   return (
-                    <Select
+                    <EmployeeSelect
                       {...field}
-                      options={employeeOptions}
                       placeholder="Select Employee"
-                      value={selected || null}
-                      onInputChange={setSearchValue}
+                      value={field.value || null}
                       onChange={(opt) => field.onChange(opt?.value)}
-                      classNamePrefix="react-select"
                     />
                   );
                 }}
@@ -286,18 +271,25 @@ const ManagetravelReimbursement = ({
             {/* Attachment Path */}
 
             <div className="col-md-6 mb-3">
-              <label className="col-form-label">Attachment</label>
+              <label className="col-form-label">
+                Attachment{" "}
+                {!travelReimbursement && <span className="text-danger">*</span>}
+              </label>
               <input
                 type="file"
                 className={`form-control ${errors.attachment_path ? "is-invalid" : ""}`}
                 accept=".pdf"
                 {...register("attachment_path", {
-                  required: "Attachment file is required.",
-                  validate: {
-                    isPdf: (files) =>
-                      files[0]?.type === "application/pdf" ||
-                      "Only PDF files are allowed.",
-                  },
+                  required: travelReimbursement
+                    ? false
+                    : "Attachment file is required.",
+                  validate: travelReimbursement
+                    ? false
+                    : {
+                        isPdf: (files) =>
+                          files[0]?.type === "application/pdf" ||
+                          "Only PDF files are allowed.",
+                      },
                 })}
               />
               {errors.attachment_path && (
@@ -429,10 +421,13 @@ const ManagetravelReimbursement = ({
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    selected={field.value ? new Date(field.value) : null}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : null
+                    }
                     onChange={(date) => field.onChange(date)}
                     className="form-control"
-                    dateFormat="dd-MM-yyyy"
                     placeholderText="Select Start Date"
                   />
                 )}
@@ -456,10 +451,13 @@ const ManagetravelReimbursement = ({
                 render={({ field }) => (
                   <DatePicker
                     {...field}
-                    selected={field.value ? new Date(field.value) : null}
+                    value={
+                      field.value
+                        ? moment(field.value).format("DD-MM-YYYY")
+                        : null
+                    }
                     onChange={(date) => field.onChange(date)}
                     className="form-control"
-                    dateFormat="dd-MM-yyyy"
                     placeholderText="Select End Date"
                   />
                 )}
@@ -502,10 +500,20 @@ const ManagetravelReimbursement = ({
 
             {/* Expense Breakdown */}
             <div className="col-md-12 mb-3">
-              <label className="col-form-label">Expense Breakdown</label>
+              <label className="col-form-label">
+                Expense Breakdown{" "}
+                <span className="text-muted">(Max 255 characters)</span>
+              </label>
               <Controller
                 name="expense_breakdown"
                 control={control}
+                rules={{
+                  maxLength: {
+                    value: 255,
+                    message:
+                      "Expense Breakdown must be less than 255 characters",
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
                     className="form-control"
@@ -518,10 +526,18 @@ const ManagetravelReimbursement = ({
             </div>
             {/* Remarks */}
             <div className="col-md-12 mb-3">
-              <label className="col-form-label">Remarks</label>
+              <label className="col-form-label">
+                Remarks <span className="text-muted">(Max 255 characters)</span>
+              </label>
               <Controller
                 name="remarks"
                 control={control}
+                rules={{
+                  maxLength: {
+                    value: 255,
+                    message: "Remarks must be less than 255 characters",
+                  },
+                }}
                 render={({ field }) => (
                   <textarea
                     className="form-control"

@@ -94,7 +94,6 @@ export const deleteLeaveType = createAsyncThunk(
         message: response.data.message || "Leave type deleted successfully",
       };
     } catch (error) {
-      toast.error(error.response?.data || "Failed to delete leave type");
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to delete leave type"
       );

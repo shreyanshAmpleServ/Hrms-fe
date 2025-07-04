@@ -29,7 +29,7 @@ const AddEditModal = ({
 
   useEffect(() => {
     if (!candidate_id) {
-      dispatch(fetchCandidate({ search: "" }));
+      dispatch(fetchCandidate({ search: "", is_active: true }));
     }
   }, [candidate_id]);
 

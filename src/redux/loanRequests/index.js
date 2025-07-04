@@ -1,10 +1,9 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import apiClient from "../../utils/axiosConfig";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
+import apiClient from "../../utils/axiosConfig";
 
-// Fetch all loan_requests
-export const fetchloan_requests = createAsyncThunk(
-  "loan_requests/fetchloan_requests",
+export const fetchLoanRequest = createAsyncThunk(
+  "loanRequest/fetchLoanRequest",
   async (datas, thunkAPI) => {
     try {
       const params = {};
@@ -21,14 +20,24 @@ export const fetchloan_requests = createAsyncThunk(
     }
   }
 );
+export const fetchLoanRequestById = createAsyncThunk(
+  "loanRequest/fetchLoanRequestById",
+  async (id, thunkAPI) => {
+    try {
+      const response = await apiClient.get(`/v1/loan-requests/${id}`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data);
+    }
+  }
+);
 
-// Add a loan_request
-export const addloan_requests = createAsyncThunk(
-  "loan_requests/addloan_requests",
-  async (loan_requestsData, thunkAPI) => {
+export const addLoanRequest = createAsyncThunk(
+  "loanRequest/addLoanRequest",
+  async (loanRequestData, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.post("/v1/loan-requests", loan_requestsData),
+        apiClient.post("/v1/loan-requests", loanRequestData),
         {
           loading: "Adding loan request...",
           success: "Loan request added successfully",
@@ -44,13 +53,12 @@ export const addloan_requests = createAsyncThunk(
   }
 );
 
-// Update a loan_request
-export const updateloan_requests = createAsyncThunk(
-  "loan_requests/updateloan_requests",
-  async ({ id, loan_requestsData }, thunkAPI) => {
+export const updateLoanRequest = createAsyncThunk(
+  "loanRequest/updateLoanRequest",
+  async ({ id, loanRequestData }, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.put(`/v1/loan-requests/${id}`, loan_requestsData),
+        apiClient.put(`/v1/loan-requests/${id}`, loanRequestData),
         {
           loading: "Updating loan request...",
           success: "Loan request updated successfully",
@@ -69,9 +77,8 @@ export const updateloan_requests = createAsyncThunk(
   }
 );
 
-// Delete a loan_request
-export const deleteloan_requests = createAsyncThunk(
-  "loan_requests/deleteloan_requests",
+export const deleteLoanRequest = createAsyncThunk(
+  "loanRequest/deleteLoanRequest",
   async (id, thunkAPI) => {
     try {
       const response = await toast.promise(
@@ -95,11 +102,11 @@ export const deleteloan_requests = createAsyncThunk(
   }
 );
 
-// Slice
-const loan_requestsSlice = createSlice({
-  name: "loan_requests",
+const loanRequestSlice = createSlice({
+  name: "loanRequest",
   initialState: {
-    loan_requests: [],
+    loanRequest: [],
+    loanRequestDetail: null,
     loading: false,
     error: null,
     success: null,
@@ -112,79 +119,83 @@ const loan_requestsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch
-      .addCase(fetchloan_requests.pending, (state) => {
+      .addCase(fetchLoanRequest.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchloan_requests.fulfilled, (state, action) => {
+      .addCase(fetchLoanRequest.fulfilled, (state, action) => {
         state.loading = false;
-        state.loan_requests = action.payload.data;
+        state.loanRequest = action.payload.data;
       })
-      .addCase(fetchloan_requests.rejected, (state, action) => {
+      .addCase(fetchLoanRequest.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
       })
-
-      // Add
-      .addCase(addloan_requests.pending, (state) => {
+      .addCase(addLoanRequest.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addloan_requests.fulfilled, (state, action) => {
+      .addCase(addLoanRequest.fulfilled, (state, action) => {
         state.loading = false;
-        state.loan_requests = {
-          ...state.loan_requests,
-          data: [action.payload.data, ...(state.loan_requests?.data || [])],
+        state.loanRequest = {
+          ...state.loanRequest,
+          data: [action.payload.data, ...(state.loanRequest?.data || [])],
         };
         state.success = action.payload.message;
       })
-      .addCase(addloan_requests.rejected, (state, action) => {
+      .addCase(addLoanRequest.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
       })
-
-      // Update
-      .addCase(updateloan_requests.pending, (state) => {
+      .addCase(updateLoanRequest.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateloan_requests.fulfilled, (state, action) => {
+      .addCase(updateLoanRequest.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.loan_requests?.data?.findIndex(
+        const index = state.loanRequest?.data?.findIndex(
           (item) => item.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.loan_requests.data[index] = action.payload.data;
+          state.loanRequest.data[index] = action.payload.data;
         }
         state.success = action.payload.message;
       })
-      .addCase(updateloan_requests.rejected, (state, action) => {
+      .addCase(updateLoanRequest.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
       })
-
-      // Delete
-      .addCase(deleteloan_requests.pending, (state) => {
+      .addCase(deleteLoanRequest.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteloan_requests.fulfilled, (state, action) => {
+      .addCase(deleteLoanRequest.fulfilled, (state, action) => {
         state.loading = false;
-        state.loan_requests = {
-          ...state.loan_requests,
-          data: state.loan_requests.data.filter(
+        state.loanRequest = {
+          ...state.loanRequest,
+          data: state.loanRequest.data.filter(
             (item) => item.id !== action.payload.data.id
           ),
         };
         state.success = action.payload.message;
       })
-      .addCase(deleteloan_requests.rejected, (state, action) => {
+      .addCase(deleteLoanRequest.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
+      })
+      .addCase(fetchLoanRequestById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchLoanRequestById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.loanRequestDetail = action.payload.data;
+      })
+      .addCase(fetchLoanRequestById.rejected, (state, action) => {
+        state.loading = false;
       });
   },
 });
 
-export const { clearMessages } = loan_requestsSlice.actions;
-export default loan_requestsSlice.reducer;
+export const { clearMessages } = loanRequestSlice.actions;
+export default loanRequestSlice.reducer;

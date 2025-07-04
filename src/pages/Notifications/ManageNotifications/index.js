@@ -1,17 +1,15 @@
-import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createNotifications,
   updateNotifications,
-} from "../../../redux/Notifications"; // You need to create this
+} from "../../../redux/Notifications";
 
 const ManageNotifications = ({ setNotifications, Notifications }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
   const {
@@ -22,9 +20,6 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
   } = useForm();
 
   const { loading } = useSelector((state) => state.Notifications || {});
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
 
   const statusOptions = [
     { value: "sent", label: "Sent" },
@@ -38,40 +33,18 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
     { value: "in_app", label: "In-App" },
   ];
 
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
-
   useEffect(() => {
-    if (Notifications) {
-      // Edit mode
-      reset({
-        employee_id: Notifications.employee_id || "",
-        message_title: Notifications.message_title || "",
-        message_body: Notifications.message_body || "",
-        channel: Notifications.channel || "",
-        sent_on: Notifications.sent_on
-          ? new Date(Notifications.sent_on)
-          : new Date(),
-        status: Notifications.status || "Panding",
-      });
-    } else {
-      // Add mode
-      reset({
-        employee_id: "",
-        message_title: "",
-        message_body: "",
-        channel: "",
-        sent_on: new Date(),
-        status: "Panding",
-      });
-    }
+    reset({
+      employee_id: Notifications?.employee_id || "",
+      message_title: Notifications?.message_title || "",
+      message_body: Notifications?.message_body || "",
+      channel: Notifications?.channel || "",
+      sent_on: Notifications?.sent_on
+        ? new Date(Notifications?.sent_on)
+        : new Date(),
+      status: Notifications?.status || "Pending",
+    });
   }, [Notifications, reset]);
-
-  useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -79,7 +52,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
       Notifications
         ? await dispatch(
             updateNotifications({
-              id: Notifications.id,
+              id: Notifications?.id,
               NotificationsData: data,
             })
           ).unwrap()
@@ -143,27 +116,13 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
                 name="employee_id"
                 control={control}
                 rules={{ required: "Employee is required" }}
-                render={({ field }) => {
-                  const selectedEmployee = employees?.find(
-                    (emp) => emp.value === field.value
-                  );
-                  return (
-                    <Select
-                      {...field}
-                      className="select"
-                      options={employees}
-                      placeholder="Select Employee"
-                      classNamePrefix="react-select"
-                      isLoading={employeeLoading}
-                      onInputChange={(inputValue) => setSearchValue(inputValue)}
-                      value={selectedEmployee || null}
-                      onChange={(option) => field.onChange(option.value)}
-                      styles={{
-                        menu: (provided) => ({ ...provided, zIndex: 9999 }),
-                      }}
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <EmployeeSelect
+                    {...field}
+                    value={field.value}
+                    onChange={(i) => field.onChange(i?.value)}
+                  />
+                )}
               />
               {errors.employee_id && (
                 <small className="text-danger">
@@ -246,7 +205,7 @@ const ManageNotifications = ({ setNotifications, Notifications }) => {
               )}
             </div>
 
-            <div className="col-md-6 mb-3">
+            <div className="col-md-12 mb-3">
               <label className="col-form-label">
                 Message Title <span className="text-danger">*</span>
               </label>

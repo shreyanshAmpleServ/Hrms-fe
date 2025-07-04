@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { addProject } from "../../../redux/projects";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { arrProjectTiming } from "../../../components/common/selectoption/selectoption";
 import { fetchEmployee } from "../../../redux/Employee";
+import { addProject } from "../../../redux/projects";
 
 const lockedStatus = [
   { value: "Y", label: "Yes" },
@@ -39,7 +38,7 @@ const AddProjectModal = () => {
   });
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

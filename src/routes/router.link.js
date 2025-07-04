@@ -160,13 +160,15 @@ import WPSFileGenerator from "../pages/WPSFileGenerator";
 import { all_routes } from "./all_routes";
 import BasicSalary from "../pages/BasicSalary";
 import DashboardEmployee from "../pages/DashboardEmployee/Employee";
+import MidMonthPayroll from "../pages/MidMonthPayroll";
+import OverTimePayroll from "../pages/OverTimePayroll";
 import LoanEmi from "../pages/LoanEmi";
 export { Dashboard, Login };
 const route = all_routes;
 
 export const privateRoutes = [
   {
-    path: route.dasshboard,
+    path: route.dashboard,
     element: <AdminDashboard />,
     route: Route,
     title: "Admin Dashboard",
@@ -176,6 +178,18 @@ export const privateRoutes = [
     element: <DashboardEmployee />,
     route: Route,
     title: "dashboard Employee",
+  },
+  {
+    path: route.midMonthPayroll,
+    element: <MidMonthPayroll />,
+    route: Route,
+    title: "Mid Month Payroll",
+  },
+  {
+    path: route.overTimePayroll,
+    element: <OverTimePayroll />,
+    route: Route,
+    title: "Over Time Payroll",
   },
   {
     path: route.leads,

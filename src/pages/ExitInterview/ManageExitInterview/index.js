@@ -1,17 +1,15 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createExitInterview,
   updateExitInterview,
 } from "../../../redux/ExitInterview";
 
 const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -41,19 +39,6 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
       });
     }
   }, [exitInterview, reset]);
-
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -129,30 +114,11 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value}
+                            onChange={(i) => field.onChange(i?.value)}
                           />
                         );
                       }}
@@ -200,13 +166,20 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Reason for Leaving<span className="text-danger">*</span>
+                    Reason for Leaving{" "}
+                    <small className="text-muted">(Max 255 characters)</small>{" "}
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="reason_for_leaving"
                       control={control}
-                      rules={{ required: "Reason  is required!" }}
+                      rules={{
+                        maxLength: {
+                          value: 255,
+                          message:
+                            "Reason for leaving must be less than or equal to 255 characters",
+                        },
+                      }}
                       render={({ field }) => (
                         <textarea
                           rows={2}
@@ -229,14 +202,13 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                 <div className="col-md-12">
                   <label className="col-form-label">
                     Feedback{" "}
-                    <small className="text-muted">(Max 255 characters)</small>
+                    <small className="text-muted">(Max 255 characters)</small>{" "}
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="feedback"
                       control={control}
                       rules={{
-                        required: "Feedback is required!",
                         maxLength: {
                           value: 255,
                           message:
@@ -253,24 +225,23 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                         />
                       )}
                     />
-                    {/* {errors.feedback && (
+                    {errors.feedback && (
                       <small className="text-danger">
                         {errors.feedback.message}
                       </small>
-                    )} */}
+                    )}
                   </div>
                 </div>
                 <div className="col-md-12">
                   <label className="col-form-label">
                     Suggestions{" "}
-                    <small className="text-muted">(Max 255 characters)</small>
+                    <small className="text-muted">(Max 255 characters)</small>{" "}
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="suggestions"
                       control={control}
                       rules={{
-                        required: "Suggestions is required!",
                         maxLength: {
                           value: 255,
                           message:
@@ -287,11 +258,11 @@ const ManageExitInterview = ({ setExitInterview, exitInterview }) => {
                         />
                       )}
                     />
-                    {/* {errors.suggestions && (
+                    {errors.suggestions && (
                       <small className="text-danger">
                         {errors.suggestions.message}
                       </small>
-                    )} */}
+                    )}
                   </div>
                 </div>
               </div>

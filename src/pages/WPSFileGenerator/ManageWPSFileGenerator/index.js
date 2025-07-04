@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import moment from "moment";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { createWPSFile, updateWPSFile } from "../../../redux/WPSFileGenerator";
-import moment from "moment";
 
 const ManageWPSFileGenerator = ({ setSelected, selected }) => {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
     { label: "December", value: "December" },
   ];
 
-  const { loading } = useSelector((state) => state.leaveEncashment || {});
+  const { loading } = useSelector((state) => state.wpsFileGenerator || {});
 
   React.useEffect(() => {
     if (selected) {
@@ -115,7 +115,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
         id="offcanvas_add"
       >
         <div className="offcanvas-header border-bottom">
-          <h4>{selected ? "Update " : "Add "} Appraisal Entries</h4>
+          <h4>{selected ? "Update " : "Add "} WPS File Generator</h4>
           <button
             type="button"
             className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"

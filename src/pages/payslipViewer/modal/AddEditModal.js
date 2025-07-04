@@ -1,25 +1,38 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import Select from "react-select";
 import { createpayslip, updatepayslip } from "../../../redux/payslipViewer";
-import { fetchEmployee } from "../../../redux/Employee";
 
 const AddEditModal = ({ setpayslip, payslip }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
     reset,
-    watch,
     register,
     formState: { errors },
   } = useForm();
 
   const { loading } = useSelector((state) => state.payslip || {});
+
+  const months = [
+    { label: "January", value: "January" },
+    { label: "February", value: "February" },
+    { label: "March", value: "March" },
+    { label: "April", value: "April" },
+    { label: "May", value: "May" },
+    { label: "June", value: "June" },
+    { label: "July", value: "July" },
+    { label: "August", value: "August" },
+    { label: "September", value: "September" },
+    { label: "October", value: "October" },
+    { label: "November", value: "November" },
+    { label: "December", value: "December" },
+  ];
 
   React.useEffect(() => {
     if (payslip) {
@@ -60,41 +73,12 @@ const AddEditModal = ({ setpayslip, payslip }) => {
     }
   }, [payslip, reset]);
 
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
-
-  const adjustmentTypes = [
-    { value: "Bonus", label: "Bonus" },
-    { value: "Incentive", label: "Incentive" },
-    { value: "Overtime", label: "Overtime" },
-    { value: "Leave Encashment", label: "Leave Encashment" },
-    { value: "Salary Advance", label: "Salary Advance" },
-    { value: "Loan Deduction", label: "Loan Deduction" },
-    { value: "Tax Adjustment", label: "Tax Adjustment" },
-    { value: "Reimbursement", label: "Reimbursement" },
-    { value: "Correction", label: "Correction" },
-    { value: "Other", label: "Other" },
-  ];
-
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       payslip
         ? await dispatch(
-            updatepayslip({
-              id: payslip.id,
-              payslipData: { ...data },
-            })
+            updatepayslip({ id: payslip.id, payslipData: { ...data } })
           ).unwrap()
         : await dispatch(createpayslip({ ...data })).unwrap();
       closeButton.click();
@@ -160,34 +144,13 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                       name="employee_id"
                       control={control}
                       rules={{ required: "Employee is required" }}
-                      render={({ field }) => {
-                        const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedEmployee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
-                          />
-                        );
-                      }}
+                      render={({ field }) => (
+                        <EmployeeSelect
+                          {...field}
+                          value={field.value}
+                          onChange={(i) => field.onChange(i?.value)}
+                        />
+                      )}
                     />
                     {errors.employee_id && (
                       <small className="text-danger">
@@ -200,30 +163,22 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                   <label className="col-form-label">
                     Month <span className="text-danger">*</span>
                   </label>
-                  <select
-                    className={`form-control ${errors.month ? "is-invalid" : ""}`}
-                    {...register("month", { required: "Month is required" })}
-                  >
-                    <option value="">Select Month</option>
-                    {[
-                      "January",
-                      "February",
-                      "March",
-                      "April",
-                      "May",
-                      "June",
-                      "July",
-                      "August",
-                      "September",
-                      "October",
-                      "November",
-                      "December",
-                    ].map((month) => (
-                      <option key={month} value={month}>
-                        {month}
-                      </option>
-                    ))}
-                  </select>
+                  <Controller
+                    name="month"
+                    control={control}
+                    rules={{ required: "Month is required" }}
+                    render={({ field }) => (
+                      <Select
+                        options={months}
+                        classNamePrefix="react-select"
+                        placeholder="Select Month"
+                        value={
+                          months.find((i) => i.value === field.value) || ""
+                        }
+                        onChange={(i) => field.onChange(i?.value)}
+                      />
+                    )}
+                  />
                   {errors.month && (
                     <small className="text-danger">
                       {errors.month.message}
@@ -262,7 +217,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                     type="number"
                     step="0.01"
                     className={`form-control ${errors.net_salary ? "is-invalid" : ""}`}
-                    placeholder="Net Salary"
+                    placeholder="Enter Net Salary"
                     {...register("net_salary", {
                       required: "Net salary is required",
                     })}
@@ -303,7 +258,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                     type="number"
                     step="0.01"
                     className="form-control"
-                    placeholder="Gross Salary"
+                    placeholder="Enter Gross Salary"
                     {...register("gross_salary")}
                   />
                 </div>
@@ -315,7 +270,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                     type="number"
                     step="0.01"
                     className="form-control"
-                    placeholder="Total Earnings"
+                    placeholder="Enter Total Earnings"
                     {...register("total_earnings")}
                   />
                 </div>
@@ -327,7 +282,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                     type="number"
                     step="0.01"
                     className="form-control"
-                    placeholder="Total Deductions"
+                    placeholder="Enter Total Deductions"
                     {...register("total_deductions")}
                   />
                 </div>
@@ -339,7 +294,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                     type="number"
                     step="0.01"
                     className="form-control"
-                    placeholder="Tax Deductions"
+                    placeholder="Enter Tax Deductions"
                     {...register("tax_deductions")}
                   />
                 </div>
@@ -351,7 +306,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                     type="number"
                     step="0.01"
                     className="form-control"
-                    placeholder="Loan Deductions"
+                    placeholder="Enter Loan Deductions"
                     {...register("loan_deductions")}
                   />
                 </div>
@@ -363,7 +318,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                     type="number"
                     step="0.01"
                     className="form-control"
-                    placeholder="Other Adjustments"
+                    placeholder="Enter Other Adjustments"
                     {...register("other_adjustments")}
                   />
                 </div>
@@ -400,26 +355,51 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                   )}
                 </div>
                 {/* Remarks */}
-                <div className="md-3">
-                  <label className="col-form-label">Remarks</label>
-                  <textarea
-                    className="form-control"
-                    rows="2"
-                    placeholder="Remarks"
-                    {...register("remarks")}
-                  ></textarea>
-                </div>
-                {/* Remarks */}
-                <div className="md-3">
+                <div className="col-md-12 mb-3">
                   <label className="col-form-label">
-                    Pay Component Summary
+                    Remarks{" "}
+                    <span className="text-muted">(max 255 characters)</span>
                   </label>
                   <textarea
                     className="form-control"
-                    rows="2"
-                    placeholder="Pay Component Summary"
-                    {...register("pay_component_summary")}
+                    rows="3"
+                    placeholder="Enter Remarks"
+                    {...register("remarks", {
+                      maxLength: {
+                        value: 255,
+                        message: "Remarks must be less than 255 characters",
+                      },
+                    })}
                   ></textarea>
+                  {errors.remarks && (
+                    <small className="text-danger">
+                      {errors.remarks.message}
+                    </small>
+                  )}
+                </div>
+                {/* Pay Component Summary */}
+                <div className="col-md-12 mb-3">
+                  <label className="col-form-label">
+                    Pay Component Summary{" "}
+                    <span className="text-muted">(max 255 characters)</span>
+                  </label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    placeholder="Enter Pay Component Summary"
+                    {...register("pay_component_summary", {
+                      maxLength: {
+                        value: 255,
+                        message:
+                          "Pay Component Summary must be less than 255 characters",
+                      },
+                    })}
+                  ></textarea>
+                  {errors.pay_component_summary && (
+                    <small className="text-danger">
+                      {errors.pay_component_summary.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

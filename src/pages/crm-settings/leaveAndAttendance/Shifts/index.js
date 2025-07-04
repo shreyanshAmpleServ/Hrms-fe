@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
-import Table from "../../../../components/common/dataTable/index";
+import Table from "../../../../components/common/dataTableNew/index";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -34,37 +34,38 @@ const ShiftList = () => {
       sorter: (a, b) => a.shift_name.localeCompare(b.shift_name),
     },
     {
-      title: "Daily Working Hours",
+      title: "Working Hours",
       dataIndex: "daily_working_hours",
       render: (text) => <div>{text}</div>,
       sorter: (a, b) =>
         a.daily_working_hours.localeCompare(b.daily_working_hours),
     },
     {
-      title: "Number of Working Days",
+      title: "Working Days",
       dataIndex: "number_of_working_days",
-      render: (text) => <div>{text}</div>,
+      render: (text) => <div>{text ? text + " Days" : "-"}</div>,
       sorter: (a, b) =>
         a.number_of_working_days.localeCompare(b.number_of_working_days),
     },
     {
       title: "Start Time",
       dataIndex: "start_time",
-      render: (text) => text.slice(0, 5),
+      render: (text) => (text ? text.slice(0, 5) : "-"),
       sorter: (a, b) => a.start_time.localeCompare(b.start_time),
     },
     {
       title: "End Time",
       dataIndex: "end_time",
-      render: (text) => text.slice(0, 5),
+      render: (text) => (text ? text.slice(0, 5) : "-"),
       sorter: (a, b) => a.end_time.localeCompare(b.end_time),
     },
     {
       title: "Lunch Time",
       dataIndex: "lunch_time",
-      render: (text) => text,
+      render: (text) => (text ? text + " Mins" : "-"),
       sorter: (a, b) => a.lunch_time.localeCompare(b.lunch_time),
     },
+
     {
       title: "Half Day On",
       dataIndex: "half_day_on",
@@ -90,13 +91,34 @@ const ShiftList = () => {
       render: (text) => <div>{text === "Y" ? "Yes" : "No"}</div>,
       sorter: (a, b) => a.half_day_working.localeCompare(b.half_day_working),
     },
+
     {
       title: "Remarks",
       dataIndex: "remarks",
-      render: (text) => <div>{text}</div>,
+      render: (text) => (
+        <p
+          style={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            maxWidth: "300px",
+          }}
+        >
+          {text || "-"}
+        </p>
+      ),
       sorter: (a, b) => a.remarks.localeCompare(b.remarks),
     },
-
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <span className={`badge ${text === "Y" ? "bg-success" : "bg-danger"}`}>
+          {text === "Y" ? "Active" : "Inactive"}
+        </span>
+      ),
+      sorter: (a, b) => a.is_active.localeCompare(b.is_active),
+    },
     {
       title: "Created Date",
       dataIndex: "createdate",

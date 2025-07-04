@@ -1,17 +1,15 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createExitClearance,
   updateExitClearance,
 } from "../../../redux/ExitClearance";
 
 const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -37,19 +35,6 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
       });
     }
   }, [exitClearance, reset]);
-
-  React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -125,30 +110,11 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value}
+                            onChange={(i) => field.onChange(i?.value)}
                           />
                         );
                       }}
@@ -197,14 +163,13 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
                 <div className="col-md-12">
                   <label className="col-form-label">
                     Remarks{" "}
-                    <small className="text-muted">(Max 255 characters)</small>
+                    <small className="text-muted">(Max 255 characters)</small>{" "}
                   </label>
                   <div className="mb-3">
                     <Controller
                       name="remarks"
                       control={control}
                       rules={{
-                        required: "Remarks is required!",
                         maxLength: {
                           value: 255,
                           message:
@@ -221,11 +186,11 @@ const ManageExitClearance = ({ setExitClearance, exitClearance }) => {
                         />
                       )}
                     />
-                    {/* {errors.remarks && (
+                    {errors.remarks && (
                       <small className="text-danger">
                         {errors.remarks.message}
                       </small>
-                    )} */}
+                    )}
                   </div>
                 </div>
               </div>

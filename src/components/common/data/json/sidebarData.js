@@ -12,7 +12,7 @@ export const SidebarData = (userType) => {
         {
           label: "Dashboard",
           link: userType?.includes("admin")
-            ? route.dasshboard
+            ? route.dashboard
             : route.dashboardEmployee,
           icon: "ti ti-layout-dashboard",
           showSubRoute: false,
@@ -114,7 +114,19 @@ export const SidebarData = (userType) => {
               submenu: false,
             },
             {
-              label: "Basic Payroll",
+              label: "Mid Month Payroll Processing",
+              link: route.midMonthPayroll,
+              showSubRoute: false,
+              submenu: false,
+            },
+            {
+              label: "Over Time Payroll Processing",
+              link: route.overTimePayroll,
+              showSubRoute: false,
+              submenu: false,
+            },
+            {
+              label: "Component Assignment",
               link: route.basicPayroll,
               showSubRoute: false,
               submenu: false,
@@ -134,12 +146,6 @@ export const SidebarData = (userType) => {
             {
               label: "Loan Requests",
               link: route.loanRequests,
-              showSubRoute: false,
-              submenu: false,
-            },
-            {
-              label: "Loan Emi",
-              link: route.loanEmi,
               showSubRoute: false,
               submenu: false,
             },

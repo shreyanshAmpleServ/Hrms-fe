@@ -3,7 +3,7 @@ import { Button, CloseButton, Modal } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import Select from "react-select";
-import { updateloan_requests } from "../../../redux/loanRequests";
+import { updateLoanRequest } from "../../../redux/loanRequests";
 
 const statusOptions = [
   { label: "Pending", value: "P" },
@@ -22,7 +22,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
     formState: { isSubmitting },
   } = useForm({
     defaultValues: {
-      status: selected?.status || "Pending",
+      status: selected?.status || "P",
       rejection_reason: selected?.rejection_reason || "",
     },
   });
@@ -36,9 +36,9 @@ const ManageStatus = ({ open, setOpen, selected }) => {
 
   const onSubmit = (data) => {
     dispatch(
-      updateloan_requests({
+      updateLoanRequest({
         id: selected.id,
-        loan_requestsData: {
+        loanRequestData: {
           ...selected,
           status: data.status,
           rejection_reason: data.rejection_reason,

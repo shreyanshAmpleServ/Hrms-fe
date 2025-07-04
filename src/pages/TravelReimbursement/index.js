@@ -1,21 +1,21 @@
-import Table from "../../components/common/dataTableNew/index.js";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
+import Table from "../../components/common/dataTableNew/index.js";
+import usePermissions from "../../components/common/Permissions.js/index.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchtravelReimbursement } from "../../redux/TravelReimbursement";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageTravelReimbursement from "./ManageTravelReimbursement";
 import ManageStatus from "./ManageStatus/index.js";
+import ManageTravelReimbursement from "./ManageTravelReimbursement";
 
 const TravelReimbursement = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add"); // 'add' or 'edit'
   const [searchValue, setSearchValue] = useState("");
   const [selectedtravelReimbursement, setSelectedtravelReimbursement] =
     useState(null);
@@ -67,15 +67,9 @@ const TravelReimbursement = () => {
 
   const data = travelReimbursement?.data;
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Time Sheet Entry"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } = usePermissions(
+    "Travel Reimbursement"
+  );
 
   const columns = [
     {
@@ -83,12 +77,6 @@ const TravelReimbursement = () => {
       dataIndex: "travel_expense_employee",
       render: (_text, record) =>
         record?.travel_expense_employee?.full_name || "-",
-    },
-
-    {
-      title: "Travel Purpose",
-      dataIndex: "travel_purpose",
-      render: (text) => text || "-",
     },
     {
       title: "Start Date",
@@ -101,21 +89,42 @@ const TravelReimbursement = () => {
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
+      title: "Destination",
+      dataIndex: "destination",
+      render: (text) => text || "-",
+    },
+    {
       title: "Travel Mode",
       dataIndex: "travel_mode",
       render: (text) => text || "-",
     },
+
     {
       title: "Advance Amount",
       dataIndex: "advance_amount",
-      render: (text) => (text ? `₹${text}` : "-"),
+      render: (text) => (text ? text : "-"),
     },
     {
-      title: "Expense Breakdown",
-      dataIndex: "expense_breakdown",
-      render: (text) => text || "-",
+      title: "Total Amount",
+      dataIndex: "total_amount",
+      render: (text) => (text ? text : "-"),
     },
-
+    {
+      title: "Currency",
+      dataIndex: "travel_expense_currency",
+      render: (text) =>
+        text?.currency_code + " - " + text?.currency_name || "-",
+    },
+    {
+      title: "Exchange Rate",
+      dataIndex: "exchange_rate",
+      render: (text) => (text ? Number(text).toFixed(2) : "-"),
+    },
+    {
+      title: "Approved Amount",
+      dataIndex: "final_approved_amount",
+      render: (text) => (text ? `₹${text}` : "-"),
+    },
     {
       title: "Attachment",
       dataIndex: "attachment_path",
@@ -129,42 +138,69 @@ const TravelReimbursement = () => {
           title="View or Download PDF"
         >
           <i className="ti ti-file-type-pdf fs-5"></i>
-          <span>View </span>
+          <span> View </span>
         </a>
       ),
     },
-
     {
-      title: "Currency",
-      dataIndex: "travel_expense_currency",
+      title: "Expense Breakdown",
+      dataIndex: "expense_breakdown",
       render: (text) =>
-        text?.currency_code + " - " + text?.currency_name || "-",
+        text ? (
+          <span
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "190px",
+              display: "inline-block",
+              verticalAlign: "middle",
+            }}
+            title={text}
+          >
+            {text}
+          </span>
+        ) : (
+          "-"
+        ),
     },
     {
-      title: "Exchange Rate",
-      dataIndex: "exchange_rate",
-      render: (text) => (text ? Number(text).toFixed(2) : "-"),
-    },
-    {
-      title: "Final Approved Amount",
-      dataIndex: "final_approved_amount",
-      render: (text) => (text ? `₹${text}` : "-"),
+      title: "Travel Purpose",
+      dataIndex: "travel_purpose",
+      render: (text) => (
+        <span
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "200px",
+            display: "inline-block",
+            verticalAlign: "middle",
+          }}
+          title={text}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: "Remarks",
       dataIndex: "remarks",
-      render: (text) => text || "-",
-    },
-
-    {
-      title: "Destination",
-      dataIndex: "destination",
-      render: (text) => text || "-",
-    },
-    {
-      title: "Total Amount",
-      dataIndex: "total_amount",
-      render: (text) => (text ? `₹${text}` : "-"),
+      render: (text) => (
+        <span
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "200px",
+            display: "inline-block",
+            verticalAlign: "middle",
+          }}
+          title={text}
+        >
+          {text || "-"}
+        </span>
+      ),
     },
 
     {
@@ -174,12 +210,12 @@ const TravelReimbursement = () => {
         <div
           className={`text-capitalize badge ${
             value === "R"
-              ? "bg-warning"
+              ? "bg-danger"
               : value === "A"
                 ? "bg-success"
                 : value === "P"
-                  ? "bg-danger"
-                  : "bg-secondary"
+                  ? "bg-warning"
+                  : "bg-warning"
           }`}
         >
           {value === "P"
@@ -188,7 +224,7 @@ const TravelReimbursement = () => {
               ? "Approved"
               : value === "R"
                 ? "Rejected"
-                : value || "—"}
+                : value || "Pending"}
         </div>
       ),
       sorter: (a, b) =>
@@ -238,7 +274,6 @@ const TravelReimbursement = () => {
                       data-bs-target="#offcanvas_add"
                       onClick={() => {
                         setSelected(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit

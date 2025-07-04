@@ -1,9 +1,9 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
 import {
   createWarningLetters,
   updateWarningLetters,
@@ -11,7 +11,6 @@ import {
 import { fetchlatter_type } from "../../../redux/letterType";
 
 const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -31,11 +30,11 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
 
   React.useEffect(() => {
     reset({
-      employee_id: warningLetters?.employee_id,
+      employee_id: warningLetters?.employee_id || null,
       letter_type: warningLetters?.letter_type || "",
       reason: warningLetters?.reason || "",
       issued_date: warningLetters?.issued_date || moment().toISOString(),
-      issued_by: warningLetters?.issued_by,
+      issued_by: warningLetters?.issued_by || null,
       severity_level: warningLetters?.severity_level || "",
       remarks: warningLetters?.remarks || "",
       attachment_path: "",
@@ -43,20 +42,7 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
   }, [warningLetters, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
-
-  React.useEffect(() => {
-    dispatch(fetchlatter_type());
+    dispatch(fetchlatter_type({ is_active: true }));
   }, [dispatch]);
 
   const { latter_type } = useSelector((state) => state.letterTypeMaster);
@@ -65,8 +51,6 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
     label: i?.letter_name,
     value: i?.id,
   }));
-
-  console.log(letterTypes);
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -155,30 +139,11 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedEmployee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value || null}
+                            onChange={(option) => field.onChange(option.value)}
                           />
                         );
                       }}
@@ -201,30 +166,12 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
                       control={control}
                       rules={{ required: "Issued by is required" }}
                       render={({ field }) => {
-                        const selectedEmployee = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedEmployee || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            placeholder="Select Issued By"
+                            value={field.value || null}
+                            onChange={(option) => field.onChange(option.value)}
                           />
                         );
                       }}
@@ -276,15 +223,17 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
                     <Controller
                       name="attachment_path"
                       control={control}
-                      rules={{ required: "Attachment is required!" }}
-                      render={({ field: { value, onChange, ...field } }) => (
+                      rules={{
+                        required: warningLetters
+                          ? false
+                          : "Attachment is required!",
+                      }}
+                      render={({ field: { onChange } }) => (
                         <input
-                          {...field}
                           type="file"
                           className={`form-control ${errors.attachment_path ? "is-invalid" : ""}`}
-                          onChange={(option) =>
-                            onChange(option.target.files[0])
-                          }
+                          onChange={(e) => onChange(e.target.files[0])}
+                          accept=".pdf"
                         />
                       )}
                     />

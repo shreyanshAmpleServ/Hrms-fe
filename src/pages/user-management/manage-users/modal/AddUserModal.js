@@ -43,8 +43,8 @@ const AddUserModal = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchRoles());
-    dispatch(fetchEmployee());
+    dispatch(fetchRoles({ is_active: true }));
+    dispatch(fetchEmployee({ status: "Active" }));
   }, [dispatch]);
 
   useEffect(() => {

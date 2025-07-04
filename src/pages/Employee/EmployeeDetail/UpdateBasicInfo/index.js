@@ -29,9 +29,9 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
   ];
 
   useEffect(() => {
-    dispatch(fetchdepartment());
-    dispatch(fetchdesignation());
-  }, [dispatch]);
+    dispatch(fetchdepartment({ is_active: true }));
+    dispatch(fetchdesignation({ is_active: true }));
+  }, []);
 
   const address = employeeDetail?.hrms_employee_address?.[1];
 

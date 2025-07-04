@@ -6,7 +6,6 @@ import {
   FileWordFilled,
 } from "@ant-design/icons";
 import { Button, Dropdown, Table, Tooltip } from "antd";
-import moment from "moment";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
@@ -95,16 +94,7 @@ const EmployeeAttachment = () => {
 
   const columns = [
     {
-      title: "Employee Name",
-      dataIndex: "document_upload_employee",
-      render: (text) => text?.full_name || "-",
-      sorter: (a, b) =>
-        a.document_upload_employee.full_name.localeCompare(
-          b.document_upload_employee.full_name
-        ),
-    },
-    {
-      title: "Attachment",
+      title: "File",
       dataIndex: "document_path",
       render: (text) =>
         text ? (
@@ -146,15 +136,9 @@ const EmployeeAttachment = () => {
         ),
     },
     {
-      title: "Attachment Type",
+      title: "Type",
       dataIndex: "document_type",
       render: (text) => <p className="text-capitalize">{text}</p> || "-",
-    },
-    {
-      title: "Uploaded On",
-      dataIndex: "createdate",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) => moment(a.createdate).diff(moment(b.createdate)),
     },
     ...(isDelete || isUpdate
       ? [
@@ -186,10 +170,6 @@ const EmployeeAttachment = () => {
   return (
     <div className="card-body">
       <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-        {/* <DateRangePickerComponent
-          selectedDateRange={selectedDateRange}
-          setSelectedDateRange={setSelectedDateRange}
-        /> */}
         <h4>Employee Attachments</h4>
         <Tooltip title="Add Attachment">
           <Button

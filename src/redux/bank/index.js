@@ -13,6 +13,7 @@ export const fetchbank = createAsyncThunk(
       if (datas?.search) params.search = datas?.search;
       if (datas?.page) params.page = datas?.page;
       if (datas?.size) params.size = datas?.size;
+      if (datas?.is_active) params.is_active = datas?.is_active;
 
       const response = await apiClient.get("/v1/bank-master", { params });
       return response.data;

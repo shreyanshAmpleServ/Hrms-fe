@@ -186,11 +186,11 @@ const DisciplinaryActionLog = () => {
                       }}
                     >
                       <i className="ti ti-settings text-blue"></i>
-                      {record.status === "P"
+                      {record?.status === "P"
                         ? "Pending/Reject"
-                        : record.status === "R"
+                        : record?.status === "R"
                           ? "Pending/Resolved"
-                          : record.status === "C"
+                          : record?.status === "C"
                             ? "Closed/Pending"
                             : "Manage Status"}
                     </Link>

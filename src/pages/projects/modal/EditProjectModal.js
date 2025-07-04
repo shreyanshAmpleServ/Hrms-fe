@@ -49,7 +49,7 @@ const EditProjectModal = ({ project }) => {
   }, [project, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

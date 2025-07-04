@@ -1,4 +1,3 @@
-import Select from "react-select";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -6,6 +5,7 @@ import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTableNew/index";
 import AddButton from "../../../components/datatable/AddButton";
@@ -15,7 +15,6 @@ import { fetchCountries } from "../../../redux/country";
 import { deleteState, fetchStates } from "../../../redux/state";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
-import { label } from "yet-another-react-lightbox";
 
 const StatesList = () => {
   const [mode, setMode] = useState("add");
@@ -52,6 +51,15 @@ const StatesList = () => {
         (a.country_details?.name || "").localeCompare(
           b.country_details?.name || ""
         ),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <span className={`badge ${text === "Y" ? "bg-success" : "bg-danger"}`}>
+          {text === "Y" ? "Active" : "Inactive"}
+        </span>
+      ),
     },
     {
       title: "Created Date",

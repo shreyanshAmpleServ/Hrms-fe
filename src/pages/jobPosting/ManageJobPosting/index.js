@@ -76,8 +76,8 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
   }, [JobPosting, reset]);
 
   useEffect(() => {
-    dispatch(fetchdepartment());
-    dispatch(fetchdesignation());
+    dispatch(fetchdepartment({ is_active: true }));
+    dispatch(fetchdesignation({ is_active: true }));
   }, [dispatch]);
 
   const onSubmit = async (data) => {

@@ -17,6 +17,7 @@ import UpdateSocialInfo from "./UpdateSocialInfo";
 import UpdateProfilePicture from "./UploadProfile";
 import EmployeeAttachment from "./Attachment";
 import EmployeeLeaveInfo from "./LeaveInfo";
+import EmployeeComponent from "./Component";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
@@ -646,20 +647,29 @@ const EmployeeDetail = () => {
                   </div>
                 </div>
               </div>
+
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-6">
                   <div className="card">
                     <div className="card-body">
                       <EmployeeLeaveInfo />
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="row">
-                <div className="col-md-12">
+
+                <div className="col-md-6">
                   <div className="card">
                     <div className="card-body">
                       <EmployeeAttachment />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="card">
+                      {/* <div className="card-body">
+                        <EmployeeComponent employeeDetail={employeeDetail} />
+                      </div> */}
                     </div>
                   </div>
                 </div>

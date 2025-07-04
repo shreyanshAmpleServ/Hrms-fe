@@ -130,6 +130,9 @@ import hrLettersReducer from "./HRLetters";
 import taxSlabReducer from "./taxSlab";
 import costCenterReducer from "./costCenter";
 import basicSalaryReducer from "./BasicSalary";
+import midMonthPayrollReducer from "./MidMonthPayroll";
+import overtimePayrollReducer from "./OverTimePayroll";
+
 import employeeDashboardReducer from "./employeeDashboard";
 import LoanEmiReducer from "./LoanEmi";
 const store = configureStore({
@@ -265,6 +268,8 @@ const store = configureStore({
     taxSlab: taxSlabReducer,
     costCenter: costCenterReducer,
     basicSalary: basicSalaryReducer,
+    midMonthPayroll: midMonthPayrollReducer,
+    overtimePayroll: overtimePayrollReducer,
     employeeDashboard: employeeDashboardReducer,
     loanEmi: LoanEmiReducer,
   },

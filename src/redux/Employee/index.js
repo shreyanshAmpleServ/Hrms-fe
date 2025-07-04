@@ -7,13 +7,14 @@ export const fetchEmployee = createAsyncThunk(
   "employee/fetchEmployee",
   async (datas, thunkAPI) => {
     try {
-      const params = {
-        search: datas?.search || "",
-        page: datas?.page || "",
-        size: datas?.size || "",
-        startDate: datas?.startDate?.toISOString() || "",
-        endDate: datas?.endDate?.toISOString() || "",
-      };
+      let params = {};
+      if (datas?.search) params.search = datas?.search;
+      if (datas?.page) params.page = datas?.page;
+      if (datas?.size) params.size = datas?.size;
+      if (datas?.startDate) params.startDate = datas?.startDate?.toISOString();
+      if (datas?.endDate) params.endDate = datas?.endDate?.toISOString();
+      if (datas?.status) params.status = datas?.status;
+
       const response = await apiClient.get("/v1/employee", { params });
       return response.data; // Returns a list of employee
     } catch (error) {
@@ -167,11 +168,24 @@ export const updateEmployeeEducation = createAsyncThunk(
   }
 );
 
+export const employeeOptionsFn = createAsyncThunk(
+  "employee/employeeOptions",
+  async (thunkAPI) => {
+    try {
+      const response = await apiClient.get("/v1/employee-options");
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data);
+    }
+  }
+);
+
 const employeesSlice = createSlice({
   name: "employee",
   initialState: {
     employee: {},
     employeeDetail: null,
+    employeeOptions: [],
     loading: false,
     error: null,
     success: null,
@@ -300,6 +314,17 @@ const employeesSlice = createSlice({
       .addCase(updateEmployeeEducation.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+      })
+      .addCase(employeeOptionsFn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(employeeOptionsFn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.employeeOptions = action.payload.data;
+      })
+      .addCase(employeeOptionsFn.rejected, (state) => {
+        state.loading = false;
       });
   },
 });

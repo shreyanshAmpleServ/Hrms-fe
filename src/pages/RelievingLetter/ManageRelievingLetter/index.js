@@ -39,7 +39,7 @@ const ManageRelievingLetter = ({ setRelievingLetter, relievingLetter }) => {
   }, [relievingLetter, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
+    dispatch(fetchEmployee({ search: searchValue, status: "Active" }));
   }, [dispatch, searchValue]);
 
   const { employee, loading: employeeLoading } = useSelector(

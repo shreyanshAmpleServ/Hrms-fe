@@ -1,10 +1,10 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { fetchEmployee } from "../../../redux/Employee";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createAssetAssignment,
   updateAssetAssignment,
@@ -12,7 +12,6 @@ import {
 import { fetchassets_type } from "../../../redux/assetType";
 
 const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const {
     control,
@@ -36,30 +35,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
   }, [assetAssignment, reset]);
 
   React.useEffect(() => {
-    dispatch(fetchEmployee({ searchValue }));
-  }, [dispatch, searchValue]);
-
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
-
-  const employees = employee?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
-  // const assetStatusOptions = [
-  //   { value: "available", label: "Available" },
-  //   { value: "assigned", label: "Assigned" },
-  //   { value: "in_use", label: "In Use" },
-  //   { value: "under_maintenance", label: "Under Maintenance" },
-  //   { value: "damaged", label: "Damaged" },
-  //   { value: "lost", label: "Lost" },
-  //   { value: "disposed", label: "Disposed" },
-  //   { value: "returned", label: "Returned" },
-  // ];
-
-  React.useEffect(() => {
-    dispatch(fetchassets_type());
+    dispatch(fetchassets_type({ is_active: true }));
   }, [dispatch]);
 
   const { assets_type, loading: assetTypeLoading } = useSelector(
@@ -145,30 +121,11 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                       control={control}
                       rules={{ required: "Employee is required" }}
                       render={({ field }) => {
-                        const selectedDeal = employees?.find(
-                          (employee) => employee.value === field.value
-                        );
                         return (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            className="select"
-                            options={employees}
-                            placeholder="Select Employee"
-                            classNamePrefix="react-select"
-                            isLoading={employeeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
-                            value={selectedDeal || null}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            }
-                            styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                zIndex: 9999,
-                              }),
-                            }}
+                            value={field.value}
+                            onChange={(i) => field.onChange(i?.value)}
                           />
                         );
                       }}
@@ -202,9 +159,6 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                             placeholder="Select Asset Type"
                             classNamePrefix="react-select"
                             isLoading={assetTypeLoading}
-                            onInputChange={(inputValue) =>
-                              setSearchValue(inputValue)
-                            }
                             value={selectedDeal || null}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)

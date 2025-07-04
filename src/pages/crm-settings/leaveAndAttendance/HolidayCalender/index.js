@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
-import Table from "../../../../components/common/dataTable/index";
+import Table from "../../../../components/common/dataTableNew/index";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -15,6 +15,7 @@ import {
 } from "../../../../redux/HolidayCalender";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
+import usePermissions from "../../../../components/common/Permissions.js";
 
 const HolidayCalenderList = () => {
   const [mode, setMode] = useState("add");
@@ -23,15 +24,9 @@ const HolidayCalenderList = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending");
   const [paginationData, setPaginationData] = useState();
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Holiday Calendar"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Holiday Calender");
 
   const dispatch = useDispatch();
   const columns = [
@@ -53,7 +48,15 @@ const HolidayCalenderList = () => {
       render: (text) => text,
       sorter: (a, b) => a.location.localeCompare(b.location),
     },
-
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <span className={`badge ${text === "Y" ? "bg-success" : "bg-danger"}`}>
+          {text === "Y" ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
     {
       title: "Created Date",
       dataIndex: "createdate",

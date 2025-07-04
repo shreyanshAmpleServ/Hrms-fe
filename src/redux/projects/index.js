@@ -4,9 +4,17 @@ import apiClient from "../../utils/axiosConfig";
 export const fetchProjects = createAsyncThunk(
   "projects/fetchProjects",
   async (datas, thunkAPI) => {
+    const { search, page, size, startDate, endDate, is_active } = datas;
+    const queryParams = new URLSearchParams();
+    if (search) queryParams.append("search", search);
+    if (page) queryParams.append("page", page);
+    if (size) queryParams.append("size", size);
+    if (startDate) queryParams.append("startDate", startDate);
+    if (endDate) queryParams.append("endDate", endDate);
+    if (is_active) queryParams.append("is_active", is_active);
     try {
       const response = await apiClient.get(
-        `/v1/projects?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`
+        `/v1/projects?${queryParams.toString()}`
       );
       return response.data;
     } catch (error) {
@@ -109,7 +117,7 @@ const projectSlice = createSlice({
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        // state.error = action.payload.message;
       })
       .addCase(addProject.pending, (state) => {
         state.loading = true;

@@ -119,9 +119,9 @@ const ManageEmployeeAttachment = ({
                             />
                           )}
                         />
-                        {errors.status && (
+                        {errors.document_type && (
                           <small className="text-danger">
-                            {errors.status.message}
+                            {errors.document_type.message}
                           </small>
                         )}
                       </div>
@@ -136,11 +136,8 @@ const ManageEmployeeAttachment = ({
                           name="document_path"
                           control={control}
                           rules={{ required: "Attachment is required!" }}
-                          render={({
-                            field: { onChange, _value, ...field },
-                          }) => (
+                          render={({ field: { onChange } }) => (
                             <input
-                              {...field}
                               type="file"
                               accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                               className="form-control"

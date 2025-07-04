@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../../components/common/collapse-header";
-import Table from "../../../../components/common/dataTable/index";
+import Table from "../../../../components/common/dataTableNew/index";
 import AddButton from "../../../../components/datatable/AddButton";
 import SearchBar from "../../../../components/datatable/SearchBar";
 import SortDropdown from "../../../../components/datatable/SortDropDown";
@@ -15,6 +15,7 @@ import {
 } from "../../../../redux/WorkScheduleTemp";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
+import usePermissions from "../../../../components/common/Permissions.js";
 
 const WorkTemplateList = () => {
   const [mode, setMode] = useState("add");
@@ -23,15 +24,9 @@ const WorkTemplateList = () => {
   const [paginationData, setPaginationData] = useState();
   const [selected, setSelected] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Work Schedule",
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Work Schedule");
 
   const dispatch = useDispatch();
   const columns = [
@@ -45,9 +40,18 @@ const WorkTemplateList = () => {
     {
       title: "Description",
       dataIndex: "description",
+      render: (text) => <>{text || "-"}</>,
       sorter: (a, b) => a.description.localeCompare(b.description),
     },
-
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      render: (text) => (
+        <span className={`badge ${text === "Y" ? "bg-success" : "bg-danger"}`}>
+          {text === "Y" ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -102,7 +106,7 @@ const WorkTemplateList = () => {
   ];
 
   const { WorkScheduleTemp, loading } = useSelector(
-    (state) => state.WorkScheduleTemp,
+    (state) => state.WorkScheduleTemp
   );
 
   React.useEffect(() => {
@@ -129,7 +133,7 @@ const WorkTemplateList = () => {
         search: searchText,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -141,11 +145,11 @@ const WorkTemplateList = () => {
     let data = WorkScheduleTemp?.data || [];
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1,
+        moment(a.createdate).isBefore(moment(b.createdate)) ? 1 : -1
       );
     }
     return data;
