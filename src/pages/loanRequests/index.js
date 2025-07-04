@@ -309,7 +309,7 @@ const LoanRequests = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selected} />
+      <AddEditModal mode={mode} selected={selected} setSelected={setSelected} />
       <DeleteAlert
         label="Loan Request"
         showModal={showDeleteModal}

@@ -13,8 +13,15 @@ import {
   updateLoanRequest,
 } from "../../../redux/loanRequests";
 import { fetchloan_type } from "../../../redux/loneType";
+import { Skeleton } from "antd";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+/**
+ * AddEditModal component props
+ * @prop {"add" | "edit"} mode - Determines if the modal is in add or edit mode.
+ * @prop {object|null} selected - The selected loan request object for editing, or null for adding.
+ * @prop {function} setSelected - Function to update the selected loan request.
+ */
+const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
   const dispatch = useDispatch();
   const { loading, loanRequestDetail } = useSelector(
     (state) => state.loan_requests
@@ -22,10 +29,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const [emiSchedule, setEmiSchedule] = React.useState([]);
 
   useEffect(() => {
-    if (mode === "edit" && initialData) {
-      dispatch(fetchLoanRequestById(initialData.id));
+    if (mode === "edit" && selected) {
+      dispatch(fetchLoanRequestById(selected.id));
     }
-  }, [mode, initialData, dispatch]);
+  }, [mode, selected, dispatch]);
 
   const {
     register,
@@ -41,7 +48,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     dispatch(fetchloan_type({ is_active: true }));
   }, [dispatch]);
 
-  const isUpdate = Boolean(initialData);
+  const isUpdate = Boolean(selected);
 
   const paidEmiCount = useMemo(() => {
     return loanRequestDetail?.loan_emi_loan_request?.filter(
@@ -57,7 +64,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     if (watch("amount") || watch("emi_months")) {
       const mergedEmiSchedule = [];
 
-      if (isUpdate && loanRequestDetail?.loan_emi_loan_request) {
+      if (selected && loanRequestDetail?.loan_emi_loan_request) {
         const existingEmis = loanRequestDetail.loan_emi_loan_request;
         let totalPaidAmount = 0;
         let paidEmiCount = 0;
@@ -154,21 +161,26 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   useEffect(() => {
     reset({
-      employee_id: initialData?.employee_id || "",
-      loan_type_id: initialData?.loan_type_id || "",
-      amount: initialData?.amount || 0,
-      emi_months: initialData?.emi_months || 1,
-      currency: initialData?.currency || "",
-      status: initialData?.status || "P",
-      start_date: initialData?.start_date || new Date().toDateString(),
+      employee_id: selected?.employee_id || "",
+      loan_type_id: selected?.loan_type_id || "",
+      amount: selected?.amount || 0,
+      emi_months: selected?.emi_months || 1,
+      currency: selected?.currency || "",
+      status: selected?.status || "P",
+      start_date: selected?.start_date || new Date().toISOString(),
     });
-  }, [mode, initialData, reset]);
+  }, [mode, selected, reset]);
+
+  const handleClose = () => {
+    setSelected(null);
+    reset();
+  };
 
   const onSubmit = (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     const loanRequestData = {
       ...data,
-      start_date: data.start_date ? new Date(data.start_date) : null,
+      start_date: data.start_date,
       amount: Number(data.amount),
       emi_months: Number(data.emi_months),
       emi_schedule: emiSchedule,
@@ -176,16 +188,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
     if (mode === "add") {
       dispatch(addLoanRequest(loanRequestData));
-    } else if (mode === "edit" && initialData) {
-      dispatch(
-        updateLoanRequest({
-          id: initialData.id,
-          loanRequestData: loanRequestData,
-        })
-      );
+    } else if (mode === "edit" && selected) {
+      dispatch(updateLoanRequest(selected.id, loanRequestData));
     }
-    reset();
     closeButton?.click();
+    handleClose();
   };
 
   const columns = [
@@ -225,6 +232,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
+          onClick={handleClose}
         >
           <i className="ti ti-x" />
         </button>
@@ -288,7 +296,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             </label>
             <Controller
               name="start_date"
-              disabled={isUpdate}
               control={control}
               rules={{ required: "Start Date is required" }}
               render={({ field }) => (
@@ -297,10 +304,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   value={
                     field.value ? moment(field.value).format("DD-MM-YYYY") : ""
                   }
-                  selected={field.value ? new Date(field.value) : null}
                   onChange={(date) => {
                     field.onChange(date);
                   }}
+                  disabled={isUpdate}
                   className="form-control"
                   placeholderText="Select Start Date"
                 />
@@ -400,7 +407,15 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           </div>
 
           <div className="col-md-12 mb-3">
-            <Table columns={columns} dataSource={emiSchedule} />
+            {loading ? (
+              <div className="d-flex justify-content-center">
+                <div style={{ width: "100%" }}>
+                  <Skeleton active paragraph={{ rows: 4 }} />
+                </div>
+              </div>
+            ) : (
+              <Table columns={columns} dataSource={emiSchedule} />
+            )}
           </div>
 
           <div className="col-md-12 text-end">
@@ -408,6 +423,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               type="button"
               className="btn btn-light me-2"
               data-bs-dismiss="offcanvas"
+              onClick={handleClose}
             >
               Cancel
             </button>
