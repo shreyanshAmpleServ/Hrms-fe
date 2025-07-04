@@ -117,7 +117,7 @@ const projectSlice = createSlice({
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        // state.error = action.payload.message;
       })
       .addCase(addProject.pending, (state) => {
         state.loading = true;

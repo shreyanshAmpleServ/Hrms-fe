@@ -4,15 +4,15 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import Table from "../../../components/common/dataTableNew/index";
 import EmployeeSelect from "../../../components/common/EmployeeSelect";
+import { fetchCurrencies } from "../../../redux/currency";
 import {
   addLoanRequest,
   fetchLoanRequestById,
   updateLoanRequest,
 } from "../../../redux/loanRequests";
 import { fetchloan_type } from "../../../redux/loneType";
-import Table from "../../../components/common/dataTableNew/index";
-import { fetchCurrencies } from "../../../redux/currency";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const dispatch = useDispatch();
@@ -31,6 +31,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     register,
     handleSubmit,
     watch,
+    setValue,
     control,
     formState: { errors },
     reset,
@@ -40,6 +41,14 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     dispatch(fetchloan_type({ is_active: true }));
   }, [dispatch]);
 
+  const isUpdate = Boolean(initialData);
+
+  const paidEmiCount = useMemo(() => {
+    return loanRequestDetail?.loan_emi_loan_request?.filter(
+      (emi) => emi.status === "P"
+    ).length;
+  }, [loanRequestDetail]);
+
   useEffect(() => {
     const startDate = moment(watch("start_date"));
     const emi_months = Number(watch("emi_months"));
@@ -47,23 +56,53 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
     if (watch("amount") || watch("emi_months")) {
       const mergedEmiSchedule = [];
-      for (let i = 0; i < emi_months; i++) {
-        const emiDate = moment(startDate).add(i + 1, "months");
-        mergedEmiSchedule.push({
-          id:
-            loanRequestDetail?.loan_emi_loan_request &&
-            loanRequestDetail?.loan_emi_loan_request[i]?.id
-              ? loanRequestDetail?.loan_emi_loan_request[i].id
-              : "",
-          due_month: emiDate.format("MMMM"),
-          due_year: String(emiDate.year()),
-          emi_amount: emi_months ? (amount / emi_months).toFixed(2) : "0.00",
-          status:
-            loanRequestDetail?.loan_emi_loan_request &&
-            loanRequestDetail?.loan_emi_loan_request[i]?.status
-              ? loanRequestDetail?.loan_emi_loan_request[i].status
-              : "U",
+
+      if (isUpdate && loanRequestDetail?.loan_emi_loan_request) {
+        const existingEmis = loanRequestDetail.loan_emi_loan_request;
+        let totalPaidAmount = 0;
+        let paidEmiCount = 0;
+
+        existingEmis.forEach((emi) => {
+          if (emi.status === "P") {
+            totalPaidAmount += Number(emi.emi_amount);
+            paidEmiCount++;
+          }
         });
+
+        const remainingAmount = amount - totalPaidAmount;
+        const remainingMonths = emi_months - paidEmiCount;
+        const emiPerMonth =
+          remainingMonths > 0 ? remainingAmount / remainingMonths : 0;
+
+        for (let i = 0; i < emi_months; i++) {
+          const emiDate = moment(startDate).add(i + 1, "months");
+          const existingEmi = existingEmis[i];
+
+          mergedEmiSchedule.push({
+            id: existingEmi?.id || "",
+            due_month: emiDate.format("MMMM"),
+            due_year: String(emiDate.year()),
+            emi_amount:
+              existingEmi?.status === "P"
+                ? existingEmi.emi_amount
+                : emiPerMonth.toFixed(2),
+            status: existingEmi?.status || "U",
+          });
+        }
+      } else {
+        const emiPerMonth = emi_months > 0 ? amount / emi_months : 0;
+
+        for (let i = 0; i < emi_months; i++) {
+          const emiDate = moment(startDate).add(i + 1, "months");
+
+          mergedEmiSchedule.push({
+            id: "",
+            due_month: emiDate.format("MMMM"),
+            due_year: String(emiDate.year()),
+            emi_amount: emiPerMonth.toFixed(2),
+            status: "U",
+          });
+        }
       }
       setEmiSchedule(mergedEmiSchedule);
     } else {
@@ -86,8 +125,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     watch("amount"),
     loanRequestDetail,
   ]);
-
-  console.log(emiSchedule);
 
   const loan_type = useSelector((state) => state.loan_type?.loan_type);
 
@@ -119,8 +156,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     reset({
       employee_id: initialData?.employee_id || "",
       loan_type_id: initialData?.loan_type_id || "",
-      amount: initialData?.amount || "",
-      emi_months: initialData?.emi_months || "",
+      amount: initialData?.amount || 0,
+      emi_months: initialData?.emi_months || 1,
       currency: initialData?.currency || "",
       status: initialData?.status || "P",
       start_date: initialData?.start_date || new Date().toDateString(),
@@ -251,6 +288,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             </label>
             <Controller
               name="start_date"
+              disabled={isUpdate}
               control={control}
               rules={{ required: "Start Date is required" }}
               render={({ field }) => (
@@ -305,6 +343,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               Amount <span className="text-danger">*</span>
             </label>
             <input
+              disabled={isUpdate}
               type="number"
               placeholder="Enter Amount"
               className="form-control"
@@ -322,14 +361,38 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             <label className="form-label">
               EMI Months <span className="text-danger">*</span>
             </label>
-            <input
-              type="number"
-              placeholder="Enter EMI Months"
-              className="form-control"
-              {...register("emi_months", {
+            <Controller
+              name="emi_months"
+              control={control}
+              rules={{
                 required: "EMI months is required",
-                min: 1,
-              })}
+                validate: (value) => {
+                  if (value > 120) {
+                    return "EMI months must be less than 120";
+                  } else if (value < (isUpdate ? paidEmiCount + 1 : 1)) {
+                    return isUpdate
+                      ? `EMI months must be greater than ${paidEmiCount} (paid EMIs)`
+                      : "EMI months must be greater than 1";
+                  }
+                  return true;
+                },
+              }}
+              render={({ field }) => (
+                <input
+                  type="number"
+                  placeholder="Enter EMI Months"
+                  className="form-control"
+                  value={field.value}
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    if (value > 120) {
+                      field.onChange(120);
+                    } else {
+                      field.onChange(value);
+                    }
+                  }}
+                />
+              )}
             />
             {errors.emi_months && (
               <small className="text-danger">{errors.emi_months.message}</small>
