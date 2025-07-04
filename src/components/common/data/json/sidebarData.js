@@ -150,12 +150,6 @@ export const SidebarData = (userType) => {
               submenu: false,
             },
             {
-              label: "Loan Emi",
-              link: route.loanEmi,
-              showSubRoute: false,
-              submenu: false,
-            },
-            {
               label: "Advance Payment Entry",
               link: route.advancePaymentEntry,
               showSubRoute: false,
