@@ -275,9 +275,12 @@ const LoanRequests = () => {
                       data-bs-toggle="offcanvas"
                       data-bs-target="#add_edit_loan_requests_modal"
                       onClick={() => setMode("add")}
+                      style={{
+                        width: "100px",
+                      }}
                     >
                       <i className="ti ti-square-rounded-plus me-2" />
-                      Add Loan Requests
+                      Create
                     </Link>
                   </div>
                 </div>
