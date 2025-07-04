@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 import { toast } from "react-hot-toast";
 
-// Fetch all loan_Emi
-export const fetchloan_Emi = createAsyncThunk(
-  "loan_Emi/fetchloan_Emi",
+// Fetch all loanEmi
+export const fetchloanEmi = createAsyncThunk(
+  "loanEmi/fetchloanEmi",
   async (datas, thunkAPI) => {
     try {
       const params = {};
@@ -12,7 +12,7 @@ export const fetchloan_Emi = createAsyncThunk(
       if (datas?.page) params.page = datas.page;
       if (datas?.size) params.size = datas.size;
 
-      const response = await apiClient.get("/v1/loan-Emi", { params });
+      const response = await apiClient.get("/v1/loan-emi-schedule", { params });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -23,12 +23,12 @@ export const fetchloan_Emi = createAsyncThunk(
 );
 
 // Add a loan_request
-export const addloan_Emi = createAsyncThunk(
-  "loan_Emi/addloan_Emi",
-  async (loan_EmiData, thunkAPI) => {
+export const addloanEmi = createAsyncThunk(
+  "loanEmi/addloanEmi",
+  async (loanEmiData, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.post("/v1/loan-Emi", loan_EmiData),
+        apiClient.post("/v1/loan-emi-schedule", loanEmiData),
         {
           loading: "Adding loan request...",
           success: "Loan request added successfully",
@@ -45,12 +45,12 @@ export const addloan_Emi = createAsyncThunk(
 );
 
 // Update a loan_request
-export const updateloan_Emi = createAsyncThunk(
-  "loan_Emi/updateloan_Emi",
-  async ({ id, loan_EmiData }, thunkAPI) => {
+export const updateloanEmi = createAsyncThunk(
+  "loanEmi/updateloanEmi",
+  async ({ id, loanEmiData }, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.put(`/v1/loan-Emi/${id}`, loan_EmiData),
+        apiClient.put(`/v1/loan-emi-schedule/${id}`, loanEmiData),
         {
           loading: "Updating loan request...",
           success: "Loan request updated successfully",
@@ -70,12 +70,12 @@ export const updateloan_Emi = createAsyncThunk(
 );
 
 // Delete a loan_request
-export const deleteloan_Emi = createAsyncThunk(
-  "loan_Emi/deleteloan_Emi",
+export const deleteloanEmi = createAsyncThunk(
+  "loanEmi/deleteloanEmi",
   async (id, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.delete(`/v1/loan-Emi/${id}`),
+        apiClient.delete(`/v1/loan-emi-schedule/${id}`),
         {
           loading: "Deleting loan request...",
           success: "Loan request deleted successfully",
@@ -96,10 +96,10 @@ export const deleteloan_Emi = createAsyncThunk(
 );
 
 // Slice
-const loan_EmiSlice = createSlice({
-  name: "loan_Emi",
+const loanEmiSlice = createSlice({
+  name: "loanEmi",
   initialState: {
-    loan_Emi: [],
+    loanEmi: [],
     loading: false,
     error: null,
     success: null,
@@ -113,78 +113,78 @@ const loan_EmiSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch
-      .addCase(fetchloan_Emi.pending, (state) => {
+      .addCase(fetchloanEmi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchloan_Emi.fulfilled, (state, action) => {
+      .addCase(fetchloanEmi.fulfilled, (state, action) => {
         state.loading = false;
-        state.loan_Emi = action.payload.data;
+        state.loanEmi = action.payload.data;
       })
-      .addCase(fetchloan_Emi.rejected, (state, action) => {
+      .addCase(fetchloanEmi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
       })
 
       // Add
-      .addCase(addloan_Emi.pending, (state) => {
+      .addCase(addloanEmi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addloan_Emi.fulfilled, (state, action) => {
+      .addCase(addloanEmi.fulfilled, (state, action) => {
         state.loading = false;
-        state.loan_Emi = {
-          ...state.loan_Emi,
-          data: [action.payload.data, ...(state.loan_Emi?.data || [])],
+        state.loanEmi = {
+          ...state.loanEmi,
+          data: [action.payload.data, ...(state.loanEmi?.data || [])],
         };
         state.success = action.payload.message;
       })
-      .addCase(addloan_Emi.rejected, (state, action) => {
+      .addCase(addloanEmi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
       })
 
       // Update
-      .addCase(updateloan_Emi.pending, (state) => {
+      .addCase(updateloanEmi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateloan_Emi.fulfilled, (state, action) => {
+      .addCase(updateloanEmi.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.loan_Emi?.data?.findIndex(
+        const index = state.loanEmi?.data?.findIndex(
           (item) => item.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.loan_Emi.data[index] = action.payload.data;
+          state.loanEmi.data[index] = action.payload.data;
         }
         state.success = action.payload.message;
       })
-      .addCase(updateloan_Emi.rejected, (state, action) => {
+      .addCase(updateloanEmi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
       })
 
       // Delete
-      .addCase(deleteloan_Emi.pending, (state) => {
+      .addCase(deleteloanEmi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteloan_Emi.fulfilled, (state, action) => {
+      .addCase(deleteloanEmi.fulfilled, (state, action) => {
         state.loading = false;
-        state.loan_Emi = {
-          ...state.loan_Emi,
-          data: state.loan_Emi.data.filter(
+        state.loanEmi = {
+          ...state.loanEmi,
+          data: state.loanEmi.data.filter(
             (item) => item.id !== action.payload.data.id
           ),
         };
         state.success = action.payload.message;
       })
-      .addCase(deleteloan_Emi.rejected, (state, action) => {
+      .addCase(deleteloanEmi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.payload;
       });
   },
 });
 
-export const { clearMessages } = loan_EmiSlice.actions;
-export default loan_EmiSlice.reducer;
+export const { clearMessages } = loanEmiSlice.actions;
+export default loanEmiSlice.reducer;

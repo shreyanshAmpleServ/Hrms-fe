@@ -142,29 +142,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-            <div className="mb-3 col-md-6">
-              <label className="col-form-label">
-                Component Name <span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className={`form-control ${errors.component_name ? "is-invalid" : ""}`}
-                placeholder="Enter Component Name"
-                {...register("component_name", {
-                  required: "Component name is required.",
-                  minLength: {
-                    value: 3,
-                    message: "Component name must be at least 3 characters.",
-                  },
-                })}
-              />
-              {errors.component_name && (
-                <small className="text-danger">
-                  {errors.component_name.message}
-                </small>
-              )}
-            </div>
-
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -189,6 +166,30 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 )}
               </div>
             </div>
+
+            <div className="mb-3 col-md-6">
+              <label className="col-form-label">
+                Component Name <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className={`form-control ${errors.component_name ? "is-invalid" : ""}`}
+                placeholder="Enter Component Name"
+                {...register("component_name", {
+                  required: "Component name is required.",
+                  minLength: {
+                    value: 3,
+                    message: "Component name must be at least 3 characters.",
+                  },
+                })}
+              />
+              {errors.component_name && (
+                <small className="text-danger">
+                  {errors.component_name.message}
+                </small>
+              )}
+            </div>
+
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">

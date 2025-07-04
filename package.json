@@ -61,6 +61,7 @@
     "react-time-picker": "^6.5.2",
     "react-to-pdf": "^2.0.0",
     "react-to-print": "^3.0.5",
+    "recharts": "^3.0.2",
     "redux": "^5.0.1",
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.83.0",

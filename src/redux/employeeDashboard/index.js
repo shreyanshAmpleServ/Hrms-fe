@@ -1,15 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 
+// 🎯 Async Thunks
 export const fetchEmployeeDetails = createAsyncThunk(
   "employeeDashboard/fetchEmployeeDetails",
   async (_, thunkAPI) => {
     try {
       const res = await apiClient.get("/v1/employeeDashboard/employee-details");
-      return res.data?.data; // assuming your response = { success, data, message }
+      return res.data?.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.data?.message || "Failed to fetch employee details"
+        error?.response?.data?.message || "Failed to fetch employee details"
       );
     }
   }
@@ -62,24 +63,46 @@ const employeeDashboardSlice = createSlice({
     error: null,
     profile: null,
     birthdays: [],
-    attendance: null,
+    attendance: {
+      loading: false,
+      error: null,
+      data: null,
+    },
     leaves: [],
   },
   extraReducers: (builder) => {
     builder
+
+      // 🌟 employee details
       .addCase(fetchEmployeeDetails.fulfilled, (state, action) => {
         state.profile = action.payload;
       })
+
+      // 🌟 birthdays
       .addCase(fetchUpcomingBirthdays.fulfilled, (state, action) => {
         state.birthdays = action.payload;
       })
-      .addCase(fetchEmployeeAttendance.fulfilled, (state, action) => {
-        state.attendance = action.payload;
+
+      // 🌟 attendance
+      .addCase(fetchEmployeeAttendance.pending, (state) => {
+        state.attendance.loading = true;
+        state.attendance.error = null;
       })
+      .addCase(fetchEmployeeAttendance.fulfilled, (state, action) => {
+        state.attendance.loading = false;
+        state.attendance.data = action.payload;
+      })
+      .addCase(fetchEmployeeAttendance.rejected, (state, action) => {
+        state.attendance.loading = false;
+        state.attendance.error = action.payload;
+      })
+
+      // 🌟 leaves
       .addCase(fetchEmployeeLeaves.fulfilled, (state, action) => {
         state.leaves = action.payload;
       })
 
+      // 🌟 optional global matchers
       .addMatcher(
         (action) => action.type.endsWith("/pending"),
         (state) => {

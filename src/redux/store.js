@@ -271,7 +271,7 @@ const store = configureStore({
     midMonthPayroll: midMonthPayrollReducer,
     overtimePayroll: overtimePayrollReducer,
     employeeDashboard: employeeDashboardReducer,
-    loan_Emi: LoanEmiReducer,
+    loanEmi: LoanEmiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
