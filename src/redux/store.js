@@ -266,7 +266,7 @@ const store = configureStore({
     costCenter: costCenterReducer,
     basicSalary: basicSalaryReducer,
     employeeDashboard: employeeDashboardReducer,
-    loan_Emi: LoanEmiReducer,
+    loanEmi: LoanEmiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

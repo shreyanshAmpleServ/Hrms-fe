@@ -29,6 +29,9 @@ import { fetchUpcomingBirthdays } from "../../redux/Dashboards/UpcomingBirthdays
 import { fetchUpcomingAnniversaries } from "../../redux/Dashboards/UpcomingAnniversaries";
 import { fetchAttendanceOverview } from "../../redux/Dashboards/AttendanceOverview";
 import DashboardFetch from "./Components/DashboardFetch";
+import EmployeeLeaveSummary from "./Components/EmpDashboardInform";
+// import { fetchLeaveBalance } from "../../redux/";
+
 const notifications = [
   {
     image: "image1.jpg",
@@ -122,6 +125,7 @@ const DashboardEmployee = () => {
     dispatch(fetchUpcomingBirthdays());
     dispatch(fetchUpcomingAnniversaries());
     dispatch(fetchAttendanceOverview());
+    // dispatch(fetchLeaveBalance());
   }, []);
 
   const attendance = {
@@ -332,6 +336,9 @@ const DashboardEmployee = () => {
           </div>
           <DashboardFetch />
 
+          <div className="card">
+            <EmployeeLeaveSummary />
+          </div>
           <ActBirth
             upcomingBirthdays={upcomingBirthdays}
             upcomingAnniversaries={upcomingAnniversaries}

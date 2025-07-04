@@ -13,8 +13,8 @@ import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {
   clearMessages,
-  deleteloan_Emi,
-  fetchloan_Emi,
+  deleteloanEmi,
+  fetchloanEmi,
 } from "../../redux/LoanEmi";
 import ManageStatus from "./ManageStatus";
 
@@ -40,45 +40,38 @@ const LoanEmi = () => {
   const columns = [
     {
       title: "Employee",
-      dataIndex: "loan_req_employee",
-      render: (value) => <div>{value?.full_name}</div>,
+      dataIndex: "loan_emi_employee",
+      render: (value) => <div>{value?.full_name || "—"}</div>,
       sorter: (a, b) =>
-        (a.loan_req_employee?.full_name || "").localeCompare(
-          b.loan_req_employee?.full_name || ""
+        (a.loanemi_employee?.full_name || "").localeCompare(
+          b.loanemi_employee?.full_name || ""
         ),
-    },
-    {
-      title: "Loan Type",
-      dataIndex: "loan_types",
-      render: (value) => <div>{value?.loan_name || "—"}</div>, // assuming loan_types is an object with loan_name
-      sorter: (a, b) =>
-        (a.loan_types?.loan_name || "").localeCompare(
-          b.loan_type?.loan_name || ""
-        ),
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      render: (value) => <div>₹ {Number(value).toLocaleString()}</div>,
-      sorter: (a, b) => a.amount - b.amount,
-    },
-    {
-      title: "EMI Months",
-      dataIndex: "emi_months",
-      sorter: (a, b) => a.emi_months - b.emi_months,
     },
     // {
-    //   title: "Status",
-    //   dataIndex: "status",
-    //   render: (value) => <div>{value || "Pending"}</div>,
-    //   sorter: (a, b) => a.status.localeCompare(b.status),
+    //   title: "Loan Amount",
+    //   dataIndex: "loanemi_loan_request",
+    //   render: (value) =>
+    //     value?.amount ? `₹ ${Number(value.amount).toLocaleString()}` : "—",
+    //   sorter: (a, b) =>
+    //     Number(a.loanemi_loan_request?.amount || 0) -
+    //     Number(b.loanemi_loan_request?.amount || 0),
     // },
     {
-      title: "Requested On",
-      dataIndex: "request_date",
-      render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-      sorter: (a, b) => new Date(a.request_date) - new Date(b.request_date),
+      title: "EMI Amount",
+      dataIndex: "emi_amount",
+      render: (value) => `₹ ${Number(value).toLocaleString()}`,
+      sorter: (a, b) => a.emi_amount - b.emi_amount,
     },
+    {
+      title: "Due Month",
+      dataIndex: "loan_emi_payslip",
+      render: (value) => value?.month || "—",
+      sorter: (a, b) =>
+        (a.loanemi_payslip?.month || "").localeCompare(
+          b.loanemi_payslip?.month || ""
+        ),
+    },
+
     {
       title: "Status",
       dataIndex: "status",
@@ -146,7 +139,7 @@ const LoanEmi = () => {
                       className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_loan_Emi_modal"
+                      data-bs-target="#add_edit_loanEmi_modal"
                       onClick={() => {
                         setSelected(record);
                         setMode("edit");
@@ -172,21 +165,24 @@ const LoanEmi = () => {
       : []),
   ];
 
-  const { loan_Emi, loading, error, success } = useSelector(
-    (state) => state.loan_Emi
+  const { loanEmi, loading, error, success } = useSelector(
+    (state) => state.loanEmi
   );
+  const Emi = useSelector((state) => state.loanEmi);
+
+  console.log(Emi);
 
   React.useEffect(() => {
-    dispatch(fetchloan_Emi({ search: searchText }));
+    dispatch(fetchloanEmi({ search: searchText }));
   }, [dispatch, searchText]);
   React.useEffect(() => {
     setPaginationData({
-      currentPage: loan_Emi?.currentPage,
-      totalPage: loan_Emi?.totalPages,
-      totalCount: loan_Emi?.totalCount,
-      pageSize: loan_Emi?.size,
+      currentPage: loanEmi?.currentPage,
+      totalPage: loanEmi?.totalPages,
+      totalCount: loanEmi?.totalCount,
+      pageSize: loanEmi?.size,
     });
-  }, [loan_Emi]);
+  }, [loanEmi]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -195,7 +191,7 @@ const LoanEmi = () => {
       pageSize,
     }));
     dispatch(
-      fetchloan_Emi({
+      fetchloanEmi({
         search: searchText,
         page: currentPage,
         size: pageSize,
@@ -208,7 +204,7 @@ const LoanEmi = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = loan_Emi?.data || [];
+    let data = loanEmi?.data || [];
 
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
@@ -220,7 +216,7 @@ const LoanEmi = () => {
       );
     }
     return data;
-  }, [searchText, loan_Emi, columns, sortOrder]);
+  }, [searchText, loanEmi, columns, sortOrder]);
 
   const handleDeleteIndustry = (industry) => {
     setSelectedIndustry(industry);
@@ -231,8 +227,8 @@ const LoanEmi = () => {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const deleteData = () => {
     if (selectedIndustry) {
-      dispatch(deleteloan_Emi(selectedIndustry.id));
-      // navigate(`/loan_Emi`);
+      dispatch(deleteloanEmi(selectedIndustry.id));
+      // navigate(`/loanEmi`);
       setShowDeleteModal(false);
     }
   };
@@ -241,7 +237,7 @@ const LoanEmi = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC HRMS - Loan EMI</title>
-        <meta name="Loan EMI" content="This is loan_Emi page of DCC HRMS." />
+        <meta name="Loan EMI" content="This is loanEmi page of DCC HRMS." />
       </Helmet>
       <div className="content">
         {error && (
@@ -267,7 +263,7 @@ const LoanEmi = () => {
                   <h4 className="page-title">
                     Loan EMI
                     <span className="count-title">
-                      {loan_Emi?.totalCount || 0}
+                      {loanEmi?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -297,11 +293,11 @@ const LoanEmi = () => {
                       to=""
                       className="btn btn-primary"
                       data-bs-toggle="offcanvas"
-                      data-bs-target="#add_edit_loan_Emi_modal"
+                      data-bs-target="#add_edit_loanEmi_modal"
                       onClick={() => setMode("add")}
                     >
                       <i className="ti ti-square-rounded-plus me-2" />
-                      Add Offer Letter
+                      Add Loan EMI
                     </Link>
                   </div>
                 </div>
