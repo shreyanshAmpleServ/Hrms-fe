@@ -61,24 +61,24 @@ const EmployeeDashboard = () => {
     dispatch(fetchEmployeeLeaves());
   }, [dispatch]);
 
-  if (loading) {
-    return <div className="text-center mt-5">Loading...</div>;
-  }
-  if (error) {
-    return <div className="text-danger text-center mt-5">{error}</div>;
-  }
+  // if (loading) {
+  //   return <div className="text-center mt-5">Loading...</div>;
+  // }
+  // if (error) {
+  //   return <div className="text-danger text-center mt-5">{error}</div>;
+  // }
 
   return (
-    <div className="row mb-4">
+    <div className="row h-100">
       {/* Profile Card */}
-      <div className="col-md-4">
+      <div className="col-md-12">
         <div
-          className="shadow-sm rounded p-4 h-100 bg-white"
+          className="shadow-sm rounded h-100 bg-white"
           style={{ borderRadius: "1rem", overflow: "hidden" }}
         >
           {/* Top Section */}
           <div
-            className="d-flex gap-3 mb-4 align-items-center p-2"
+            className="d-flex gap-3 mb-4 align-items-center p-2 w-400 h-30"
             style={{
               background: "linear-gradient(135deg, #343a40, #495057)",
               borderRadius: "0.75rem",
@@ -97,7 +97,7 @@ const EmployeeDashboard = () => {
               alt="avatar"
             />
             <div>
-              <h5 className="mb-1 text-white co">
+              <h5 className="mb-1 text-white ">
                 {profile?.full_name
                   ? capitalizeWords(profile.full_name)
                   : "Unnamed"}
@@ -113,11 +113,11 @@ const EmployeeDashboard = () => {
           </div>
 
           {/* Details */}
-          <div style={{ lineHeight: "1.8" }}>
-            <p className="mb-2 fs-5 text-dark">
-              🆔 <strong>Employee Code:</strong> {profile?.employee_code || "-"}
+          <div style={{ lineHeight: "1.8", margin: "0 1rem" }}>
+            <p className="mb-2  fs-5 text-dark">
+              <strong>Employee Code:</strong> {profile?.employee_code || "-"}
             </p>
-
+            <hr />
             <p className="mb-2">
               📞 <strong>Phone:</strong> {profile?.phone_number || "-"}
             </p>
@@ -127,11 +127,18 @@ const EmployeeDashboard = () => {
             </p>
 
             <p className="mb-2">
-              🎂 <strong>Date of Birth:</strong> {profile?.date_of_birth || "-"}
+              🚻 <strong>Gender:</strong> {profile?.gender || "-"}
             </p>
 
             <p className="mb-2">
-              🚻 <strong>Gender:</strong> {profile?.gender || "-"}
+              🏢 <strong>Date of Birth:</strong>{" "}
+              {profile?.date_of_birth
+                ? new Date(profile.date_of_birth).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "-"}
             </p>
 
             <p className="mb-2">
@@ -221,30 +228,32 @@ const EmployeeDashboard = () => {
           </p>
         </div>
       </div> */}
-      <div className="col-md-8">
+
+      {/* <div className="col-md-8">
         <div className="shadow-sm rounded p-4 bg-white h-100">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="mb-0">📊 Attendance Summary</h5>
             <span className="badge bg-primary fs-6">
-              🕒 Total: {totalHours} hours
+              🕒 Total: {totalHours.toFixed(2)} hours
             </span>
           </div>
 
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
-              data={data}
+              data={chartData}
               margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="label" />
-              <YAxis />
-              <Tooltip />
+              <YAxis tickFormatter={(value) => `${value}h`} />
+              <Tooltip formatter={(value) => `${value} hours`} />
               <Legend />
               <Bar dataKey="hours" fill="#4c8bf5" name="Working Hours" />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
+
       {/* Leaves Summary */}
       {/* <div className="col-md-4">
         <div className="shadow-sm rounded p-4 bg-white h-100">
