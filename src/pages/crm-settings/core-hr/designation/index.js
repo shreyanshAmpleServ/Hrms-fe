@@ -211,7 +211,7 @@ const DesignationList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Designation"
+                        label="Create"
                         id="add_edit_designation_modal"
                         setMode={() => setMode("add")}
                       />

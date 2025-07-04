@@ -225,7 +225,7 @@ const AwardTypeMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Award Type"
+                        label="Create"
                         id="add_edit_award_type_modal"
                         setMode={() => setMode("add")}
                       />

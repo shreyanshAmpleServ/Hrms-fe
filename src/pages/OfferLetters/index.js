@@ -279,9 +279,10 @@ const OfferLetters = () => {
                         data-bs-toggle="offcanvas"
                         data-bs-target="#add_edit_offer_letter_modal"
                         onClick={() => setMode("add")}
+                        style={{ width: "100px" }}
                       >
                         <i className="ti ti-square-rounded-plus me-2" />
-                        Add Offer Letter
+                        Create
                       </Link>
                     )}
                   </div>

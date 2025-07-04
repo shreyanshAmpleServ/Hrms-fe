@@ -263,9 +263,10 @@ const EmployeeList = () => {
                             className="btn btn-primary"
                             data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvas_add_edit_employee"
+                            style={{ width: "100px" }}
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add Employee
+                            Create
                           </Link>
                         </div>
                       </div>

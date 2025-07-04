@@ -303,7 +303,7 @@ const Company = () => {
                       <ExportData
                         exportToPDF={exportToPDF}
                         exportToExcel={exportToExcel}
-                        label="Add Company"
+                        label="Create "
                         isCreate={isCreate}
                         id="offcanvas_add_company"
                       />

@@ -205,7 +205,7 @@ const Modules = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Module"
+                        label="Create"
                         id="add_edit_module_modal"
                         setMode={() => setMode("add")}
                       />

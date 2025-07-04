@@ -205,7 +205,7 @@ const WorkLifeEventTypeMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Work Life Event"
+                        label="Create"
                         id="add_edit_work_life_modal"
                         setMode={() => setMode("add")}
                       />

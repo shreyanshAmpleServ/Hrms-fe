@@ -212,7 +212,7 @@ const DocumentTypeMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Document Type"
+                        label="Create"
                         id="add_edit_document_type_modal"
                         setMode={() => setMode("add")}
                       />

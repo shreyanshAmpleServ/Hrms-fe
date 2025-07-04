@@ -292,9 +292,10 @@ const AssetAssignment = () => {
                             className="btn btn-primary"
                             data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvas_add"
+                            style={{ width: "100px" }}
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add Asset Assignment
+                            Create
                           </Link>
                         </div>
                       </div>

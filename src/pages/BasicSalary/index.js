@@ -317,9 +317,10 @@ const BasicSalary = () => {
                         data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvas_add_edit_basic_salary"
                         onClick={() => setMode("add")}
+                        style={{ width: "100px" }}
                       >
                         <i className="ti ti-square-rounded-plus me-2" />
-                        Add Component Assignment
+                        Create
                       </Link>
                     </div>
                   )}

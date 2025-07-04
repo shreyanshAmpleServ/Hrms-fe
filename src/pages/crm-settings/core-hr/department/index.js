@@ -215,7 +215,7 @@ const DepartmentList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Department"
+                        label="Create "
                         id="add_edit_department_modal"
                         setMode={() => setMode("add")}
                       />

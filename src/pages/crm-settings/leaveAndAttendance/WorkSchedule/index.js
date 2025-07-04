@@ -207,7 +207,7 @@ const WorkTemplateList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Work Schedule"
+                        label="Create"
                         id="add_edit_work_schedule_modal"
                         setMode={() => setMode("add")}
                       />

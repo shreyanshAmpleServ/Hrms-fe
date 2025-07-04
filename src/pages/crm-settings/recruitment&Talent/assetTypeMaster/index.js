@@ -209,7 +209,7 @@ const AssetTypeMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Asset Type"
+                        label="Create"
                         id="add_edit_assets_type_modal"
                         setMode={() => setMode("add")}
                       />

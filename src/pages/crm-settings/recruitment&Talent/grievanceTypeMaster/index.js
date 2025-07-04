@@ -211,7 +211,7 @@ const GrievanceTypeMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Grievance Type"
+                        label="Create"
                         id="add_edit_grievance_type_modal"
                         setMode={() => setMode("add")}
                       />

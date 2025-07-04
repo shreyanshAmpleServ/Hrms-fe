@@ -316,9 +316,10 @@ const LeaveApplications = () => {
                         data-bs-toggle="offcanvas"
                         data-bs-target="#add_edit_leave_application_modal"
                         onClick={() => setMode("add")}
+                        style={{ width: "100px" }}
                       >
                         <i className="ti ti-square-rounded-plus me-2" />
-                        Apply Leave Application
+                        Create
                       </Link>
                     )}
                   </div>

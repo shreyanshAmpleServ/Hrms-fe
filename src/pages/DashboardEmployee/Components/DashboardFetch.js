@@ -6,18 +6,7 @@ import {
   fetchEmployeeAttendance,
   fetchEmployeeLeaves,
 } from "../../../redux/employeeDashboard";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { MdWatchLater } from "react-icons/md";
-import EmpDashboardInform from "../Components/EmpDashboardInform";
+
 const EmployeeDashboard = () => {
   const dispatch = useDispatch();
   const { loading, error, profile, attendance } = useSelector(
@@ -61,13 +50,6 @@ const EmployeeDashboard = () => {
     dispatch(fetchEmployeeLeaves());
   }, [dispatch]);
 
-  // if (loading) {
-  //   return <div className="text-center mt-5">Loading...</div>;
-  // }
-  // if (error) {
-  //   return <div className="text-danger text-center mt-5">{error}</div>;
-  // }
-
   return (
     <div className="row h-100">
       {/* Profile Card */}
@@ -80,8 +62,8 @@ const EmployeeDashboard = () => {
           <div
             className="d-flex gap-3 mb-4 align-items-center p-2 w-400 h-30"
             style={{
-              background: "linear-gradient(135deg, #343a40, #495057)",
-              borderRadius: "0.75rem",
+              background: "linear-gradient(135deg, #6c63ff, #4e54c8)",
+              borderBottom: "1px solid rgba(0,0,0,0.1)",
               color: "#fff",
             }}
           >
@@ -154,202 +136,17 @@ const EmployeeDashboard = () => {
 
             <hr />
           </div>
+          <div
+            className="px-3 py-2 text-end"
+            style={{
+              background: "#f8f9fa",
+              borderTop: "1px solid #dee2e6",
+            }}
+          >
+            {/* <button className="btn btn-primary btn-sm">Edit Profile</button> */}
+          </div>
         </div>
       </div>
-
-      {/* <div className="col-md-4">
-          <div className="shadow-sm rounded p-4 bg-white h-100">
-            <h5 className="mb-3">🎂 Upcoming Birthdays</h5>
-            {birthdays.length === 0 ? (
-              <p className="text-muted">No upcoming birthdays.</p>
-            ) : (
-              <ul className="list-unstyled">
-                {birthdays.map((b, i) => (
-                  <li key={i} className="mb-2">
-                    <strong>{b.name}</strong> - {b.date}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div> */}
-      {/* Attendance Summary */}
-      {/* <div className="col-md-4">
-        <div
-          className="shadow-sm rounded p-4 bg-white h-100"
-          style={{ borderRadius: "1rem", lineHeight: "1.8" }}
-        >
-          <h5 className="mb-4 d-flex align-items-center">
-            <MdWatchLater size={22} className="me-2 text-primary" />
-            Attendance Summary
-          </h5>
-
-          <p className="mb-2">
-            <strong>📅 Today:</strong>{" "}
-            <span className="text-dark">
-              {attendance?.today?.working_hours ?? 0} hours
-            </span>
-          </p>
-
-          <p className="mb-2">
-            <strong>📈 This Week:</strong>{" "}
-            <span className="text-dark">
-              {attendance?.thisWeek?.total_hours ?? 0} /{" "}
-              {attendance?.thisWeek?.target ?? 0} hrs (
-              {attendance?.thisWeek?.percentage ?? 0}%)
-            </span>
-          </p>
-
-          <p className="mb-2">
-            <strong>📉 Last Week:</strong>{" "}
-            <span className="text-dark">
-              {attendance?.lastWeek?.total_hours ?? 0} /{" "}
-              {attendance?.lastWeek?.target ?? 0} hrs (
-              {attendance?.lastWeek?.percentage ?? 0}%)
-            </span>
-          </p>
-
-          <p className="mb-2">
-            <strong>📆 This Month:</strong>{" "}
-            <span className="text-dark">
-              {attendance?.thisMonth?.total_hours ?? 0} /{" "}
-              {attendance?.thisMonth?.target ?? 0} hrs (
-              {attendance?.thisMonth?.percentage ?? 0}%)
-            </span>
-          </p>
-
-          <p className="mb-0">
-            <strong>🗓️ Last Month:</strong>{" "}
-            <span className="text-dark">
-              {attendance?.lastMonth?.total_hours ?? 0} /{" "}
-              {attendance?.lastMonth?.target ?? 0} hrs (
-              {attendance?.lastMonth?.percentage ?? 0}%)
-            </span>
-          </p>
-        </div>
-      </div> */}
-
-      {/* <div className="col-md-8">
-        <div className="shadow-sm rounded p-4 bg-white h-100">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="mb-0">📊 Attendance Summary</h5>
-            <span className="badge bg-primary fs-6">
-              🕒 Total: {totalHours.toFixed(2)} hours
-            </span>
-          </div>
-
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="label" />
-              <YAxis tickFormatter={(value) => `${value}h`} />
-              <Tooltip formatter={(value) => `${value} hours`} />
-              <Legend />
-              <Bar dataKey="hours" fill="#4c8bf5" name="Working Hours" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div> */}
-
-      {/* Leaves Summary */}
-      {/* <div className="col-md-4">
-        <div className="shadow-sm rounded p-4 bg-white h-100">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="mb-0">📅 Leave Details</h5>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ti-calendar"></i> 2024
-            </button>
-          </div>
-
-          <div className="row text-center mb-3">
-            <div className="col-6">
-              <p className="mb-1 text-muted">Total Leaves</p>
-              <h6 className="fw-bold">16</h6>
-            </div>
-            <div className="col-6">
-              <p className="mb-1 text-muted">Taken</p>
-              <h6 className="fw-bold">10</h6>
-            </div>
-          </div>
-
-          <div className="row text-center mb-3">
-            <div className="col-6">
-              <p className="mb-1 text-muted">Absent</p>
-              <h6 className="fw-bold">2</h6>
-            </div>
-            <div className="col-6">
-              <p className="mb-1 text-muted">Request</p>
-              <h6 className="fw-bold">0</h6>
-            </div>
-          </div>
-
-          <div className="row text-center mb-4">
-            <div className="col-6">
-              <p className="mb-1 text-muted">Worked Days</p>
-              <h6 className="fw-bold">240</h6>
-            </div>
-            <div className="col-6">
-              <p className="mb-1 text-muted">Loss of Pay</p>
-              <h6 className="fw-bold">2</h6>
-            </div>
-          </div>
-
-          <div className="d-grid">
-            <button className="btn btn-dark btn-sm">Apply New Leave</button>
-          </div>
-        </div>
-      </div> */}
-
-      {/* <div className="col-md-4">
-        <div className="shadow-sm rounded p-4 bg-white h-100">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="mb-0">📅 Leave Details</h5>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ti-calendar"></i> {new Date().getFullYear()}
-            </button>
-          </div>
-
-          <div className="row text-center mb-3">
-            <div className="col-6">
-              <p className="mb-1 text-muted">Total Leaves</p>
-              <h6 className="fw-bold">{leaveStats.total_leaves ?? "-"}</h6>
-            </div>
-            <div className="col-6">
-              <p className="mb-1 text-muted">Taken</p>
-              <h6 className="fw-bold">{leaveStats.taken ?? "-"}</h6>
-            </div>
-          </div>
-
-          <div className="row text-center mb-3">
-            <div className="col-6">
-              <p className="mb-1 text-muted">Absent</p>
-              <h6 className="fw-bold">{leaveStats.absent ?? "-"}</h6>
-            </div>
-            <div className="col-6">
-              <p className="mb-1 text-muted">Request</p>
-              <h6 className="fw-bold">{leaveStats.request ?? "-"}</h6>
-            </div>
-          </div>
-
-          <div className="row text-center mb-4">
-            <div className="col-6">
-              <p className="mb-1 text-muted">Worked Days</p>
-              <h6 className="fw-bold">{leaveStats.worked_days ?? "-"}</h6>
-            </div>
-            <div className="col-6">
-              <p className="mb-1 text-muted">Loss of Pay</p>
-              <h6 className="fw-bold">{leaveStats.loss_of_pay ?? "-"}</h6>
-            </div>
-          </div>
-
-          <div className="d-grid">
-            <button className="btn btn-dark btn-sm">Apply New Leave</button>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };

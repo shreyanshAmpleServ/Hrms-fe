@@ -219,7 +219,7 @@ const ReviewTemplateMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Review Template"
+                        label="Create"
                         id="add_edit_review_template_modal"
                         setMode={() => setMode("add")}
                       />

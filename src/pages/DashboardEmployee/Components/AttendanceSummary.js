@@ -74,7 +74,7 @@ const AttendanceSummary = () => {
             <YAxis tickFormatter={(value) => `${value}h`} />
             <Tooltip formatter={(value) => `${value} hours`} />
             <Legend />
-            <Bar dataKey="hours" fill="#4c8bf5" name="Working Hours" />
+            <Bar dataKey="hours" fill="#6c63ff" name="Working Hours" />
           </BarChart>
         </ResponsiveContainer>
       </div>

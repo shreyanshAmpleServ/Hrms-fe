@@ -207,7 +207,7 @@ const SalaryStructure = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Salary Structure"
+                        label="Create"
                         id="add_edit_salary_structure_modal"
                         setMode={() => setMode("add")}
                       />

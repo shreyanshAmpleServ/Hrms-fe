@@ -225,9 +225,10 @@ const LeaveBalance = () => {
                         data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvas_add_edit_leave_balance"
                         onClick={() => setMode("add")}
+                        style={{ width: "100px" }}
                       >
                         <i className="ti ti-square-rounded-plus me-2" />
-                        Add Leave Balance
+                        Create
                       </Link>
                     </div>
                   )}

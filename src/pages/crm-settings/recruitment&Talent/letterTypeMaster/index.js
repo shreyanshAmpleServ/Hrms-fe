@@ -289,7 +289,7 @@ const LetterTypeMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Letter Type"
+                        label="Create"
                         id="add_edit_latter_type_modal"
                         setMode={() => setMode("add")}
                       />

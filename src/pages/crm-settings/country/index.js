@@ -21,7 +21,7 @@ const CountriesList = () => {
   const [sortOrder, setSortOrder] = useState("ascending");
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Country",
+    (i) => i?.module_name === "Country"
   )?.[0]?.permissions;
   const isView = allPermissions?.view;
   const isCreate = allPermissions?.create;
@@ -130,17 +130,17 @@ const CountriesList = () => {
           item[col.dataIndex]
             ?.toString()
             .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
+            .includes(searchText.toLowerCase())
+        )
       );
     }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
       );
     }
     return data;
@@ -195,7 +195,7 @@ const CountriesList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Country"
+                        label="Create"
                         id="add_edit_country_modal"
                         setMode={() => setMode("add")}
                       />

@@ -229,7 +229,7 @@ const DisciplinaryPenaltyMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Disciplinary Penalty"
+                        label="Create"
                         id="add_edit_disiplinary_penalty_modal"
                         setMode={() => setMode("add")}
                       />

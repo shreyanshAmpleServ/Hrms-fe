@@ -260,7 +260,7 @@ const LeaveEncashment = () => {
                             data-bs-target="#offcanvas_add"
                           >
                             <i className="ti ti-square-rounded-plus me-2" />
-                            Add Leave Encashment
+                            Create
                           </Link>
                         </div>
                       </div>

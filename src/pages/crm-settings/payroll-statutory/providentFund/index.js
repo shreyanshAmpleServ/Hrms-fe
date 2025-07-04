@@ -217,7 +217,7 @@ const ProvidentFund = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Provident Fund"
+                        label="Create"
                         id="add_edit_provident_fund_modal"
                         setMode={() => setMode("add")}
                       />

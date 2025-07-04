@@ -216,7 +216,7 @@ const CurrenciesList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Currency"
+                        label="Create "
                         id="add_edit_currencies_modal"
                         setMode={() => setMode("add")}
                       />

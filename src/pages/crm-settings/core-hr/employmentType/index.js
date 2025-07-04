@@ -211,7 +211,7 @@ const Employee_TypeList = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Employee Type"
+                        label="Create"
                         id="add_edit_employee_type_modal"
                         setMode={() => setMode("add")}
                       />

@@ -213,7 +213,7 @@ const JobCategoryMaster = () => {
                   {isCreate && (
                     <div className="col-sm-8">
                       <AddButton
-                        label="Add Job Category Master"
+                        label="Create"
                         id="add_edit_job_category_modal"
                         setMode={() => setMode("add")}
                       />
