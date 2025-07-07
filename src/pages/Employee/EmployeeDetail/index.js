@@ -666,11 +666,7 @@ const EmployeeDetail = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-12">
-                    <div className="card">
-                      {/* <div className="card-body">
-                        <EmployeeComponent employeeDetail={employeeDetail} />
-                      </div> */}
-                    </div>
+                    <EmployeeComponent employeeDetail={employeeDetail} />
                   </div>
                 </div>
               </div>

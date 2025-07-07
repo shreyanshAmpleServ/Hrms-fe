@@ -5,9 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Table from "../../../../components/common/dataTableNew/index";
 import usePermissions from "../../../../components/common/Permissions.js";
-import { deleteEmployee, fetchEmployee } from "../../../../redux/Employee";
+import { deleteEmployee } from "../../../../redux/Employee";
 import DeleteAlert from "../../../BasicSalary/alert/DeleteAlert.js";
 import AddEditModal from "../../../BasicSalary/modal/AddEditModal.js";
+import { fetchBasicSalary } from "../../../../redux/BasicSalary/index.js";
 
 const EmployeeComponent = ({ employeeDetail }) => {
   const [employee, setEmployee] = React.useState(null);
@@ -201,15 +202,13 @@ const EmployeeComponent = ({ employeeDetail }) => {
   const { basicSalary, loading } = useSelector((state) => state.basicSalary);
 
   React.useEffect(() => {
-    if (employeeDetail?.id) {
-      dispatch(fetchEmployee({ employee_id: employeeDetail?.id }));
-    }
-  }, [employeeDetail?.id]);
+    dispatch(fetchBasicSalary({ employee_id: employeeDetail?.id }));
+  }, [dispatch, employeeDetail?.id]);
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const handleDeleteEmployee = () => {
     if (employee) {
-      dispatch(deleteEmployee(employee.id));
+      // dispatch(deleteEmployee(employee.id));
       setShowDeleteModal(false);
     }
   };
