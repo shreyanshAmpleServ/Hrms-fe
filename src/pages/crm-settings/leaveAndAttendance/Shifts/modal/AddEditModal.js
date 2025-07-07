@@ -98,7 +98,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       start_time: data.start_time ? data.start_time : "",
       end_time: data.end_time ? data.end_time : "",
       half_day_on: data.half_day_working === "N" ? null : data.half_day_on,
-      weekoff_days: leaveDays?.map((item) => item.label).join(","),
+      weekoff_days: leaveDays?.map((item) => item.label).join(", "),
     };
 
     if (mode === "add") {

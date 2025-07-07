@@ -52,7 +52,6 @@ const ShiftList = () => {
       dataIndex: "start_time",
       render: (text) => (text ? text.slice(0, 5) : "-"),
       sorter: (a, b) => {
-        // Convert to string for comparison, handle null/undefined
         const aVal = a.start_time != null ? String(a.start_time) : "";
         const bVal = b.start_time != null ? String(b.start_time) : "";
         return aVal.localeCompare(bVal);
@@ -63,7 +62,6 @@ const ShiftList = () => {
       dataIndex: "end_time",
       render: (text) => (text ? text.slice(0, 5) : "-"),
       sorter: (a, b) => {
-        // Convert to string for comparison, handle null/undefined
         const aVal = a.end_time != null ? String(a.end_time) : "";
         const bVal = b.end_time != null ? String(b.end_time) : "";
         return aVal.localeCompare(bVal);
@@ -74,7 +72,6 @@ const ShiftList = () => {
       dataIndex: "lunch_time",
       render: (text) => (text ? text + " Mins" : "-"),
       sorter: (a, b) => {
-        // Convert to string for comparison, handle null/undefined
         const aVal = a.lunch_time != null ? String(a.lunch_time) : "";
         const bVal = b.lunch_time != null ? String(b.lunch_time) : "";
         return aVal.localeCompare(bVal);
@@ -99,7 +96,6 @@ const ShiftList = () => {
                     ? "Saturday"
                     : "Sunday",
       sorter: (a, b) => {
-        // Convert to string for comparison, handle null/undefined
         const aVal = a.half_day_on != null ? String(a.half_day_on) : "";
         const bVal = b.half_day_on != null ? String(b.half_day_on) : "";
         return aVal.localeCompare(bVal);
@@ -116,7 +112,6 @@ const ShiftList = () => {
       dataIndex: "weekoff_days",
       render: (text) => <div>{text || "-"}</div>,
       sorter: (a, b) => {
-        // Convert to string for comparison, handle null/undefined
         const aVal = a.weekoff_days != null ? String(a.weekoff_days) : "";
         const bVal = b.weekoff_days != null ? String(b.weekoff_days) : "";
         return aVal.localeCompare(bVal);
