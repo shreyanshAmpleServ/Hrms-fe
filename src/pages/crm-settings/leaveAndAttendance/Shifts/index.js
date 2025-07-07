@@ -91,6 +91,12 @@ const ShiftList = () => {
       render: (text) => <div>{text === "Y" ? "Yes" : "No"}</div>,
       sorter: (a, b) => a.half_day_working.localeCompare(b.half_day_working),
     },
+    {
+      title: "Week Off Days",
+      dataIndex: "weekoff_days",
+      render: (text) => <div>{text || "-"}</div>,
+      sorter: (a, b) => a.weekoff_days.localeCompare(b.weekoff_days),
+    },
 
     {
       title: "Remarks",

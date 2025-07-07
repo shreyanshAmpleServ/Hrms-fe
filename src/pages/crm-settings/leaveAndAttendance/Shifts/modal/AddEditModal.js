@@ -1,6 +1,4 @@
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import ReactDatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,8 +8,9 @@ import { fetchdepartment } from "../../../../../redux/department";
 import { addShift, updateShift } from "../../../../../redux/Shift";
 
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
+  const [leaveDays, setLeaveDays] = React.useState([]);
   const { loading } = useSelector((state) => state.shift);
-  dayjs.extend(customParseFormat);
+
   const {
     register,
     control,
@@ -34,6 +33,9 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   }, [dispatch]);
 
   const watchHalfDayWorking = watch("half_day_working");
+
+  const leaveDaysCount = 7 - watch("number_of_working_days");
+
   const halfDayOnOptions = [
     { label: "Monday", value: "1" },
     { label: "Tuesday", value: "2" },
@@ -96,6 +98,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       start_time: data.start_time ? data.start_time : "",
       end_time: data.end_time ? data.end_time : "",
       half_day_on: data.half_day_working === "N" ? null : data.half_day_on,
+      weekoff_days: leaveDays?.map((item) => item.label).join(","),
     };
 
     if (mode === "add") {
@@ -108,6 +111,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         })
       );
     }
+    setLeaveDays([]);
     reset();
     setSelected(null);
     closeButton.click();
@@ -299,6 +303,48 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     </small>
                   )}
                 </div>
+                {leaveDaysCount > 0 && (
+                  <div className="mb-3 col-lg-6">
+                    <label className="col-form-label">
+                      Leave Days <span className="text-danger">*</span>
+                    </label>
+                    <Controller
+                      name="leave_days"
+                      control={control}
+                      rules={{
+                        validate: (value) =>
+                          value && value.length === leaveDaysCount
+                            ? true
+                            : `Please select exactly ${leaveDaysCount} leave day(s).`,
+                      }}
+                      render={({ field }) => (
+                        <ReactSelect
+                          isMulti
+                          options={halfDayOnOptions}
+                          placeholder="Select Leave Days"
+                          className={errors.leave_days ? "is-invalid" : ""}
+                          value={halfDayOnOptions.filter((option) =>
+                            (field.value || []).some(
+                              (selected) => selected.value === option.value
+                            )
+                          )}
+                          onChange={(opt) => {
+                            if (opt.length <= leaveDaysCount) {
+                              field.onChange(opt);
+                              setLeaveDays(opt);
+                            }
+                          }}
+                          closeMenuOnSelect={false}
+                        />
+                      )}
+                    />
+                    {errors.leave_days && (
+                      <small className="text-danger">
+                        {errors.leave_days.message}
+                      </small>
+                    )}
+                  </div>
+                )}
 
                 {/* Daily working hours */}
                 <div className="mb-3 col-lg-6">
