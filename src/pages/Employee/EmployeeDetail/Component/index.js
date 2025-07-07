@@ -20,61 +20,6 @@ const EmployeeComponent = ({ employeeDetail }) => {
 
   const columns = [
     {
-      title: "Employee",
-      dataIndex: "hrms_d_employee",
-      render: (text) => <div>{text?.full_name}</div>,
-      sorter: (a, b) =>
-        (a?.hrms_d_employee?.full_name || "").localeCompare(
-          b?.hrms_d_employee?.full_name || ""
-        ),
-    },
-    {
-      title: "Effective From",
-      dataIndex: "effective_from",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) =>
-        moment(a.effective_from).isBefore(moment(b.effective_from)) ? -1 : 1,
-    },
-    {
-      title: "Effective To",
-      dataIndex: "effective_to",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) =>
-        moment(a.effective_to).isBefore(moment(b.effective_to)) ? -1 : 1,
-    },
-    {
-      title: "Department",
-      dataIndex: "hrms_d_employee",
-      render: (text) => text?.hrms_employee_department?.department_name || "-",
-      sorter: (a, b) =>
-        (
-          a?.hrms_d_employee?.hrms_employee_department?.department_name || ""
-        ).localeCompare(
-          b?.hrms_d_employee?.hrms_employee_department?.department_name || ""
-        ),
-    },
-    {
-      title: "Branch",
-      dataIndex: "branch_pay_component_header",
-      render: (text) => text?.branch_name || "-",
-      sorter: (a, b) =>
-        (a?.branch_pay_component_header?.branch_name || "").localeCompare(
-          b?.branch_pay_component_header?.branch_name || ""
-        ),
-    },
-    {
-      title: "Position",
-      dataIndex: "hrms_d_employee",
-      render: (text) =>
-        text?.hrms_employee_designation?.designation_name || "-",
-      sorter: (a, b) =>
-        (
-          a?.hrms_d_employee?.hrms_employee_designation?.designation_name || ""
-        ).localeCompare(
-          b?.hrms_d_employee?.hrms_employee_designation?.designation_name || ""
-        ),
-    },
-    {
       title: "Pay Grade",
       dataIndex: "pay_grade_id",
       render: (text) =>
@@ -89,10 +34,6 @@ const EmployeeComponent = ({ employeeDetail }) => {
                 : text === 5
                   ? "Grade E - ₹90,001 and above"
                   : "-",
-      sorter: (a, b) =>
-        (a?.pay_grade_id?.name || "").localeCompare(
-          b?.pay_grade_id?.name || ""
-        ),
     },
     {
       title: "Pay Grade Level",
@@ -109,7 +50,6 @@ const EmployeeComponent = ({ employeeDetail }) => {
                 : text === 5
                   ? "Level 5 - Executive"
                   : "-",
-      sorter: (a, b) => a?.pay_grade_level - b?.pay_grade_level,
     },
     {
       title: "Allowance Group",
@@ -126,14 +66,16 @@ const EmployeeComponent = ({ employeeDetail }) => {
                 : text === "5"
                   ? "Technical Staff Allowance"
                   : "-",
-      sorter: (a, b) =>
-        (a?.allowance_group || "").localeCompare(b?.allowance_group || ""),
     },
     {
-      title: "Work Life Entry",
-      dataIndex: "work_life_entry",
-      render: (text) => text || "-",
-      sorter: (a, b) => a?.work_life_entry - b?.work_life_entry,
+      title: "From",
+      dataIndex: "effective_from",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    },
+    {
+      title: "To",
+      dataIndex: "effective_to",
+      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
       title: "Status",
@@ -144,13 +86,11 @@ const EmployeeComponent = ({ employeeDetail }) => {
         ) : (
           <span className="badge bg-danger">Inactive</span>
         ),
-      sorter: (a, b) => (a?.status || "").localeCompare(b?.status || ""),
     },
     {
       title: "Remarks",
       dataIndex: "remarks",
       render: (text) => text || "-",
-      sorter: (a, b) => (a?.remarks || "").localeCompare(b?.remarks || ""),
     },
 
     ...(isUpdate || isDelete
@@ -217,7 +157,7 @@ const EmployeeComponent = ({ employeeDetail }) => {
     <>
       <div className="card">
         <div className="card-header p-4 d-flex justify-content-between align-items-center">
-          <h4 className="card-title">Employee Component</h4>
+          <h4 className="card-title">Component</h4>
           {isCreate && (
             <Link
               to="#"
@@ -229,14 +169,14 @@ const EmployeeComponent = ({ employeeDetail }) => {
               }}
             >
               <i className="ti ti-square-rounded-plus me-2" />
-              Add Employee Component
+              Create
             </Link>
           )}
         </div>
         <div className="card-body">
           <div className="table-responsive custom-table">
             <Table
-              dataSource={employee?.data || []}
+              dataSource={basicSalary?.data || []}
               columns={columns}
               loading={loading}
               isView={isView}

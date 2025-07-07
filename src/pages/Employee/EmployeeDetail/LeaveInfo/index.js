@@ -42,7 +42,7 @@ const EmployeeLeaveInfo = () => {
   return (
     <div className="card-body">
       <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2">
-        <h4 className="mb-2">Employee Leave Info</h4>
+        <h4 className="mb-2">Leave Info</h4>
       </div>
 
       <div className="table-responsive custom-table">

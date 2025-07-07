@@ -170,7 +170,7 @@ const EmployeeAttachment = () => {
   return (
     <div className="card-body">
       <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
-        <h4>Employee Attachments</h4>
+        <h4>Attachments</h4>
         <Tooltip title="Add Attachment">
           <Button
             variant="filled"
