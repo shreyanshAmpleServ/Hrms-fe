@@ -15,7 +15,6 @@ export const fetchProjects = createAsyncThunk(
       const response = await apiClient.get(
         `/v1/projects?${queryParams.toString()}`
       );
-      console.log("mkxxx", response.data);
 
       return response.data;
     } catch (error) {
@@ -116,7 +115,7 @@ const projectSlice = createSlice({
         state.loading = false;
         state.projects = action.payload.data;
       })
-      .addCase(fetchProjects.rejected, (state, action) => {
+      .addCase(fetchProjects.rejected, (state) => {
         state.loading = false;
         // state.error = action.payload.message;
       })

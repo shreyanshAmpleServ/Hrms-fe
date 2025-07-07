@@ -174,10 +174,10 @@ const midMonthPayrollSlice = createSlice({
       })
       .addCase(createMidMonthPayroll.fulfilled, (state, action) => {
         state.loading = false;
-        state.midMonthPayroll = {
-          ...state.midMonthPayroll,
-          data: [...(state.midMonthPayroll.data || []), action.payload.data],
-        };
+        // state.midMonthPayroll = {
+        //   ...state.midMonthPayroll,
+        //   data: [...(state.midMonthPayroll.data || []), action.payload.data],
+        // };
         state.success = action.payload.message;
       })
       .addCase(createMidMonthPayroll.rejected, (state, action) => {

@@ -5,13 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Table from "../../../../components/common/dataTableNew/index";
 import usePermissions from "../../../../components/common/Permissions.js";
-import { deleteEmployee } from "../../../../redux/Employee";
+import { fetchBasicSalary } from "../../../../redux/BasicSalary/index.js";
 import DeleteAlert from "../../../BasicSalary/alert/DeleteAlert.js";
 import AddEditModal from "../../../BasicSalary/modal/AddEditModal.js";
-import { fetchBasicSalary } from "../../../../redux/BasicSalary/index.js";
 
 const EmployeeComponent = ({ employeeDetail }) => {
-  const [employee, setEmployee] = React.useState(null);
+  const [selected, setSelected] = React.useState(null);
   const [mode, setMode] = React.useState("add");
   const { isView, isCreate, isUpdate, isDelete } =
     usePermissions("Employee Component");
@@ -116,7 +115,6 @@ const EmployeeComponent = ({ employeeDetail }) => {
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvas_add_edit_basic_salary"
                       onClick={() => {
-                        setEmployee(record);
                         setMode("edit");
                       }}
                     >
@@ -142,13 +140,15 @@ const EmployeeComponent = ({ employeeDetail }) => {
   const { basicSalary, loading } = useSelector((state) => state.basicSalary);
 
   React.useEffect(() => {
-    dispatch(fetchBasicSalary({ employee_id: employeeDetail?.id }));
+    if (employeeDetail?.id) {
+      dispatch(fetchBasicSalary({ employee_id: employeeDetail?.id }));
+    }
   }, [dispatch, employeeDetail?.id]);
 
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-  const handleDeleteEmployee = () => {
+  const handleDeleteEmployee = (employee) => {
     if (employee) {
-      // dispatch(deleteEmployee(employee.id));
+      // dispatch(deleteEmployee(employee?.id));
       setShowDeleteModal(false);
     }
   };
@@ -163,7 +163,7 @@ const EmployeeComponent = ({ employeeDetail }) => {
               to="#"
               className="btn btn-primary"
               data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_employee_component  "
+              data-bs-target="#offcanvas_add_edit_basic_salary"
               onClick={() => {
                 setMode("add with employee");
               }}
@@ -188,9 +188,11 @@ const EmployeeComponent = ({ employeeDetail }) => {
 
       <AddEditModal
         mode={mode}
-        employee={basicSalary?.data}
-        setEmployee={setEmployee}
+        initialData={selected}
+        setSelected={setSelected}
         employee_id={employeeDetail?.id}
+        department_id={employeeDetail?.department_id}
+        position_id={employeeDetail?.department_id}
       />
       <DeleteAlert
         label="Employee Component"
