@@ -149,6 +149,7 @@ export const SidebarData = (userType) => {
               showSubRoute: false,
               submenu: false,
             },
+
             {
               label: "Advance Payment Entry",
               link: route.advancePaymentEntry,
@@ -460,6 +461,18 @@ export const SidebarData = (userType) => {
               label: "Loan Type",
               link: route.loneType,
               showSubRoute: false,
+            },
+            {
+              label: "Loan Master",
+              link: route.loanMaster,
+              showSubRoute: false,
+              submenu: false,
+            },
+            {
+              label: "Over Time Master",
+              link: route.overTimeMaster,
+              showSubRoute: false,
+              submenu: false,
             },
             {
               label: "Provident Fund",

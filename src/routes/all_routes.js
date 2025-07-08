@@ -1,3 +1,5 @@
+import LoanMaster from "../pages/LoanMaster";
+
 export const all_routes = {
   // AUTHENTICATION
   login: "/login",
@@ -111,7 +113,8 @@ export const all_routes = {
   overTimePayroll: "/overtime-payroll-processing",
   payslipViewer: "/payslip-viewer",
   wpsFileGenerator: "/wps-file-generator",
-
+  loanMaster: "/loan-master",
+  overTimeMaster: "/overtime-master",
   // HRMS - PERFORMANCE & APPRAISALS
   appraisalEntries: "/appraisal-entries",
   goalSheetAssignment: "/goal-sheet-assignment",

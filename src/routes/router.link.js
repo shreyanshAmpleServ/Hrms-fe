@@ -163,6 +163,8 @@ import DashboardEmployee from "../pages/DashboardEmployee/Employee";
 import MidMonthPayroll from "../pages/MidMonthPayroll";
 import OverTimePayroll from "../pages/OverTimePayroll";
 import LoanEmi from "../pages/LoanEmi";
+import LoanMaster from "../pages/LoanMaster";
+import OverTimeMaster from "../pages/overTimeMaster";
 export { Dashboard, Login };
 const route = all_routes;
 
@@ -311,6 +313,18 @@ export const privateRoutes = [
     element: <LoneType />,
     route: Route,
     title: "Loan Type",
+  },
+  {
+    path: route.loanMaster,
+    element: <LoanMaster />,
+    route: Route,
+    title: "Loan Master",
+  },
+  {
+    path: route.overTimeMaster,
+    element: <OverTimeMaster />,
+    route: Route,
+    title: "Over Time Master",
   },
   {
     path: route.reviewTemplateMaster,
