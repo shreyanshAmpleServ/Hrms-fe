@@ -282,7 +282,7 @@ const OverTimeMaster = () => {
           </div>
         </div>
         <ManageOverTimeMaster
-          setOverTimeMaster={setSelected}
+          setOvertimeMaster={setSelected}
           overtimeMaster={selected}
         />
       </div>

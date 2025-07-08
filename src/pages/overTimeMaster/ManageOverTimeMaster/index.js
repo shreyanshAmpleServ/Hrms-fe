@@ -70,6 +70,24 @@ const ManageOvertimeMaster = ({ setOvertimeMaster, overtimeMaster }) => {
       closeButton?.click();
     }
   };
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setOvertimeMaster(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setOvertimeMaster]);
 
   return (
     <div
@@ -81,13 +99,12 @@ const ManageOvertimeMaster = ({ setOvertimeMaster, overtimeMaster }) => {
         <h4>{overtimeMaster ? "Update" : "Add"} Overtime Master</h4>
         <button
           type="button"
-          className="btn-close custom-btn-close border p-1"
+          className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
-          onClick={() => {
-            setOvertimeMaster(null);
-            reset();
-          }}
-        />
+          aria-label="Close"
+        >
+          <i className="ti ti-x" />
+        </button>
       </div>
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>

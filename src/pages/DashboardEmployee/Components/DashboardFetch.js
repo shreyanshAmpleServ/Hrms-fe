@@ -87,7 +87,7 @@ const EmployeeDashboard = () => {
             <div>
               <button
                 type="button"
-                className="btn btn-lg hover-shadow text-white  border-1 border-white rounded-circle"
+                className="btn btn-lg hover-shadow text-white  border-1 p-1 border-white rounded"
                 data-bs-toggle="modal"
                 data-bs-target="#update_basic_info_modal"
                 title="Edit Profile"

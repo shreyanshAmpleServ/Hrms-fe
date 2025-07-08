@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { deleteOverTimePayroll } from "../../../redux/OverTimePayroll";
+import { deleteOverTimeMaster } from "../../../redux/overTimeMaster";
 
-const DeleteConfirmation = ({ showModal, setShowModal, overtimePayrollId }) => {
+const DeleteConfirmation = ({ showModal, setShowModal, overTimeMasterId }) => {
   const dispatch = useDispatch();
   const handleDeleteOverTimePayroll = () => {
-    if (overtimePayrollId) {
-      dispatch(deleteOverTimePayroll(overtimePayrollId));
+    if (overTimeMasterId) {
+      dispatch(deleteOverTimeMaster(overTimeMasterId));
       setShowModal(false);
     }
   };
@@ -26,9 +26,9 @@ const DeleteConfirmation = ({ showModal, setShowModal, overtimePayrollId }) => {
                   <div className="avatar avatar-xl bg-danger-light rounded-circle mb-3">
                     <i className="ti ti-trash-x fs-36 text-danger" />
                   </div>
-                  <h4 className="mb-2">Remove Over Time Payroll?</h4>
+                  <h4 className="mb-2">Remove Over Time Master?</h4>
                   <p className="mb-0">
-                    Are you sure you want to remove <br /> the Over Time Payroll
+                    Are you sure you want to remove <br /> the Over Time Master
                     you selected?
                   </p>
                   <div className="d-flex align-items-center justify-content-center mt-4">

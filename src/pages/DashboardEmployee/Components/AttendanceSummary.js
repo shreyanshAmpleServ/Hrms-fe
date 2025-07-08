@@ -31,7 +31,21 @@ const AttendanceSummary = () => {
     dispatch(fetchEmployeeAttendance());
   }, [dispatch]);
 
-  if (attendance.loading) return <p>Loading attendance data...</p>;
+  if (attendance.loading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "200px" }}
+      >
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-2">Fetching attendance data...</p>
+        </div>
+      </div>
+    );
+  }
   if (attendance.error)
     return <p className="text-danger">Error: {attendance.error}</p>;
   if (!attendance.data?.data) return <p>No attendance data available.</p>;
@@ -63,6 +77,8 @@ const AttendanceSummary = () => {
             🕒 Total: {totalHours.toFixed(2)} hours
           </span>
         </div>
+
+        <div />
 
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
