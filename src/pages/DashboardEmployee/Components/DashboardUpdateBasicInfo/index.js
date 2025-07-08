@@ -57,8 +57,8 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
           .join(", ") ||
         " - - " ||
         "",
-      department_id: employeeDetail?.department_id || "",
-      designation_id: employeeDetail?.designation_id || "",
+      department: employeeDetail?.department || "",
+      designation: employeeDetail?.designation || "",
       gender: employeeDetail?.gender || "",
       date_of_birth: employeeDetail?.date_of_birth || "",
       full_name: employeeDetail?.full_name || "",
@@ -72,8 +72,8 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
       reset({
         full_name: employeeDetail.full_name || "",
         is_active: employeeDetail.is_active,
-        department_id: employeeDetail.department_id || "",
-        designation_id: employeeDetail.designation_id || "",
+        department: employeeDetail.department || "",
+        designation: employeeDetail.designation || "",
         gender: employeeDetail.gender || "",
         date_of_birth:
           employeeDetail.date_of_birth || new Date().toISOString() || "",
@@ -85,8 +85,8 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
     } else {
       reset({
         full_name: "",
-        department_id: "",
-        designation_id: "",
+        department: "",
+        designation: "",
         gender: "",
         date_of_birth: "",
         email: "",
@@ -112,8 +112,8 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
       );
       formData.append("email", data.email);
       formData.append("phone_number", data.phone_number);
-      formData.append("department_id", data.department_id);
-      formData.append("designation_id", data.designation_id);
+      formData.append("department", data.department);
+      formData.append("designation", data.designation);
       formData.append("gender", data.gender);
       formData.append("date_of_birth", data.date_of_birth);
       formData.append("join_date", data.join_date);
@@ -292,7 +292,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
                         />
                       )}
                     />
-                    {errors.department_id && (
+                    {errors.department && (
                       <small className="text-danger">
                         {errors.department_id.message}
                       </small>
@@ -306,7 +306,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
                       Designation<span className="text-danger"> *</span>
                     </label>
                     <Controller
-                      name="designation_id"
+                      name="designation"
                       rules={{ required: "Designation is required" }}
                       control={control}
                       render={({ field }) => (
@@ -317,8 +317,7 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
                           classNamePrefix="react-select"
                           value={
                             designationOptions?.find(
-                              (option) =>
-                                option.value === watch("designation_id")
+                              (option) => option.value === watch("designation")
                             ) || ""
                           }
                           onChange={(selectedOption) => {
@@ -327,9 +326,9 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
                         />
                       )}
                     />
-                    {errors.designation_id && (
+                    {errors.designation && (
                       <small className="text-danger">
-                        {errors.designation_id.message}
+                        {errors.designation.message}
                       </small>
                     )}
                   </div>
@@ -410,14 +409,14 @@ const UpdateBasicInfo = ({ employeeDetail }) => {
               <div className="row">
                 <div className="col-md-12">
                   {/* Address */}
-                  <div className="mb-3">
+                  {/* <div className="mb-3">
                     <label className="col-form-label">Address</label>
                     <textarea
                       className={`form-control ${errors.address ? "is-invalid" : ""}`}
                       placeholder="Enter Address"
                       {...register("address", {})}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
