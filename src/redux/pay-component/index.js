@@ -2,9 +2,24 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import apiClient from "../../utils/axiosConfig";
 
-// pay_component Slice
+/**
+ * @typedef {Object} PayComponentData
+ * @property {string} id - The ID of the pay component
+ * @property {string} [name] - The name of the pay component
+ * @property {boolean} [is_active] - Whether the pay component is active
+ * @property {boolean} [is_advance] - Whether the pay component is an advance payment
+ */
 
-// Fetch All pay_components
+/**
+ * Fetch all pay components with optional filtering
+ * @param {Object} datas - Query parameters
+ * @param {string} [datas.search] - Search term
+ * @param {number} [datas.page] - Page number
+ * @param {number} [datas.size] - Page size
+ * @param {boolean} [datas.is_active] - Filter by active status
+ * @param {boolean} [datas.is_advance] - Filter by advance payment status
+ * @returns {Promise<{data: PayComponentData[], message: string}>}
+ */
 export const fetchpay_component = createAsyncThunk(
   "pay_component/fetchpay_component",
   async (datas, thunkAPI) => {
@@ -26,7 +41,11 @@ export const fetchpay_component = createAsyncThunk(
   }
 );
 
-// Add an pay_component
+/**
+ * Add a new pay component
+ * @param {PayComponentData} pay_componentData - Pay component data to add
+ * @returns {Promise<{data: PayComponentData, message: string}>}
+ */
 export const addpay_component = createAsyncThunk(
   "pay_component/addpay_component",
   async (pay_componentData, thunkAPI) => {
@@ -48,7 +67,13 @@ export const addpay_component = createAsyncThunk(
   }
 );
 
-// Update an pay_component
+/**
+ * Update an existing pay component
+ * @param {Object} params - Update parameters
+ * @param {string} params.id - ID of the pay component to update
+ * @param {PayComponentData} params.pay_componentData - Updated pay component data
+ * @returns {Promise<{data: PayComponentData, message: string}>}
+ */
 export const updatepay_component = createAsyncThunk(
   "pay_component/updatepay_component",
   async ({ id, pay_componentData }, thunkAPI) => {
@@ -76,7 +101,11 @@ export const updatepay_component = createAsyncThunk(
   }
 );
 
-// Delete an pay_component
+/**
+ * Delete a pay component by ID
+ * @param {string} id - ID of the pay component to delete
+ * @returns {Promise<{data: {id: string}, message: string}>}
+ */
 export const deletepay_component = createAsyncThunk(
   "pay_component/deletepay_component",
   async (id, thunkAPI) => {
@@ -101,6 +130,9 @@ export const deletepay_component = createAsyncThunk(
   }
 );
 
+/**
+ * Redux slice for pay component management
+ */
 const pay_componentsSlice = createSlice({
   name: "pay_component",
   initialState: {
@@ -110,6 +142,10 @@ const pay_componentsSlice = createSlice({
     success: null,
   },
   reducers: {
+    /**
+     * Clear error and success messages
+     * @param {Object} state - Current state
+     */
     clearMessages(state) {
       state.error = null;
       state.success = null;

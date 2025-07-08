@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,34 +12,21 @@ import {
 } from "../../../redux/MidMonthPayroll";
 import { fetchpay_component } from "../../../redux/pay-component";
 
-export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1; // 1-based month
+export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
 export const DEFAULT_PAYROLL_YEAR = new Date().getFullYear();
 
-export const payrollMonthOptions = [
-  { value: 1, label: "January" },
-  { value: 2, label: "February" },
-  { value: 3, label: "March" },
-  { value: 4, label: "April" },
-  { value: 5, label: "May" },
-  { value: 6, label: "June" },
-  { value: 7, label: "July" },
-  { value: 8, label: "August" },
-  { value: 9, label: "September" },
-  { value: 10, label: "October" },
-  { value: 11, label: "November" },
-  { value: 12, label: "December" },
-];
-
-export const payrollWeekOptions = [
-  { value: 1, label: "Week 1" },
-  { value: 2, label: "Week 2" },
-  { value: 3, label: "Week 3" },
-  { value: 4, label: "Week 4" },
-];
+export const payrollMonthOptions = Array.from({ length: 12 }, (_, i) => ({
+  value: i + 1,
+  label: new Date(0, i).toLocaleString("default", { month: "long" }),
+}));
+export const payrollWeekOptions = Array.from({ length: 4 }, (_, i) => ({
+  value: i + 1,
+  label: `Week ${i + 1}`,
+}));
 
 const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
-  const [payroll, setPayroll] = React.useState([]);
+  const [payroll, setPayroll] = useState([]);
   const dispatch = useDispatch();
   const {
     control,
@@ -49,23 +36,19 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     watch,
     formState: { errors },
   } = useForm();
+  const { loading } = useSelector((s) => s.midMonthPayroll || {});
+  const { currencies } = useSelector((s) => s.currencies);
+  const { employeeOptions } = useSelector((s) => s.employee);
+  const { pay_component } = useSelector((s) => s.payComponent);
 
-  const { loading } = useSelector((state) => state.midMonthPayroll || {});
-  const { currencies } = useSelector((state) => state.currencies);
-  const { employeeOptions } = useSelector((state) => state.employee);
-  const { pay_component } = useSelector((state) => state.payComponent);
-
-  // Memoize pay component options
   const paycomponentOptions = useMemo(
     () =>
-      pay_component?.data?.map((item) => ({
-        value: item.id,
-        label: item.component_name,
+      pay_component?.data?.map(({ id, component_name }) => ({
+        value: id,
+        label: component_name,
       })) || [],
     [pay_component]
   );
-
-  // Currency options
   const currencyList = useMemo(
     () =>
       currencies?.data?.map((item) => ({
@@ -76,17 +59,13 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       })) || [],
     [currencies]
   );
-
-  // Helper to get currency_name by id
   const getCurrencyNameById = (id) => {
-    const found = currencyList.find((c) => String(c.value) === String(id));
-    return found ? found.currency_name + " (" + found.currency_code + ")" : "";
+    const c = currencyList.find((c) => String(c.value) === String(id));
+    return c ? `${c.currency_name} (${c.currency_code})` : "";
   };
-
-  // Helper to get currency_code by id
   const getCurrencyCodeById = (id) => {
-    const found = currencyList.find((c) => String(c.value) === String(id));
-    return found ? found.currency_code + " (" + found.currency_name + ")" : "";
+    const c = currencyList.find((c) => String(c.value) === String(id));
+    return c ? `${c.currency_code} (${c.currency_name})` : "";
   };
 
   // Fetch initial data
@@ -96,44 +75,40 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     dispatch(employeeOptionsFn());
   }, [dispatch]);
 
-  // Set payroll list when employee options change
+  // Set payroll list when employee options or currency changes
   useEffect(() => {
     if (employeeOptions) {
+      const pay_currency = watch("pay_currency") || "";
       setPayroll(
-        employeeOptions.map((item) => {
-          const pay_currency = watch("pay_currency") || "";
-          return {
-            employee_id: item.value,
-            employee_name: item.label,
-            net_pay: 0,
-            pay_currency,
-            processed: "N",
-            is_selected: false,
-            employee_email: item?.meta?.email || "",
-            currency_name: getCurrencyNameById(pay_currency),
-            currency_code: getCurrencyCodeById(pay_currency),
-          };
-        })
+        employeeOptions.map((item) => ({
+          employee_id: item.value,
+          employee_name: item.label,
+          net_pay: 0,
+          pay_currency,
+          processed: "N",
+          is_selected: false,
+          employee_email: item?.meta?.email || "",
+          currency_name: getCurrencyNameById(pay_currency),
+          currency_code: getCurrencyCodeById(pay_currency),
+        }))
       );
     }
     // eslint-disable-next-line
   }, [employeeOptions, currencyList, watch("pay_currency")]);
 
-  // When global currency changes, update all unmodified (default) pay_currency in payroll
+  // Update payroll currency if global currency changes
   useEffect(() => {
     setPayroll((prev) =>
-      prev.map((item) => {
-        if (!item.pay_currency || item.pay_currency === "") {
-          const pay_currency = watch("pay_currency") || "";
-          return {
-            ...item,
-            pay_currency,
-            currency_name: getCurrencyNameById(pay_currency),
-            currency_code: getCurrencyCodeById(pay_currency),
-          };
-        }
-        return item;
-      })
+      prev.map((item) =>
+        !item.pay_currency
+          ? {
+              ...item,
+              pay_currency: watch("pay_currency") || "",
+              currency_name: getCurrencyNameById(watch("pay_currency")),
+              currency_code: getCurrencyCodeById(watch("pay_currency")),
+            }
+          : item
+      )
     );
     // eslint-disable-next-line
   }, [watch("pay_currency"), currencyList]);
@@ -158,7 +133,6 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       status: midMonthPayroll?.status || "Pending",
       component_id: midMonthPayroll?.component_id || "",
     });
-    // When resetting, also update payroll pay_currency and currency_name to match global
     setPayroll((prev) =>
       prev.map((item) => {
         const pay_currency = midMonthPayroll?.pay_currency || "";
@@ -173,38 +147,26 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     // eslint-disable-next-line
   }, [reset, midMonthPayroll, currencyList]);
 
-  // Handle employee selection
-  const handleChangeEmployee = useCallback(
-    (e, a) => {
-      setPayroll((prev) =>
-        prev.map((item) =>
-          item.employee_id === a.employee_id
-            ? { ...item, is_selected: e.target.checked }
-            : item
-        )
-      );
-    },
-    [setPayroll]
-  );
-
-  // Handle net pay change
-  const handleNetPayChange = useCallback(
-    (value, index) => {
-      setPayroll((prev) =>
-        prev.map((item, idx) =>
-          idx === index ? { ...item, net_pay: value } : item
-        )
-      );
-    },
-    [setPayroll]
-  );
-
-  // Handle per-employee currency change
+  // Handlers
+  const handleChangeEmployee = useCallback((e, a) => {
+    setPayroll((prev) =>
+      prev.map((item) =>
+        item.employee_id === a.employee_id
+          ? { ...item, is_selected: e.target.checked }
+          : item
+      )
+    );
+  }, []);
+  const handleNetPayChange = useCallback((value, idx) => {
+    setPayroll((prev) =>
+      prev.map((item, i) => (i === idx ? { ...item, net_pay: value } : item))
+    );
+  }, []);
   const handleEmployeeCurrencyChange = useCallback(
-    (currencyValue, index) => {
+    (currencyValue, idx) => {
       setPayroll((prev) =>
-        prev.map((item, idx) =>
-          idx === index
+        prev.map((item, i) =>
+          i === idx
             ? {
                 ...item,
                 pay_currency: currencyValue,
@@ -215,7 +177,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
         )
       );
     },
-    [setPayroll, currencyList]
+    [currencyList]
   );
 
   // Prepare selected employees for submission
@@ -224,9 +186,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       payroll
         .filter((item) => item.is_selected)
         .map((item) => {
-          // Determine pay_currency and currency_name for this employee
           const pay_currency = item.pay_currency || watch("pay_currency");
-          const currency_name = getCurrencyNameById(pay_currency);
           return {
             ...item,
             payroll_month: watch("payroll_month"),
@@ -236,7 +196,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
               ? new Date(watch("pay_date")).toISOString()
               : "",
             pay_currency,
-            currency_name,
+            currency_name: getCurrencyNameById(pay_currency),
             processed: "Y",
             execution_date: watch("execution_date")
               ? new Date(watch("execution_date")).toISOString()
@@ -247,7 +207,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
             status: watch("status"),
             remarks: "",
             employee_email: item.employee_email,
-            component_id: watch("component_id "),
+            component_id: watch("component_id"),
           };
         }),
     [payroll, watch, currencyList]
@@ -263,10 +223,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
           <input
             type="checkbox"
             className="form-check-input"
-            style={{
-              width: "20px",
-              height: "20px",
-            }}
+            style={{ width: 20, height: 20 }}
             checked={a.is_selected}
             onChange={(e) => handleChangeEmployee(e, a)}
             aria-label={`Select employee ${a.employee_id}`}
@@ -283,20 +240,19 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     {
       title: "Processed",
       dataIndex: "processed",
-      render: (_, record) =>
-        record.is_selected ? (
-          <div className="badge bg-success">Yes</div>
-        ) : (
-          <div className="badge bg-danger">No</div>
-        ),
+      render: (_, r) => (
+        <div className={`badge bg-${r.is_selected ? "success" : "danger"}`}>
+          {r.is_selected ? "Yes" : "No"}
+        </div>
+      ),
     },
     {
       title: "Pay Currency",
       dataIndex: "pay_currency",
-      render: (text, record, index) =>
-        record.is_selected ? (
+      render: (text, r, i) =>
+        r.is_selected ? (
           <Select
-            inputId={`pay_currency_row_${record.employee_id}`}
+            inputId={`pay_currency_row_${r.employee_id}`}
             className="select"
             options={currencyList}
             placeholder="Select Currency"
@@ -305,19 +261,13 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
               currencyList.find(
                 (x) =>
                   String(x.value) ===
-                  String(record.pay_currency || watch("pay_currency"))
+                  String(r.pay_currency || watch("pay_currency"))
               ) || null
             }
-            onChange={(option) =>
-              handleEmployeeCurrencyChange(option ? option.value : "", index)
-            }
-            isDisabled={!record.is_selected}
+            onChange={(o) => handleEmployeeCurrencyChange(o ? o.value : "", i)}
+            isDisabled={!r.is_selected}
             styles={{
-              container: (base) => ({
-                ...base,
-                minWidth: 150,
-                maxWidth: 250,
-              }),
+              container: (base) => ({ ...base, minWidth: 150, maxWidth: 250 }),
               control: (base) => ({
                 ...base,
                 minHeight: 30,
@@ -329,87 +279,60 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                 height: 30,
                 padding: "0 6px",
               }),
-              input: (base) => ({
-                ...base,
-                margin: 0,
-                padding: 0,
-              }),
-              indicatorsContainer: (base) => ({
-                ...base,
-                height: 30,
-              }),
+              input: (base) => ({ ...base, margin: 0, padding: 0 }),
+              indicatorsContainer: (base) => ({ ...base, height: 30 }),
             }}
           />
         ) : (
           <p className="mb-0">
-            {record.pay_currency
-              ? getCurrencyNameById(record.pay_currency)
-              : "-"}
+            {r.pay_currency ? getCurrencyNameById(r.pay_currency) : "-"}
           </p>
         ),
-      width: "250px",
+      width: 250,
     },
     {
       title: "Net Pay",
       dataIndex: "net_pay",
-      render: (text, record, index) =>
-        record.is_selected ? (
+      render: (text, r, i) =>
+        r.is_selected ? (
           <input
             type="number"
             className="form-control form-control-sm"
-            value={record.net_pay || ""}
+            value={r.net_pay || ""}
             min="0"
-            onChange={(e) => {
-              const value = e.target.value;
-              handleNetPayChange(value, index);
-            }}
-            aria-label={`Net pay for employee ${record.employee_id}`}
+            onChange={(e) => handleNetPayChange(e.target.value, i)}
+            aria-label={`Net pay for employee ${r.employee_id}`}
           />
         ) : (
           <p className="mb-0">{text ?? "-"}</p>
         ),
-      width: "200px",
+      width: 200,
     },
   ];
 
-  // Enhanced onSubmit: validate at least one employee is selected and net pay is positive
+  // onSubmit: validate and dispatch
   const onSubmit = async () => {
-    if (selectedEmployees.length === 0) {
-      alert("Please select at least one employee and enter Net Pay.");
-      return;
-    }
-    const hasInvalidNetPay = selectedEmployees.some(
-      (emp) => !emp.net_pay || isNaN(emp.net_pay) || Number(emp.net_pay) <= 0
-    );
-    if (hasInvalidNetPay) {
-      alert(
+    if (!selectedEmployees.length)
+      return alert("Please select at least one employee and enter Net Pay.");
+    if (
+      selectedEmployees.some(
+        (emp) => !emp.net_pay || isNaN(emp.net_pay) || Number(emp.net_pay) <= 0
+      )
+    )
+      return alert(
         "Please enter a valid Net Pay (greater than 0) for all selected employees."
       );
-      return;
-    }
-    // Validate that all selected employees have a currency
-    const hasInvalidCurrency = selectedEmployees.some(
-      (emp) => !emp.pay_currency
-    );
-    if (hasInvalidCurrency) {
-      alert("Please select a currency for all selected employees.");
-      return;
-    }
+    if (selectedEmployees.some((emp) => !emp.pay_currency))
+      return alert("Please select a currency for all selected employees.");
+    if (selectedEmployees.some((emp) => !emp.currency_name))
+      return alert(
+        "Currency name is missing for one or more selected employees."
+      );
 
-    // Validate that all selected employees have a currency_name
-    const hasInvalidCurrencyName = selectedEmployees.some(
-      (emp) => !emp.currency_name
-    );
-    if (hasInvalidCurrencyName) {
-      alert("Currency name is missing for one or more selected employees.");
-      return;
-    }
-
-    const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    const closeBtn = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
-      // Send selected employees as part of the data
       await dispatch(createMidMonthPayroll(selectedEmployees)).unwrap();
-      if (closeButton) closeButton.click();
+      closeBtn && closeBtn.click();
       reset();
       setPayroll((prev) =>
         prev.map((item) => ({
@@ -422,375 +345,269 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
         }))
       );
       await dispatch(fetchMidMonthPayroll()).unwrap();
-    } catch (error) {
-      console.error("Error creating mid month payroll", error);
+    } catch (e) {
+      console.error("Error creating mid month payroll", e);
     }
   };
 
   // Reset form when offcanvas closes
   useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_add");
-    if (offcanvasElement) {
-      const handleModalClose = () => {
-        reset();
-        setPayroll((prev) =>
-          prev.map((item) => ({
-            ...item,
-            is_selected: false,
-            net_pay: 0,
-            pay_currency: watch("pay_currency") || "",
-            currency_name: getCurrencyNameById(watch("pay_currency") || ""),
-            currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
-          }))
-        );
-      };
-      offcanvasElement.addEventListener(
-        "hidden.bs.offcanvas",
-        handleModalClose
+    const el = document.getElementById("offcanvas_add");
+    if (!el) return;
+    const handleClose = () => {
+      reset();
+      setPayroll((prev) =>
+        prev.map((item) => ({
+          ...item,
+          is_selected: false,
+          net_pay: 0,
+          pay_currency: watch("pay_currency") || "",
+          currency_name: getCurrencyNameById(watch("pay_currency") || ""),
+          currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
+        }))
       );
-      return () => {
-        offcanvasElement.removeEventListener(
-          "hidden.bs.offcanvas",
-          handleModalClose
-        );
-      };
-    }
+    };
+    el.addEventListener("hidden.bs.offcanvas", handleClose);
+    return () => el.removeEventListener("hidden.bs.offcanvas", handleClose);
   }, [reset, currencyList, watch("pay_currency")]);
 
+  // Form field generator for Select/DatePicker
+  const renderSelect = (name, options, label, required, extraProps = {}) => (
+    <div className="col-md-4">
+      <label className="col-form-label" htmlFor={name}>
+        {label} {required && <span className="text-danger">*</span>}
+      </label>
+      <div className="mb-3">
+        <Controller
+          name={name}
+          control={control}
+          rules={required ? { required: `${label} is required!` } : undefined}
+          render={({ field }) => (
+            <Select
+              {...field}
+              inputId={name}
+              className="select"
+              placeholder={`Select ${label}`}
+              options={options}
+              classNamePrefix="react-select"
+              value={options.find((x) => x.value === field.value)}
+              onChange={(o) => field.onChange(o.value)}
+              {...extraProps}
+            />
+          )}
+        />
+      </div>
+      {errors[name] && (
+        <small className="text-danger">{errors[name].message}</small>
+      )}
+    </div>
+  );
+  const renderDate = (name, label, required) => (
+    <div className="col-md-4">
+      <label className="col-form-label" htmlFor={name}>
+        {label} {required && <span className="text-danger">*</span>}
+      </label>
+      <div className="mb-3">
+        <Controller
+          name={name}
+          control={control}
+          rules={required ? { required: `${label} is required!` } : undefined}
+          render={({ field }) => (
+            <DatePicker
+              {...field}
+              id={name}
+              className="form-control"
+              placeholderText={`Select ${label}`}
+              selected={field.value ? new Date(field.value) : null}
+              dateFormat={name === "payroll_year" ? "yyyy" : "dd-MM-yyyy"}
+              showYearPicker={name === "payroll_year"}
+              onChange={(date) =>
+                field.onChange(
+                  name === "payroll_year"
+                    ? date
+                      ? date.getFullYear()
+                      : null
+                    : date
+                )
+              }
+            />
+          )}
+        />
+      </div>
+      {errors[name] && (
+        <small className="text-danger">{errors[name].message}</small>
+      )}
+    </div>
+  );
+
   return (
-    <>
-      <div
-        className="offcanvas offcanvas-end offcanvas-larger"
-        tabIndex={-1}
-        id="offcanvas_add"
-        aria-labelledby="offcanvas_add_label"
-      >
-        <div className="offcanvas-header border-bottom">
-          <h4 id="offcanvas_add_label">
-            {midMonthPayroll ? "Update " : "Add "} Mid Month Payroll
-          </h4>
-          <button
-            type="button"
-            className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-            onClick={() => {
-              reset();
-              setPayroll((prev) =>
-                prev.map((item) => ({
-                  ...item,
-                  is_selected: false,
-                  net_pay: 0,
-                  pay_currency: watch("pay_currency") || "",
-                  currency_name: getCurrencyNameById(
-                    watch("pay_currency") || ""
-                  ),
-                  currency_code: getCurrencyCodeById(
-                    watch("pay_currency") || ""
-                  ),
-                }))
-              );
-            }}
-          >
-            <i className="ti ti-x" />
-          </button>
-        </div>
-        <div className="offcanvas-body">
-          <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <div>
-              <div className="row">
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="payroll_week">
-                    Payroll Week <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="payroll_week"
-                      control={control}
-                      rules={{ required: "Payroll Week is required!" }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          inputId="payroll_week"
-                          className="select"
-                          placeholder="Select Payroll Week"
-                          options={payrollWeekOptions}
-                          classNamePrefix="react-select"
-                          value={payrollWeekOptions.find(
-                            (x) => x.value === field.value
-                          )}
-                          onChange={(option) => field.onChange(option.value)}
-                        />
+    <div
+      className="offcanvas offcanvas-end offcanvas-larger"
+      tabIndex={-1}
+      id="offcanvas_add"
+      aria-labelledby="offcanvas_add_label"
+    >
+      <div className="offcanvas-header border-bottom">
+        <h4 id="offcanvas_add_label">
+          {midMonthPayroll ? "Update " : "Add "} Mid Month Payroll
+        </h4>
+        <button
+          type="button"
+          className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+          onClick={() => {
+            reset();
+            setPayroll((prev) =>
+              prev.map((item) => ({
+                ...item,
+                is_selected: false,
+                net_pay: 0,
+                pay_currency: watch("pay_currency") || "",
+                currency_name: getCurrencyNameById(watch("pay_currency") || ""),
+                currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
+              }))
+            );
+          }}
+        >
+          <i className="ti ti-x" />
+        </button>
+      </div>
+      <div className="offcanvas-body">
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+          <div>
+            <div className="row">
+              {renderSelect(
+                "payroll_week",
+                payrollWeekOptions,
+                "Payroll Week",
+                true
+              )}
+              {renderSelect(
+                "payroll_month",
+                payrollMonthOptions,
+                "Payroll Month",
+                true
+              )}
+              {renderDate("payroll_year", "Payroll Year", true)}
+              {renderDate("pay_date", "Pay Date", true)}
+              {renderDate("execution_date", "Execution Date")}
+              {renderDate("doc_date", "Document Date")}
+              <div className="col-md-4 mb-3">
+                <label className="col-form-label" htmlFor="component_id">
+                  Pay Component <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="component_id"
+                  rules={{ required: "Pay Component is required!" }}
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      inputId="component_id"
+                      className="select"
+                      options={paycomponentOptions}
+                      placeholder="Select Pay Component"
+                      classNamePrefix="react-select"
+                      value={paycomponentOptions.find(
+                        (x) => x.value === field.value
                       )}
+                      onChange={(o) => field.onChange(o.value)}
                     />
-                  </div>
-                  {errors.payroll_week && (
-                    <small className="text-danger">
-                      {errors.payroll_week.message}
-                    </small>
                   )}
-                </div>
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="payroll_month">
-                    Payroll Month <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="payroll_month"
-                      control={control}
-                      rules={{ required: "Payroll Month is required!" }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          inputId="payroll_month"
-                          className="select"
-                          placeholder="Select Payroll Month"
-                          options={payrollMonthOptions}
-                          classNamePrefix="react-select"
-                          value={payrollMonthOptions.find(
-                            (x) => x.value === field.value
-                          )}
-                          onChange={(option) => field.onChange(option.value)}
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.payroll_month && (
-                    <small className="text-danger">
-                      {errors.payroll_month.message}
-                    </small>
-                  )}
-                </div>
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="payroll_year">
-                    Payroll Year <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="payroll_year"
-                      control={control}
-                      rules={{ required: "Payroll Year is required!" }}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          id="payroll_year"
-                          className="form-control"
-                          placeholderText="Select Payroll Year"
-                          showYearPicker
-                          dateFormat="yyyy"
-                          selected={
-                            field.value ? new Date(field.value, 0) : null
-                          }
-                          onChange={(date) =>
-                            field.onChange(date ? date.getFullYear() : null)
-                          }
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.payroll_year && (
-                    <small className="text-danger">
-                      {errors.payroll_year.message}
-                    </small>
-                  )}
-                </div>
-
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="pay_date">
-                    Pay Date <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="pay_date"
-                      control={control}
-                      rules={{ required: "Pay Date is required!" }}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          id="pay_date"
-                          className="form-control"
-                          placeholderText="Select Pay Date"
-                          selected={field.value ? new Date(field.value) : null}
-                          dateFormat="dd-MM-yyyy"
-                          onChange={(date) => field.onChange(date)}
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.pay_date && (
-                    <small className="text-danger">
-                      {errors.pay_date.message}
-                    </small>
-                  )}
-                </div>
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="execution_date">
-                    Execution Date
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="execution_date"
-                      control={control}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          id="execution_date"
-                          className="form-control"
-                          placeholderText="Select Execution Date"
-                          selected={field.value ? new Date(field.value) : null}
-                          dateFormat="dd-MM-yyyy"
-                          onChange={(date) => field.onChange(date)}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="doc_date">
-                    Document Date
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="doc_date"
-                      control={control}
-                      render={({ field }) => (
-                        <DatePicker
-                          {...field}
-                          id="doc_date"
-                          className="form-control"
-                          placeholderText="Select Document Date"
-                          selected={field.value ? new Date(field.value) : null}
-                          dateFormat="dd-MM-yyyy"
-                          onChange={(date) => field.onChange(date)}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 mb-3">
-                  <label className="col-form-label" htmlFor="component_id ">
-                    Pay Component <span className="text-danger">*</span>
-                  </label>
-
+                />
+                {errors.component_id && (
+                  <small className="text-danger">
+                    {errors.component_id.message}
+                  </small>
+                )}
+              </div>
+              <div className="col-md-4">
+                <label className="col-form-label" htmlFor="pay_currency">
+                  Currency
+                </label>
+                <div className="mb-3">
                   <Controller
-                    name="component_id"
-                    rules={{ required: "Pay Component is required!" }}
+                    name="pay_currency"
                     control={control}
                     render={({ field }) => (
                       <Select
                         {...field}
-                        inputId="component_id"
+                        inputId="pay_currency"
                         className="select"
-                        options={paycomponentOptions}
-                        placeholder="Select Pay Component"
+                        options={currencyList}
+                        placeholder="Select Currency"
                         classNamePrefix="react-select"
-                        value={paycomponentOptions.find(
+                        value={currencyList.find(
                           (x) => x.value === field.value
                         )}
-                        onChange={(option) => field.onChange(option.value)}
+                        onChange={(o) => {
+                          field.onChange(o.value);
+                          setValue("currency_name", o.currency_name);
+                          setValue("currency_code", o.currency_code);
+                        }}
                       />
                     )}
                   />
-                  {errors.component_id && (
-                    <small className="text-danger">
-                      {errors.component_id.message}
-                    </small>
-                  )}
                 </div>
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="pay_currency">
-                    Currency
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="pay_currency"
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          inputId="pay_currency"
-                          className="select"
-                          options={currencyList}
-                          placeholder="Select Currency"
-                          classNamePrefix="react-select"
-                          value={currencyList.find(
-                            (x) => x.value === field.value
-                          )}
-                          onChange={(option) => {
-                            field.onChange(option.value);
-                            setValue("currency_name", option.currency_name);
-                            setValue("currency_code", option.currency_code);
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.pay_currency && (
-                    <small className="text-danger">
-                      {errors.pay_currency.message}
-                    </small>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-12 mb-3">
-                <Table
-                  columns={columns}
-                  dataSource={payroll}
-                  pagination={false}
-                  rowKey="employee_id"
-                  bordered
-                  size="small"
-                  className="table-bordered"
-                  style={{
-                    width: "100%",
-                  }}
-                  scroll={{ x: true }}
-                  locale={{
-                    emptyText: "No employees found.",
-                  }}
-                />
-              </div>
-            </div>
-            <div className="d-flex align-items-center justify-content-end">
-              <button
-                type="button"
-                data-bs-dismiss="offcanvas"
-                className="btn btn-light me-2"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {midMonthPayroll
-                  ? loading
-                    ? "Updating..."
-                    : "Update"
-                  : loading
-                    ? "Creating..."
-                    : "Create"}
-                {loading && (
-                  <span
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </span>
+                {errors.pay_currency && (
+                  <small className="text-danger">
+                    {errors.pay_currency.message}
+                  </small>
                 )}
-              </button>
+              </div>
             </div>
-          </form>
-        </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12 mb-3">
+              <Table
+                columns={columns}
+                dataSource={payroll}
+                pagination={false}
+                rowKey="employee_id"
+                bordered
+                size="small"
+                className="table-bordered"
+                style={{ width: "100%" }}
+                scroll={{ x: true }}
+                locale={{ emptyText: "No employees found." }}
+              />
+            </div>
+          </div>
+          <div className="d-flex align-items-center justify-content-end">
+            <button
+              type="button"
+              data-bs-dismiss="offcanvas"
+              className="btn btn-light me-2"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              {midMonthPayroll
+                ? loading
+                  ? "Updating..."
+                  : "Update"
+                : loading
+                  ? "Creating..."
+                  : "Create"}
+              {loading && (
+                <span
+                  style={{ height: 15, width: 15 }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </span>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 
