@@ -54,6 +54,10 @@ const ManageAddress = ({
       return updatedItems;
     });
   };
+  const addressTypeOptions = [
+    { value: "Work", label: "Work" },
+    { value: "Home", label: "Home" },
+  ];
 
   const deleteRow = (index) => {
     setManageAddress((prev) => prev.filter((_, i) => i !== index));
@@ -97,8 +101,8 @@ const ManageAddress = ({
 
           <div className="row">
             {[
+              "Address Type",
               "street",
-              "street_no",
               "building",
               "floor",
               "city",
@@ -174,6 +178,33 @@ const ManageAddress = ({
                               selectedOption?.value || null
                             );
                             setCountryIndex(index);
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                ) : fieldKey === "Address Type" ? (
+                  <div className="icon-form-end">
+                    <Controller
+                      name={`address_type_${index}`}
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={addressTypeOptions}
+                          placeholder={`Select Address Type`}
+                          classNamePrefix="react-select"
+                          value={
+                            addressTypeOptions.find(
+                              (option) => option.value === item["Address Type"]
+                            ) || ""
+                          }
+                          onChange={(selectedOption) => {
+                            updateItem(
+                              index,
+                              "Address Type",
+                              selectedOption?.value || null
+                            );
                           }}
                         />
                       )}

@@ -135,6 +135,8 @@ import overtimePayrollReducer from "./OverTimePayroll";
 
 import employeeDashboardReducer from "./employeeDashboard";
 import LoanEmiReducer from "./LoanEmi";
+import LoanMasterReducer from "./LoanMaster";
+import overtimeMasterReducer from "./overTimeMaster";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -272,6 +274,8 @@ const store = configureStore({
     overtimePayroll: overtimePayrollReducer,
     employeeDashboard: employeeDashboardReducer,
     loanEmi: LoanEmiReducer,
+    loanMaster: LoanMasterReducer,
+    overtimeMaster: overtimeMasterReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

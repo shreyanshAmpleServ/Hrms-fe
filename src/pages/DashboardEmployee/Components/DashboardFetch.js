@@ -88,7 +88,7 @@ const EmployeeDashboard = () => {
               <p className="mb-0 small text-light">
                 {profile?.designation || "-"}
               </p>
-              <p className="mb-0 small text-success fw-bold">
+              <p className="mb-0 small text-black fw-bold">
                 {profile?.department || "-"}
               </p>
             </div>
@@ -133,8 +133,6 @@ const EmployeeDashboard = () => {
                   })
                 : "-"}
             </p>
-
-            <hr />
           </div>
           <div
             className="px-3 py-2 text-end"
