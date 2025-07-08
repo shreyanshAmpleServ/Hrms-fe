@@ -46,7 +46,14 @@ export const payGradeList = [
   { value: "5", label: "Grade E - ₹90,001 and above" },
 ];
 
-const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
+const AddEditModal = ({
+  mode = "add",
+  initialData = null,
+  setSelected,
+  employee_id,
+  department_id,
+  position_id,
+}) => {
   const initialComponent = [
     {
       parent_id: "",
@@ -189,7 +196,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     dispatch(fetchdepartment());
     dispatch(fetchbranch({ is_active: true }));
     dispatch(fetchdesignation());
-
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
@@ -242,10 +248,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
-        employee_id: initialData.employee_id || "",
-        department_id: initialData.department_id || "",
+        employee_id: employee_id || initialData.employee_id || "",
+        department_id: department_id || initialData.department_id || "",
         branch_id: initialData.branch_id || "",
-        position_id: initialData.position_id || "",
+        position_id: position_id || initialData.position_id || "",
         pay_grade_id: initialData.pay_grade_id || "",
         pay_grade_level: initialData.pay_grade_level || "",
         allowance_group: initialData.allowance_group || "",
@@ -259,12 +265,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         status: initialData.status || "Active",
         remarks: initialData.remarks || "",
       });
-    } else if (mode === "add") {
+    } else if (mode === "add" || !employee_id) {
       reset({
-        employee_id: "",
-        department_id: "",
+        employee_id: employee_id || "",
+        department_id: department_id || "",
         branch_id: "",
-        position_id: "",
+        position_id: position_id || "",
         pay_grade_id: "",
         pay_grade_level: "",
         allowance_group: "",
@@ -288,6 +294,9 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const handleAddBasicSalary = useCallback(() => {
     setBasicSalaryData((prev) => [...prev, ...initialComponent]);
   }, []);
+
+  console.log("mkxxx", employee_id, department_id, position_id);
+  console.log("mkxxx", watch());
 
   const handleChangeBasicSalary = useCallback(
     (identifier, field, value) => {
@@ -713,31 +722,33 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row mb-4">
-            <div className="col-md-4 mb-3">
-              <label className="form-label">
-                Employee <span className="text-danger">*</span>
-              </label>
-              <Controller
-                name="employee_id"
-                control={control}
-                rules={{ required: "Employee is required" }}
-                render={({ field }) => (
-                  <EmployeeSelect
-                    {...field}
-                    value={field.value}
-                    onChange={(i) => {
-                      field.onChange(i?.value);
-                      setEmployeeData(i?.meta);
-                    }}
-                  />
+            {!employee_id && (
+              <div className="col-md-4 mb-3">
+                <label className="form-label">
+                  Employee <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="employee_id"
+                  control={control}
+                  rules={{ required: "Employee is required" }}
+                  render={({ field }) => (
+                    <EmployeeSelect
+                      {...field}
+                      value={field.value}
+                      onChange={(i) => {
+                        field.onChange(i?.value);
+                        setEmployeeData(i?.meta);
+                      }}
+                    />
+                  )}
+                />
+                {errors.employee_id && (
+                  <div className="invalid-feedback d-block">
+                    {errors.employee_id.message}
+                  </div>
                 )}
-              />
-              {errors.employee_id && (
-                <div className="invalid-feedback d-block">
-                  {errors.employee_id.message}
-                </div>
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="col-md-4 mb-3">
               <label className="form-label">Department</label>

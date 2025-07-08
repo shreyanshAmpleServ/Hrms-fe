@@ -1,14 +1,11 @@
 import React, { useEffect, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import moment from "moment";
-
-import { fetchLoanRequest } from "../../../redux/loanRequests";
 import { fetchEmployee } from "../../../redux/Employee";
-import { fetchpayslip } from "../../../redux/payslipViewer";
 import { addloanEmi, updateloanEmi } from "../../../redux/LoanEmi";
+import { fetchLoanRequest } from "../../../redux/loanRequests";
+import { fetchpayslip } from "../../../redux/payslipViewer";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const dispatch = useDispatch();
@@ -21,7 +18,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const payslip = useSelector((state) => state.payslip?.payslip);
 
   const {
-    register,
     handleSubmit,
     control,
     watch,

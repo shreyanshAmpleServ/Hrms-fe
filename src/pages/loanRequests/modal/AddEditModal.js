@@ -38,7 +38,6 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
     register,
     handleSubmit,
     watch,
-    setValue,
     control,
     formState: { errors },
     reset,
@@ -189,7 +188,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
     if (mode === "add") {
       dispatch(addLoanRequest(loanRequestData));
     } else if (mode === "edit" && selected) {
-      dispatch(updateLoanRequest(selected.id, loanRequestData));
+      dispatch(updateLoanRequest({ id: selected.id, loanRequestData }));
     }
     closeButton?.click();
     handleClose();

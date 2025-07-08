@@ -4,18 +4,18 @@ import apiClient from "../../utils/axiosConfig";
 export const fetchProjects = createAsyncThunk(
   "projects/fetchProjects",
   async (datas, thunkAPI) => {
-    const { search, page, size, startDate, endDate, is_active } = datas;
     const queryParams = new URLSearchParams();
-    if (search) queryParams.append("search", search);
-    if (page) queryParams.append("page", page);
-    if (size) queryParams.append("size", size);
-    if (startDate) queryParams.append("startDate", startDate);
-    if (endDate) queryParams.append("endDate", endDate);
-    if (is_active) queryParams.append("is_active", is_active);
+    if (datas?.search) queryParams.append("search", datas?.search);
+    if (datas?.page) queryParams.append("page", datas?.page);
+    if (datas?.size) queryParams.append("size", datas?.size);
+    if (datas?.startDate) queryParams.append("startDate", datas?.startDate);
+    if (datas?.endDate) queryParams.append("endDate", datas?.endDate);
+    if (datas?.is_active) queryParams.append("is_active", datas?.is_active);
     try {
       const response = await apiClient.get(
         `/v1/projects?${queryParams.toString()}`
       );
+
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -115,7 +115,7 @@ const projectSlice = createSlice({
         state.loading = false;
         state.projects = action.payload.data;
       })
-      .addCase(fetchProjects.rejected, (state, action) => {
+      .addCase(fetchProjects.rejected, (state) => {
         state.loading = false;
         // state.error = action.payload.message;
       })

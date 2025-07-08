@@ -10,7 +10,10 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js"
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchMidMonthPayroll } from "../../redux/MidMonthPayroll/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageMidMonthPayroll from "./ManageMidMonthPayroll/index.js";
+import ManageMidMonthPayroll, {
+  payrollMonthOptions,
+  payrollWeekOptions,
+} from "./ManageMidMonthPayrollNew/index.js";
 
 const MidMonthPayroll = () => {
   const [selected, setSelected] = React.useState(null);
@@ -86,13 +89,16 @@ const MidMonthPayroll = () => {
     {
       title: "Payroll Month",
       dataIndex: "payroll_month",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
+      render: (text) =>
+        payrollMonthOptions.find((item) => item.value === text)?.label || "-",
       sorter: (a, b) => a.payroll_month - b.payroll_month,
     },
     {
       title: "Payroll Week",
       dataIndex: "payroll_week",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
+      render: (text) =>
+        payrollWeekOptions.find((item) => item.value === text)?.label || "-",
+      sorter: (a, b) => a.payroll_week - b.payroll_week,
     },
     {
       title: "Payroll Year",
@@ -126,51 +132,51 @@ const MidMonthPayroll = () => {
           b.midmonth_payroll_processing_project?.name || ""
         ),
     },
-    {
-      title: "Cost Center 1",
-      dataIndex: "midmonth_payroll_processing_center1",
-      render: (text) => text?.name || "-",
-      sorter: (a, b) =>
-        a.midmonth_payroll_processing_center1?.name?.localeCompare(
-          b.midmonth_payroll_processing_center1?.name || ""
-        ),
-    },
-    {
-      title: "Cost Center 2",
-      dataIndex: "midmonth_payroll_processing_center2",
-      render: (text) => text?.name || "-",
-      sorter: (a, b) =>
-        a.midmonth_payroll_processing_center2?.name?.localeCompare(
-          b.midmonth_payroll_processing_center2?.name || ""
-        ),
-    },
-    {
-      title: "Cost Center 3",
-      dataIndex: "midmonth_payroll_processing_center3",
-      render: (text) => text?.name || "-",
-      sorter: (a, b) =>
-        a.midmonth_payroll_processing_center3?.name?.localeCompare(
-          b.midmonth_payroll_processing_center3?.name || ""
-        ),
-    },
-    {
-      title: "Cost Center 4",
-      dataIndex: "midmonth_payroll_processing_center4",
-      render: (text) => text?.name || "-",
-      sorter: (a, b) =>
-        a.midmonth_payroll_processing_center4?.name?.localeCompare(
-          b.midmonth_payroll_processing_center4?.name || ""
-        ),
-    },
-    {
-      title: "Cost Center 5",
-      dataIndex: "midmonth_payroll_processing_center5",
-      render: (text) => text?.name || "-",
-      sorter: (a, b) =>
-        a.midmonth_payroll_processing_center5?.name?.localeCompare(
-          b.midmonth_payroll_processing_center5?.name || ""
-        ),
-    },
+    // {
+    //   title: "Cost Center 1",
+    //   dataIndex: "midmonth_payroll_processing_center1",
+    //   render: (text) => text?.name || "-",
+    //   sorter: (a, b) =>
+    //     a.midmonth_payroll_processing_center1?.name?.localeCompare(
+    //       b.midmonth_payroll_processing_center1?.name || ""
+    //     ),
+    // },
+    // {
+    //   title: "Cost Center 2",
+    //   dataIndex: "midmonth_payroll_processing_center2",
+    //   render: (text) => text?.name || "-",
+    //   sorter: (a, b) =>
+    //     a.midmonth_payroll_processing_center2?.name?.localeCompare(
+    //       b.midmonth_payroll_processing_center2?.name || ""
+    //     ),
+    // },
+    // {
+    //   title: "Cost Center 3",
+    //   dataIndex: "midmonth_payroll_processing_center3",
+    //   render: (text) => text?.name || "-",
+    //   sorter: (a, b) =>
+    //     a.midmonth_payroll_processing_center3?.name?.localeCompare(
+    //       b.midmonth_payroll_processing_center3?.name || ""
+    //     ),
+    // },
+    // {
+    //   title: "Cost Center 4",
+    //   dataIndex: "midmonth_payroll_processing_center4",
+    //   render: (text) => text?.name || "-",
+    //   sorter: (a, b) =>
+    //     a.midmonth_payroll_processing_center4?.name?.localeCompare(
+    //       b.midmonth_payroll_processing_center4?.name || ""
+    //     ),
+    // },
+    // {
+    //   title: "Cost Center 5",
+    //   dataIndex: "midmonth_payroll_processing_center5",
+    //   render: (text) => text?.name || "-",
+    //   sorter: (a, b) =>
+    //     a.midmonth_payroll_processing_center5?.name?.localeCompare(
+    //       b.midmonth_payroll_processing_center5?.name || ""
+    //     ),
+    // },
     {
       title: "Component",
       dataIndex: "midmonth_payroll_processing_component",
@@ -251,7 +257,7 @@ const MidMonthPayroll = () => {
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
+                  {/* {isUpdate && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
@@ -263,7 +269,7 @@ const MidMonthPayroll = () => {
                     >
                       <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
-                  )}
+                  )} */}
                   {isDelete && (
                     <Link
                       className="dropdown-item"

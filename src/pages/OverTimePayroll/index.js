@@ -8,9 +8,9 @@ import Table from "../../components/common/dataTableNew/index.js";
 import usePermissions from "../../components/common/Permissions.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-import { fetchOverTimePayroll } from "../../redux/OverTimePayroll/index.js";
 import DeleteConfirmation from "./DeleteConfirmation/index.js";
 import ManageOverTimePayroll from "./ManageOverTimePayroll/index.js";
+import { fetchOverTimePayroll } from "../../redux/OverTimePayroll/index.js";
 
 const OverTimePayroll = () => {
   const [selected, setSelected] = React.useState(null);

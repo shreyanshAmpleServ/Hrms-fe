@@ -15,6 +15,7 @@ export const fetchBasicSalary = createAsyncThunk(
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
         endDate: datas?.endDate?.toISOString() || "",
+        employee_id: datas?.employee_id || "",
       };
       const response = await apiClient.get("/v1/basic-pay", {
         params,
