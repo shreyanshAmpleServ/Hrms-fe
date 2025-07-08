@@ -119,64 +119,14 @@ const MidMonthPayroll = () => {
     },
     {
       title: "Pay Currency",
-      dataIndex: "pay_currency",
-      render: (text) => text || "-",
-      sorter: (a, b) => a.pay_currency?.localeCompare(b.pay_currency || ""),
-    },
-    {
-      title: "Project",
-      dataIndex: "midmonth_payroll_processing_project",
-      render: (text) => text?.name || "-",
+      dataIndex: "midmonth_payroll_processing_currency",
+      render: (text) =>
+        text?.currency_name + " (" + text?.currency_code + ")" || "-",
       sorter: (a, b) =>
-        a.midmonth_payroll_processing_project?.name?.localeCompare(
-          b.midmonth_payroll_processing_project?.name || ""
+        a.midmonth_payroll_processing_currency?.currency_name?.localeCompare(
+          b.midmonth_payroll_processing_currency?.currency_name || ""
         ),
     },
-    // {
-    //   title: "Cost Center 1",
-    //   dataIndex: "midmonth_payroll_processing_center1",
-    //   render: (text) => text?.name || "-",
-    //   sorter: (a, b) =>
-    //     a.midmonth_payroll_processing_center1?.name?.localeCompare(
-    //       b.midmonth_payroll_processing_center1?.name || ""
-    //     ),
-    // },
-    // {
-    //   title: "Cost Center 2",
-    //   dataIndex: "midmonth_payroll_processing_center2",
-    //   render: (text) => text?.name || "-",
-    //   sorter: (a, b) =>
-    //     a.midmonth_payroll_processing_center2?.name?.localeCompare(
-    //       b.midmonth_payroll_processing_center2?.name || ""
-    //     ),
-    // },
-    // {
-    //   title: "Cost Center 3",
-    //   dataIndex: "midmonth_payroll_processing_center3",
-    //   render: (text) => text?.name || "-",
-    //   sorter: (a, b) =>
-    //     a.midmonth_payroll_processing_center3?.name?.localeCompare(
-    //       b.midmonth_payroll_processing_center3?.name || ""
-    //     ),
-    // },
-    // {
-    //   title: "Cost Center 4",
-    //   dataIndex: "midmonth_payroll_processing_center4",
-    //   render: (text) => text?.name || "-",
-    //   sorter: (a, b) =>
-    //     a.midmonth_payroll_processing_center4?.name?.localeCompare(
-    //       b.midmonth_payroll_processing_center4?.name || ""
-    //     ),
-    // },
-    // {
-    //   title: "Cost Center 5",
-    //   dataIndex: "midmonth_payroll_processing_center5",
-    //   render: (text) => text?.name || "-",
-    //   sorter: (a, b) =>
-    //     a.midmonth_payroll_processing_center5?.name?.localeCompare(
-    //       b.midmonth_payroll_processing_center5?.name || ""
-    //     ),
-    // },
     {
       title: "Component",
       dataIndex: "midmonth_payroll_processing_component",
@@ -186,7 +136,6 @@ const MidMonthPayroll = () => {
           b.midmonth_payroll_processing_component?.component_name || ""
         ),
     },
-
     {
       title: "Processed",
       dataIndex: "processed",
@@ -203,43 +152,6 @@ const MidMonthPayroll = () => {
       dataIndex: "execution_date",
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
       sorter: (a, b) => moment(a.execution_date).diff(moment(b.execution_date)),
-    },
-    {
-      title: "Remarks",
-      dataIndex: "remarks",
-      render: (text) => (
-        <span
-          style={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            maxWidth: "150px",
-          }}
-        >
-          {text || "-"}
-        </span>
-      ),
-      sorter: (a, b) => a.remarks?.localeCompare(b.remarks || ""),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (value) => (
-        <div
-          className={`text-capitalize badge ${
-            value === "Pending"
-              ? "bg-warning"
-              : value === "Approved"
-                ? "bg-success"
-                : value === "Rejected"
-                  ? "bg-danger"
-                  : "bg-secondary"
-          }`}
-        >
-          {value || "—"}
-        </div>
-      ),
-      sorter: (a, b) => a.status?.localeCompare(b.status || ""),
     },
     ...(isUpdate || isDelete
       ? [

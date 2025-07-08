@@ -45,6 +45,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     control,
     handleSubmit,
     reset,
+    setValue,
     watch,
     formState: { errors },
   } = useForm();
@@ -64,6 +65,30 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     [pay_component]
   );
 
+  // Currency options
+  const currencyList = useMemo(
+    () =>
+      currencies?.data?.map((item) => ({
+        value: item.id,
+        label: `${item.currency_name} (${item.currency_code})`,
+        currency_name: item.currency_name,
+        currency_code: item.currency_code,
+      })) || [],
+    [currencies]
+  );
+
+  // Helper to get currency_name by id
+  const getCurrencyNameById = (id) => {
+    const found = currencyList.find((c) => String(c.value) === String(id));
+    return found ? found.currency_name + " (" + found.currency_code + ")" : "";
+  };
+
+  // Helper to get currency_code by id
+  const getCurrencyCodeById = (id) => {
+    const found = currencyList.find((c) => String(c.value) === String(id));
+    return found ? found.currency_code + " (" + found.currency_name + ")" : "";
+  };
+
   // Fetch initial data
   useEffect(() => {
     dispatch(fetchCurrencies({ is_active: true }));
@@ -75,30 +100,43 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
   useEffect(() => {
     if (employeeOptions) {
       setPayroll(
-        employeeOptions.map((item) => ({
-          employee_id: item.value,
-          employee_name: item.label,
-          net_pay: 0,
-          pay_currency: "",
-          processed: "N",
-          is_selected: false,
-          employee_email: item?.meta?.email || "",
-        }))
+        employeeOptions.map((item) => {
+          const pay_currency = watch("pay_currency") || "";
+          return {
+            employee_id: item.value,
+            employee_name: item.label,
+            net_pay: 0,
+            pay_currency,
+            processed: "N",
+            is_selected: false,
+            employee_email: item?.meta?.email || "",
+            currency_name: getCurrencyNameById(pay_currency),
+            currency_code: getCurrencyCodeById(pay_currency),
+          };
+        })
       );
     }
-  }, [employeeOptions]);
+    // eslint-disable-next-line
+  }, [employeeOptions, currencyList, watch("pay_currency")]);
 
-  // Currency options
-  const currencyList = useMemo(
-    () =>
-      currencies?.data?.map((item) => ({
-        value: item.id,
-        label: `${item.currency_name} (${item.currency_code})`,
-      })) || [],
-    [currencies]
-  );
-
-  // Payroll month and week options
+  // When global currency changes, update all unmodified (default) pay_currency in payroll
+  useEffect(() => {
+    setPayroll((prev) =>
+      prev.map((item) => {
+        if (!item.pay_currency || item.pay_currency === "") {
+          const pay_currency = watch("pay_currency") || "";
+          return {
+            ...item,
+            pay_currency,
+            currency_name: getCurrencyNameById(pay_currency),
+            currency_code: getCurrencyCodeById(pay_currency),
+          };
+        }
+        return item;
+      })
+    );
+    // eslint-disable-next-line
+  }, [watch("pay_currency"), currencyList]);
 
   // Reset form on mount and when midMonthPayroll changes
   useEffect(() => {
@@ -110,6 +148,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
         ? new Date(midMonthPayroll.pay_date)
         : new Date(),
       pay_currency: midMonthPayroll?.pay_currency || "",
+      currency_name: midMonthPayroll?.currency_name || "",
       execution_date: midMonthPayroll?.execution_date
         ? new Date(midMonthPayroll.execution_date)
         : new Date(),
@@ -119,7 +158,20 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       status: midMonthPayroll?.status || "Pending",
       component_id: midMonthPayroll?.component_id || "",
     });
-  }, [reset, midMonthPayroll]);
+    // When resetting, also update payroll pay_currency and currency_name to match global
+    setPayroll((prev) =>
+      prev.map((item) => {
+        const pay_currency = midMonthPayroll?.pay_currency || "";
+        return {
+          ...item,
+          pay_currency,
+          currency_name: getCurrencyNameById(pay_currency),
+          currency_code: getCurrencyCodeById(pay_currency),
+        };
+      })
+    );
+    // eslint-disable-next-line
+  }, [reset, midMonthPayroll, currencyList]);
 
   // Handle employee selection
   const handleChangeEmployee = useCallback(
@@ -147,32 +199,58 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     [setPayroll]
   );
 
+  // Handle per-employee currency change
+  const handleEmployeeCurrencyChange = useCallback(
+    (currencyValue, index) => {
+      setPayroll((prev) =>
+        prev.map((item, idx) =>
+          idx === index
+            ? {
+                ...item,
+                pay_currency: currencyValue,
+                currency_name: getCurrencyNameById(currencyValue),
+                currency_code: getCurrencyCodeById(currencyValue),
+              }
+            : item
+        )
+      );
+    },
+    [setPayroll, currencyList]
+  );
+
   // Prepare selected employees for submission
   const selectedEmployees = useMemo(
     () =>
       payroll
         .filter((item) => item.is_selected)
-        .map((item) => ({
-          ...item,
-          payroll_month: watch("payroll_month"),
-          payroll_week: watch("payroll_week"),
-          payroll_year: watch("payroll_year"),
-          pay_date: watch("pay_date")
-            ? new Date(watch("pay_date")).toISOString()
-            : "",
-          pay_currency: watch("pay_currency"),
-          execution_date: watch("execution_date")
-            ? new Date(watch("execution_date")).toISOString()
-            : "",
-          doc_date: watch("doc_date")
-            ? new Date(watch("doc_date")).toISOString()
-            : "",
-          status: watch("status"),
-          remarks: "",
-          employee_email: item.employee_email,
-          component_id: watch("component_id "),
-        })),
-    [payroll, watch]
+        .map((item) => {
+          // Determine pay_currency and currency_name for this employee
+          const pay_currency = item.pay_currency || watch("pay_currency");
+          const currency_name = getCurrencyNameById(pay_currency);
+          return {
+            ...item,
+            payroll_month: watch("payroll_month"),
+            payroll_week: watch("payroll_week"),
+            payroll_year: watch("payroll_year"),
+            pay_date: watch("pay_date")
+              ? new Date(watch("pay_date")).toISOString()
+              : "",
+            pay_currency,
+            currency_name,
+            processed: "Y",
+            execution_date: watch("execution_date")
+              ? new Date(watch("execution_date")).toISOString()
+              : "",
+            doc_date: watch("doc_date")
+              ? new Date(watch("doc_date")).toISOString()
+              : "",
+            status: watch("status"),
+            remarks: "",
+            employee_email: item.employee_email,
+            component_id: watch("component_id "),
+          };
+        }),
+    [payroll, watch, currencyList]
   );
 
   // Table columns
@@ -205,17 +283,71 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     {
       title: "Processed",
       dataIndex: "processed",
-      render: (text) => text || "-",
+      render: (_, record) =>
+        record.is_selected ? (
+          <div className="badge bg-success">Yes</div>
+        ) : (
+          <div className="badge bg-danger">No</div>
+        ),
     },
     {
       title: "Pay Currency",
       dataIndex: "pay_currency",
-      render: (_, record) => {
-        const currency = currencies?.data?.find(
-          (x) => String(x.id) === String(watch("pay_currency"))
-        );
-        return currency ? currency.currency_code : "-";
-      },
+      render: (text, record, index) =>
+        record.is_selected ? (
+          <Select
+            inputId={`pay_currency_row_${record.employee_id}`}
+            className="select"
+            options={currencyList}
+            placeholder="Select Currency"
+            classNamePrefix="react-select"
+            value={
+              currencyList.find(
+                (x) =>
+                  String(x.value) ===
+                  String(record.pay_currency || watch("pay_currency"))
+              ) || null
+            }
+            onChange={(option) =>
+              handleEmployeeCurrencyChange(option ? option.value : "", index)
+            }
+            isDisabled={!record.is_selected}
+            styles={{
+              container: (base) => ({
+                ...base,
+                minWidth: 150,
+                maxWidth: 250,
+              }),
+              control: (base) => ({
+                ...base,
+                minHeight: 30,
+                height: 30,
+                fontSize: 13,
+              }),
+              valueContainer: (base) => ({
+                ...base,
+                height: 30,
+                padding: "0 6px",
+              }),
+              input: (base) => ({
+                ...base,
+                margin: 0,
+                padding: 0,
+              }),
+              indicatorsContainer: (base) => ({
+                ...base,
+                height: 30,
+              }),
+            }}
+          />
+        ) : (
+          <p className="mb-0">
+            {record.pay_currency
+              ? getCurrencyNameById(record.pay_currency)
+              : "-"}
+          </p>
+        ),
+      width: "250px",
     },
     {
       title: "Net Pay",
@@ -255,6 +387,23 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       );
       return;
     }
+    // Validate that all selected employees have a currency
+    const hasInvalidCurrency = selectedEmployees.some(
+      (emp) => !emp.pay_currency
+    );
+    if (hasInvalidCurrency) {
+      alert("Please select a currency for all selected employees.");
+      return;
+    }
+
+    // Validate that all selected employees have a currency_name
+    const hasInvalidCurrencyName = selectedEmployees.some(
+      (emp) => !emp.currency_name
+    );
+    if (hasInvalidCurrencyName) {
+      alert("Currency name is missing for one or more selected employees.");
+      return;
+    }
 
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -263,7 +412,14 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       if (closeButton) closeButton.click();
       reset();
       setPayroll((prev) =>
-        prev.map((item) => ({ ...item, is_selected: false, net_pay: 0 }))
+        prev.map((item) => ({
+          ...item,
+          is_selected: false,
+          net_pay: 0,
+          pay_currency: watch("pay_currency") || "",
+          currency_name: getCurrencyNameById(watch("pay_currency") || ""),
+          currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
+        }))
       );
       await dispatch(fetchMidMonthPayroll()).unwrap();
     } catch (error) {
@@ -278,7 +434,14 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       const handleModalClose = () => {
         reset();
         setPayroll((prev) =>
-          prev.map((item) => ({ ...item, is_selected: false, net_pay: 0 }))
+          prev.map((item) => ({
+            ...item,
+            is_selected: false,
+            net_pay: 0,
+            pay_currency: watch("pay_currency") || "",
+            currency_name: getCurrencyNameById(watch("pay_currency") || ""),
+            currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
+          }))
         );
       };
       offcanvasElement.addEventListener(
@@ -292,9 +455,8 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
         );
       };
     }
-  }, [reset]);
+  }, [reset, currencyList, watch("pay_currency")]);
 
-  console.log("mkxxx", selectedEmployees);
   return (
     <>
       <div
@@ -319,6 +481,13 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                   ...item,
                   is_selected: false,
                   net_pay: 0,
+                  pay_currency: watch("pay_currency") || "",
+                  currency_name: getCurrencyNameById(
+                    watch("pay_currency") || ""
+                  ),
+                  currency_code: getCurrencyCodeById(
+                    watch("pay_currency") || ""
+                  ),
                 }))
               );
             }}
@@ -425,37 +594,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                     </small>
                   )}
                 </div>
-                <div className="col-md-4">
-                  <label className="col-form-label" htmlFor="pay_currency">
-                    Currency <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3">
-                    <Controller
-                      name="pay_currency"
-                      control={control}
-                      rules={{ required: "Currency is required!" }}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          inputId="pay_currency"
-                          className="select"
-                          options={currencyList}
-                          placeholder="Select Currency"
-                          classNamePrefix="react-select"
-                          value={currencyList.find(
-                            (x) => x.value === field.value
-                          )}
-                          onChange={(option) => field.onChange(option.value)}
-                        />
-                      )}
-                    />
-                  </div>
-                  {errors.pay_currency && (
-                    <small className="text-danger">
-                      {errors.pay_currency.message}
-                    </small>
-                  )}
-                </div>
+
                 <div className="col-md-4">
                   <label className="col-form-label" htmlFor="pay_date">
                     Pay Date <span className="text-danger">*</span>
@@ -528,30 +667,69 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                     />
                   </div>
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-4 mb-3">
                   <label className="col-form-label" htmlFor="component_id ">
-                    Pay Component
+                    Pay Component <span className="text-danger">*</span>
+                  </label>
+
+                  <Controller
+                    name="component_id"
+                    rules={{ required: "Pay Component is required!" }}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        inputId="component_id"
+                        className="select"
+                        options={paycomponentOptions}
+                        placeholder="Select Pay Component"
+                        classNamePrefix="react-select"
+                        value={paycomponentOptions.find(
+                          (x) => x.value === field.value
+                        )}
+                        onChange={(option) => field.onChange(option.value)}
+                      />
+                    )}
+                  />
+                  {errors.component_id && (
+                    <small className="text-danger">
+                      {errors.component_id.message}
+                    </small>
+                  )}
+                </div>
+                <div className="col-md-4">
+                  <label className="col-form-label" htmlFor="pay_currency">
+                    Currency
                   </label>
                   <div className="mb-3">
                     <Controller
-                      name="component_id "
+                      name="pay_currency"
                       control={control}
                       render={({ field }) => (
                         <Select
                           {...field}
-                          inputId="component_id "
+                          inputId="pay_currency"
                           className="select"
-                          options={paycomponentOptions}
-                          placeholder="Select Pay Component"
+                          options={currencyList}
+                          placeholder="Select Currency"
                           classNamePrefix="react-select"
-                          value={paycomponentOptions.find(
+                          value={currencyList.find(
                             (x) => x.value === field.value
                           )}
-                          onChange={(option) => field.onChange(option.value)}
+                          onChange={(option) => {
+                            field.onChange(option.value);
+                            setValue("currency_name", option.currency_name);
+                            setValue("currency_code", option.currency_code);
+                          }}
                         />
                       )}
                     />
                   </div>
+                  {errors.pay_currency && (
+                    <small className="text-danger">
+                      {errors.pay_currency.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>
