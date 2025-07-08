@@ -67,7 +67,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
   // Fetch initial data
   useEffect(() => {
     dispatch(fetchCurrencies({ is_active: true }));
-    dispatch(fetchpay_component({ is_active: true }));
+    dispatch(fetchpay_component({ is_active: true, is_advance: "Y" }));
     dispatch(employeeOptionsFn());
   }, [dispatch]);
 

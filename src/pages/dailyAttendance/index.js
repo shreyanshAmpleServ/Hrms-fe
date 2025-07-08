@@ -87,12 +87,12 @@ const DailyAttendance = () => {
 
   const getRandomClass = (status) => {
     return status === "Present"
-      ? "badge-soft-success"
+      ? "badge-success"
       : status === "Absent"
-        ? "badge-soft-danger"
+        ? "badge-danger"
         : status === "Half Day"
-          ? "badge-soft-secondary"
-          : "badge-soft-primary";
+          ? "badge-warning"
+          : "badge-info";
   };
 
   const columns = [
@@ -149,12 +149,15 @@ const DailyAttendance = () => {
       title: "Status",
       dataIndex: "status",
       render: (text) => (
-        <Link
-          to="#"
-          className={`badge ${text && getRandomClass(text)} fw-medium me-2 mb-1`}
+        <span
+          className={`${text && getRandomClass(text)} p-2 badge fw-medium`}
+          style={{
+            fontSize: "12px",
+            padding: "0.25rem 0.5rem",
+          }}
         >
           {text || "-"}
-        </Link>
+        </span>
       ),
     },
     {
@@ -171,7 +174,7 @@ const DailyAttendance = () => {
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >

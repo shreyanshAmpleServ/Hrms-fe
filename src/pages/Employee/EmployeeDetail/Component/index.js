@@ -116,6 +116,7 @@ const EmployeeComponent = ({ employeeDetail }) => {
                       data-bs-target="#offcanvas_add_edit_basic_salary"
                       onClick={() => {
                         setMode("edit");
+                        setSelected(record);
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit

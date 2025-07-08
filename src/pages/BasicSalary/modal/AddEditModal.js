@@ -1,11 +1,13 @@
 import { Select as AntdSelect, Button } from "antd";
 import moment from "moment";
-import Select from "react-select";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
 import Table from "../../../components/common/dataTableNew/index";
+import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createBasicSalary,
   fetchBasicSalaryById,
@@ -18,8 +20,6 @@ import { fetchdesignation } from "../../../redux/designation";
 import { fetchpay_component } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
-import toast from "react-hot-toast";
-import EmployeeSelect from "../../../components/common/EmployeeSelect";
 
 export const allowanceGroupList = [
   { value: "1", label: "Standard Allowance" },
@@ -50,9 +50,9 @@ const AddEditModal = ({
   mode = "add",
   initialData = null,
   setSelected,
-  employee_id,
-  department_id,
-  position_id,
+  employee_id = "",
+  department_id = "",
+  position_id = "",
 }) => {
   const initialComponent = [
     {
@@ -110,22 +110,8 @@ const AddEditModal = ({
     reset,
     control,
     watch,
-  } = useForm({
-    defaultValues: {
-      employee_id: "",
-      department_id: "",
-      branch_id: "",
-      position_id: "",
-      pay_grade_id: "",
-      pay_grade_level: "",
-      allowance_group: "",
-      work_life_entry: "",
-      effective_from: new Date(),
-      effective_to: new Date(),
-      status: "Active",
-      remarks: "",
-    },
-  });
+  } = useForm();
+  console.log("errors", errors);
 
   const currencyList = useMemo(() => {
     return (
@@ -246,43 +232,22 @@ const AddEditModal = ({
   }, [mode, assignmentLine, components]);
 
   useEffect(() => {
-    if (mode === "edit" && initialData) {
-      reset({
-        employee_id: employee_id || initialData.employee_id || "",
-        department_id: department_id || initialData.department_id || "",
-        branch_id: initialData.branch_id || "",
-        position_id: position_id || initialData.position_id || "",
-        pay_grade_id: initialData.pay_grade_id || "",
-        pay_grade_level: initialData.pay_grade_level || "",
-        allowance_group: initialData.allowance_group || "",
-        work_life_entry: initialData.work_life_entry || "",
-        effective_from: initialData.effective_from
-          ? new Date(initialData.effective_from)
-          : new Date(),
-        effective_to: initialData.effective_to
-          ? new Date(initialData.effective_to)
-          : new Date(),
-        status: initialData.status || "Active",
-        remarks: initialData.remarks || "",
-      });
-    } else if (mode === "add" || !employee_id) {
-      reset({
-        employee_id: employee_id || "",
-        department_id: department_id || "",
-        branch_id: "",
-        position_id: position_id || "",
-        pay_grade_id: "",
-        pay_grade_level: "",
-        allowance_group: "",
-        work_life_entry: "",
-        effective_from: new Date(),
-        effective_to: new Date(),
-        status: "Active",
-        remarks: "",
-      });
-      setBasicSalaryData(initialComponent);
-    }
-  }, [mode, initialData, reset]);
+    reset({
+      employee_id: employee_id || initialData?.employee_id || "",
+      branch_id: initialData?.branch_id || "",
+      position_id: position_id || initialData?.position_id || "",
+      department_id: department_id || initialData?.department_id || "",
+      pay_grade_id: initialData?.pay_grade_id || "",
+      pay_grade_level: initialData?.pay_grade_level || "",
+      allowance_group: initialData?.allowance_group || "",
+      work_life_entry: initialData?.work_life_entry || "",
+      effective_from: initialData?.effective_from || new Date().toISOString(),
+      effective_to: initialData?.effective_to || new Date().toISOString(),
+      status: initialData?.status || "Active",
+      remarks: initialData?.remarks || "",
+    });
+    setBasicSalaryData(initialComponent);
+  }, [initialData, reset, employee_id, department_id, position_id]);
 
   const handleModalClose = useCallback(() => {
     reset();
@@ -651,18 +616,17 @@ const AddEditModal = ({
       try {
         const submitData = {
           ...data,
-          effective_from:
-            data.effective_from?.toISOString() || new Date().toISOString(),
-          effective_to:
-            data.effective_to?.toISOString() || new Date().toISOString(),
           payLineData: JSON.stringify(
             basicSalaryData.filter((item) => item.pay_component_id)
           ),
         };
+        console.log("submitData", submitData);
 
-        if (mode === "add") {
+        if (!initialData) {
+          console.log("hello");
           dispatch(createBasicSalary(submitData));
-        } else if (mode === "edit" && initialData) {
+        } else if (initialData) {
+          console.log("hii");
           dispatch(
             updateBasicSalary({
               id: initialData.id,
@@ -674,7 +638,7 @@ const AddEditModal = ({
         closeButton?.click();
         handleModalClose();
       } catch (error) {
-        console.error("Form submission error:", error);
+        console.log("Form submission error:", error);
       }
     },
     [basicSalaryData, dispatch, initialData, mode, handleModalClose]
@@ -706,7 +670,7 @@ const AddEditModal = ({
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="offcanvas-title">
-          {mode === "add" ? "Add" : "Edit"} Component Assignment
+          {!initialData ? "Add" : "Edit"} Component Assignment
         </h5>
         <button
           type="button"
@@ -755,7 +719,6 @@ const AddEditModal = ({
               <Controller
                 name="department_id"
                 control={control}
-                disabled={true}
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -766,8 +729,8 @@ const AddEditModal = ({
                     className="select2"
                     value={departmentList.find(
                       (option) =>
-                        String(option.value) ===
-                        String(employeeData?.department_id)
+                        option.value ===
+                        (department_id || employeeData?.department_id)
                     )}
                   />
                 )}
@@ -775,25 +738,24 @@ const AddEditModal = ({
             </div>
 
             <div className="col-md-4 mb-3">
-              <label className="form-label">Designation</label>
+              <label className="form-label">Position</label>
               <Controller
-                name="designation_id"
+                name="position_id"
                 control={control}
-                disabled={true}
                 render={({ field }) => {
                   return (
                     <Select
                       {...field}
                       className="select"
                       options={designationList}
-                      placeholder="Select Designation"
+                      placeholder="Select Position"
+                      isDisabled={true}
                       classNamePrefix="react-select"
                       value={designationList.find(
                         (option) =>
-                          String(option.value) ===
-                          String(employeeData?.designation_id)
+                          option.value ===
+                          (position_id || employeeData?.position_id)
                       )}
-                      isDisabled={true}
                     />
                   );
                 }}
@@ -1110,7 +1072,7 @@ const AddEditModal = ({
               className="btn btn-primary"
               disabled={loading}
             >
-              {mode === "add" ? "Create" : "Update"}
+              {!initialData ? "Create" : "Update"}
               {loading && (
                 <div
                   className="spinner-border spinner-border-sm ms-2"

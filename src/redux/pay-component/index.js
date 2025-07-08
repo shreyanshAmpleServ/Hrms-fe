@@ -14,6 +14,7 @@ export const fetchpay_component = createAsyncThunk(
       if (datas?.page) params.page = datas?.page;
       if (datas?.size) params.size = datas?.size;
       if (datas?.is_active) params.is_active = datas?.is_active;
+      if (datas?.is_advance) params.is_advance = datas?.is_advance;
 
       const response = await apiClient.get("/v1/pay-component", { params });
       return response.data;
