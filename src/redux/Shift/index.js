@@ -5,10 +5,13 @@ import apiClient from "../../utils/axiosConfig";
 export const fetchShift = createAsyncThunk(
   "shift/fetchShift",
   async (datas, thunkAPI) => {
+    const params = new URLSearchParams();
+    if (datas?.search) params.append("search", datas?.search);
+    if (datas?.page) params.append("page", datas?.page);
+    if (datas?.size) params.append("size", datas?.size);
+    if (datas?.is_active) params.append("is_active", datas?.is_active);
     try {
-      const response = await apiClient.get(
-        `/v1/shift?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}`
-      );
+      const response = await apiClient.get(`/v1/shift?${params.toString()}`);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(

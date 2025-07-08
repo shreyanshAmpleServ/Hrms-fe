@@ -19,6 +19,7 @@ import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
 import { createEmployee, updateEmployee } from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
+import { fetchShift } from "../../../redux/Shift";
 import ManageAddress from "./createAddress";
 
 const initialAddress = [
@@ -141,11 +142,14 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
     dispatch(fetchbank({ is_active: true }));
     dispatch(fetchCountries({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
+    dispatch(fetchShift({ is_active: true }));
   }, [dispatch]);
 
   const { bank } = useSelector((state) => state.bank);
 
   const { employmentType } = useSelector((state) => state.employmentType);
+  const { shift } = useSelector((state) => state.shift);
+
   const { designation } = useSelector((state) => state.designation);
   const { department } = useSelector((state) => state.department);
 
@@ -164,6 +168,10 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const bankOptions = bank?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.bank_name,
+  }));
+  const shiftOptions = shift?.data?.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.shift_name,
   }));
 
   const onSubmit = async (data) => {
@@ -611,6 +619,40 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       </div>
                     </div>
 
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Shift
+                          <span className="text-danger">*</span>
+                        </label>
+                        <Controller
+                          name="shift_id"
+                          rules={{ required: "Shift is required" }}
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={shiftOptions}
+                              placeholder="Choose Shift"
+                              classNamePrefix="react-select"
+                              value={
+                                shiftOptions?.find(
+                                  (option) => option.value === watch("shift_id")
+                                ) || ""
+                              }
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.shift_id && (
+                          <small className="text-danger">
+                            {errors.shift_id.message}
+                          </small>
+                        )}
+                      </div>
+                    </div>
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">
