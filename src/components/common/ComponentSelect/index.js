@@ -1,47 +1,48 @@
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import Select from "react-select";
-import { employeeOptionsFn } from "../../../redux/Employee";
+import { componentOptionsFn } from "../../../redux/pay-component";
 
 /**
- * EmployeeSelect component renders a react-select dropdown for employees.
+ * ComponentSelect component renders a react-select dropdown for components.
  *
- * Fetches employee options from the Redux store and displays them in a select input.
+ * Fetches component options from the Redux store and displays them in a select input.
  * Optimized to avoid unnecessary re-renders and redundant fetches.
  *
  * @param {Object} props - Props passed to the component.
- * @param {string|number} props.value - The selected employee value.
+ * @param {string|number} props.value - The selected component value.
  * @param {function} props.onChange - Callback when selection changes.
- * @returns {JSX.Element} The EmployeeSelect component.
+ * @param {boolean} props.is_advance - Whether to fetch advance components.
+ * @returns {JSX.Element} The ComponentSelect component.
  */
-const EmployeeSelect = ({
+const ComponentSelect = ({
   value,
   onChange,
-  placeholder = "Select Employee",
+  placeholder = "Select Pay Component",
+  is_advance = false,
   ...props
 }) => {
   const dispatch = useDispatch();
 
-  // Select employee options and loading state from Redux store
-  const employeeOptions = useSelector(
-    (state) => state.employee.employeeOptions,
+  // Select component options and loading state from Redux store
+  const { componentOptions, loading } = useSelector(
+    (state) => state.payComponent,
     shallowEqual
   );
-  const loading = useSelector((state) => state.employee.loading);
 
-  // Fetch employee options only if not already loaded
+  // Fetch component options only if not already loaded
   useEffect(() => {
-    if (!employeeOptions) {
-      dispatch(employeeOptionsFn());
+    if (!componentOptions) {
+      dispatch(componentOptionsFn({ is_advance }));
     }
-  }, [dispatch, employeeOptions]);
+  }, [dispatch, is_advance]);
 
   // Memoize the select options for performance
   const options = useMemo(() => {
     // If the API returns options in a different format, map here
     // Assuming [{ value, label }, ...] or adapt as needed
-    return employeeOptions || [];
-  }, [employeeOptions]);
+    return componentOptions || [];
+  }, [componentOptions]);
 
   // Memoize the selected value for performance
   const selectedOption = useMemo(
@@ -63,4 +64,4 @@ const EmployeeSelect = ({
   );
 };
 
-export default EmployeeSelect;
+export default ComponentSelect;

@@ -182,7 +182,7 @@ const AddEditModal = ({
     dispatch(fetchdepartment());
     dispatch(fetchbranch({ is_active: true }));
     dispatch(fetchdesignation());
-    dispatch(fetchpay_component({ is_active: true }));
+    dispatch(fetchpay_component({ is_active: true, is_advance: "Y" }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
   }, []);

@@ -41,6 +41,20 @@ export const fetchpay_component = createAsyncThunk(
   }
 );
 
+export const componentOptionsFn = createAsyncThunk(
+  "pay_component/componentOptionsFn",
+  async (params, thunkAPI) => {
+    try {
+      const response = await apiClient.get("/v1/pay-component-options", {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data);
+    }
+  }
+);
+
 /**
  * Add a new pay component
  * @param {PayComponentData} pay_componentData - Pay component data to add
@@ -137,6 +151,7 @@ const pay_componentsSlice = createSlice({
   name: "pay_component",
   initialState: {
     pay_component: [],
+    componentOptions: null,
     loading: false,
     error: null,
     success: null,
@@ -225,6 +240,18 @@ const pay_componentsSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(deletepay_component.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(componentOptionsFn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(componentOptionsFn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.componentOptions = action.payload.data;
+      })
+      .addCase(componentOptionsFn.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

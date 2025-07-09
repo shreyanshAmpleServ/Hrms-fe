@@ -4,13 +4,13 @@ import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import ComponentSelect from "../../../components/common/ComponentSelect";
 import { fetchCurrencies } from "../../../redux/currency";
 import { employeeOptionsFn } from "../../../redux/Employee";
 import {
   createMidMonthPayroll,
   fetchMidMonthPayroll,
 } from "../../../redux/MidMonthPayroll";
-import { fetchpay_component } from "../../../redux/pay-component";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
@@ -39,16 +39,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
   const { loading } = useSelector((s) => s.midMonthPayroll || {});
   const { currencies } = useSelector((s) => s.currencies);
   const { employeeOptions } = useSelector((s) => s.employee);
-  const { pay_component } = useSelector((s) => s.payComponent);
 
-  const paycomponentOptions = useMemo(
-    () =>
-      pay_component?.data?.map(({ id, component_name }) => ({
-        value: id,
-        label: component_name,
-      })) || [],
-    [pay_component]
-  );
   const currencyList = useMemo(
     () =>
       currencies?.data?.map((item) => ({
@@ -71,7 +62,6 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
   // Fetch initial data
   useEffect(() => {
     dispatch(fetchCurrencies({ is_active: true }));
-    dispatch(fetchpay_component({ is_active: true, is_advance: "Y" }));
     dispatch(employeeOptionsFn());
   }, [dispatch]);
 
@@ -94,21 +84,17 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       );
     }
     // eslint-disable-next-line
-  }, [employeeOptions, currencyList, watch("pay_currency")]);
+  }, [employeeOptions, currencyList]);
 
   // Update payroll currency if global currency changes
   useEffect(() => {
     setPayroll((prev) =>
-      prev.map((item) =>
-        !item.pay_currency
-          ? {
-              ...item,
-              pay_currency: watch("pay_currency") || "",
-              currency_name: getCurrencyNameById(watch("pay_currency")),
-              currency_code: getCurrencyCodeById(watch("pay_currency")),
-            }
-          : item
-      )
+      prev.map((item) => ({
+        ...item,
+        pay_currency: watch("pay_currency") || "",
+        currency_name: getCurrencyNameById(watch("pay_currency")) || "",
+        currency_code: getCurrencyCodeById(watch("pay_currency")) || "",
+      }))
     );
     // eslint-disable-next-line
   }, [watch("pay_currency"), currencyList]);
@@ -148,7 +134,13 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
   }, [reset, midMonthPayroll, currencyList]);
 
   // Handlers
-  const handleChangeEmployee = useCallback((e, a) => {
+  const handleSelectAll = useCallback((e) => {
+    setPayroll((prev) =>
+      prev.map((item) => ({ ...item, is_selected: e.target.checked }))
+    );
+  }, []);
+
+  const handleChangeComponent = useCallback((e, a) => {
     setPayroll((prev) =>
       prev.map((item) =>
         item.employee_id === a.employee_id
@@ -216,18 +208,35 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
   // Table columns
   const columns = [
     {
-      title: "Employee ID",
-      dataIndex: "employee_id",
-      render: (text, a) => (
-        <div className="d-flex align-items-center gap-3">
+      title: (
+        <div className="d-flex align-items-center gap-2">
           <input
             type="checkbox"
             className="form-check-input"
             style={{ width: 20, height: 20 }}
-            checked={a.is_selected}
-            onChange={(e) => handleChangeEmployee(e, a)}
-            aria-label={`Select employee ${a.employee_id}`}
+            checked={payroll.every((r) => r.is_selected)}
+            onChange={(e) => handleSelectAll(e)}
           />
+        </div>
+      ),
+      dataIndex: "component_id",
+      render: (_, r) => (
+        <input
+          type="checkbox"
+          className="form-check-input"
+          style={{ width: 20, height: 20 }}
+          checked={r.is_selected}
+          onChange={(e) => handleChangeComponent(e, r)}
+          aria-label={`Select component ${r.component_id}`}
+        />
+      ),
+      width: 80,
+    },
+    {
+      title: "Employee ID",
+      dataIndex: "employee_id",
+      render: (text, a) => (
+        <div className="d-flex align-items-center gap-3">
           <p className="mt-2 mb-0">{text}</p>
         </div>
       ),
@@ -502,17 +511,13 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                   rules={{ required: "Pay Component is required!" }}
                   control={control}
                   render={({ field }) => (
-                    <Select
+                    <ComponentSelect
                       {...field}
-                      inputId="component_id"
-                      className="select"
-                      options={paycomponentOptions}
-                      placeholder="Select Pay Component"
-                      classNamePrefix="react-select"
-                      value={paycomponentOptions.find(
-                        (x) => x.value === field.value
-                      )}
-                      onChange={(o) => field.onChange(o.value)}
+                      value={field.value}
+                      onChange={(i) => {
+                        field.onChange(i.value);
+                        setValue("component_name", i.label);
+                      }}
                     />
                   )}
                 />
