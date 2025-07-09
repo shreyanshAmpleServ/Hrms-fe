@@ -31,7 +31,7 @@ const EmployeeSelect = ({
 
   // Fetch employee options only if not already loaded
   useEffect(() => {
-    if (!employeeOptions) {
+    if (!employeeOptions || employeeOptions.length === 0) {
       dispatch(employeeOptionsFn());
     }
   }, [dispatch, employeeOptions]);
