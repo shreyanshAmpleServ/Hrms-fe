@@ -111,7 +111,6 @@ const AddEditModal = ({
     control,
     watch,
   } = useForm();
-  console.log("errors", errors);
 
   const currencyList = useMemo(() => {
     return (
@@ -182,7 +181,7 @@ const AddEditModal = ({
     dispatch(fetchdepartment());
     dispatch(fetchbranch({ is_active: true }));
     dispatch(fetchdesignation());
-    dispatch(fetchpay_component({ is_active: true, is_advance: "Y" }));
+    dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
   }, []);
@@ -259,9 +258,6 @@ const AddEditModal = ({
   const handleAddBasicSalary = useCallback(() => {
     setBasicSalaryData((prev) => [...prev, ...initialComponent]);
   }, []);
-
-  console.log("mkxxx", employee_id, department_id, position_id);
-  console.log("mkxxx", watch());
 
   const handleChangeBasicSalary = useCallback(
     (identifier, field, value) => {

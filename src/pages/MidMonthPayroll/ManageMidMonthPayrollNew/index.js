@@ -513,6 +513,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                   render={({ field }) => (
                     <ComponentSelect
                       {...field}
+                      is_advance={true}
                       value={field.value}
                       onChange={(i) => {
                         field.onChange(i.value);
