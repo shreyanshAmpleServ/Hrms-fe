@@ -581,8 +581,8 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                         ? "Updating..."
                         : "Update"
                       : loading
-                        ? "Creating..."
-                        : "Create"}
+                        ? "Generating..."
+                        : "Generate"}
                     {loading && (
                       <span
                         style={{ height: 15, width: 15 }}
