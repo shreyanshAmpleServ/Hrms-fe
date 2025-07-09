@@ -185,7 +185,7 @@ const employeesSlice = createSlice({
   initialState: {
     employee: {},
     employeeDetail: null,
-    employeeOptions: [],
+    employeeOptions: null,
     loading: false,
     error: null,
     success: null,
