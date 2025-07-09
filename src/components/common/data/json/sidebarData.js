@@ -108,8 +108,8 @@ export const SidebarData = (userType) => {
           submenu: true,
           submenuItems: [
             {
-              label: "Monthly Payroll Processing",
-              link: route.monthlyPayroll,
+              label: "Component Assignment",
+              link: route.basicPayroll,
               showSubRoute: false,
               submenu: false,
             },
@@ -126,8 +126,8 @@ export const SidebarData = (userType) => {
               submenu: false,
             },
             {
-              label: "Component Assignment",
-              link: route.basicPayroll,
+              label: "Monthly Payroll Processing",
+              link: route.monthlyPayroll,
               showSubRoute: false,
               submenu: false,
             },
