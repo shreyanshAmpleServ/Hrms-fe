@@ -1,17 +1,19 @@
 import { Table } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import ComponentSelect from "../../components/common/ComponentSelect";
+import SharedDatePicker from "../../components/common/SharedDatePicker";
+import SharedSelect from "../../components/common/SharedSelect";
 import { fetchCurrencies } from "../../redux/currency";
 import { employeeOptionsFn } from "../../redux/Employee";
 import {
   createMidMonthPayroll,
   fetchMidMonthPayroll,
 } from "../../redux/MidMonthPayroll";
-import CollapseHeader from "../../components/common/collapse-header";
+import DatePicker from "react-datepicker";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
@@ -26,7 +28,7 @@ export const payrollWeekOptions = Array.from({ length: 4 }, (_, i) => ({
   label: `Week ${i + 1}`,
 }));
 
-const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
+const ManageMidMonthPayroll = () => {
   const [payroll, setPayroll] = useState([]);
   const dispatch = useDispatch();
   const {
@@ -103,26 +105,20 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
   // Reset form on mount and when midMonthPayroll changes
   useEffect(() => {
     reset({
-      payroll_month: midMonthPayroll?.payroll_month || DEFAULT_PAYROLL_MONTH,
-      payroll_week: midMonthPayroll?.payroll_week || DEFAULT_PAYROLL_WEEK,
-      payroll_year: midMonthPayroll?.payroll_year || DEFAULT_PAYROLL_YEAR,
-      pay_date: midMonthPayroll?.pay_date
-        ? new Date(midMonthPayroll.pay_date)
-        : new Date(),
-      pay_currency: midMonthPayroll?.pay_currency || "",
-      currency_name: midMonthPayroll?.currency_name || "",
-      execution_date: midMonthPayroll?.execution_date
-        ? new Date(midMonthPayroll.execution_date)
-        : new Date(),
-      doc_date: midMonthPayroll?.doc_date
-        ? new Date(midMonthPayroll.doc_date)
-        : new Date(),
-      status: midMonthPayroll?.status || "Pending",
-      component_id: midMonthPayroll?.component_id || "",
+      payroll_month: DEFAULT_PAYROLL_MONTH,
+      payroll_week: DEFAULT_PAYROLL_WEEK,
+      payroll_year: DEFAULT_PAYROLL_YEAR,
+      pay_date: new Date(),
+      pay_currency: "",
+      currency_name: "",
+      execution_date: new Date(),
+      doc_date: new Date(),
+      status: "Pending",
+      component_id: "",
     });
     setPayroll((prev) =>
       prev.map((item) => {
-        const pay_currency = midMonthPayroll?.pay_currency || "";
+        const pay_currency = "";
         return {
           ...item,
           pay_currency,
@@ -132,7 +128,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       })
     );
     // eslint-disable-next-line
-  }, [reset, midMonthPayroll, currencyList]);
+  }, [reset, currencyList]);
 
   // Handlers
   const handleSelectAll = useCallback((e) => {
@@ -261,38 +257,42 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
       dataIndex: "pay_currency",
       render: (text, r, i) =>
         r.is_selected ? (
-          <Select
-            inputId={`pay_currency_row_${r.employee_id}`}
-            className="select"
-            options={currencyList}
-            placeholder="Select Currency"
-            classNamePrefix="react-select"
-            value={
-              currencyList.find(
-                (x) =>
-                  String(x.value) ===
-                  String(r.pay_currency || watch("pay_currency"))
-              ) || null
-            }
-            onChange={(o) => handleEmployeeCurrencyChange(o ? o.value : "", i)}
-            isDisabled={!r.is_selected}
-            styles={{
-              container: (base) => ({ ...base, minWidth: 150, maxWidth: 250 }),
-              control: (base) => ({
-                ...base,
-                minHeight: 30,
-                height: 30,
-                fontSize: 13,
-              }),
-              valueContainer: (base) => ({
-                ...base,
-                height: 30,
-                padding: "0 6px",
-              }),
-              input: (base) => ({ ...base, margin: 0, padding: 0 }),
-              indicatorsContainer: (base) => ({ ...base, height: 30 }),
-            }}
-          />
+          <div style={{ minWidth: 150, maxWidth: 250 }}>
+            <Select
+              inputId={`pay_currency_row_${r.employee_id}`}
+              className="select"
+              options={currencyList}
+              placeholder="Select Currency"
+              classNamePrefix="react-select"
+              value={
+                currencyList.find(
+                  (x) =>
+                    String(x.value) ===
+                    String(r.pay_currency || watch("pay_currency"))
+                ) || null
+              }
+              onChange={(o) =>
+                handleEmployeeCurrencyChange(o ? o.value : "", i)
+              }
+              isDisabled={!r.is_selected}
+              styles={{
+                container: (base) => ({ ...base, width: "100%" }),
+                control: (base) => ({
+                  ...base,
+                  minHeight: 30,
+                  height: 30,
+                  fontSize: 13,
+                }),
+                valueContainer: (base) => ({
+                  ...base,
+                  height: 30,
+                  padding: "0 6px",
+                }),
+                input: (base) => ({ ...base, margin: 0, padding: 0 }),
+                indicatorsContainer: (base) => ({ ...base, height: 30 }),
+              }}
+            />
+          </div>
         ) : (
           <p className="mb-0">
             {r.pay_currency ? getCurrencyNameById(r.pay_currency) : "-"}
@@ -320,135 +320,51 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     },
   ];
 
+  const handleClose = () => {
+    reset();
+    setPayroll((prev) =>
+      prev.map((item) => ({
+        ...item,
+        is_selected: false,
+        net_pay: 0,
+        pay_currency: watch("pay_currency") || "",
+        currency_name: getCurrencyNameById(watch("pay_currency") || ""),
+        currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
+      }))
+    );
+  };
+
   // onSubmit: validate and dispatch
   const onSubmit = async () => {
     if (!selectedEmployees.length)
-      return alert("Please select at least one employee and enter Net Pay.");
+      return toast.error(
+        "Please select at least one employee and enter Net Pay."
+      );
     if (
       selectedEmployees.some(
         (emp) => !emp.net_pay || isNaN(emp.net_pay) || Number(emp.net_pay) <= 0
       )
     )
-      return alert(
+      return toast.error(
         "Please enter a valid Net Pay (greater than 0) for all selected employees."
       );
     if (selectedEmployees.some((emp) => !emp.pay_currency))
-      return alert("Please select a currency for all selected employees.");
+      return toast.error(
+        "Please select a currency for all selected employees."
+      );
     if (selectedEmployees.some((emp) => !emp.currency_name))
-      return alert(
+      return toast.error(
         "Currency name is missing for one or more selected employees."
       );
 
-    const closeBtn = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       await dispatch(createMidMonthPayroll(selectedEmployees)).unwrap();
-      closeBtn && closeBtn.click();
-      reset();
-      setPayroll((prev) =>
-        prev.map((item) => ({
-          ...item,
-          is_selected: false,
-          net_pay: 0,
-          pay_currency: watch("pay_currency") || "",
-          currency_name: getCurrencyNameById(watch("pay_currency") || ""),
-          currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
-        }))
-      );
+      handleClose();
       await dispatch(fetchMidMonthPayroll()).unwrap();
     } catch (e) {
       console.error("Error creating mid month payroll", e);
     }
   };
-
-  // Reset form when offcanvas closes
-  useEffect(() => {
-    const el = document.getElementById("offcanvas_add");
-    if (!el) return;
-    const handleClose = () => {
-      reset();
-      setPayroll((prev) =>
-        prev.map((item) => ({
-          ...item,
-          is_selected: false,
-          net_pay: 0,
-          pay_currency: watch("pay_currency") || "",
-          currency_name: getCurrencyNameById(watch("pay_currency") || ""),
-          currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
-        }))
-      );
-    };
-    el.addEventListener("hidden.bs.offcanvas", handleClose);
-    return () => el.removeEventListener("hidden.bs.offcanvas", handleClose);
-  }, [reset, currencyList, watch("pay_currency")]);
-
-  // Form field generator for Select/DatePicker
-  const renderSelect = (name, options, label, required, extraProps = {}) => (
-    <div className="col-md-3">
-      <label className="col-form-label" htmlFor={name}>
-        {label} {required && <span className="text-danger">*</span>}
-      </label>
-      <div className="mb-3">
-        <Controller
-          name={name}
-          control={control}
-          rules={required ? { required: `${label} is required!` } : undefined}
-          render={({ field }) => (
-            <Select
-              {...field}
-              inputId={name}
-              className="select"
-              placeholder={`Select ${label}`}
-              options={options}
-              classNamePrefix="react-select"
-              value={options.find((x) => x.value === field.value)}
-              onChange={(o) => field.onChange(o.value)}
-              {...extraProps}
-            />
-          )}
-        />
-      </div>
-      {errors[name] && (
-        <small className="text-danger">{errors[name].message}</small>
-      )}
-    </div>
-  );
-  const renderDate = (name, label, required) => (
-    <div className="col-md-3">
-      <label className="col-form-label" htmlFor={name}>
-        {label} {required && <span className="text-danger">*</span>}
-      </label>
-      <div className="mb-3">
-        <Controller
-          name={name}
-          control={control}
-          rules={required ? { required: `${label} is required!` } : undefined}
-          render={({ field }) => (
-            <DatePicker
-              {...field}
-              id={name}
-              className="form-control"
-              placeholderText={`Select ${label}`}
-              selected={field.value ? new Date(field.value) : null}
-              dateFormat={name === "payroll_year" ? "yyyy" : "dd-MM-yyyy"}
-              showYearPicker={name === "payroll_year"}
-              onChange={(date) =>
-                field.onChange(
-                  name === "payroll_year"
-                    ? date
-                      ? date.getFullYear()
-                      : null
-                    : date
-                )
-              }
-            />
-          )}
-        />
-      </div>
-      {errors[name] && (
-        <small className="text-danger">{errors[name].message}</small>
-      )}
-    </div>
-  );
 
   return (
     <div className="page-wrapper">
@@ -466,22 +382,94 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 <div>
                   <div className="row">
-                    {renderSelect(
-                      "payroll_week",
-                      payrollWeekOptions,
-                      "Payroll Week",
-                      true
-                    )}
-                    {renderSelect(
-                      "payroll_month",
-                      payrollMonthOptions,
-                      "Payroll Month",
-                      true
-                    )}
-                    {renderDate("payroll_year", "Payroll Year", true)}
-                    {renderDate("pay_date", "Pay Date", true)}
-                    {renderDate("execution_date", "Execution Date")}
-                    {renderDate("doc_date", "Document Date")}
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="payroll_week"
+                        label="Payroll Week"
+                        control={control}
+                        options={payrollWeekOptions}
+                        required={true}
+                        errors={errors}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="payroll_month"
+                        label="Payroll Month"
+                        control={control}
+                        options={payrollMonthOptions}
+                        required={true}
+                        errors={errors}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label className="col-form-label">
+                        Payroll Year <span className="text-danger">*</span>
+                      </label>
+                      <div className="mb-3">
+                        <div className="icon-form">
+                          <span className="form-icon">
+                            <i className="ti ti-calendar-check" />
+                          </span>
+
+                          <Controller
+                            name="payroll_year"
+                            control={control}
+                            rules={{ required: "Payroll Year is required!" }}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                className="form-control"
+                                placeholderText="Select Payroll Year"
+                                showYearPicker
+                                dateFormat="yyyy"
+                                selected={
+                                  field.value ? new Date(field.value, 0) : null
+                                }
+                                onChange={(date) =>
+                                  field.onChange(
+                                    date ? date.getFullYear() : null
+                                  )
+                                }
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+                      {errors.payroll_year && (
+                        <small className="text-danger">
+                          {errors.payroll_year.message}
+                        </small>
+                      )}
+                    </div>
+                    <div className="col-md-3">
+                      <SharedDatePicker
+                        name="pay_date"
+                        label="Pay Date"
+                        control={control}
+                        required={true}
+                        errors={errors}
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedDatePicker
+                        name="execution_date"
+                        label="Execution Date"
+                        control={control}
+                        errors={errors}
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedDatePicker
+                        name="doc_date"
+                        label="Document Date"
+                        control={control}
+                        errors={errors}
+                        dateFormat="dd-MM-yyyy"
+                      />
+                    </div>
                     <div className="col-md-3 mb-3">
                       <label className="col-form-label" htmlFor="component_id">
                         Pay Component <span className="text-danger">*</span>
@@ -509,38 +497,17 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                       )}
                     </div>
                     <div className="col-md-3">
-                      <label className="col-form-label" htmlFor="pay_currency">
-                        Currency
-                      </label>
-                      <div className="mb-3">
-                        <Controller
-                          name="pay_currency"
-                          control={control}
-                          render={({ field }) => (
-                            <Select
-                              {...field}
-                              inputId="pay_currency"
-                              className="select"
-                              options={currencyList}
-                              placeholder="Select Currency"
-                              classNamePrefix="react-select"
-                              value={currencyList.find(
-                                (x) => x.value === field.value
-                              )}
-                              onChange={(o) => {
-                                field.onChange(o.value);
-                                setValue("currency_name", o.currency_name);
-                                setValue("currency_code", o.currency_code);
-                              }}
-                            />
-                          )}
-                        />
-                      </div>
-                      {errors.pay_currency && (
-                        <small className="text-danger">
-                          {errors.pay_currency.message}
-                        </small>
-                      )}
+                      <SharedSelect
+                        name="pay_currency"
+                        label="Currency"
+                        control={control}
+                        options={currencyList}
+                        errors={errors}
+                        onChange={(o) => {
+                          setValue("currency_name", o?.currency_name || "");
+                          setValue("currency_code", o?.currency_code || "");
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -565,24 +532,11 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                 </div>
                 <div className="d-flex align-items-center justify-content-end">
                   <button
-                    type="button"
-                    data-bs-dismiss="offcanvas"
-                    className="btn btn-light me-2"
-                  >
-                    Cancel
-                  </button>
-                  <button
                     type="submit"
                     className="btn btn-primary"
                     disabled={loading}
                   >
-                    {midMonthPayroll
-                      ? loading
-                        ? "Updating..."
-                        : "Update"
-                      : loading
-                        ? "Generating..."
-                        : "Generate"}
+                    {loading ? "Generating..." : "Generate"}
                     {loading && (
                       <span
                         style={{ height: 15, width: 15 }}
