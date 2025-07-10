@@ -15,6 +15,7 @@ import {
 } from "../../redux/MidMonthPayroll";
 import DatePicker from "react-datepicker";
 import { fetchdepartment } from "../../redux/department";
+import { fetchdesignation } from "../../redux/designation";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
@@ -43,12 +44,21 @@ const ManageMidMonthPayroll = () => {
   const { loading } = useSelector((s) => s.midMonthPayroll || {});
   const { currencies } = useSelector((s) => s.currencies);
   const { employeeOptions } = useSelector((s) => s.employee);
+
   const { department } = useSelector((state) => state.department);
+  const { designation } = useSelector((state) => state.designation);
 
   const departmentOptions = department?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.department_name,
   }));
+
+  const designationOptions = designation?.data?.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.designation_name,
+  }));
+
+  console.log(designationOptions);
 
   const currencyList = useMemo(
     () =>
@@ -74,6 +84,7 @@ const ManageMidMonthPayroll = () => {
     dispatch(fetchCurrencies({ is_active: true }));
     dispatch(employeeOptionsFn());
     dispatch(fetchdepartment({ is_active: true }));
+    dispatch(fetchdesignation({ is_active: true }));
   }, [dispatch]);
 
   // Set payroll list when employee options or currency changes
@@ -550,6 +561,24 @@ const ManageMidMonthPayroll = () => {
                         label="Department To"
                         control={control}
                         options={departmentOptions}
+                        errors={errors}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="position_from"
+                        label="Position From"
+                        control={control}
+                        options={designationOptions}
+                        errors={errors}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="position_to"
+                        label="Position To"
+                        control={control}
+                        options={designationOptions}
                         errors={errors}
                       />
                     </div>
