@@ -41,7 +41,13 @@ const ComponentSelect = ({
   const options = useMemo(() => {
     // If the API returns options in a different format, map here
     // Assuming [{ value, label }, ...] or adapt as needed
-    return componentOptions || [];
+    return (
+      componentOptions?.map((item) => ({
+        value: item.id,
+        label: item.component_name,
+        record: item,
+      })) || []
+    );
   }, [componentOptions]);
 
   // Memoize the selected value for performance

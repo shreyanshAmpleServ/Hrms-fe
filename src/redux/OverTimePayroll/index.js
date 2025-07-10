@@ -28,6 +28,34 @@ export const fetchOverTimePayroll = createAsyncThunk(
   }
 );
 
+export const fetchOverTimePayrollDetail = createAsyncThunk(
+  "overtimePayroll/fetchOverTimePayrollDetail",
+  async (datas, thunkAPI) => {
+    const params = {
+      paymonth: datas?.payroll_month || "",
+      payyear: datas?.payroll_year || "",
+      empidfrom: datas?.employee_from || "",
+      empidto: datas?.employee_to || "",
+      depidfrom: datas?.department_from || "",
+      depidto: datas?.department_to || "",
+      positionidfrom: datas?.position_from || "",
+      positionidto: datas?.position_to || "",
+      wage: datas?.component_id || "",
+    };
+    try {
+      const response = await apiClient.get(
+        "/v1/overtime-payroll-processing/run-sp",
+        { params }
+      );
+      return response.data; // Returns list of overtime payroll
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch overtime payroll"
+      );
+    }
+  }
+);
+
 /**
  * Create a new overtime payroll.
  */
@@ -140,6 +168,7 @@ const overtimePayrollSlice = createSlice({
   initialState: {
     overtimePayroll: {},
     overtimePayrollDetail: null,
+    payrollDetail: null,
     loading: false,
     error: null,
     success: null,
@@ -241,6 +270,20 @@ const overtimePayrollSlice = createSlice({
         state.overtimePayrollDetail = action.payload.data;
       })
       .addCase(fetchOverTimePayrollById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+
+      // Fetch overtime payroll detail
+      .addCase(fetchOverTimePayrollDetail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchOverTimePayrollDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.payrollDetail = action.payload.data;
+      })
+      .addCase(fetchOverTimePayrollDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

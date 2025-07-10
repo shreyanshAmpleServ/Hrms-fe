@@ -29,6 +29,39 @@ export const fetchMidMonthPayroll = createAsyncThunk(
 );
 
 /**
+ * Fetch all advance payment with optional filters (search, date range, pagination).
+ */
+export const fetchMidMonthPayrollDetail = createAsyncThunk(
+  "midMonthPayroll/fetchMidMonthPayrollDetail",
+  async (datas, thunkAPI) => {
+    try {
+      const params = {
+        paymonth: datas?.payroll_month || "",
+        payyear: datas?.payroll_year || "",
+        empidfrom: datas?.employee_from || "",
+        empidto: datas?.employee_to || "",
+        depidfrom: datas?.department_from || "",
+        depidto: datas?.department_to || "",
+        positionidfrom: datas?.position_from || "",
+        positionidto: datas?.position_to || "",
+        wage: datas?.component_id || "",
+      };
+      const response = await apiClient.get(
+        "/v1/midmonth-payroll-processing/run-sp",
+        {
+          params,
+        }
+      );
+      return response.data; // Returns list of mid month payroll
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch mid month payroll"
+      );
+    }
+  }
+);
+
+/**
  * Create a new advance payment.
  */
 export const createMidMonthPayroll = createAsyncThunk(
@@ -140,6 +173,7 @@ const midMonthPayrollSlice = createSlice({
   initialState: {
     midMonthPayroll: {},
     midMonthPayrollDetail: null,
+    payrollDetail: null,
     loading: false,
     error: null,
     success: null,
@@ -241,6 +275,20 @@ const midMonthPayrollSlice = createSlice({
         state.midMonthPayrollDetail = action.payload.data;
       })
       .addCase(fetchMidMonthPayrollById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+
+      // Fetch mid month payroll detail
+      .addCase(fetchMidMonthPayrollDetail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMidMonthPayrollDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.payrollDetail = action.payload.data;
+      })
+      .addCase(fetchMidMonthPayrollDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

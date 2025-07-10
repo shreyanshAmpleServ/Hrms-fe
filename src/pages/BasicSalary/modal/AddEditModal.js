@@ -17,7 +17,10 @@ import { fetchbranch } from "../../../redux/branch";
 import { fetchCurrencies } from "../../../redux/currency";
 import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
-import { fetchpay_component } from "../../../redux/pay-component";
+import {
+  componentOptionsFn,
+  fetchpay_component,
+} from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
 
@@ -100,7 +103,11 @@ const AddEditModal = ({
     (state) => state.basicSalary
   );
   const { workLifeEventLog } = useSelector((state) => state.workLifeEventLog);
-  const { pay_component } = useSelector((state) => state.payComponent);
+  const { componentOptions } = useSelector((state) => state.payComponent);
+
+  useEffect(() => {
+    dispatch(componentOptionsFn({ is_advance: false }));
+  }, [dispatch]);
 
   const { currencies } = useSelector((state) => state.currencies);
 
@@ -168,19 +175,19 @@ const AddEditModal = ({
       .map((item) => item.pay_component_id);
 
     return (
-      pay_component?.data
+      componentOptions
         ?.filter((item) => !usedPayComponentIds.includes(item.id))
         .map((item) => ({
           value: item.id,
           label: item.component_name,
         })) || []
     );
-  }, [pay_component, basicSalaryData]);
+  }, [componentOptions, basicSalaryData]);
 
   useEffect(() => {
-    dispatch(fetchdepartment());
+    dispatch(fetchdepartment({ is_active: true }));
     dispatch(fetchbranch({ is_active: true }));
-    dispatch(fetchdesignation());
+    dispatch(fetchdesignation({ is_active: true }));
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
@@ -196,20 +203,21 @@ const AddEditModal = ({
     basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line;
 
   const components = useMemo(() => {
-    return pay_component?.data
+    return componentOptions
       ?.filter((item) => item.auto_fill === "Y")
       .map((item) => ({
         ...item,
         pay_component_id: item.id,
-        cost_center1_name: item.pay_component_cost_center1?.name,
-        cost_center2_name: item.pay_component_cost_center2?.name,
-        cost_center3_name: item.pay_component_cost_center3?.name,
-        cost_center4_name: item.pay_component_cost_center4?.name,
-        cost_center5_name: item.pay_component_cost_center5?.name,
-        project_name: item.pay_component_project?.name,
-        tax_code_name: item.pay_component_tax?.rule_type,
+        cost_center1_name: item.pay_component_cost_center1?.name || "",
+        cost_center2_name: item.pay_component_cost_center2?.name || "",
+        cost_center3_name: item.pay_component_cost_center3?.name || "",
+        cost_center4_name: item.pay_component_cost_center4?.name || "",
+        cost_center5_name: item.pay_component_cost_center5?.name || "",
+        project_name: item.pay_component_project?.name || "",
+        tax_code_name: item.pay_component_tax?.rule_type || "",
+        component_type: "O",
       }));
-  }, [pay_component]);
+  }, [componentOptions]);
 
   useEffect(() => {
     if (mode === "edit" && assignmentLine) {
@@ -223,6 +231,7 @@ const AddEditModal = ({
         cost_center5_name: item.pay_component_line_cost_center5?.name,
         project_name: item.pay_component_line_project?.name,
         tax_code_name: item.pay_component_line_tax_slab?.rule_type,
+        component_type: "O",
       }));
       setBasicSalaryData(data || initialComponent);
     } else if (mode === "add") {
@@ -269,7 +278,7 @@ const AddEditModal = ({
 
           if (shouldUpdate) {
             let updatedItem = { ...item };
-            const payComponent = pay_component?.data?.find(
+            const payComponent = componentOptions?.find(
               (comp) =>
                 comp.id ===
                 Number(field === "pay_component_id" ? value : identifier)
@@ -345,7 +354,7 @@ const AddEditModal = ({
         });
       });
     },
-    [pay_component?.data]
+    [componentOptions]
   );
 
   const handleDeleteBasicSalary = useCallback(() => {
@@ -379,7 +388,7 @@ const AddEditModal = ({
                   ]
                 : []),
             ]}
-            style={{ width: "200px" }}
+            style={{ width: "250px" }}
             value={record.pay_component_id || undefined}
             placeholder="Select Component"
             onChange={(value) =>
@@ -391,6 +400,7 @@ const AddEditModal = ({
             }
           />
         ),
+        width: "250px",
       },
       {
         title: "Currency",
@@ -749,8 +759,8 @@ const AddEditModal = ({
                       classNamePrefix="react-select"
                       value={designationList.find(
                         (option) =>
-                          option.value ===
-                          (position_id || employeeData?.position_id)
+                          Number(option.value) ===
+                          Number(position_id || employeeData?.designation_id)
                       )}
                     />
                   );
