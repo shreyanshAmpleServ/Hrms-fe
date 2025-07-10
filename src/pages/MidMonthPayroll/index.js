@@ -14,6 +14,7 @@ import {
   fetchMidMonthPayroll,
 } from "../../redux/MidMonthPayroll";
 import DatePicker from "react-datepicker";
+import { fetchdepartment } from "../../redux/department";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
@@ -42,6 +43,12 @@ const ManageMidMonthPayroll = () => {
   const { loading } = useSelector((s) => s.midMonthPayroll || {});
   const { currencies } = useSelector((s) => s.currencies);
   const { employeeOptions } = useSelector((s) => s.employee);
+  const { department } = useSelector((state) => state.department);
+
+  const departmentOptions = department?.data?.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.department_name,
+  }));
 
   const currencyList = useMemo(
     () =>
@@ -66,6 +73,7 @@ const ManageMidMonthPayroll = () => {
   useEffect(() => {
     dispatch(fetchCurrencies({ is_active: true }));
     dispatch(employeeOptionsFn());
+    dispatch(fetchdepartment({ is_active: true }));
   }, [dispatch]);
 
   // Set payroll list when employee options or currency changes
@@ -232,7 +240,7 @@ const ManageMidMonthPayroll = () => {
     {
       title: "Employee ID",
       dataIndex: "employee_id",
-      render: (text, a) => (
+      render: (text) => (
         <div className="d-flex align-items-center gap-3">
           <p className="mt-2 mb-0">{text}</p>
         </div>
@@ -507,6 +515,42 @@ const ManageMidMonthPayroll = () => {
                           setValue("currency_name", o?.currency_name || "");
                           setValue("currency_code", o?.currency_code || "");
                         }}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="employee_from"
+                        label="Employee From"
+                        control={control}
+                        options={employeeOptions}
+                        errors={errors}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="employee_to"
+                        label="Employee To"
+                        control={control}
+                        options={employeeOptions}
+                        errors={errors}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="department_from"
+                        label="Department From"
+                        control={control}
+                        options={departmentOptions}
+                        errors={errors}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <SharedSelect
+                        name="department_to"
+                        label="Department To"
+                        control={control}
+                        options={departmentOptions}
+                        errors={errors}
                       />
                     </div>
                   </div>

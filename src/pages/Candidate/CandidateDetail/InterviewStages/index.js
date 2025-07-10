@@ -5,23 +5,18 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
+import EmployeeSelect from "../../../../components/common/EmployeeSelect";
 import {
   createInterviewStageRemark,
   fetchInterviewStageRemark,
 } from "../../../../redux/InterviewStageRemark";
 import { fetchInterviewStages } from "../../../../redux/InterviewStages";
-import { fetchEmployee } from "../../../../redux/Employee";
 
 const InterviewStages = ({ candidateDetail }) => {
   const [current, setCurrent] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
 
-  const { employee, loading: employeeLoading } = useSelector(
-    (state) => state.employee || {}
-  );
   const { interviewStages } = useSelector(
     (state) => state.interviewStages || {}
   );
@@ -44,15 +39,6 @@ const InterviewStages = ({ candidateDetail }) => {
       rating: 0,
     },
   });
-
-  const employeeOptions = useMemo(
-    () =>
-      employee?.data?.map((i) => ({
-        label: `${i.employee_code} - ${i.full_name}`,
-        value: i.id,
-      })) || [],
-    [employee?.data]
-  );
 
   const stages = useMemo(
     () =>
@@ -78,10 +64,6 @@ const InterviewStages = ({ candidateDetail }) => {
   useEffect(() => {
     dispatch(fetchInterviewStages());
   }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchEmployee({ search: searchValue }));
-  }, [searchValue]);
 
   useEffect(() => {
     if (candidateDetail?.id) {
@@ -254,19 +236,10 @@ const InterviewStages = ({ candidateDetail }) => {
                         control={control}
                         rules={{ required: "Interviewer is required" }}
                         render={({ field }) => (
-                          <Select
+                          <EmployeeSelect
                             {...field}
-                            options={employeeOptions}
-                            placeholder="Select Interviewer"
-                            isLoading={employeeLoading}
-                            value={
-                              employeeOptions.find(
-                                (emp) => emp.value === field.value
-                              ) || null
-                            }
-                            onInputChange={setSearchValue}
-                            onChange={(option) => field.onChange(option?.value)}
-                            classNamePrefix="react-select"
+                            value={field.value}
+                            onChange={(e) => field.onChange(e?.value)}
                           />
                         )}
                       />

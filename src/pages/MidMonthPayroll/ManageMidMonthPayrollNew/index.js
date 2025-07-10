@@ -236,7 +236,7 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
     {
       title: "Employee ID",
       dataIndex: "employee_id",
-      render: (text, a) => (
+      render: (text) => (
         <div className="d-flex align-items-center gap-3">
           <p className="mt-2 mb-0">{text}</p>
         </div>
@@ -531,7 +531,6 @@ const ManageMidMonthPayroll = ({ midMonthPayroll }) => {
                 className="table-bordered"
                 style={{ width: "100%" }}
                 scroll={{ x: true }}
-                locale={{ emptyText: "No employees found." }}
               />
             </div>
           </div>

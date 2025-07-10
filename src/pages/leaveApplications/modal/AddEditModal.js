@@ -32,17 +32,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     dispatch(fetchLeaveType({ is_active: true }));
   }, [dispatch]);
 
-  const employee = useSelector((state) => state.employee.employee);
   const leaveType = useSelector((state) => state.leaveType.leaveType);
-
-  const EmployeeList = useMemo(
-    () =>
-      employee?.data?.map((item) => ({
-        value: item.id,
-        label: item.full_name,
-      })) || [],
-    [employee]
-  );
 
   const LeaveTypeList = useMemo(
     () =>
@@ -315,7 +305,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             )}
           </div>
 
-          {/* 1. Contact Details During Leave */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Contact During Leave</label>
             <Controller
@@ -331,118 +320,27 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
             />
           </div>
 
-          {/* 2. Approval Date */}
-          {/* <div className="col-md-6 mb-3">
-            <label className="form-label">Approval Date</label>
-            <Controller
-              name="approval_date"
-              control={control}
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  selected={field.value ? new Date(field.value) : null}
-                  onChange={(date) => field.onChange(date)}
-                  className="form-control"
-                  dateFormat="dd-MM-yyyy"
-                  placeholderText="Select Approval Date"
-                />
-              )}
-            />
-          </div> */}
-
-          {/* 3. Document Attachment */}
-
           <div className="col-md-6 mb-3">
             <label className="col-form-label">Document Attachment</label>
             <input type="file" className="form-control" accept=".pdf" />
           </div>
 
-          {/* 5. Backup Person */}
           <div className="col-md-6 mb-3">
             <label className="form-label">Backup Person</label>
             <Controller
               name="backup_person_id"
               control={control}
               render={({ field }) => (
-                <Select
+                <EmployeeSelect
                   {...field}
-                  options={EmployeeList}
                   placeholder="Choose Backup Person"
-                  isDisabled={!EmployeeList.length}
-                  classNamePrefix="react-select"
-                  className="select2"
-                  onChange={(option) => field.onChange(option?.value || "")}
-                  value={EmployeeList.find(
-                    (option) => option.value === watch("backup_person_id")
-                  )}
+                  onChange={(i) => field.onChange(i?.value)}
+                  value={field.value}
                 />
               )}
             />
           </div>
 
-          {/* 6. Approver */}
-          {/* <div className="col-md-6 mb-3">
-            <label className="form-label">Approver</label>
-            <Controller
-              name="approver_id"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={EmployeeList}
-                  placeholder="Choose Approver"
-                  isDisabled={!EmployeeList.length}
-                  classNamePrefix="react-select"
-                  className="select2"
-                  onChange={(option) => field.onChange(option?.value || "")}
-                  value={EmployeeList.find(
-                    (option) => option.value === watch("approver_id")
-                  )}
-                />
-              )}
-            />
-          </div> */}
-
-          {/* Status */}
-          {/* <div className="col-md-6 mb-3">
-            <label className="form-label">
-              Status <span className="text-danger">*</span>
-            </label>
-            <Controller
-              name="status"
-              control={control}
-              rules={{ required: "Status is required" }}
-              render={({ field }) => {
-                const selectedStatus = Status?.find(
-                  (status) => status.value === field.value
-                );
-                return (
-                  <Select
-                    {...field}
-                    className="select"
-                    options={Status}
-                    placeholder="Select Status"
-                    value={selectedStatus || null}
-                    classNamePrefix="react-select"
-                    onChange={(selectedOption) =>
-                      field.onChange(selectedOption.value)
-                    }
-                    styles={{
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9999,
-                      }),
-                    }}
-                  />
-                );
-              }}
-            />
-            {errors.status && (
-              <small className="text-danger">{errors.status.message}</small>
-            )}
-          </div> */}
-
-          {/* reason */}
           <div className="col-md-12 mb-3">
             <label className="form-label">
               Reason <small className="text-muted"> (Max 255 characters)</small>{" "}
@@ -473,45 +371,6 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               <small className="text-danger">{errors.reason.message}</small>
             )}
           </div>
-
-          {/* <div className="col-md-12 mb-3">
-            <label className="form-label">
-              Rejection Reason
-              <small className="text-muted">(Max 255 characters)</small>
-              {watch("status") === "rejected" && (
-                <span className="text-danger">*</span>
-              )}
-            </label>
-            <Controller
-              name="rejection_reason"
-              control={control}
-              rules={{
-                required:
-                  watch("status") === "rejected"
-                    ? "Rejection reason is required!"
-                    : false,
-                maxLength: {
-                  value: 255,
-                  message:
-                    "Rejection reason must be less than or equal to 255 characters",
-                },
-              }}
-              render={({ field }) => (
-                <textarea
-                  {...field}
-                  rows={3}
-                  maxLength={255}
-                  className="form-control"
-                  placeholder="Enter Rejection Reason"
-                />
-              )}
-            />
-            {errors.rejection_reason && (
-              <small className="text-danger px-1">
-                {errors.rejection_reason.message}
-              </small>
-            )}
-          </div> */}
 
           <div className="col-md-12 text-end">
             <button
