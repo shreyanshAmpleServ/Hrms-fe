@@ -39,6 +39,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
       reset({
         employee_id: payslip?.employee_id || "",
         month: payslip?.month || "",
+        pdf_path: payslip?.pdf_path || "",
         year: payslip?.year || "",
         net_salary: payslip?.net_salary || "",
         gross_salary: payslip?.gross_salary || "",
@@ -56,8 +57,8 @@ const AddEditModal = ({ setpayslip, payslip }) => {
     } else {
       reset({
         employee_id: "",
-        resume_path: "",
         month: "",
+        pdf_path: null,
         year: "",
         net_salary: "",
         gross_salary: "",
@@ -75,17 +76,42 @@ const AddEditModal = ({ setpayslip, payslip }) => {
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    const formData = new FormData();
+
+    // get the uploaded file
+    const pdfFile = data.pdf_path?.[0] || null;
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (key === "pdf_path") {
+          if (pdfFile) {
+            formData.append("pdf_path", pdfFile); // append file
+          }
+        } else if (value instanceof Date) {
+          formData.append(key, value.toISOString());
+        } else if (typeof value === "object") {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, value);
+        }
+      }
+    });
+
     try {
-      payslip
-        ? await dispatch(
-            updatepayslip({ id: payslip.id, payslipData: { ...data } })
-          ).unwrap()
-        : await dispatch(createpayslip({ ...data })).unwrap();
-      closeButton.click();
+      if (payslip) {
+        await dispatch(
+          updatepayslip({ id: payslip.id, payslipData: formData })
+        ).unwrap();
+      } else {
+        await dispatch(createpayslip(formData)).unwrap();
+      }
+
+      closeButton?.click();
       reset();
       setpayslip(null);
     } catch (error) {
-      closeButton.click();
+      console.error(error);
+      closeButton?.click();
     }
   };
 
@@ -230,14 +256,15 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                 </div>
 
                 {/* PDF Path (Upload PDF) */}
+
                 <div className="col-md-6 mb-3">
-                  <label className="col-form-label">Payslip PDF</label>
+                  <label className="col-form-label">Training Material</label>
                   <input
                     type="file"
                     className={`form-control ${errors.pdf_path ? "is-invalid" : ""}`}
                     accept=".pdf"
                     {...register("pdf_path", {
-                      required: "PDF file is required.",
+                      required: "Resume file is required.",
                       validate: {
                         isPdf: (files) =>
                           files[0]?.type === "application/pdf" ||

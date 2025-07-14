@@ -13,7 +13,7 @@ import {
   Legend,
 } from "recharts";
 
-// capitalize utility
+// utility to capitalize
 const capitalizeWords = (str) => {
   if (!str) return "";
   return str
@@ -24,13 +24,13 @@ const capitalizeWords = (str) => {
 
 const AttendanceSummary = () => {
   const dispatch = useDispatch();
-
   const { attendance } = useSelector((state) => state.employeeDashboard);
 
   useEffect(() => {
     dispatch(fetchEmployeeAttendance());
   }, [dispatch]);
 
+  // show loader when fetching
   if (attendance.loading) {
     return (
       <div
@@ -46,12 +46,22 @@ const AttendanceSummary = () => {
       </div>
     );
   }
-  if (attendance.error)
-    return <p className="text-danger">Error: {attendance.error}</p>;
-  if (!attendance.data?.data) return <p>No attendance data available.</p>;
 
-  const { today, thisWeek, lastWeek, thisMonth, lastMonth } =
-    attendance.data.data;
+  if (attendance.error) {
+    return (
+      <div
+        className="col-md-12 d-flex justify-content-center align-items-center"
+        style={{ height: "300px" }}
+      >
+        <p className="text-danger">Error: {attendance.error}</p>
+      </div>
+    );
+  }
+
+  // always prepare data — even if empty
+  const attendanceData = attendance.data?.data || {};
+
+  const { today, thisWeek, lastWeek, thisMonth, lastMonth } = attendanceData;
 
   const data = [
     { label: "Today", hours: today?.working_hours ?? 0 },
@@ -78,8 +88,7 @@ const AttendanceSummary = () => {
           </span>
         </div>
 
-        <div />
-
+        {/* If totalHours is 0, show a friendly message inside chart */}
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={chartData}
@@ -90,9 +99,19 @@ const AttendanceSummary = () => {
             <YAxis tickFormatter={(value) => `${value}h`} />
             <Tooltip formatter={(value) => `${value} hours`} />
             <Legend />
-            <Bar dataKey="hours" fill="#6c63ff" name="Working Hours" />
+            <Bar
+              dataKey="hours"
+              fill={totalHours === 0 ? "#ccc" : "#6c63ff"}
+              name="Working Hours"
+            />
           </BarChart>
         </ResponsiveContainer>
+
+        {totalHours === 0 && (
+          <div className="text-center mt-3 text-muted">
+            📭 No attendance records found yet.
+          </div>
+        )}
       </div>
     </div>
   );

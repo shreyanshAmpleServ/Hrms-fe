@@ -137,13 +137,16 @@ const ManageLoanMaster = ({ mode = "add", selected = null, setSelected }) => {
         <h4>{mode === "edit" ? "Update" : "Add"} Loan Master</h4>
         <button
           type="button"
-          className="btn-close custom-btn-close border p-1"
+          className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
+          aria-label="Close"
           onClick={() => {
             setSelected(null);
-            reset(defaultValues);
+            reset();
           }}
-        />
+        >
+          <i className="ti ti-x" />
+        </button>
       </div>
 
       <div className="offcanvas-body">
