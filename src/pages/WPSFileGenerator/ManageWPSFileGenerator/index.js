@@ -62,30 +62,37 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     const formData = new FormData();
+
+    // append form fields
     formData.append("payroll_month", data.payroll_month);
-    formData.append("file_path", data.file_path[0]); // get the actual file
     formData.append("generated_on", data.generated_on);
     formData.append("submitted_to_bank", data.submitted_to_bank);
 
+    // handle file
+    const file = data.file_path?.[0];
+    if (file) {
+      formData.append("file_path", file);
+    }
+
     try {
-      selected
-        ? await dispatch(
-            updateWPSFile({
-              id: selected.id,
-              wpsFileData: { ...data, rating: Number(data.rating) },
-            })
-          ).unwrap()
-        : await dispatch(
-            createWPSFile({
-              ...data,
-              rating: Number(data.rating),
-            })
-          ).unwrap();
-      closeButton.click();
+      if (selected) {
+        // when editing, include the id
+        await dispatch(
+          updateWPSFile({
+            id: selected.id,
+            wpsFileData: formData,
+          })
+        ).unwrap();
+      } else {
+        await dispatch(createWPSFile(formData)).unwrap();
+      }
+
+      closeButton?.click();
       reset();
       setSelected(null);
     } catch (error) {
-      closeButton.click();
+      console.error(error);
+      closeButton?.click();
     }
   };
 

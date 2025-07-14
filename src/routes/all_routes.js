@@ -147,7 +147,7 @@ export const all_routes = {
   // HRMS - OTHERS
   helpdeskTicket: "/helpdesk-ticket",
   notifications: "/notifications",
-  notificationsLog: "/notifications-log",
+  notificationsLog: "/notifications-Log",
   travelReimbursementClaims: "/travel-reimbursement-claims",
 
   // HRMS - MEDICAL

@@ -153,7 +153,7 @@ const PayslipViewer = () => {
     },
 
     {
-      title: "Payslip",
+      title: "Pay Slip",
       dataIndex: "pdf_path",
       render: (_text, record) => (
         <a
@@ -162,10 +162,10 @@ const PayslipViewer = () => {
           rel="noopener noreferrer"
           download
           className="d-inline-flex align-items-center gap-2 text-decoration-none"
-          title="Download Payslip"
+          title="View or Download PDF"
         >
-          <i className="ti ti-file-invoice fs-5"></i>
-          <span>Download</span>
+          <i className="ti ti-file-type-pdf fs-5"></i>
+          <span>View </span>
         </a>
       ),
     },

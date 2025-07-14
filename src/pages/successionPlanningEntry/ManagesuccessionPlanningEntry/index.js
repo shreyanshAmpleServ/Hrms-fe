@@ -123,6 +123,24 @@ const ManagesuccessionPlanning = ({
       closeButton?.click();
     }
   };
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setsuccessionPlanning(null);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, [setsuccessionPlanning]);
 
   return (
     <div

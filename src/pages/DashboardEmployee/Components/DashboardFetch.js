@@ -102,10 +102,11 @@ const EmployeeDashboard = () => {
             <p className="mb-2 fs-5 text-dark">
               <strong>Employee Code:</strong> {profile?.employee_code || "-"}
             </p>
-            <hr />
+            <br />
             <p className="mb-2">
               📞 <strong>Phone:</strong> {profile?.phone_number || "-"}
             </p>
+
             <p className="mb-2">
               📧 <strong>Email:</strong> {profile?.email || "-"}
             </p>

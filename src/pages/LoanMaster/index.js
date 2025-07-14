@@ -154,7 +154,7 @@ const LoanMaster = () => {
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
+                  {/* {isUpdate && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
@@ -172,7 +172,7 @@ const LoanMaster = () => {
                             ? "Reject/Pending"
                             : "Manage Status"}
                     </Link>
-                  )}
+                  )} */}
                   {isUpdate && (
                     <Link
                       className="dropdown-item edit-popup"
