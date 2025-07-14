@@ -124,9 +124,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                         <Select
                           {...field}
                           className="select"
-                          options={CompanyList}
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...CompanyList,
+                          ]}
+                          placeholder="-- Select --"
                           classNamePrefix="react-select"
-                          placeholder="Choose Company"
                           onInputChange={(inputValue) =>
                             setSearchValue(inputValue)
                           }

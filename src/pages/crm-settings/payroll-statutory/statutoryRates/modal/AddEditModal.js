@@ -47,7 +47,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         statutory_type: initialData.statutory_type || "",
         upper_limit: initialData.upper_limit || "",
         rate_percent: initialData.rate_percent || "",
-        effective_from: initialData.effective_from || "",
+        effective_from: initialData.effective_from || new Date(),
         is_active: initialData.is_active || "Y",
       });
     } else {
@@ -57,7 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         statutory_type: "",
         upper_limit: "",
         rate_percent: "",
-        effective_from: "",
+        effective_from: new Date(),
         is_active: "Y",
       });
     }
@@ -113,6 +113,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Statutory Type"
                     className={`form-control ${errors.statutory_type ? "is-invalid" : ""}`}
                     {...register("statutory_type", {
                       required: "Statutory type is required.",
@@ -155,6 +156,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </label>
                   <input
                     type="number"
+                    placeholder="Enter Lower Limit"
                     className={`form-control ${errors.lower_limit ? "is-invalid" : ""}`}
                     {...register("lower_limit", {
                       required: "Lower limit is required.",
@@ -176,6 +178,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </label>
                   <input
                     type="number"
+                    placeholder="Enter Upper Limit"
                     className={`form-control ${errors.upper_limit ? "is-invalid" : ""}`}
                     {...register("upper_limit", {
                       required: "Upper limit is required.",
@@ -195,6 +198,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   </label>
                   <input
                     type="number"
+                    placeholder="Enter Rate Percent"
                     min={0}
                     max={100}
                     className={`form-control ${errors.rate_percent ? "is-invalid" : ""}`}
@@ -225,10 +229,15 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       render={({ field }) => (
                         <Select
                           {...field}
-                          options={CountriesList}
-                          placeholder="Choose Country"
-                          isDisabled={!CountriesList.length}
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...(Array.isArray(CountriesList)
+                              ? CountriesList
+                              : []),
+                          ]}
                           classNamePrefix="react-select"
+                          placeholder="-- Select --"
+                          isDisabled={!CountriesList.length}
                           className="select2"
                           onChange={(selectedOption) =>
                             field.onChange(selectedOption?.value || null)

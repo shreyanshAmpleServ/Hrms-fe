@@ -57,6 +57,8 @@ export const all_routes = {
   assetTypeMaster: "/asset-type-master",
   awardTypeMaster: "/award-type-master",
   company: "/company",
+  branch: "/branch",
+  hrLetter: "/hr-letter",
   department: "/department",
   designation: "/designation",
   disciplinaryPenaltyMaster: "/disciplinary-penalty-master",

@@ -379,11 +379,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={employeeList}
-                    placeholder="Choose Employee"
-                    isDisabled={!employeeList.length}
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...(Array.isArray(employeeList) ? employeeList : []),
+                    ]}
                     classNamePrefix="react-select"
-                    className="select2"
+                    placeholder="-- Select --"
+                    isDisabled={!employeeList.length}
                     onChange={(option) => {
                       field.onChange(option?.value || "");
                       setSelectedEmployeeData(option?.data || null);

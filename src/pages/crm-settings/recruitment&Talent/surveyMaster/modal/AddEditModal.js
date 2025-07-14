@@ -34,8 +34,8 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     } else {
       reset({
         survey_title: "",
-        launch_date: null,
-        close_date: null,
+        launch_date: new Date(),
+        close_date: new Date(),
         description: "",
         is_active: "Y",
       });

@@ -161,8 +161,11 @@ const AddCompanyModal = () => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={CountriesList}
-                              placeholder="Choose Country "
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...CountriesList,
+                              ]}
+                              placeholder="-- Select -- "
                               isDisabled={!CountriesList.length}
                               classNamePrefix="react-select"
                               className="select2"
@@ -197,8 +200,11 @@ const AddCompanyModal = () => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={CurrenciesList}
-                              placeholder="Choose Currency"
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...CurrenciesList,
+                              ]}
+                              placeholder="-- Select --"
                               isDisabled={!CurrenciesList.length}
                               classNamePrefix="react-select"
                               className="select2"
