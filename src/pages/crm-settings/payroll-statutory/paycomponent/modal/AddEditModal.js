@@ -45,6 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   ];
 
   const payOrDeductOptions = [
+    { value: "", label: "-- Select --" },
     { value: "P", label: "Pay" },
     { value: "D", label: "Deduct" },
   ];
@@ -202,9 +203,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={componentTypeOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...componentTypeOptions,
+                      ]}
+                      placeholder="-- Select --"
                       classNamePrefix="react-select"
-                      placeholder="Select Component Type"
                       value={
                         componentTypeOptions.find(
                           (option) => option.value === field.value
@@ -235,7 +239,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       {...field}
                       options={payOrDeductOptions}
                       classNamePrefix="react-select"
-                      placeholder="Select Pay or Deduct"
+                      placeholder="-- Select --"
                       value={
                         payOrDeductOptions.find(
                           (option) => option.value === field.value
@@ -298,9 +302,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={taxSlabOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...(Array.isArray(taxSlabOptions)
+                          ? taxSlabOptions
+                          : []),
+                      ]}
                       classNamePrefix="react-select"
-                      placeholder="Select Tax Code"
+                      placeholder="-- Select --"
                       value={
                         taxSlabOptions?.find(
                           (option) => option.value === field.value
@@ -323,9 +332,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={projectOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...(Array.isArray(projectOptions)
+                          ? projectOptions
+                          : []),
+                      ]}
                       classNamePrefix="react-select"
-                      placeholder="Select Project"
+                      placeholder="-- Select --"
                       value={
                         projectOptions?.find(
                           (option) => option.value === field.value
@@ -394,9 +408,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={costCenterOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...(Array.isArray(costCenterOptions)
+                          ? costCenterOptions
+                          : []),
+                      ]}
                       classNamePrefix="react-select"
-                      placeholder="Select Cost Center"
+                      placeholder="-- Select --"
                       value={
                         costCenterOptions?.find(
                           (option) => option.value === field.value
@@ -419,9 +438,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={costCenterOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...(Array.isArray(costCenterOptions)
+                          ? costCenterOptions
+                          : []),
+                      ]}
                       classNamePrefix="react-select"
-                      placeholder="Select Cost Center"
+                      placeholder="-- Select --"
                       value={
                         costCenterOptions?.find(
                           (option) => option.value === field.value
@@ -445,9 +469,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={costCenterOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...(Array.isArray(costCenterOptions)
+                          ? costCenterOptions
+                          : []),
+                      ]}
                       classNamePrefix="react-select"
-                      placeholder="Select Cost Center"
+                      placeholder="-- Select --"
                       value={
                         costCenterOptions?.find(
                           (option) => option.value === field.value
@@ -470,9 +499,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={costCenterOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...(Array.isArray(costCenterOptions)
+                          ? costCenterOptions
+                          : []),
+                      ]}
                       classNamePrefix="react-select"
-                      placeholder="Select Cost Center"
+                      placeholder="-- Select --"
                       value={
                         costCenterOptions?.find(
                           (option) => option.value === field.value
@@ -495,9 +529,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={costCenterOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...(Array.isArray(costCenterOptions)
+                          ? costCenterOptions
+                          : []),
+                      ]}
                       classNamePrefix="react-select"
-                      placeholder="Select Cost Center"
+                      placeholder="-- Select --"
                       value={
                         costCenterOptions?.find(
                           (option) => option.value === field.value

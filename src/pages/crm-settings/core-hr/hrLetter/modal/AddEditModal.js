@@ -150,9 +150,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setHrLetter }) => {
                       <Select
                         {...field}
                         className="select"
-                        options={EmployeeList}
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...EmployeeList,
+                        ]}
+                        placeholder="-- Select --"
                         classNamePrefix="react-select"
-                        placeholder="Choose Employee Name"
                         onInputChange={(inputValue) =>
                           setSearchValue(inputValue)
                         }
@@ -189,10 +192,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setHrLetter }) => {
                       <Select
                         {...field}
                         className="select"
-                        options={letterTypeOptions}
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...letterTypeOptions,
+                        ]}
+                        placeholder="-- Select --"
                         isLoading={letterTypeLoading}
                         classNamePrefix="react-select"
-                        placeholder="Choose Letter Type"
                         onInputChange={(inputValue) =>
                           setSearchValue(inputValue)
                         }

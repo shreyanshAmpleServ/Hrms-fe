@@ -117,6 +117,7 @@ const AddProjectModal = () => {
                         </label>
                         <input
                           type="text"
+                          placeholder="Enter Project Name"
                           className="form-control"
                           {...register("name", {
                             required: "Project name is required",
@@ -134,6 +135,7 @@ const AddProjectModal = () => {
                         <label className="col-form-label">Code</label>
                         <input
                           type="text"
+                          placeholder="Enter Project Code"
                           className="form-control"
                           {...register("code", {
                             required: "Project code is required",

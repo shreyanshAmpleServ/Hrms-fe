@@ -200,10 +200,13 @@ const ManageLoanMaster = ({ mode = "add", selected = null, setSelected }) => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={LoanTypeList}
-                    placeholder="Select Loan Type"
-                    isDisabled={!LoanTypeList.length}
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...(Array.isArray(LoanTypeList) ? LoanTypeList : []),
+                    ]}
                     classNamePrefix="react-select"
+                    placeholder="-- Select --"
+                    isDisabled={!LoanTypeList.length}
                     onChange={(option) => field.onChange(option?.value || "")}
                     value={
                       LoanTypeList.find(
@@ -231,10 +234,13 @@ const ManageLoanMaster = ({ mode = "add", selected = null, setSelected }) => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={CurrencyList}
-                    placeholder="Select Currency"
-                    isDisabled={!CurrencyList.length}
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...(Array.isArray(CurrencyList) ? CurrencyList : []),
+                    ]}
                     classNamePrefix="react-select"
+                    placeholder="-- Select --"
+                    isDisabled={!CurrencyList.length}
                     onChange={(option) => field.onChange(option?.value || "")}
                     value={
                       CurrencyList.find(

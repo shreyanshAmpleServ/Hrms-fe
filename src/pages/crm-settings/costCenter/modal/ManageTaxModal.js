@@ -124,6 +124,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Name"
                   className="form-control"
                   {...register("name", {
                     required: "Name is required",
@@ -144,6 +145,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 </div>
                 <input
                   type="text"
+                  placeholder="Enter External Code"
                   className="form-control"
                   {...register("external_code", {
                     required: "External code is required",
@@ -162,6 +164,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <label className="col-form-label">Dimension</label>
                 <input
                   type="text"
+                  placeholder="Enter Dimension"
                   className="form-control"
                   {...register("dimension_id")}
                 />

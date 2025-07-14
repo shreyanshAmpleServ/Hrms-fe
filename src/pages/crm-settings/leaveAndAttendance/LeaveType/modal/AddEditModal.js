@@ -153,16 +153,20 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       <Select
                         {...field}
                         options={[
+                          { value: "", label: "-- Select --" },
+
                           { value: "D", label: "Day" },
                           { value: "H", label: "Hour" },
                         ]}
-                        placeholder="Choose Leave Unit"
+                        placeholder="-- Select --"
                         classNamePrefix="react-select"
                         className={`select2 ${errors.leave_unit ? "is-invalid" : ""}`}
                         onChange={(option) =>
                           field.onChange(option?.value || "")
                         }
                         value={[
+                          { value: "", label: "-- Select --" },
+
                           { value: "D", label: "Day" },
                           { value: "H", label: "Hour" },
                         ].find(
@@ -189,17 +193,19 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                       <Select
                         {...field}
                         options={[
+                          { value: "", label: "-- Select --" },
                           { value: "B", label: "Both" },
                           { value: "M", label: "Male" },
                           { value: "F", label: "Female" },
                         ]}
-                        placeholder="Choose For Gender"
+                        placeholder="-- Select --"
                         classNamePrefix="react-select"
                         className={`select2 ${errors.for_gender ? "is-invalid" : ""}`}
                         onChange={(option) =>
                           field.onChange(option?.value || "")
                         }
                         value={[
+                          { value: "", label: "-- Select --" },
                           { value: "B", label: "Both" },
                           { value: "M", label: "Male" },
                           { value: "F", label: "Female" },

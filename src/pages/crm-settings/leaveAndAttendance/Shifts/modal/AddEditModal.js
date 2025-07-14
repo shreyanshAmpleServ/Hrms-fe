@@ -37,6 +37,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const leaveDaysCount = 7 - watch("number_of_working_days");
 
   const halfDayOnOptions = [
+    { value: "", label: "-- Select --" },
     { label: "Monday", value: "1" },
     { label: "Tuesday", value: "2" },
     { label: "Wednesday", value: "3" },
@@ -250,9 +251,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                     render={({ field }) => (
                       <ReactSelect
                         {...field}
-                        options={departmentOptions}
-                        placeholder="Select Department"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...(Array.isArray(departmentOptions)
+                            ? departmentOptions
+                            : []),
+                        ]}
                         classNamePrefix="react-select"
+                        placeholder="-- Select --"
                         className={errors.department_id ? "is-invalid" : ""}
                         value={
                           field.value
@@ -321,7 +327,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                         <ReactSelect
                           isMulti
                           options={halfDayOnOptions}
-                          placeholder="Select Leave Days"
+                          placeholder="-- Select --"
                           className={errors.leave_days ? "is-invalid" : ""}
                           value={halfDayOnOptions.filter((option) =>
                             (field.value || []).some(
