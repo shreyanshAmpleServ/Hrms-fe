@@ -274,7 +274,7 @@ const AdminDashboard = () => {
                         </div>
                         <hr className="border-secondary my-1" />
                         <div className="mb-3 flex-grow-1 p-2">
-                          <div style={{ minHeight: "350px" }}>
+                          <div style={{ minHeight: "50px" }}>
                             <Pie data={attendance} />
                           </div>
                         </div>
@@ -291,7 +291,7 @@ const AdminDashboard = () => {
                         </div>
                         <hr className="border-secondary my-1" />
                         <div className="mb-3 flex-grow-1 p-2">
-                          <div style={{ minHeight: "350px" }}>
+                          <div style={{ minHeight: "50px" }}>
                             <Pie data={departmentData} />
                           </div>
                         </div>

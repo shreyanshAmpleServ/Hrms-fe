@@ -692,12 +692,12 @@ export const privateRoutes = [
     route: Route,
     title: "ConnectedApps",
   },
-  {
-    path: route.notification,
-    element: <Notifications />,
-    route: Route,
-    title: "Notifications",
-  },
+  // {
+  //   path: route.notification,
+  //   element: <Notifications />,
+  //   route: Route,
+  //   title: "Notifications",
+  // },
   {
     path: route.profile,
     element: <Profile />,
