@@ -18,7 +18,7 @@ import { componentOptionsFn } from "../../../redux/pay-component";
 const ComponentSelect = ({
   value,
   onChange,
-  placeholder = "Select Pay Component",
+  placeholder = "-- Select --",
   is_advance = false,
   ...props
 }) => {
@@ -50,6 +50,13 @@ const ComponentSelect = ({
     );
   }, [componentOptions]);
 
+  // Default option for the select
+  const defaultOption = {
+    value: "",
+    label: placeholder,
+    isDisabled: false,
+  };
+
   // Memoize the selected value for performance
   const selectedOption = useMemo(
     () => options.find((option) => option.value === value) || null,
@@ -59,7 +66,7 @@ const ComponentSelect = ({
   return (
     <Select
       className="w-100"
-      options={options}
+      options={[defaultOption, ...options]}
       isLoading={loading}
       placeholder={placeholder}
       value={selectedOption}

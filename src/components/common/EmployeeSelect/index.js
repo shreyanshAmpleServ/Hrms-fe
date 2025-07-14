@@ -17,7 +17,7 @@ import { employeeOptionsFn } from "../../../redux/Employee";
 const EmployeeSelect = ({
   value,
   onChange,
-  placeholder = "Select Employee",
+  placeholder = "-- Select --",
   ...props
 }) => {
   const dispatch = useDispatch();
@@ -43,6 +43,13 @@ const EmployeeSelect = ({
     return employeeOptions || [];
   }, [employeeOptions]);
 
+  // Default option for the select
+  const defaultOption = {
+    value: "",
+    label: placeholder,
+    isDisabled: false,
+  };
+
   // Memoize the selected value for performance
   const selectedOption = useMemo(
     () => options.find((option) => option.value === value) || null,
@@ -52,7 +59,7 @@ const EmployeeSelect = ({
   return (
     <Select
       className="w-100"
-      options={options}
+      options={[defaultOption, ...options]}
       isLoading={loading}
       placeholder={placeholder}
       value={selectedOption}

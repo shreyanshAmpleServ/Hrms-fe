@@ -42,6 +42,7 @@ export const payGradeLevelList = [
 ];
 
 export const payGradeList = [
+  { value: "", label: "-- Select --" },
   { value: "1", label: "Grade A - ₹15,000 to ₹25,000" },
   { value: "2", label: "Grade B - ₹25,001 to ₹40,000" },
   { value: "3", label: "Grade C - ₹40,001 to ₹60,000" },
@@ -778,8 +779,11 @@ const AddEditModal = ({
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={branchList}
-                    placeholder="Choose Branch"
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...branchList,
+                    ]}
+                    placeholder="-- Select --"
                     isDisabled={!branchList.length}
                     classNamePrefix="react-select"
                     className="select2"
