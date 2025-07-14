@@ -80,7 +80,7 @@ const ProbationReview = () => {
       render: (record) => record?.probation_review_employee?.full_name || "-",
     },
     {
-      title: "probation Reviewer",
+      title: "Probation Reviewer",
       render: (record) => record?.probation_reviewer?.full_name || "-",
     },
     {

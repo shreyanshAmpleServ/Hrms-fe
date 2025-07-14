@@ -212,7 +212,8 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                 <div className="mb-3">
                   <label className="col-form-label">
                     Reviewer Comments{" "}
-                    <small className="text-muted">(Max 255 characters)</small>
+                    <small className="text-muted">(Max 255 characters)</small>{" "}
+                    <span className="text-danger">*</span>
                   </label>
                   <Controller
                     name="reviewer_comments"
@@ -235,6 +236,11 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
                       />
                     )}
                   />
+                  {errors.reviewer_comments && (
+                    <small className="text-danger">
+                      {errors.reviewer_comments.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

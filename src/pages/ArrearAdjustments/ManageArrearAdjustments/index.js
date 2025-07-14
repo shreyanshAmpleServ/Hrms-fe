@@ -251,8 +251,11 @@ const ManageArrearAdjustments = ({
 
                 <div className="col-md-12">
                   <label className="col-form-label">
-                    Arrear Reason{" "}
-                    <small className="text-muted">(Max 255 characters)</small>
+                    Arrear Reason
+                    <small className="text-muted">
+                      (Max 255 characters)
+                    </small>{" "}
+                    <span className="text-danger">*</span>
                   </label>
                   <div className="mb-3">
                     <Controller
@@ -288,7 +291,6 @@ const ManageArrearAdjustments = ({
                       name="remarks"
                       control={control}
                       rules={{
-                        required: "Remarksis required!",
                         maxLength: {
                           value: 255,
                           message:
@@ -305,6 +307,11 @@ const ManageArrearAdjustments = ({
                         />
                       )}
                     />
+                    {errors.remarks && (
+                      <small className="text-danger">
+                        {errors.remarks.message}
+                      </small>
+                    )}
                   </div>
                 </div>
               </div>

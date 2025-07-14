@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
+import Table from "../../components/common/dataTableNew/index.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle.js";
@@ -11,7 +12,6 @@ import { deleteEmployee, fetchEmployee } from "../../redux/Employee/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import EmployeeGrid from "./gridEmployee.js";
 import ManageEmpModal from "./modal/manageEmpModal.js";
-import Datatable from "../../components/common/dataTableNew/index.js";
 
 const EmployeeList = () => {
   const [view, setView] = useState("list");
@@ -28,7 +28,7 @@ const EmployeeList = () => {
   });
   const dispatch = useDispatch();
 
-  const { employee, loading } = useSelector((state) => state.employee || {});
+  const { employee, loading } = useSelector((state) => state.employee);
 
   React.useEffect(() => {
     dispatch(
@@ -422,7 +422,7 @@ const EmployeeList = () => {
                   {isView ? (
                     <div className="table-responsive custom-table">
                       {view === "list" ? (
-                        <Datatable
+                        <Table
                           columns={columns}
                           dataSource={data}
                           loading={loading}

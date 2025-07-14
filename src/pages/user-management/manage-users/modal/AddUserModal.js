@@ -268,9 +268,7 @@ const AddUserModal = () => {
                   onChange={(selectedOption) =>
                     setValue("role_id", selectedOption?.value)
                   }
-                  placeholder="Select Role"
-                  menuPortalTarget={document.body}
-                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+                  placeholder="-- Select --"
                 />
                 {errors.role_id && (
                   <small className="text-danger">

@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import Table from "../../../components/common/dataTableNew/index";
+import DepartmentSelect from "../../../components/common/DepartmentSelect";
+import DesignationSelect from "../../../components/common/DesignationSelect";
 import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   createBasicSalary,
@@ -15,16 +17,12 @@ import {
 } from "../../../redux/BasicSalary";
 import { fetchbranch } from "../../../redux/branch";
 import { fetchCurrencies } from "../../../redux/currency";
-import { fetchdepartment } from "../../../redux/department";
-import { fetchdesignation } from "../../../redux/designation";
 import {
   componentOptionsFn,
   fetchpay_component,
 } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
-import DepartmentSelect from "../../../components/common/DepartmentSelect";
-import DesignationSelect from "../../../components/common/DesignationSelect";
 
 export const allowanceGroupList = [
   { value: "", label: "-- Select --" },
@@ -102,9 +100,7 @@ const AddEditModal = ({
   const [showDeleteModal, setShowDeleteModal] = useState(null);
   const dispatch = useDispatch();
 
-  const { department } = useSelector((state) => state.department);
   const { branch } = useSelector((state) => state.branch);
-  const { designation } = useSelector((state) => state.designation);
   const { basicSalaryDetail, loading } = useSelector(
     (state) => state.basicSalary
   );
@@ -134,15 +130,6 @@ const AddEditModal = ({
     );
   }, [currencies]);
 
-  const departmentList = useMemo(() => {
-    return (
-      department?.data?.map((item) => ({
-        value: item.id,
-        label: item.department_name,
-      })) || []
-    );
-  }, [department]);
-
   const branchList = useMemo(() => {
     return (
       branch?.data?.map((item) => ({
@@ -151,15 +138,6 @@ const AddEditModal = ({
       })) || []
     );
   }, [branch]);
-
-  const designationList = useMemo(() => {
-    return (
-      designation?.data?.map((item) => ({
-        value: item.id,
-        label: item.designation_name,
-      })) || []
-    );
-  }, [designation]);
 
   const statusList = [
     { value: "Active", label: "Active" },
@@ -191,9 +169,7 @@ const AddEditModal = ({
   }, [componentOptions, basicSalaryData]);
 
   useEffect(() => {
-    dispatch(fetchdepartment({ is_active: true }));
     dispatch(fetchbranch({ is_active: true }));
-    dispatch(fetchdesignation({ is_active: true }));
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
@@ -207,23 +183,6 @@ const AddEditModal = ({
 
   const assignmentLine =
     basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line;
-
-  const components = useMemo(() => {
-    return componentOptions
-      ?.filter((item) => item.auto_fill === "Y")
-      .map((item) => ({
-        ...item,
-        pay_component_id: item.id,
-        cost_center1_name: item.pay_component_cost_center1?.name || "",
-        cost_center2_name: item.pay_component_cost_center2?.name || "",
-        cost_center3_name: item.pay_component_cost_center3?.name || "",
-        cost_center4_name: item.pay_component_cost_center4?.name || "",
-        cost_center5_name: item.pay_component_cost_center5?.name || "",
-        project_name: item.pay_component_project?.name || "",
-        tax_code_name: item.pay_component_tax?.rule_type || "",
-        component_type: "O",
-      }));
-  }, [componentOptions]);
 
   useEffect(() => {
     if (mode === "edit" && assignmentLine) {
@@ -241,9 +200,23 @@ const AddEditModal = ({
       }));
       setBasicSalaryData(data || initialComponent);
     } else if (mode === "add") {
+      const components = componentOptions
+        ?.filter((item) => item.auto_fill === "Y")
+        .map((item) => ({
+          ...item,
+          pay_component_id: item.id,
+          cost_center1_name: item.pay_component_cost_center1?.name || "",
+          cost_center2_name: item.pay_component_cost_center2?.name || "",
+          cost_center3_name: item.pay_component_cost_center3?.name || "",
+          cost_center4_name: item.pay_component_cost_center4?.name || "",
+          cost_center5_name: item.pay_component_cost_center5?.name || "",
+          project_name: item.pay_component_project?.name || "",
+          tax_code_name: item.pay_component_tax?.rule_type || "",
+          component_type: "O",
+        }));
       setBasicSalaryData(components || initialComponent);
     }
-  }, [mode, assignmentLine, components]);
+  }, [mode, assignmentLine, componentOptions]);
 
   useEffect(() => {
     reset({
@@ -632,14 +605,13 @@ const AddEditModal = ({
             basicSalaryData.filter((item) => item.pay_component_id)
           ),
         };
-        console.log("submitData", submitData);
+
+        let result;
 
         if (!initialData) {
-          console.log("hello");
-          dispatch(createBasicSalary(submitData));
+          result = dispatch(createBasicSalary(submitData));
         } else if (initialData) {
-          console.log("hii");
-          dispatch(
+          result = dispatch(
             updateBasicSalary({
               id: initialData.id,
               basicSalaryData: submitData,
@@ -647,8 +619,14 @@ const AddEditModal = ({
           );
         }
 
-        closeButton?.click();
-        handleModalClose();
+        if (result.meta.requestStatus === "fulfilled") {
+          closeButton?.click();
+          handleModalClose();
+        } else {
+          toast.error(
+            `Failed to ${!initialData ? "create" : "update"} Component Assignment`
+          );
+        }
       } catch (error) {
         console.log("Form submission error:", error);
       }

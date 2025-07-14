@@ -99,10 +99,10 @@ const AddEditRole = ({ mode = "add", initialData = null }) => {
               </div>
 
               {/* Status */}
-              <div className="mb-0">
+              <div className="me-4">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
-                  <div className="me-2">
+                  <div className="me-3">
                     <input
                       type="radio"
                       className="status-radio"
@@ -125,11 +125,6 @@ const AddEditRole = ({ mode = "add", initialData = null }) => {
                     <label htmlFor="inactive">Inactive</label>
                   </div>
                 </div>
-                {errors.is_active && (
-                  <small className="text-danger">
-                    {errors.is_active.message}
-                  </small>
-                )}
               </div>
             </div>
 
