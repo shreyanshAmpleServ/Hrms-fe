@@ -31,15 +31,17 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
 
   const { loading } = useSelector((state) => state.goalSheet || {});
 
-  const appraisalEntriesList = (appraisalEntries?.data || []).map((i) => ({
-    label: i?.review_period,
-    value: i?.id,
-  }));
+  const appraisalEntriesList =
+    (appraisalEntries?.data || []).map((i) => ({
+      label: i?.review_period,
+      value: i?.id,
+    })) || [];
 
-  const goalCategoryMasterList = (goal_category?.data || []).map((i) => ({
-    label: i?.category_name,
-    value: i?.id,
-  }));
+  const goalCategoryMasterList =
+    (goal_category?.data || []).map((i) => ({
+      label: i?.category_name,
+      value: i?.id,
+    })) || [];
 
   useEffect(() => {
     dispatch(fetchAppraisalEntries({ is_active: true }));
@@ -173,8 +175,11 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                   return (
                     <Select
                       {...field}
-                      options={appraisalEntriesList}
-                      placeholder="Select Appraisal Cycle"
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...appraisalEntriesList,
+                      ]}
+                      placeholder="-- Select --"
                       isLoading={appraisalLoading}
                       value={selected || null}
                       onChange={(opt) => field.onChange(opt?.value)}
@@ -203,8 +208,11 @@ const ManagegoalSheet = ({ setgoalSheet, goalSheet }) => {
                   return (
                     <Select
                       {...field}
-                      options={goalCategoryMasterList}
-                      placeholder="Select Category"
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...goalCategoryMasterList,
+                      ]}
+                      placeholder="-- Select --"
                       value={selected || null}
                       onChange={(opt) => field.onChange(opt?.value)}
                       classNamePrefix="react-select"

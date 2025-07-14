@@ -73,10 +73,11 @@ const ManagegrievanceSubmission = ({
 
   const { grievance_type } = useSelector((state) => state.grievanceType || {});
 
-  const grievanceTypeOptions = grievance_type?.data?.map((i) => ({
-    label: i?.grievance_type_name,
-    value: i?.id,
-  }));
+  const grievanceTypeOptions =
+    grievance_type?.data?.map((i) => ({
+      label: i?.grievance_type_name,
+      value: i?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -180,11 +181,12 @@ const ManagegrievanceSubmission = ({
                       <Select
                         {...field}
                         options={[
+                          { value: "", label: "-- Select --" },
                           { value: "Pending", label: "Pending" },
                           { value: "Resolved", label: "Resolved" },
                           { value: "Closed", label: "Closed" },
                         ]}
-                        placeholder="Select Status"
+                        placeholder="-- Select --"
                         classNamePrefix="react-select"
                         value={
                           field.value
@@ -208,8 +210,11 @@ const ManagegrievanceSubmission = ({
                     render={({ field }) => (
                       <Select
                         {...field}
-                        options={grievanceTypeOptions}
-                        placeholder="Select Grievance Type"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...grievanceTypeOptions,
+                        ]}
+                        placeholder="-- Select --"
                         classNamePrefix="react-select"
                         value={field.value}
                         onChange={(i) => field.onChange(i?.value)}
@@ -275,7 +280,7 @@ const ManagegrievanceSubmission = ({
                     render={({ field }) => (
                       <EmployeeSelect
                         {...field}
-                        placeholder="Assigned To"
+                        placeholder="-- Select --"
                         value={field.value}
                         onChange={(i) => field.onChange(i?.value)}
                       />

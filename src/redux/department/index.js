@@ -94,6 +94,20 @@ export const deletedepartment = createAsyncThunk(
   }
 );
 
+export const departmentOptionsFn = createAsyncThunk(
+  "department/departmentOptionsFn",
+  async (thunkAPI) => {
+    try {
+      const response = await apiClient.get("/v1/department-options");
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch department options"
+      );
+    }
+  }
+);
+
 const departmentSlice = createSlice({
   name: "department",
   initialState: {
@@ -101,6 +115,7 @@ const departmentSlice = createSlice({
     loading: false,
     error: null,
     success: null,
+    departmentOptions: null,
   },
   reducers: {
     clearMessages(state) {
@@ -174,6 +189,18 @@ const departmentSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(deletedepartment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(departmentOptionsFn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(departmentOptionsFn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.departmentOptions = action.payload.data;
+      })
+      .addCase(departmentOptionsFn.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

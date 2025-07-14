@@ -242,8 +242,11 @@ const ManagedailyAttendance = ({ setAttendance, dailyAttendance }) => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={statusOptions}
-                    placeholder="Select Status"
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...statusOptions,
+                    ]}
+                    placeholder="-- Select --"
                     value={statusOptions.find(
                       (opt) => opt.value === field.value
                     )}

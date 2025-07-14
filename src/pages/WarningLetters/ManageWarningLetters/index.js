@@ -47,10 +47,11 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
 
   const { latter_type } = useSelector((state) => state.letterTypeMaster);
 
-  const letterTypes = latter_type?.data?.map((i) => ({
-    label: i?.letter_name,
-    value: i?.id,
-  }));
+  const letterTypes =
+    latter_type?.data?.map((i) => ({
+      label: i?.letter_name,
+      value: i?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -169,7 +170,7 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
                         return (
                           <EmployeeSelect
                             {...field}
-                            placeholder="Select Issued By"
+                            placeholder="-- Select --"
                             value={field.value || null}
                             onChange={(option) => field.onChange(option.value)}
                           />
@@ -197,8 +198,11 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
                         <Select
                           {...field}
                           className="select"
-                          options={severityLevels}
-                          placeholder="Select Severity Level"
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...severityLevels,
+                          ]}
+                          placeholder="-- Select --"
                           classNamePrefix="react-select"
                           value={severityLevels.find(
                             (x) => x.value === field.value
@@ -258,8 +262,11 @@ const ManageWarningLetters = ({ setWarningLetters, warningLetters }) => {
                         <Select
                           {...field}
                           className="select"
-                          options={letterTypes}
-                          placeholder="Select Ticket Type"
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...letterTypes,
+                          ]}
+                          placeholder="-- Select --"
                           classNamePrefix="react-select"
                           value={letterTypes?.find(
                             (x) => x.value === field.value

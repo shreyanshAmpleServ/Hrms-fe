@@ -1,16 +1,16 @@
-import Table from "../../components/common/dataTableNew/index.js";
+import Table from "../../components/common/dataTableNew";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CollapseHeader from "../../components/common/collapse-header.js";
-import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
-import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
+import CollapseHeader from "../../components/common/collapse-header";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js";
+import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent";
 import { fetchNotifications } from "../../redux/Notifications";
-import DeleteConfirmation from "./DeleteConfirmation/index.js";
-import ManageNotifications from "./ManageNotifications/index.js";
-import ManageStatus from "./ManageStatus/index.js";
+import DeleteConfirmation from "./DeleteConfirmation";
+import ManageNotifications from "./ManageNotifications";
+import ManageStatus from "./ManageStatus";
 
 const NotificationsLog = () => {
   const [open, setOpen] = React.useState(false);

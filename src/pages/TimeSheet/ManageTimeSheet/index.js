@@ -31,10 +31,11 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
     (state) => state.projects || {}
   );
 
-  const projectOptions = projects?.data?.map((i) => ({
-    label: i?.name || "",
-    value: i?.id,
-  }));
+  const projectOptions =
+    projects?.data?.map((i) => ({
+      label: i?.name || "",
+      value: i?.id,
+    })) || [];
 
   React.useEffect(() => {
     reset({
@@ -166,8 +167,11 @@ const ManageTimeSheet = ({ setTimeSheet, timeSheet }) => {
                         return (
                           <Select
                             {...field}
-                            options={projectOptions}
-                            placeholder="Select Project"
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...projectOptions,
+                            ]}
+                            placeholder="-- Select --"
                             classNamePrefix="react-select"
                             isLoading={projectLoading}
                             value={

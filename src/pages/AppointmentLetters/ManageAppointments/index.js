@@ -59,10 +59,11 @@ const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
     (state) => state.candidate || {}
   );
 
-  const candidates = candidate?.data?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
+  const candidates =
+    candidate?.data?.data?.map((i) => ({
+      label: i?.full_name,
+      value: i?.id,
+    })) || [];
 
   React.useEffect(() => {
     dispatch(fetchdesignation({ search: searchDesignation, is_active: true }));
@@ -72,10 +73,11 @@ const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
     (state) => state.designation || {}
   );
 
-  const designations = designation?.data?.map((i) => ({
-    label: i?.designation_name,
-    value: i?.id,
-  }));
+  const designations =
+    designation?.data?.map((i) => ({
+      label: i?.designation_name,
+      value: i?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -159,9 +161,12 @@ const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
                             <Select
                               {...field}
                               className="select"
-                              options={candidates}
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...candidates,
+                              ]}
                               classNamePrefix="react-select"
-                              placeholder="Select Candidate"
+                              placeholder="-- Select --"
                               isLoading={candidateLoading}
                               onInputChange={(inputValue) =>
                                 setSearchValue(inputValue)
@@ -206,9 +211,12 @@ const ManageAppointments = ({ setAppointment, appointment, candidate_id }) => {
                           <Select
                             {...field}
                             className="select"
-                            options={designations}
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...designations,
+                            ]}
                             isLoading={designationLoading}
-                            placeholder="Select Designation"
+                            placeholder="-- Select --"
                             classNamePrefix="react-select"
                             onInputChange={(inputValue) =>
                               setSearchDesignation(inputValue)

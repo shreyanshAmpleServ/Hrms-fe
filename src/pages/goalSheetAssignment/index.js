@@ -162,11 +162,11 @@ const GoalSheetAssignment = () => {
                     >
                       <i className="ti ti-settings text-blue"></i>
                       {record.status === "I"
-                        ? "Pending/Progress"
+                        ? "Pending/Completed"
                         : record.status === "P"
-                          ? "Pending/Completed"
+                          ? "Completed/In Progress"
                           : record.status === "C"
-                            ? "Pending/Completed"
+                            ? "Pending/In Progress"
                             : "Manage Status"}
                     </Link>
                   )}

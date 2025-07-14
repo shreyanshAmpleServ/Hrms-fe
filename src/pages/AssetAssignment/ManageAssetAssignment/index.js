@@ -42,10 +42,11 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
     (state) => state.assetTypeMaster
   );
 
-  const assetTypes = assets_type?.data?.map((i) => ({
-    label: i?.asset_type_name,
-    value: i?.id,
-  }));
+  const assetTypes =
+    assets_type?.data?.map((i) => ({
+      label: i?.asset_type_name,
+      value: i?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -155,8 +156,11 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
                           <Select
                             {...field}
                             className="select"
-                            options={assetTypes}
-                            placeholder="Select Asset Type"
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...assetTypes,
+                            ]}
+                            placeholder="-- Select --"
                             classNamePrefix="react-select"
                             isLoading={assetTypeLoading}
                             value={selectedDeal || null}

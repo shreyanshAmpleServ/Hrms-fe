@@ -50,6 +50,7 @@ const ManageArrearAdjustments = ({
   }, [arrearAdjustments, reset]);
 
   const adjustmentTypes = [
+    { value: "", label: "-- Select --" },
     { value: "Bonus", label: "Bonus" },
     { value: "Incentive", label: "Incentive" },
     { value: "Overtime", label: "Overtime" },
@@ -231,7 +232,7 @@ const ManageArrearAdjustments = ({
                           {...field}
                           className="select"
                           options={adjustmentTypes}
-                          placeholder="Select Adjustment Type"
+                          placeholder="-- Select --"
                           classNamePrefix="react-select"
                           value={adjustmentTypes.find(
                             (x) => x.value === field.value

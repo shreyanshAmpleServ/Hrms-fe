@@ -46,10 +46,11 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
   const { survey, loading: surveyLoading } = useSelector(
     (state) => state.surveyMaster
   );
-  const surveyTypes = survey?.data?.map((i) => ({
-    label: i?.survey_title,
-    value: i?.id,
-  }));
+  const surveyTypes =
+    survey?.data?.map((i) => ({
+      label: i?.survey_title,
+      value: i?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -154,8 +155,11 @@ const ManageSurveyResponse = ({ setSurveyResponse, surveyResponse }) => {
                           <Select
                             {...field}
                             className="select"
-                            options={surveyTypes}
-                            placeholder="Select Survey Type"
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...surveyTypes,
+                            ]}
+                            placeholder="-- Select --"
                             classNamePrefix="react-select"
                             isLoading={surveyLoading}
                             value={field.value}

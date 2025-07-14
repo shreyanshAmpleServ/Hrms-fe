@@ -100,6 +100,20 @@ export const deletedesignation = createAsyncThunk(
   }
 );
 
+export const designationOptionsFn = createAsyncThunk(
+  "designation/designationOptionsFn",
+  async (thunkAPI) => {
+    try {
+      const response = await apiClient.get("/v1/designation-options");
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch designation options"
+      );
+    }
+  }
+);
+
 const designationSlice = createSlice({
   name: "designation",
   initialState: {
@@ -107,6 +121,7 @@ const designationSlice = createSlice({
     loading: false,
     error: null,
     success: null,
+    designationOptions: null,
   },
   reducers: {
     clearMessages(state) {
@@ -180,6 +195,18 @@ const designationSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(deletedesignation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(designationOptionsFn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(designationOptionsFn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.designationOptions = action.payload.data;
+      })
+      .addCase(designationOptionsFn.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

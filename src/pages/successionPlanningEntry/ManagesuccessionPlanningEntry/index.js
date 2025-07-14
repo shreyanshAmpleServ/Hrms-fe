@@ -91,10 +91,11 @@ const ManagesuccessionPlanning = ({
 
   const { roles, loading: rolesLoading } = useSelector((state) => state.roles);
 
-  const roleOptions = roles?.map((role) => ({
-    value: role.id,
-    label: role.role_name,
-  }));
+  const roleOptions =
+    roles?.map((role) => ({
+      value: role.id,
+      label: role.role_name,
+    })) || [];
   const readinessOptions = [
     { label: "Ready Now", value: "Ready Now" },
     { label: "Ready in 1 Year", value: "Ready in 1 Year" },
@@ -156,7 +157,7 @@ const ManagesuccessionPlanning = ({
                 render={({ field }) => (
                   <EmployeeSelect
                     {...field}
-                    placeholder="Select Potential Successor"
+                    placeholder="-- Select --"
                     value={field.value}
                     onChange={(opt) => field.onChange(opt?.value)}
                   />
@@ -181,7 +182,7 @@ const ManagesuccessionPlanning = ({
                 render={({ field }) => (
                   <EmployeeSelect
                     {...field}
-                    placeholder="Select Current Holder"
+                    placeholder="-- Select --"
                     value={field.value}
                     onChange={(opt) => field.onChange(opt?.value)}
                   />
@@ -228,8 +229,11 @@ const ManagesuccessionPlanning = ({
                   return (
                     <Select
                       {...field}
-                      options={readinessOptions}
-                      placeholder="Select Readiness Level"
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...readinessOptions,
+                      ]}
+                      placeholder="-- Select --"
                       value={selected || null}
                       onChange={(opt) => field.onChange(opt?.value)}
                       classNamePrefix="react-select"
@@ -398,7 +402,7 @@ const ManagesuccessionPlanning = ({
                       { label: "Medium", value: "Medium" },
                       { label: "High", value: "High" },
                     ]}
-                    placeholder="Select Risk Level"
+                    placeholder="-- Select --"
                     value={
                       [
                         { label: "Low", value: "Low" },
@@ -424,9 +428,12 @@ const ManagesuccessionPlanning = ({
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={roleOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...roleOptions,
+                      ]}
                       isLoading={rolesLoading}
-                      placeholder="Select Role"
+                      placeholder="-- Select --"
                       onChange={(opt) => field.onChange(opt?.value)}
                       classNamePrefix="react-select"
                     />
@@ -452,7 +459,7 @@ const ManagesuccessionPlanning = ({
                 render={({ field }) => (
                   <EmployeeSelect
                     {...field}
-                    placeholder="Select Last Updated By HR"
+                    placeholder="-- Select --"
                     value={field.value}
                     onChange={(opt) => field.onChange(opt?.value)}
                   />
@@ -475,7 +482,7 @@ const ManagesuccessionPlanning = ({
                 render={({ field }) => (
                   <EmployeeSelect
                     {...field}
-                    placeholder="Select Evaluated By"
+                    placeholder="-- Select --"
                     value={field.value}
                     onChange={(opt) => field.onChange(opt?.value)}
                   />

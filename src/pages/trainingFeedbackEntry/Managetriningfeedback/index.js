@@ -54,10 +54,11 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
   );
   const { loading } = useSelector((state) => state.trainingFeedback || {});
 
-  const trainingOptions = trainingSession?.data?.map((t) => ({
-    label: t.training_title,
-    value: t.id,
-  }));
+  const trainingOptions =
+    trainingSession?.data?.map((t) => ({
+      label: t.training_title,
+      value: t.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -162,8 +163,11 @@ const ManagetrainingFeedback = ({ settrainingFeedback, trainingFeedback }) => {
                   return (
                     <Select
                       {...field}
-                      options={trainingOptions}
-                      placeholder="Select Training"
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...trainingOptions,
+                      ]}
+                      placeholder="-- Select --"
                       value={selected || null}
                       onChange={(opt) => field.onChange(opt?.value)}
                       classNamePrefix="react-select"

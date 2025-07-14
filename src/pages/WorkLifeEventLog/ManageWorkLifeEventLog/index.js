@@ -51,10 +51,11 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
     (state) => state.workLifeEvent || {}
   );
 
-  const workLifeEventTypes = work_life?.data?.map((i) => ({
-    label: i?.event_type_name,
-    value: i?.id,
-  }));
+  const workLifeEventTypes =
+    work_life?.data?.map((i) => ({
+      label: i?.event_type_name,
+      value: i?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -165,8 +166,11 @@ const ManageWorkLifeEventLog = ({ setWorkLifeEventLog, workLifeEventLog }) => {
                           <Select
                             {...field}
                             className="select"
-                            placeholder="Select Event Type"
-                            options={workLifeEventTypes}
+                            placeholder="-- Select --"
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...workLifeEventTypes,
+                            ]}
                             isLoading={workLifeEventTypeLoading}
                             value={selectedDeal || null}
                             classNamePrefix="react-select"

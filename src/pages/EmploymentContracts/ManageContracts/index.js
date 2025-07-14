@@ -65,10 +65,11 @@ const ManageContracts = ({ setContract, contract, candidate_id }) => {
     (state) => state.candidate || {}
   );
 
-  const candidates = candidate?.data?.data?.map((i) => ({
-    label: i?.full_name,
-    value: i?.id,
-  }));
+  const candidates =
+    candidate?.data?.data?.map((i) => ({
+      label: i?.full_name,
+      value: i?.id,
+    })) || [];
 
   const contractTypes = [
     { label: "Full Time", value: "full_time" },
@@ -165,9 +166,12 @@ const ManageContracts = ({ setContract, contract, candidate_id }) => {
                             <Select
                               {...field}
                               className="select"
-                              options={candidates}
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...candidates,
+                              ]}
                               classNamePrefix="react-select"
-                              placeholder="Select Candidate"
+                              placeholder="-- Select --"
                               isLoading={candidateLoading}
                               onInputChange={(inputValue) =>
                                 setSearchValue(inputValue)
@@ -212,9 +216,12 @@ const ManageContracts = ({ setContract, contract, candidate_id }) => {
                           <Select
                             {...field}
                             className="select"
-                            options={contractTypes}
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...contractTypes,
+                            ]}
                             classNamePrefix="react-select"
-                            placeholder="Select Contract Type"
+                            placeholder="-- Select --"
                             value={selectedDeal || null}
                             onChange={(selectedOption) =>
                               field.onChange(selectedOption.value)

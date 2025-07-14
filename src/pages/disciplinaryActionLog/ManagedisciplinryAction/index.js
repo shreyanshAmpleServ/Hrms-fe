@@ -81,10 +81,11 @@ const ManagedisciplinryAction = ({
     dispatch(fetchdisciplinary_penalty({ is_active: true }));
   }, [dispatch]);
 
-  const penaltyOptions = (disciplinary_penalty?.data || []).map((p) => ({
-    label: p?.description,
-    value: p?.id,
-  }));
+  const penaltyOptions =
+    (disciplinary_penalty?.data || []).map((p) => ({
+      label: p?.description,
+      value: p?.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -193,8 +194,11 @@ const ManagedisciplinryAction = ({
                       return (
                         <Select
                           {...field}
-                          options={penaltyOptions}
-                          placeholder="Select Training"
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...penaltyOptions,
+                          ]}
+                          placeholder="-- Select --"
                           isLoading={diciplinaryloading}
                           value={selected || null}
                           onChange={(opt) => field.onChange(opt?.value)}

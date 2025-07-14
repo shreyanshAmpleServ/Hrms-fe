@@ -155,8 +155,11 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                         <Select
                           {...field}
                           className="select"
-                          options={priorityOptions}
-                          placeholder="Select Priority"
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...priorityOptions,
+                          ]}
+                          placeholder="-- Select --"
                           classNamePrefix="react-select"
                           value={priorityOptions.find(
                             (x) => x.value === field.value
@@ -186,8 +189,11 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                         <Select
                           {...field}
                           className="select"
-                          options={ticketTypeOptions}
-                          placeholder="Select Ticket Type"
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...ticketTypeOptions,
+                          ]}
+                          placeholder="-- Select --"
                           classNamePrefix="react-select"
                           value={ticketTypeOptions.find(
                             (x) => x.value === field.value
@@ -280,7 +286,7 @@ const ManageHelpdeskTicket = ({ setHelpdeskTicket, helpdeskTicket }) => {
                         return (
                           <EmployeeSelect
                             {...field}
-                            placeholder="Select Assignee"
+                            placeholder="-- Select --"
                             value={field.value}
                             onChange={(i) => field.onChange(i?.value)}
                           />

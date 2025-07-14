@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import DepartmentSelect from "../../../components/common/DepartmentSelect";
 import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import {
   empStatusOptions,
@@ -15,7 +16,6 @@ import {
 import { fetchbank } from "../../../redux/bank";
 import { fetchCountries } from "../../../redux/country";
 import { fetchCurrencies } from "../../../redux/currency";
-import { fetchdepartment } from "../../../redux/department";
 import { fetchdesignation } from "../../../redux/designation";
 import { createEmployee, updateEmployee } from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
@@ -138,7 +138,6 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   React.useEffect(() => {
     dispatch(fetchemploymentType({ is_active: true }));
     dispatch(fetchdesignation({ is_active: true }));
-    dispatch(fetchdepartment({ is_active: true }));
     dispatch(fetchbank({ is_active: true }));
     dispatch(fetchCountries({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
@@ -151,28 +150,30 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const { shift } = useSelector((state) => state.shift);
 
   const { designation } = useSelector((state) => state.designation);
-  const { department } = useSelector((state) => state.department);
 
-  const employmentOptions = employmentType?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.type_name,
-  }));
-  const designationOptions = designation?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.designation_name,
-  }));
-  const departmentOptions = department?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.department_name,
-  }));
-  const bankOptions = bank?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.bank_name,
-  }));
-  const shiftOptions = shift?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.shift_name,
-  }));
+  const employmentOptions =
+    employmentType?.data?.map((emnt) => ({
+      value: emnt.id,
+      label: emnt.type_name,
+    })) || [];
+
+  const designationOptions =
+    designation?.data?.map((emnt) => ({
+      value: emnt.id,
+      label: emnt.designation_name,
+    })) || [];
+
+  const bankOptions =
+    bank?.data?.map((emnt) => ({
+      value: emnt.id,
+      label: emnt.bank_name,
+    })) || [];
+
+  const shiftOptions =
+    shift?.data?.map((emnt) => ({
+      value: emnt.id,
+      label: emnt.shift_name,
+    })) || [];
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -547,8 +548,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={employmentOptions}
-                              placeholder="Choose Employment Type"
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...employmentOptions,
+                              ]}
+                              placeholder="-- Select --"
                               classNamePrefix="react-select"
                               value={
                                 employmentOptions?.find(
@@ -596,8 +600,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={designationOptions}
-                              placeholder="Choose Designation"
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...designationOptions,
+                              ]}
+                              placeholder="-- Select --"
                               classNamePrefix="react-select"
                               value={
                                 designationOptions?.find(
@@ -632,8 +639,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={shiftOptions}
-                              placeholder="Choose Shift"
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...shiftOptions,
+                              ]}
+                              placeholder="-- Select --"
                               classNamePrefix="react-select"
                               value={
                                 shiftOptions?.find(
@@ -664,20 +674,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           rules={{ required: "Department is required" }}
                           control={control}
                           render={({ field }) => (
-                            <Select
+                            <DepartmentSelect
                               {...field}
-                              options={departmentOptions}
-                              placeholder="Choose Department"
-                              classNamePrefix="react-select"
-                              value={
-                                departmentOptions?.find(
-                                  (option) =>
-                                    option.value === watch("department_id")
-                                ) || ""
-                              }
-                              onChange={(selectedOption) => {
-                                field.onChange(selectedOption?.value || null);
-                              }}
+                              placeholder="-- Select --"
+                              value={watch("department_id")}
+                              onChange={(i) => field.onChange(i?.value)}
                             />
                           )}
                         />
@@ -751,8 +752,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={bankOptions}
-                              placeholder="Choose Bank"
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...bankOptions,
+                              ]}
+                              placeholder="-- Select --"
                               classNamePrefix="react-select"
                               value={
                                 bankOptions?.find(
@@ -776,8 +780,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={empStatusOptions}
-                              placeholder="Choose Status"
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...empStatusOptions,
+                              ]}
+                              placeholder="-- Select --"
                               classNamePrefix="react-select"
                               value={
                                 empStatusOptions?.find(
@@ -899,8 +906,11 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              options={maritalStatusOptions}
-                              placeholder="Choose Marital Status"
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...maritalStatusOptions,
+                              ]}
+                              placeholder="-- Select --"
                               classNamePrefix="react-select"
                               value={
                                 maritalStatusOptions?.find(

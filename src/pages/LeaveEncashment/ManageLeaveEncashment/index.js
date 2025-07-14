@@ -33,10 +33,11 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
   const { leaveType, loading: leaveTypeLoading } = useSelector(
     (state) => state.leaveType || {}
   );
-  const leaveTypes = leaveType?.data?.map((i) => ({
-    label: i?.leave_type,
-    value: i?.id,
-  }));
+  const leaveTypes =
+    leaveType?.data?.map((i) => ({
+      label: i?.leave_type,
+      value: i?.id,
+    })) || [];
 
   useEffect(() => {
     dispatch(fetchLeaveType({ is_active: true }));
@@ -181,8 +182,11 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                           <Select
                             {...field}
                             className="select"
-                            placeholder="Select Leave Type"
-                            options={leaveTypes}
+                            placeholder="-- Select --"
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...leaveTypes,
+                            ]}
                             isLoading={leaveTypeLoading}
                             value={selectedDeal || null}
                             classNamePrefix="react-select"

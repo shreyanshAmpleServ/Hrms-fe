@@ -23,8 +23,12 @@ import {
 } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
+import DepartmentSelect from "../../../components/common/DepartmentSelect";
+import DesignationSelect from "../../../components/common/DesignationSelect";
 
 export const allowanceGroupList = [
+  { value: "", label: "-- Select --" },
+  { value: "1", label: "Standard Allowance" },
   { value: "1", label: "Standard Allowance" },
   { value: "2", label: "Executive Allowance" },
   { value: "3", label: "Managerial Allowance" },
@@ -34,6 +38,7 @@ export const allowanceGroupList = [
 ];
 
 export const payGradeLevelList = [
+  { value: "", label: "-- Select --" },
   { value: "1", label: "Level 1 - Entry" },
   { value: "2", label: "Level 2 - Junior" },
   { value: "3", label: "Level 3 - Mid" },
@@ -727,18 +732,10 @@ const AddEditModal = ({
                 name="department_id"
                 control={control}
                 render={({ field }) => (
-                  <Select
+                  <DepartmentSelect
                     {...field}
-                    options={departmentList}
-                    placeholder="Choose Department"
                     isDisabled={true}
-                    classNamePrefix="react-select"
-                    className="select2"
-                    value={departmentList.find(
-                      (option) =>
-                        option.value ===
-                        (department_id || employeeData?.department_id)
-                    )}
+                    value={department_id || Number(employeeData?.department_id)}
                   />
                 )}
               />
@@ -751,18 +748,13 @@ const AddEditModal = ({
                 control={control}
                 render={({ field }) => {
                   return (
-                    <Select
+                    <DesignationSelect
                       {...field}
-                      className="select"
-                      options={designationList}
-                      placeholder="Select Position"
+                      placeholder="-- Select --"
                       isDisabled={true}
-                      classNamePrefix="react-select"
-                      value={designationList.find(
-                        (option) =>
-                          Number(option.value) ===
-                          Number(position_id || employeeData?.designation_id)
-                      )}
+                      value={
+                        position_id || Number(employeeData?.designation_id)
+                      }
                     />
                   );
                 }}
@@ -813,7 +805,7 @@ const AddEditModal = ({
                   <Select
                     {...field}
                     options={payGradeList}
-                    placeholder="Choose Pay Grade"
+                    placeholder="-- Select --"
                     isDisabled={!payGradeList.length}
                     classNamePrefix="react-select"
                     className="select2"
@@ -846,7 +838,7 @@ const AddEditModal = ({
                   <Select
                     {...field}
                     options={payGradeLevelList}
-                    placeholder="Choose Pay Grade Level"
+                    placeholder="-- Select --"
                     isDisabled={!payGradeLevelList.length}
                     classNamePrefix="react-select"
                     className="select2"
@@ -880,7 +872,7 @@ const AddEditModal = ({
                   <Select
                     {...field}
                     options={allowanceGroupList}
-                    placeholder="Choose Allowance Group"
+                    placeholder="-- Select --"
                     isDisabled={!allowanceGroupList.length}
                     classNamePrefix="react-select"
                     className="select2"
@@ -913,8 +905,11 @@ const AddEditModal = ({
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={workLifeEventLogList}
-                    placeholder="Choose Work Life Entry"
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...workLifeEventLogList,
+                    ]}
+                    placeholder="-- Select --"
                     isDisabled={!workLifeEventLogList.length}
                     classNamePrefix="react-select"
                     className="select2"
@@ -1015,8 +1010,8 @@ const AddEditModal = ({
                     }}
                     value={
                       statusList.find(
-                        (option) => String(option.value) === String(field.va)
-                      )?.label
+                        (option) => String(option.value) === String(field.value)
+                      ) || null
                     }
                   />
                 )}

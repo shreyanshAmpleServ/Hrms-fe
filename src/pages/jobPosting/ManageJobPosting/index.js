@@ -1,12 +1,11 @@
 import moment from "moment";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
+import DepartmentSelect from "../../../components/common/DepartmentSelect";
+import DesignationSelect from "../../../components/common/DesignationSelect";
 import { createJobPosting, updateJobPosting } from "../../../redux/JobPosting";
-import { fetchdepartment } from "../../../redux/department";
-import { fetchdesignation } from "../../../redux/designation";
 
 const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
   const dispatch = useDispatch();
@@ -19,27 +18,7 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
   } = useForm();
   const postingDate = useWatch({ control, name: "posting_date" });
 
-  const department = useSelector((state) => state.department.department);
-  const designation = useSelector((state) => state.designation.designation);
   const { loading } = useSelector((state) => state.JobPosting || {});
-
-  const DepartmentList = useMemo(
-    () =>
-      department?.data?.map((item) => ({
-        value: item.id,
-        label: item.department_name,
-      })) || [],
-    [department]
-  );
-
-  const DesignationList = useMemo(
-    () =>
-      designation?.data?.map((item) => ({
-        value: item.id,
-        label: item.designation_name,
-      })) || [],
-    [designation]
-  );
 
   React.useEffect(() => {
     if (JobPosting) {
@@ -74,11 +53,6 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
       });
     }
   }, [JobPosting, reset]);
-
-  useEffect(() => {
-    dispatch(fetchdepartment({ is_active: true }));
-    dispatch(fetchdesignation({ is_active: true }));
-  }, [dispatch]);
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -147,15 +121,9 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 control={control}
                 rules={{ required: "Department is required" }}
                 render={({ field }) => (
-                  <Select
+                  <DepartmentSelect
                     {...field}
-                    className="select"
-                    options={DepartmentList}
-                    placeholder="Select Department"
-                    classNamePrefix="react-select"
-                    value={DepartmentList.find(
-                      (opt) => opt.value === field.value
-                    )}
+                    value={field.value}
                     onChange={(opt) => field.onChange(opt.value)}
                   />
                 )}
@@ -176,15 +144,9 @@ const ManageJobPosting = ({ setJobPosting, JobPosting }) => {
                 control={control}
                 rules={{ required: "Designation is required" }}
                 render={({ field }) => (
-                  <Select
+                  <DesignationSelect
                     {...field}
-                    className="select"
-                    options={DesignationList}
-                    placeholder="Select Designation"
-                    classNamePrefix="react-select"
-                    value={DesignationList.find(
-                      (opt) => opt.value === field.value
-                    )}
+                    value={field.value}
                     onChange={(opt) => field.onChange(opt.value)}
                   />
                 )}

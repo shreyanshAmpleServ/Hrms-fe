@@ -1,5 +1,3 @@
-import LoanMaster from "../pages/LoanMaster";
-
 export const all_routes = {
   // AUTHENTICATION
   login: "/login",
@@ -47,6 +45,7 @@ export const all_routes = {
   employee: "/employee",
   addEmployee: "/add-employee",
   employeeDetails: "/employee/:id",
+  appointmentLetter: "/appointment-letter",
 
   // CRM - OTHERS
   campaigns: "/campaigns",

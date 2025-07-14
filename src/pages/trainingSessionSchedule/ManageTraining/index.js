@@ -108,16 +108,18 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
 
   const { department } = useSelector((state) => state.department);
 
-  const departmentOptions = department?.data?.map((emnt) => ({
-    value: emnt.id,
-    label: emnt.department_name,
-  }));
+  const departmentOptions =
+    department?.data?.map((emnt) => ({
+      value: emnt.id,
+      label: emnt.department_name,
+    })) || [];
 
   // ✅ Format for react-select
-  const employeeOptions = employee?.data?.map((emp) => ({
-    label: emp.full_name,
-    value: emp.id,
-  }));
+  const employeeOptions =
+    employee?.data?.map((emp) => ({
+      label: emp.full_name,
+      value: emp.id,
+    })) || [];
 
   const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -246,8 +248,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                   return (
                     <Select
                       {...field}
-                      options={employeeOptions}
-                      placeholder="Select Employee"
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...employeeOptions,
+                      ]}
+                      placeholder="-- Select --"
                       value={selected || null}
                       onInputChange={setSearchValue}
                       onChange={(opt) => field.onChange(opt?.value)}
@@ -277,8 +282,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={departmentOptions}
-                      placeholder="Choose Department"
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...departmentOptions,
+                      ]}
+                      placeholder="-- Select --"
                       classNamePrefix="react-select"
                       value={
                         departmentOptions?.find(
@@ -357,8 +365,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                   <Select
                     {...field}
                     className="select"
-                    options={trainingOptions}
-                    placeholder="Select Training Type "
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...trainingOptions,
+                    ]}
+                    placeholder="-- Select --"
                     classNamePrefix="react-select"
                     value={trainingOptions.find((x) => x.value === field.value)}
                     onChange={(option) => field.onChange(option.value)}
@@ -398,8 +409,11 @@ const ManagetrainingSession = ({ settrainingSession, trainingSession }) => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={audienceLevelOptions}
-                    placeholder="Select Audience Level"
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...audienceLevelOptions,
+                    ]}
+                    placeholder="-- Select --"
                     classNamePrefix="react-select"
                     value={audienceLevelOptions.find(
                       (x) => x.value === field.value

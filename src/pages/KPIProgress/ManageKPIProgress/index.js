@@ -24,10 +24,11 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
   const { loading } = useSelector((state) => state.kpiProgress || {});
   const { goalSheet } = useSelector((state) => state.goalSheet || {});
 
-  const goalSheetOptions = goalSheet?.data?.map((item) => ({
-    label: item?.goal_description,
-    value: item?.id,
-  }));
+  const goalSheetOptions =
+    goalSheet?.data?.map((item) => ({
+      label: item?.goal_description,
+      value: item?.id,
+    })) || [];
 
   React.useEffect(() => {
     dispatch(fetchgoalSheet());
@@ -174,8 +175,11 @@ const ManageKPIProgress = ({ setKPIProgress, kpiProgress }) => {
                           <Select
                             {...field}
                             className="select"
-                            options={goalSheetOptions}
-                            placeholder="Select Goal"
+                            options={[
+                              { value: "", label: "-- Select --" },
+                              ...goalSheetOptions,
+                            ]}
+                            placeholder="-- Select --"
                             classNamePrefix="react-select"
                             value={selectedGoal || null}
                             onChange={(selectedOption) =>

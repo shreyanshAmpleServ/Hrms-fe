@@ -21,10 +21,11 @@ const ManagetravelReimbursement = ({
     (state) => state.currencies
   );
 
-  const currencyOptions = currencies?.data?.map((currency) => ({
-    label: currency.currency_code + " - " + currency.currency_name,
-    value: currency.id,
-  }));
+  const currencyOptions =
+    currencies?.data?.map((currency) => ({
+      label: currency.currency_code + " - " + currency.currency_name,
+      value: currency.id,
+    })) || [];
 
   React.useEffect(() => {
     dispatch(fetchCurrencies({ is_active: true }));
@@ -187,7 +188,7 @@ const ManagetravelReimbursement = ({
                   return (
                     <EmployeeSelect
                       {...field}
-                      placeholder="Select Employee"
+                      placeholder="-- Select --"
                       value={field.value || null}
                       onChange={(opt) => field.onChange(opt?.value)}
                     />
@@ -313,9 +314,12 @@ const ManagetravelReimbursement = ({
                   return (
                     <Select
                       {...field}
-                      options={currencyOptions}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...currencyOptions,
+                      ]}
                       isLoading={currencyLoading}
-                      placeholder="Select Currency"
+                      placeholder="-- Select --"
                       value={selected || null}
                       onChange={(opt) => field.onChange(opt?.value)}
                       classNamePrefix="react-select"

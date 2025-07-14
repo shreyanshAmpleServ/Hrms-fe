@@ -31,13 +31,14 @@ const AddEditModal = ({ mode = "add", initialData = null, candidate_id }) => {
 
   const candidate = useSelector((state) => state.candidate.candidate);
 
-  const CandidateList = useMemo(
-    () =>
-      candidate?.data?.data?.map((item) => ({
-        value: item.id,
-        label: item.full_name,
-      })) || []
-  );
+  const CandidateList =
+    useMemo(
+      () =>
+        candidate?.data?.data?.map((item) => ({
+          value: item.id,
+          label: item.full_name,
+        })) || []
+    ) || [];
 
   // Prefill form in edit mode
   useEffect(() => {
@@ -127,8 +128,11 @@ const AddEditModal = ({ mode = "add", initialData = null, candidate_id }) => {
                     render={({ field }) => (
                       <Select
                         {...field}
-                        options={CandidateList}
-                        placeholder="Choose Candidate"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...CandidateList,
+                        ]}
+                        placeholder="-- Select --"
                         isDisabled={!CandidateList.length}
                         classNamePrefix="react-select"
                         className="select2"

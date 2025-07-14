@@ -41,10 +41,11 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     dispatch(fetchdesignation({ is_active: true }));
   }, []);
 
-  const designationOptions = designation?.data?.map((i) => ({
-    label: i?.designation_name,
-    value: i?.id,
-  }));
+  const designationOptions =
+    designation?.data?.map((i) => ({
+      label: i?.designation_name,
+      value: i?.id,
+    })) || [];
 
   const { applicationSource, loading: applicationSourceLoading } = useSelector(
     (state) => state.applicationSource || {}
@@ -53,10 +54,11 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     dispatch(fetchApplicationSource({ is_active: true }));
   }, []);
 
-  const applicationSourceOptions = applicationSource?.data?.map((i) => ({
-    label: i?.source_name,
-    value: i?.id,
-  }));
+  const applicationSourceOptions =
+    applicationSource?.data?.map((i) => ({
+      label: i?.source_name,
+      value: i?.id,
+    })) || [];
 
   const { interviewStages, loading: interviewStagesLoading } = useSelector(
     (state) => state.interviewStages || {}
@@ -65,19 +67,21 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
     dispatch(fetchInterviewStages({ is_active: true }));
   }, []);
 
-  const interviewStageOptions = interviewStages?.data?.map((i) => ({
-    label: i?.stage_name,
-    value: i?.id,
-  }));
+  const interviewStageOptions =
+    interviewStages?.data?.map((i) => ({
+      label: i?.stage_name,
+      value: i?.id,
+    })) || [];
 
   const { JobPosting, loading: jobPostingLoading } = useSelector(
     (state) => state.JobPosting || {}
   );
 
-  const jobPostingOptions = JobPosting?.data?.map((i) => ({
-    label: i?.job_title,
-    value: i?.id,
-  }));
+  const jobPostingOptions =
+    JobPosting?.data?.map((i) => ({
+      label: i?.job_title,
+      value: i?.id,
+    })) || [];
 
   useEffect(() => {
     dispatch(fetchJobPosting({ is_active: true }));
@@ -445,8 +449,11 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                       <Select
                         {...field}
                         className="select"
-                        placeholder="Select Job Posting"
-                        options={jobPostingOptions}
+                        placeholder="-- Select --"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...jobPostingOptions,
+                        ]}
                         classNamePrefix="react-select"
                         isLoading={jobPostingLoading}
                         value={jobPostingOptions?.find(
@@ -479,8 +486,11 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                       <Select
                         {...field}
                         className="select"
-                        placeholder="Select Applied Position"
-                        options={designationOptions || []}
+                        placeholder="-- Select --"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...designationOptions,
+                        ]}
                         classNamePrefix="react-select"
                         isLoading={designationLoading}
                         value={designationOptions?.find(
@@ -513,8 +523,11 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                       <Select
                         {...field}
                         className="select"
-                        options={interviewStageOptions}
-                        placeholder="Select Interview Stage"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...interviewStageOptions,
+                        ]}
+                        placeholder="-- Select --"
                         classNamePrefix="react-select"
                         isLoading={interviewStagesLoading}
                         value={interviewStageOptions?.find(
@@ -546,8 +559,11 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                       <Select
                         {...field}
                         className="select"
-                        placeholder="Select Source"
-                        options={applicationSourceOptions}
+                        placeholder="-- Select --"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...applicationSourceOptions,
+                        ]}
                         classNamePrefix="react-select"
                         isLoading={applicationSourceLoading}
                         value={applicationSourceOptions?.find(
@@ -864,8 +880,11 @@ const ManageCandidate = ({ setCandidate, candidate }) => {
                       <Select
                         {...field}
                         className="select"
-                        placeholder="Select No Show Flag"
-                        options={noShowFlagOptions}
+                        placeholder="-- Select --"
+                        options={[
+                          { value: "", label: "-- Select --" },
+                          ...noShowFlagOptions,
+                        ]}
                         classNamePrefix="react-select"
                         value={noShowFlagOptions.find(
                           (x) => x.value === field.value

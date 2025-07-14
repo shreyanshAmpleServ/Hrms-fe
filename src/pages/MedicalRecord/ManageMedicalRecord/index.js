@@ -157,8 +157,11 @@ const ManageMedicalRecord = ({ setMedicalRecord, medicalRecord }) => {
                         <Select
                           {...field}
                           className="select"
-                          options={medicalRecordTypes}
-                          placeholder="Select Record Type"
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...medicalRecordTypes,
+                          ]}
+                          placeholder="-- Select --"
                           classNamePrefix="react-select"
                           value={medicalRecordTypes.find(
                             (x) => x.value === field.value

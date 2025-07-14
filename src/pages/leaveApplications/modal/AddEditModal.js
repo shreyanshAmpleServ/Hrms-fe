@@ -34,14 +34,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
 
   const leaveType = useSelector((state) => state.leaveType.leaveType);
 
-  const LeaveTypeList = useMemo(
-    () =>
-      leaveType?.data?.map((item) => ({
-        value: item.id,
-        label: item.leave_type,
-      })) || [],
-    [leaveType]
-  );
+  const LeaveTypeList =
+    useMemo(
+      () =>
+        leaveType?.data?.map((item) => ({
+          value: item.id,
+          label: item.leave_type,
+        })) || []
+    ) || [];
 
   useEffect(() => {
     if (watch("employee_id") && watch("leave_type_id")) {
@@ -228,8 +228,11 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               render={({ field }) => (
                 <Select
                   {...field}
-                  options={LeaveTypeList}
-                  placeholder="Choose Leave Type"
+                  options={[
+                    { value: "", label: "-- Select --" },
+                    ...LeaveTypeList,
+                  ]}
+                  placeholder="-- Select --"
                   isDisabled={!LeaveTypeList.length}
                   classNamePrefix="react-select"
                   className="select2"
@@ -333,7 +336,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
               render={({ field }) => (
                 <EmployeeSelect
                   {...field}
-                  placeholder="Choose Backup Person"
+                  placeholder="-- Select --"
                   onChange={(i) => field.onChange(i?.value)}
                   value={field.value}
                 />

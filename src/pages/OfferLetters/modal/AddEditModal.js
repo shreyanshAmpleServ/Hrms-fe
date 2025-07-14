@@ -164,8 +164,11 @@ const AddEditModal = ({
                 render={({ field }) => (
                   <Select
                     {...field}
-                    options={CandidateList}
-                    placeholder="Choose Candidate"
+                    options={[
+                      { value: "", label: "-- Select --" },
+                      ...CandidateList,
+                    ]}
+                    placeholder="-- Select --"
                     classNamePrefix="react-select"
                     className="select2"
                     onChange={(option) => field.onChange(option?.value || "")}

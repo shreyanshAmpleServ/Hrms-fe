@@ -124,8 +124,11 @@ const ManageAddress = ({
                       render={({ field }) => (
                         <Select
                           {...field}
-                          options={stateOptions[index]}
-                          placeholder={`Choose State`}
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...(stateOptions[index] || []),
+                          ]}
+                          placeholder={`-- Select --`}
                           classNamePrefix="react-select"
                           isLoading={loadingState}
                           onFocus={() => stateApiCall()}
@@ -158,8 +161,11 @@ const ManageAddress = ({
                       render={({ field }) => (
                         <Select
                           {...field}
-                          options={countryList}
-                          placeholder={`Choose Country`}
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...countryList,
+                          ]}
+                          placeholder={`-- Select --`}
                           classNamePrefix="react-select"
                           isLoading={loadingCountry}
                           onInputChange={(value) => {
@@ -191,8 +197,11 @@ const ManageAddress = ({
                       render={({ field }) => (
                         <Select
                           {...field}
-                          options={addressTypeOptions}
-                          placeholder={`Select Address Type`}
+                          options={[
+                            { value: "", label: "-- Select --" },
+                            ...addressTypeOptions,
+                          ]}
+                          placeholder={`-- Select --`}
                           classNamePrefix="react-select"
                           value={
                             addressTypeOptions.find(

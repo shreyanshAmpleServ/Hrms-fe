@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import Select from "react-select";
 import { createpayslip, updatepayslip } from "../../../redux/payslipViewer";
+import SharedSelect from "../../../components/common/SharedSelect";
 
 const AddEditModal = ({ setpayslip, payslip }) => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
   const { loading } = useSelector((state) => state.payslip || {});
 
   const months = [
+    { value: "", label: "-- Select --" },
     { label: "January", value: "January" },
     { label: "February", value: "February" },
     { label: "March", value: "March" },
@@ -171,7 +173,7 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                       <Select
                         options={months}
                         classNamePrefix="react-select"
-                        placeholder="Select Month"
+                        placeholder="-- Select --"
                         value={
                           months.find((i) => i.value === field.value) || ""
                         }
@@ -186,27 +188,20 @@ const AddEditModal = ({ setpayslip, payslip }) => {
                   )}
                 </div>
 
-                <div className="col-md-6 mb-3">
-                  <label className="col-form-label">
-                    Year <span className="text-danger">*</span>
-                  </label>
-                  <select
-                    className={`form-control ${errors.year ? "is-invalid" : ""}`}
-                    {...register("year", { required: "Year is required" })}
-                  >
-                    <option value="">Select Year</option>
-                    {Array.from({ length: 110 }, (_, i) => 1990 + i).map(
-                      (year) => (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      )
-                    )}
-                  </select>
-                  {errors.year && (
-                    <small className="text-danger">{errors.year.message}</small>
+                <SharedSelect
+                  name="year"
+                  className="col-md-6 mb-3"
+                  control={control}
+                  label="Year"
+                  required={true}
+                  options={Array.from({ length: 110 }, (_, i) => 1990 + i).map(
+                    (year) => ({
+                      value: year,
+                      label: year,
+                    })
                   )}
-                </div>
+                  placeholder="-- Select --"
+                />
 
                 {/* Net Salary */}
                 <div className="col-md-6 mb-3">

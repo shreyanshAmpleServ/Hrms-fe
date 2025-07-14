@@ -24,6 +24,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
   });
 
   const monthsOptions = [
+    { value: "", label: "-- Select --" },
     { label: "January", value: "January" },
     { label: "February", value: "February" },
     { label: "March", value: "March" },
@@ -152,7 +153,7 @@ const ManageWPSFileGenerator = ({ setSelected, selected }) => {
                             {...field}
                             className="select"
                             options={monthsOptions}
-                            placeholder="Select Payroll Month"
+                            placeholder="-- Select --"
                             classNamePrefix="react-select"
                             value={selectedMonth || null}
                             onChange={(selectedOption) =>

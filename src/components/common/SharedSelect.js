@@ -11,7 +11,6 @@ import { Controller } from "react-hook-form";
  * @param {Array} props.options - Array of options for the select (format: [{value: '', label: ''}])
  * @param {string} props.label - Label text for the select
  * @param {boolean} props.required - Whether the field is required
- * @param {string} props.placeholder - Placeholder text
  * @param {boolean} props.isDisabled - Whether the select is disabled
  * @param {Object} props.rules - React Hook Form validation rules
  * @param {Function} props.onChange - Additional onChange handler
@@ -25,7 +24,6 @@ const SharedSelect = ({
   options,
   label,
   required = false,
-  placeholder,
   isDisabled = false,
   rules = {},
   onChange,

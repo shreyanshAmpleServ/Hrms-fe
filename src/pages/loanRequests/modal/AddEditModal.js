@@ -272,8 +272,11 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
               render={({ field }) => (
                 <Select
                   {...field}
-                  options={LoanTypeList}
-                  placeholder="Select Loan Type"
+                  options={[
+                    { value: "", label: "-- Select --" },
+                    ...LoanTypeList,
+                  ]}
+                  placeholder="-- Select --"
                   isDisabled={!LoanTypeList.length}
                   classNamePrefix="react-select"
                   onChange={(option) => field.onChange(option?.value || "")}
@@ -328,8 +331,11 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
               render={({ field }) => (
                 <Select
                   {...field}
-                  options={CurrencyList}
-                  placeholder="Select Currency"
+                  options={[
+                    { value: "", label: "-- Select --" },
+                    ...CurrencyList,
+                  ]}
+                  placeholder="-- Select --"
                   isDisabled={!CurrencyList.length}
                   classNamePrefix="react-select"
                   onChange={(option) => field.onChange(option?.value || "")}
