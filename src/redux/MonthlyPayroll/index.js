@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import apiClient from "../../utils/axiosConfig";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
+import apiClient from "../../utils/axiosConfig";
 
 /**
  * Fetch all monthly payroll with optional filters (search, date range, pagination).
@@ -129,6 +129,21 @@ export const fetchMonthlyPayrollById = createAsyncThunk(
     }
   }
 );
+export const fetchMonthlyPayrollPreview = createAsyncThunk(
+  "monthlyPayroll/fetchMonthlyPayrollPreview",
+  async (params, thunkAPI) => {
+    try {
+      const response = await apiClient.get("/v1/monthly-payroll/run-sp", {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch monthly payroll preview"
+      );
+    }
+  }
+);
 
 const monthlyPayrollSlice = createSlice({
   name: "monthlyPayroll",
@@ -138,6 +153,7 @@ const monthlyPayrollSlice = createSlice({
     loading: false,
     error: null,
     success: null,
+    monthlyPayrollPreview: null,
   },
   reducers: {
     // Clear success and error messages
@@ -236,6 +252,20 @@ const monthlyPayrollSlice = createSlice({
         state.monthlyPayrollDetail = action.payload.data;
       })
       .addCase(fetchMonthlyPayrollById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+
+      // Fetch monthly payroll preview
+      .addCase(fetchMonthlyPayrollPreview.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMonthlyPayrollPreview.fulfilled, (state, action) => {
+        state.loading = false;
+        state.monthlyPayrollPreview = action.payload.data;
+      })
+      .addCase(fetchMonthlyPayrollPreview.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

@@ -1,4 +1,4 @@
-import { Table, Select as AntSelect } from "antd";
+import { Select as AntSelect, Table } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
@@ -13,7 +13,6 @@ import { fetchdesignation } from "../../redux/designation";
 import { employeeOptionsFn } from "../../redux/Employee";
 import {
   createOverTimePayroll,
-  fetchOverTimePayroll,
   fetchOverTimePayrollDetail,
 } from "../../redux/OverTimePayroll";
 
@@ -64,7 +63,6 @@ const OverTimePayroll = () => {
     }
   }, [payrollDetail]);
 
-  console.log(payroll);
   const currencyList = useMemo(
     () =>
       currencies?.data?.map((item) => ({
@@ -91,40 +89,6 @@ const OverTimePayroll = () => {
     dispatch(fetchdepartment({ is_active: true }));
     dispatch(fetchdesignation({ is_active: true }));
   }, [dispatch]);
-
-  // Set payroll list when employee options or currency changes
-  // useEffect(() => {
-  //   if (employeeOptions) {
-  //     const pay_currency = watch("pay_currency") || "";
-  //     setPayroll(
-  //       // employeeOptions.map((item) => ({
-  //       //   employee_id: item.value,
-  //       //   employee_name: item.label,
-  //       //   net_pay: 0,
-  //       //   pay_currency,
-  //       //   processed: "N",
-  //       //   is_selected: false,
-  //       //   employee_email: item?.meta?.email || "",
-  //       //   currency_name: getCurrencyNameById(pay_currency),
-  //       //   currency_code: getCurrencyCodeById(pay_currency),
-  //       // }))
-  //     );
-  //   }
-  //   // eslint-disable-next-line
-  // }, [employeeOptions, currencyList]);
-
-  // Update payroll currency if global currency changes
-  // useEffect(() => {
-  //   setPayroll((prev) =>
-  //     prev.map((item) => ({
-  //       ...item,
-  //       pay_currency: watch("pay_currency") || "",
-  //       currency_name: getCurrencyNameById(watch("pay_currency")) || "",
-  //       currency_code: getCurrencyCodeById(watch("pay_currency")) || "",
-  //     }))
-  //   );
-  //   // eslint-disable-next-line
-  // }, [watch("pay_currency"), currencyList]);
 
   // Reset form on mount and when midMonthPayroll changes
   useEffect(() => {
@@ -185,36 +149,6 @@ const OverTimePayroll = () => {
     [currencyList]
   );
 
-  // Prepare selected employees for submission
-  /**
-   * Memoized list of selected employees with only required keys for submission.
-   *
-   * Filters the payroll array for selected employees and maps each to an object
-   * containing only the necessary keys for the API.
-   *
-   * @returns {Array<Object>} Array of selected employee objects with filtered keys.
-   *
-   * @example
-   *  Returns:
-   *
-   *  {
-   *    employee_id: 15,
-   *    payroll_month: 7,
-   *    payroll_year: 2025,
-   *    payroll_week: 1,
-   *    pay_currency: 2,
-   *    component_id: 109,
-   *    status: "Pending",
-   *    execution_date: "2025-07-10",
-   *    overtime_amount: "1200",
-   *    doc_date: "2025-07-01",
-   *    employee_email: "emp1@example.com",
-   *    remarks: "",
-   *    currency_name: "USD",
-   *    processed: "Y"
-   *  }
-   *  ]
-   */
   const selectedEmployees = useMemo(() => {
     return payroll
       .filter((item) => item.is_selected)
@@ -240,24 +174,6 @@ const OverTimePayroll = () => {
       });
   }, [payroll, watch, currencyList]);
 
-  console.log(selectedEmployees);
-  /**
-   * Table columns for the Overtime Payroll table.
-   *
-   * Includes only the checkbox column and the following fields:
-   * - account_number
-   * - employee_category
-   * - employee_code
-   * - employee_id
-   * - employee_name
-   * - overtime_amount
-   * - overtime_rate
-   * - overtime_type
-   *
-   * @example
-   * // Example usage in Table:
-   * <Table columns={columns} dataSource={payroll} ... />
-   */
   const columns = [
     {
       title: (
@@ -266,7 +182,7 @@ const OverTimePayroll = () => {
             type="checkbox"
             className="form-check-input"
             style={{ width: 20, height: 20 }}
-            checked={payroll.every((r) => r.is_selected)}
+            checked={payroll.length > 0 && payroll.every((r) => r.is_selected)}
             onChange={(e) => handleSelectAll(e)}
           />
         </div>
@@ -406,9 +322,8 @@ const OverTimePayroll = () => {
     try {
       await dispatch(createOverTimePayroll(selectedEmployees)).unwrap();
       handleClose();
-      await dispatch(fetchOverTimePayroll()).unwrap();
     } catch (e) {
-      console.error("Error creating mid month payroll", e);
+      console.error("Error creating over time payroll", e);
     }
   };
 
@@ -524,7 +439,8 @@ const OverTimePayroll = () => {
                         render={({ field }) => (
                           <ComponentSelect
                             {...field}
-                            is_advance={true}
+                            is_advance={false}
+                            is_overtime={true}
                             value={field.value}
                             onChange={(i) => {
                               field.onChange(i.value);

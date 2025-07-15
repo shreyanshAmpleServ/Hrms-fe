@@ -20,6 +20,7 @@ const ComponentSelect = ({
   onChange,
   placeholder = "-- Select --",
   is_advance = false,
+  is_overtime = false,
   ...props
 }) => {
   const dispatch = useDispatch();
@@ -32,8 +33,10 @@ const ComponentSelect = ({
 
   // Fetch component options only if not already loaded
   useEffect(() => {
-    dispatch(componentOptionsFn({ is_advance }));
-  }, [dispatch, is_advance]);
+    dispatch(
+      componentOptionsFn({ is_advance, is_overtime_related: is_overtime })
+    );
+  }, [dispatch, is_advance, is_overtime]);
 
   // Memoize the select options for performance
   const options = useMemo(() => {

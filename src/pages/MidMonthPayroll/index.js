@@ -248,7 +248,7 @@ const ManageMidMonthPayroll = () => {
             type="checkbox"
             className="form-check-input"
             style={{ width: 20, height: 20 }}
-            checked={payroll.every((r) => r.is_selected)}
+            checked={payroll.length > 0 && payroll.every((r) => r.is_selected)}
             onChange={(e) => handleSelectAll(e)}
           />
         </div>

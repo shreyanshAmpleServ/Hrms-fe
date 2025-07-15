@@ -28,6 +28,7 @@ import {
   payGradeLevelList,
   payGradeList,
 } from "../../../mock/componentAssignment";
+import { LogarithmicScale } from "chart.js";
 
 const initialComponent = [
   {
@@ -92,6 +93,7 @@ const AddEditModal = ({
     reset,
     control,
     watch,
+    setValue,
   } = useForm();
 
   // Memoized lists
@@ -172,7 +174,16 @@ const AddEditModal = ({
       status: initialData?.status || "Active",
       remarks: initialData?.remarks || "",
     });
-  }, [initialData, reset, employee_id, department_id, position_id]);
+  }, [initialData, reset]);
+
+  useEffect(() => {
+    if (initialData) {
+      setEmployeeData({
+        designation_id: initialData?.position_id,
+        department_id: initialData?.department_id,
+      });
+    }
+  }, [initialData]);
 
   // Set salary data for edit/add
   useEffect(() => {
@@ -190,7 +201,11 @@ const AddEditModal = ({
           project_name: item.pay_component_line_project?.name,
           tax_code_name: item.pay_component_line_tax_slab?.rule_type,
           component_name: item.pay_component_for_line?.component_name,
-          component_type: "O",
+          pay_or_deduct: item.pay_component_for_line?.pay_or_deduct,
+          component_type:
+            typeof item?.component_type === "string"
+              ? item?.component_type?.slice(0, 1)
+              : "O",
         })) || initialComponent
       );
     } else if (mode === "add") {
@@ -206,13 +221,18 @@ const AddEditModal = ({
           cost_center5_name: item.pay_component_cost_center5?.name || "",
           project_name: item.pay_component_project?.name || "",
           tax_code_name: item.pay_component_tax?.rule_type || "",
-          component_type: "O",
+          component_type:
+            typeof item?.component_type === "string"
+              ? item?.component_type?.slice(0, 1)
+              : "O",
         }));
       setBasicSalaryData(
         components?.length > 0 ? components : initialComponent
       );
     }
   }, [mode, basicSalaryDetail, componentOptions]);
+
+  console.log(basicSalaryData);
 
   // Modal close handler
   const handleModalClose = useCallback(() => {
@@ -253,7 +273,10 @@ const AddEditModal = ({
               Object.assign(updated, {
                 component_name: comp.component_name,
                 component_code: comp.component_code,
-                component_type: "O",
+                component_type:
+                  typeof comp.component_type === "string"
+                    ? comp.component_type
+                    : "O",
                 amount: comp.amount || 0,
                 auto_fill: comp.auto_fill,
                 is_taxable: comp.is_taxable,
@@ -288,6 +311,7 @@ const AddEditModal = ({
                 project_name: comp.pay_component_project?.name,
                 tax_code_name: comp.pay_component_tax?.name,
                 column_order: comp.column_order,
+                pay_or_deduct: comp?.pay_or_deduct,
               });
             }
           }
@@ -516,6 +540,14 @@ const AddEditModal = ({
           payLineData: JSON.stringify(
             basicSalaryData.filter((i) => i.pay_component_id)
           ),
+          department_id:
+            employeeData?.department_id ||
+            department_id ||
+            initialData?.department_id,
+          position_id:
+            employeeData?.designation_id ||
+            position_id ||
+            initialData?.position_id,
         };
         let result;
         if (!initialData) {
@@ -547,6 +579,8 @@ const AddEditModal = ({
     el.addEventListener("hidden.bs.offcanvas", handler);
     return () => el.removeEventListener("hidden.bs.offcanvas", handler);
   }, [handleModalClose]);
+
+  console.log(initialData?.position_id, "mkx");
 
   return (
     <div
@@ -607,7 +641,11 @@ const AddEditModal = ({
                   <DepartmentSelect
                     {...field}
                     isDisabled
-                    value={department_id || Number(employeeData?.department_id)}
+                    value={Number(
+                      employeeData?.department_id ||
+                        initialData?.department_id ||
+                        department_id
+                    )}
                   />
                 )}
               />
@@ -620,9 +658,12 @@ const AddEditModal = ({
                 render={({ field }) => (
                   <DesignationSelect
                     {...field}
-                    placeholder="-- Select --"
                     isDisabled
-                    value={position_id || Number(employeeData?.designation_id)}
+                    value={Number(
+                      employeeData?.designation_id ||
+                        initialData?.position_id ||
+                        position_id
+                    )}
                   />
                 )}
               />
@@ -786,7 +827,7 @@ const AddEditModal = ({
                 </div>
               )}
             </div>
-            <div className="col-md-4 mb-3">
+            {/* <div className="col-md-4 mb-3">
               <label className="form-label">
                 Effective From <span className="text-danger">*</span>
               </label>
@@ -851,7 +892,7 @@ const AddEditModal = ({
                   {errors.effective_to.message}
                 </div>
               )}
-            </div>
+            </div> */}
             <div className="col-md-4 mb-3">
               <label className="form-label">
                 Status <span className="text-danger">*</span>

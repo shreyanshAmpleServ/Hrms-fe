@@ -37,19 +37,15 @@ const BasicSalary = () => {
         ),
     },
     {
-      title: "Effective From",
-      dataIndex: "effective_from",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      title: "Employee Code",
+      dataIndex: "hrms_d_employee",
+      render: (text) => <div>{text?.employee_code}</div>,
       sorter: (a, b) =>
-        moment(a.effective_from).isBefore(moment(b.effective_from)) ? -1 : 1,
+        (a?.hrms_d_employee?.employee_code || "").localeCompare(
+          b?.hrms_d_employee?.employee_code || ""
+        ),
     },
-    {
-      title: "Effective To",
-      dataIndex: "effective_to",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
-      sorter: (a, b) =>
-        moment(a.effective_to).isBefore(moment(b.effective_to)) ? -1 : 1,
-    },
+
     {
       title: "Department",
       dataIndex: "hrms_d_employee",
@@ -139,11 +135,32 @@ const BasicSalary = () => {
       sorter: (a, b) =>
         (a?.allowance_group || "").localeCompare(b?.allowance_group || ""),
     },
+    // {
+    //   title: "Effective From",
+    //   dataIndex: "effective_from",
+    //   render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    //   sorter: (a, b) =>
+    //     moment(a.effective_from).isBefore(moment(b.effective_from)) ? -1 : 1,
+    // },
+    // {
+    //   title: "Effective To",
+    //   dataIndex: "effective_to",
+    //   render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+    //   sorter: (a, b) =>
+    //     moment(a.effective_to).isBefore(moment(b.effective_to)) ? -1 : 1,
+    // },
     {
       title: "Work Life Entry",
-      dataIndex: "work_life_entry",
-      render: (text) => text || "-",
-      sorter: (a, b) => a?.work_life_entry - b?.work_life_entry,
+      dataIndex: "work_life_entry_pay_header",
+      render: (text) => text?.work_life_event_type?.event_type_name || "-",
+      sorter: (a, b) =>
+        (
+          a?.work_life_entry_pay_header?.work_life_event_type
+            ?.event_type_name || ""
+        )?.localeCompare(
+          b?.work_life_entry_pay_header?.work_life_event_type
+            ?.event_type_name || ""
+        ),
     },
     {
       title: "Status",

@@ -37,11 +37,11 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const dispatch = useDispatch();
 
   const componentTypeOptions = [
-    { value: "EARNING", label: "Earning" },
-    { value: "DEDUCTION", label: "Deduction" },
-    { value: "ALLOWANCE", label: "Allowance" },
-    { value: "BONUS", label: "Bonus" },
-    { value: "OVERTIME", label: "Overtime" },
+    { value: "E", label: "Earning" },
+    { value: "D", label: "Deduction" },
+    { value: "A", label: "Allowance" },
+    { value: "B", label: "Bonus" },
+    { value: "O", label: "Overtime" },
   ];
 
   const payOrDeductOptions = [
@@ -90,6 +90,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       is_recurring: initialData?.is_recurring || "N",
       is_statutory: initialData?.is_statutory || "N",
       is_taxable: initialData?.is_taxable || "N",
+      is_loan: initialData?.is_loan || "N",
       is_worklife_related: initialData?.is_worklife_related || "N",
       is_active: initialData?.is_active || "Y",
       pay_or_deduct: initialData?.pay_or_deduct || "P",
@@ -103,19 +104,30 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+
+    let result;
     if (mode === "add") {
-      dispatch(addpay_component(data));
+      result = dispatch(
+        addpay_component({
+          ...data,
+          column_order: Number(data?.column_order),
+          execution_order: Number(data?.column_order),
+        })
+      );
     } else if (mode === "edit" && initialData) {
-      dispatch(
-        updatepay_component({ id: initialData?.id, pay_componentData: data })
+      result = dispatch(
+        updatepay_component({
+          id: initialData?.id,
+          pay_componentData: data,
+        })
       );
     }
-    reset();
-    setSelected(null);
-    closeButton?.click();
+    if (result?.meta?.requestStatus === "fulfilled") {
+      reset();
+      closeButton?.click();
+      setSelected(null);
+    }
   };
-
-  console.log(watch("is_statutory"));
 
   return (
     <div
@@ -149,7 +161,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                   Component Code <span className="text-danger">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className={`form-control ${errors.component_code ? "is-invalid" : ""}`}
                   placeholder="Enter Component Code"
                   {...register("component_code", {
@@ -710,6 +722,26 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 <label className="col-form-label">Is Unpaid Leave</label>
                 <Controller
                   name="unpaid_leave"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={field.value === "Y" ? true : false}
+                      onChange={(e) =>
+                        field.onChange(e.target.checked ? "Y" : "N")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="mb-3 form-check form-switch">
+                <label className="col-form-label">Is Loan</label>
+                <Controller
+                  name="is_loan"
                   control={control}
                   render={({ field }) => (
                     <input

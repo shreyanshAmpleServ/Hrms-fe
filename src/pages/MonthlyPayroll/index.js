@@ -11,7 +11,10 @@ import { fetchCurrencies } from "../../redux/currency";
 import { fetchdepartment } from "../../redux/department";
 import { fetchdesignation } from "../../redux/designation";
 import { employeeOptionsFn } from "../../redux/Employee";
-import { createMonthlyPayroll } from "../../redux/MonthlyPayroll";
+import {
+  createMonthlyPayroll,
+  fetchMonthlyPayrollPreview,
+} from "../../redux/MonthlyPayroll";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
@@ -37,7 +40,9 @@ const MonthlyPayroll = () => {
     watch,
     formState: { errors },
   } = useForm();
-  const { payrollDetail, loading } = useSelector((s) => s.monthlyPayroll || {});
+  const { loading, monthlyPayrollPreview } = useSelector(
+    (s) => s.monthlyPayroll || {}
+  );
   const { currencies } = useSelector((s) => s.currencies);
   const { employeeOptions } = useSelector((s) => s.employee);
 
@@ -55,12 +60,12 @@ const MonthlyPayroll = () => {
   }));
 
   useEffect(() => {
-    if (payrollDetail) {
-      setPayroll(payrollDetail);
+    if (monthlyPayrollPreview) {
+      setPayroll(monthlyPayrollPreview);
     }
-  }, [payrollDetail]);
+  }, [monthlyPayrollPreview]);
 
-  console.log(payroll);
+  console.log(payroll, "mkxx");
   const currencyList = useMemo(
     () =>
       currencies?.data?.map((item) => ({
@@ -87,40 +92,6 @@ const MonthlyPayroll = () => {
     dispatch(fetchdepartment({ is_active: true }));
     dispatch(fetchdesignation({ is_active: true }));
   }, [dispatch]);
-
-  // Set payroll list when employee options or currency changes
-  // useEffect(() => {
-  //   if (employeeOptions) {
-  //     const pay_currency = watch("pay_currency") || "";
-  //     setPayroll(
-  //       // employeeOptions.map((item) => ({
-  //       //   employee_id: item.value,
-  //       //   employee_name: item.label,
-  //       //   net_pay: 0,
-  //       //   pay_currency,
-  //       //   processed: "N",
-  //       //   is_selected: false,
-  //       //   employee_email: item?.meta?.email || "",
-  //       //   currency_name: getCurrencyNameById(pay_currency),
-  //       //   currency_code: getCurrencyCodeById(pay_currency),
-  //       // }))
-  //     );
-  //   }
-  //   // eslint-disable-next-line
-  // }, [employeeOptions, currencyList]);
-
-  // Update payroll currency if global currency changes
-  // useEffect(() => {
-  //   setPayroll((prev) =>
-  //     prev.map((item) => ({
-  //       ...item,
-  //       pay_currency: watch("pay_currency") || "",
-  //       currency_name: getCurrencyNameById(watch("pay_currency")) || "",
-  //       currency_code: getCurrencyCodeById(watch("pay_currency")) || "",
-  //     }))
-  //   );
-  //   // eslint-disable-next-line
-  // }, [watch("pay_currency"), currencyList]);
 
   // Reset form on mount and when midMonthPayroll changes
   useEffect(() => {
@@ -180,35 +151,7 @@ const MonthlyPayroll = () => {
   );
 
   // Prepare selected employees for submission
-  /**
-   * Memoized list of selected employees with only required keys for submission.
-   *
-   * Filters the payroll array for selected employees and maps each to an object
-   * containing only the necessary keys for the API.
-   *
-   * @returns {Array<Object>} Array of selected employee objects with filtered keys.
-   *
-   * @example
-   *  Returns:
-   *
-   *  {
-   *    employee_id: 15,
-   *    payroll_month: 7,
-   *    payroll_year: 2025,
-   *    payroll_week: 1,
-   *    pay_currency: 2,
-   *    component_id: 109,
-   *    status: "Pending",
-   *    execution_date: "2025-07-10",
-   *    advance_amount: "1200",
-   *    doc_date: "2025-07-01",
-   *    employee_email: "emp1@example.com",
-   *    remarks: "",
-   *    currency_name: "USD",
-   *    processed: "Y"
-   *  }
-   *  ]
-   */
+
   const selectedEmployees = useMemo(() => {
     return payroll
       .filter((item) => item.is_selected)
@@ -241,7 +184,7 @@ const MonthlyPayroll = () => {
             type="checkbox"
             className="form-check-input"
             style={{ width: 20, height: 20 }}
-            checked={payroll.every((r) => r.is_selected)}
+            checked={payroll.length > 0 && payroll.every((r) => r.is_selected)}
             onChange={(e) => handleSelectAll(e)}
           />
         </div>
@@ -396,19 +339,18 @@ const MonthlyPayroll = () => {
   };
 
   const handlePreview = () => {
-    // dispatch(
-    //   fetchMonthlyPayrollDetail({
-    //     payroll_month: watch("payroll_month"),
-    //     payroll_year: watch("payroll_year"),
-    //     employee_from: watch("employee_from"),
-    //     employee_to: watch("employee_to"),
-    //     department_from: watch("department_from"),
-    //     department_to: watch("department_to"),
-    //     position_from: watch("position_from"),
-    //     position_to: watch("position_to"),
-    //     component_id: watch("component_id"),
-    //   })
-    // );
+    dispatch(
+      fetchMonthlyPayrollPreview({
+        payroll_month: watch("payroll_month"),
+        payroll_year: watch("payroll_year"),
+        employee_from: watch("employee_from"),
+        employee_to: watch("employee_to"),
+        department_from: watch("department_from"),
+        department_to: watch("department_to"),
+        position_from: watch("position_from"),
+        position_to: watch("position_to"),
+      })
+    );
   };
 
   return (
@@ -496,7 +438,7 @@ const MonthlyPayroll = () => {
                         dateFormat="dd-MM-yyyy"
                       />
                     </div>
-                    <div className="col-md-3 mb-3">
+                    {/* <div className="col-md-3 mb-3">
                       <label className="col-form-label" htmlFor="component_id">
                         Pay Component <span className="text-danger">*</span>
                       </label>
@@ -521,7 +463,7 @@ const MonthlyPayroll = () => {
                           {errors.component_id.message}
                         </small>
                       )}
-                    </div>
+                    </div> */}
                     {/* <div className="col-md-3">
                       <SharedSelect
                         name="pay_currency"
@@ -600,14 +542,16 @@ const MonthlyPayroll = () => {
                         errors={errors}
                         className="col-md-3"
                       />
-
-                      <button
-                        type="button"
-                        className="btn mb-3 btn-primary"
-                        onClick={handlePreview}
-                      >
-                        Preview
-                      </button>
+                      <div className="ms-auto">
+                        <button
+                          style={{ width: "100px" }}
+                          type="button"
+                          className="btn mb-3 btn-primary"
+                          onClick={handlePreview}
+                        >
+                          Preview
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -630,7 +574,11 @@ const MonthlyPayroll = () => {
                   </div>
                 </div>
                 <div className="d-flex align-items-center justify-content-end">
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    style={{ width: "100px" }}
+                    type="submit"
+                    className="btn btn-primary"
+                  >
                     Generate
                   </button>
                 </div>

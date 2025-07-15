@@ -69,14 +69,13 @@ export const addpay_component = createAsyncThunk(
         {
           loading: "Adding Pay Component...",
           success: "Pay Component added successfully",
-          error: "Failed to add Pay Component",
+          error: (error) =>
+            error?.response?.data?.message || "Failed to create pay Component",
         }
       );
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add Pay Component"
-      );
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   }
 );
