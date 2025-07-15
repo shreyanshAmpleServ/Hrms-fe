@@ -42,14 +42,13 @@ export const createBasicSalary = createAsyncThunk(
           loading: "Creating basic salary...",
           success: (res) =>
             res.data.message || "basic salary created successfully!",
-          error: "Failed to create basic salary",
+          error: (error) =>
+            error.response.data.message || "Failed to create basic salary",
         }
       );
-      return response.data; // Returns the newly created basic salary
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to create basic salary"
-      );
+      return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
 );

@@ -155,7 +155,9 @@ const ManageMidMonthPayroll = () => {
   const handleChangeComponent = useCallback((e, a) => {
     setPayroll((prev) =>
       prev.map((item) =>
-        item.id === a.id ? { ...item, is_selected: e.target.checked } : item
+        item.employee_id === a.employee_id
+          ? { ...item, is_selected: e.target.checked }
+          : item
       )
     );
   }, []);
@@ -251,7 +253,7 @@ const ManageMidMonthPayroll = () => {
           />
         </div>
       ),
-      dataIndex: "id",
+      dataIndex: "employee_id",
       render: (_, r) => (
         <input
           type="checkbox"
@@ -588,14 +590,16 @@ const ManageMidMonthPayroll = () => {
                         errors={errors}
                         className="col-md-3"
                       />
-
-                      <button
-                        type="button"
-                        className="btn mb-3 btn-primary"
-                        onClick={handlePreview}
-                      >
-                        Preview
-                      </button>
+                      <div className="ms-auto">
+                        <button
+                          style={{ width: "100px" }}
+                          type="button"
+                          className="btn mb-3 btn-primary"
+                          onClick={handlePreview}
+                        >
+                          Preview
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -609,7 +613,7 @@ const ManageMidMonthPayroll = () => {
                       dataSource={payroll}
                       loading={loading}
                       pagination={false}
-                      rowKey="id"
+                      rowKey="employee_id"
                       size="small"
                       className="table-bordered"
                       style={{ width: "100%" }}
@@ -618,7 +622,11 @@ const ManageMidMonthPayroll = () => {
                   </div>
                 </div>
                 <div className="d-flex align-items-center justify-content-end">
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    style={{ width: "100px" }}
+                    type="submit"
+                    className="btn btn-primary"
+                  >
                     Generate
                   </button>
                 </div>

@@ -354,6 +354,7 @@ const BasicSalary = () => {
 
       <AddEditModal
         mode={mode}
+        setMode={setMode}
         initialData={selected}
         setSelected={setSelected}
       />

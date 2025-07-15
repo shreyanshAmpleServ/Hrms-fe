@@ -32,9 +32,7 @@ const ComponentSelect = ({
 
   // Fetch component options only if not already loaded
   useEffect(() => {
-    if (!componentOptions) {
-      dispatch(componentOptionsFn({ is_advance }));
-    }
+    dispatch(componentOptionsFn({ is_advance }));
   }, [dispatch, is_advance]);
 
   // Memoize the select options for performance

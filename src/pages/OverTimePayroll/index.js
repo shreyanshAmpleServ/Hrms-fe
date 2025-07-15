@@ -617,14 +617,16 @@ const OverTimePayroll = () => {
                         errors={errors}
                         className="col-md-3"
                       />
-
-                      <button
-                        type="button"
-                        className="btn mb-3 btn-primary"
-                        onClick={handlePreview}
-                      >
-                        Preview
-                      </button>
+                      <div className="ms-auto">
+                        <button
+                          style={{ width: "100px" }}
+                          type="button"
+                          className="btn mb-3 btn-primary"
+                          onClick={handlePreview}
+                        >
+                          Preview
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -647,7 +649,11 @@ const OverTimePayroll = () => {
                   </div>
                 </div>
                 <div className="d-flex align-items-center justify-content-end">
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    style={{ width: "100px" }}
+                    type="submit"
+                    className="btn btn-primary"
+                  >
                     Generate
                   </button>
                 </div>

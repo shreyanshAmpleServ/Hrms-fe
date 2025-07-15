@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import Table from "../../../components/common/dataTableNew/index";
+import Table from "../../../components/common/dataTableNew";
 import DepartmentSelect from "../../../components/common/DepartmentSelect";
 import DesignationSelect from "../../../components/common/DesignationSelect";
 import EmployeeSelect from "../../../components/common/EmployeeSelect";
@@ -23,34 +23,45 @@ import {
 } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
+import {
+  allowanceGroupList,
+  payGradeLevelList,
+  payGradeList,
+} from "../../../mock/componentAssignment";
 
-export const allowanceGroupList = [
-  { value: "", label: "-- Select --" },
-  { value: "1", label: "Standard Allowance" },
-  { value: "1", label: "Standard Allowance" },
-  { value: "2", label: "Executive Allowance" },
-  { value: "3", label: "Managerial Allowance" },
-  { value: "4", label: "Field Staff Allowance" },
-  { value: "5", label: "Housing Allowance" },
-  { value: "6", label: "Technical Staff Allowance" },
-];
-
-export const payGradeLevelList = [
-  { value: "", label: "-- Select --" },
-  { value: "1", label: "Level 1 - Entry" },
-  { value: "2", label: "Level 2 - Junior" },
-  { value: "3", label: "Level 3 - Mid" },
-  { value: "4", label: "Level 4 - Senior" },
-  { value: "5", label: "Level 5 - Executive" },
-];
-
-export const payGradeList = [
-  { value: "", label: "-- Select --" },
-  { value: "1", label: "Grade A - ₹15,000 to ₹25,000" },
-  { value: "2", label: "Grade B - ₹25,001 to ₹40,000" },
-  { value: "3", label: "Grade C - ₹40,001 to ₹60,000" },
-  { value: "4", label: "Grade D - ₹60,001 to ₹90,000" },
-  { value: "5", label: "Grade E - ₹90,001 and above" },
+const initialComponent = [
+  {
+    parent_id: "",
+    line_num: "",
+    pay_component_id: "",
+    amount: "",
+    type_value: "",
+    currency_id: "",
+    is_taxable: "",
+    is_recurring: "",
+    is_worklife_related: "",
+    is_grossable: "",
+    remarks: "",
+    tax_code_id: "",
+    gl_account_id: "",
+    factor: "",
+    payable_glaccount_id: "",
+    component_type: "",
+    project_id: "",
+    cost_center1_id: "",
+    cost_center2_id: "",
+    cost_center3_id: "",
+    cost_center4_id: "",
+    cost_center5_id: "",
+    cost_center1_name: "",
+    cost_center2_name: "",
+    cost_center3_name: "",
+    cost_center4_name: "",
+    cost_center5_name: "",
+    project_name: "",
+    tax_code_name: "",
+    column_order: "",
+  },
 ];
 
 const AddEditModal = ({
@@ -60,42 +71,9 @@ const AddEditModal = ({
   employee_id = "",
   department_id = "",
   position_id = "",
+  setMode,
 }) => {
-  const initialComponent = [
-    {
-      parent_id: "",
-      line_num: "",
-      pay_component_id: "",
-      amount: "",
-      type_value: "",
-      currency_id: "",
-      is_taxable: "",
-      is_recurring: "",
-      is_worklife_related: "",
-      is_grossable: "",
-      remarks: "",
-      tax_code_id: "",
-      gl_account_id: "",
-      factor: "",
-      payable_glaccount_id: "",
-      component_type: "",
-      project_id: "",
-      cost_center1_id: "",
-      cost_center2_id: "",
-      cost_center3_id: "",
-      cost_center4_id: "",
-      cost_center5_id: "",
-      cost_center1_name: "",
-      cost_center2_name: "",
-      cost_center3_name: "",
-      cost_center4_name: "",
-      cost_center5_name: "",
-      project_name: "",
-      tax_code_name: "",
-      column_order: "",
-    },
-  ];
-  const [basicSalaryData, setBasicSalaryData] = useState(initialComponent);
+  const [basicSalaryData, setBasicSalaryData] = useState([]);
   const [employeeData, setEmployeeData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(null);
   const dispatch = useDispatch();
@@ -106,11 +84,6 @@ const AddEditModal = ({
   );
   const { workLifeEventLog } = useSelector((state) => state.workLifeEventLog);
   const { componentOptions } = useSelector((state) => state.payComponent);
-
-  useEffect(() => {
-    dispatch(componentOptionsFn({ is_advance: false }));
-  }, [dispatch]);
-
   const { currencies } = useSelector((state) => state.currencies);
 
   const {
@@ -121,103 +94,69 @@ const AddEditModal = ({
     watch,
   } = useForm();
 
-  const currencyList = useMemo(() => {
-    return (
+  // Memoized lists
+  const currencyList = useMemo(
+    () =>
       currencies?.data?.map((item) => ({
         value: item.id,
-        label: item.currency_name + " (" + item.currency_code + ")",
-      })) || []
-    );
-  }, [currencies]);
-
-  const branchList = useMemo(() => {
-    return (
+        label: `${item.currency_name} (${item.currency_code})`,
+      })) || [],
+    [currencies]
+  );
+  const branchList = useMemo(
+    () =>
       branch?.data?.map((item) => ({
         value: item.id,
         label: item.branch_name,
-      })) || []
-    );
-  }, [branch]);
-
-  const statusList = [
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ];
-
-  const workLifeEventLogList = useMemo(() => {
-    return (
+      })) || [],
+    [branch]
+  );
+  const statusList = useMemo(
+    () => [
+      { value: "Active", label: "Active" },
+      { value: "Inactive", label: "Inactive" },
+    ],
+    []
+  );
+  const workLifeEventLogList = useMemo(
+    () =>
       workLifeEventLog?.data?.map((item) => ({
         value: item.id,
         label: item?.work_life_event_type?.event_type_name,
-      })) || []
-    );
-  }, [workLifeEventLog]);
-
+      })) || [],
+    [workLifeEventLog]
+  );
   const paycomponentList = useMemo(() => {
-    const usedPayComponentIds = basicSalaryData
-      .filter((item) => item.pay_component_id)
-      .map((item) => item.pay_component_id);
-
+    const usedIds = basicSalaryData
+      .filter((i) => i.pay_component_id)
+      .map((i) => i.pay_component_id);
     return (
       componentOptions
-        ?.filter((item) => !usedPayComponentIds.includes(item.id))
-        .map((item) => ({
-          value: item.id,
-          label: item.component_name,
+        ?.filter((i) => !usedIds.includes(i.id))
+        .map((i) => ({
+          value: i.id,
+          label: i.component_name,
         })) || []
     );
   }, [componentOptions, basicSalaryData]);
 
+  // Fetch all required data on mount
   useEffect(() => {
+    dispatch(componentOptionsFn({ is_advance: false }));
     dispatch(fetchbranch({ is_active: true }));
     dispatch(fetchpay_component({ is_active: true }));
     dispatch(fetchWorkLifeEventLog({ is_active: true }));
     dispatch(fetchCurrencies({ is_active: true }));
-  }, []);
+  }, [dispatch]);
 
+  // Fetch salary detail for edit
   useEffect(() => {
     if (mode === "edit" && initialData?.id) {
       dispatch(fetchBasicSalaryById(initialData.id));
     }
   }, [mode, initialData?.id, dispatch]);
 
-  const assignmentLine =
-    basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line;
-
-  useEffect(() => {
-    if (mode === "edit" && assignmentLine) {
-      const data = assignmentLine?.map((item) => ({
-        ...item,
-        pay_component_id: item.pay_component_id,
-        cost_center1_name: item.pay_component_line_cost_center1?.name,
-        cost_center2_name: item.pay_component_line_cost_center2?.name,
-        cost_center3_name: item.pay_component_line_cost_center3?.name,
-        cost_center4_name: item.pay_component_line_cost_center4?.name,
-        cost_center5_name: item.pay_component_line_cost_center5?.name,
-        project_name: item.pay_component_line_project?.name,
-        tax_code_name: item.pay_component_line_tax_slab?.rule_type,
-        component_type: "O",
-      }));
-      setBasicSalaryData(data || initialComponent);
-    } else if (mode === "add") {
-      const components = componentOptions
-        ?.filter((item) => item.auto_fill === "Y")
-        .map((item) => ({
-          ...item,
-          pay_component_id: item.id,
-          cost_center1_name: item.pay_component_cost_center1?.name || "",
-          cost_center2_name: item.pay_component_cost_center2?.name || "",
-          cost_center3_name: item.pay_component_cost_center3?.name || "",
-          cost_center4_name: item.pay_component_cost_center4?.name || "",
-          cost_center5_name: item.pay_component_cost_center5?.name || "",
-          project_name: item.pay_component_project?.name || "",
-          tax_code_name: item.pay_component_tax?.rule_type || "",
-          component_type: "O",
-        }));
-      setBasicSalaryData(components || initialComponent);
-    }
-  }, [mode, assignmentLine, componentOptions]);
-
+  // Set up form and salary data on initialData change
   useEffect(() => {
     reset({
       employee_id: employee_id || initialData?.employee_id || "",
@@ -233,128 +172,153 @@ const AddEditModal = ({
       status: initialData?.status || "Active",
       remarks: initialData?.remarks || "",
     });
-    setBasicSalaryData(initialComponent);
   }, [initialData, reset, employee_id, department_id, position_id]);
 
+  // Set salary data for edit/add
+  useEffect(() => {
+    const assignmentLine =
+      basicSalaryDetail?.hrms_d_employee_pay_component_assignment_line;
+    if (mode === "edit" && assignmentLine) {
+      setBasicSalaryData(
+        assignmentLine.map((item) => ({
+          ...item,
+          cost_center1_name: item.pay_component_line_cost_center1?.name,
+          cost_center2_name: item.pay_component_line_cost_center2?.name,
+          cost_center3_name: item.pay_component_line_cost_center3?.name,
+          cost_center4_name: item.pay_component_line_cost_center4?.name,
+          cost_center5_name: item.pay_component_line_cost_center5?.name,
+          project_name: item.pay_component_line_project?.name,
+          tax_code_name: item.pay_component_line_tax_slab?.rule_type,
+          component_name: item.pay_component_for_line?.component_name,
+          component_type: "O",
+        })) || initialComponent
+      );
+    } else if (mode === "add") {
+      const components = componentOptions
+        ?.filter((i) => i.auto_fill === "Y")
+        .map((item) => ({
+          ...item,
+          pay_component_id: item.id,
+          cost_center1_name: item.pay_component_cost_center1?.name || "",
+          cost_center2_name: item.pay_component_cost_center2?.name || "",
+          cost_center3_name: item.pay_component_cost_center3?.name || "",
+          cost_center4_name: item.pay_component_cost_center4?.name || "",
+          cost_center5_name: item.pay_component_cost_center5?.name || "",
+          project_name: item.pay_component_project?.name || "",
+          tax_code_name: item.pay_component_tax?.rule_type || "",
+          component_type: "O",
+        }));
+      setBasicSalaryData(
+        components?.length > 0 ? components : initialComponent
+      );
+    }
+  }, [mode, basicSalaryDetail, componentOptions]);
+
+  // Modal close handler
   const handleModalClose = useCallback(() => {
     reset();
-    setSelected(null);
+    setMode("");
+    setSelected?.(null);
     setBasicSalaryData(initialComponent);
     setEmployeeData(null);
   }, [reset, setSelected]);
 
+  // Add new row
   const handleAddBasicSalary = useCallback(() => {
-    setBasicSalaryData((prev) => [...prev, ...initialComponent]);
+    setBasicSalaryData((prev) => [...prev, { ...initialComponent[0] }]);
   }, []);
 
+  // Change handler for table fields
   const handleChangeBasicSalary = useCallback(
     (identifier, field, value) => {
-      setBasicSalaryData((prevData) => {
-        return prevData.map((item, index) => {
-          const shouldUpdate = item.pay_component_id
+      setBasicSalaryData((prevData) =>
+        prevData.map((item, idx) => {
+          const match = item.pay_component_id
             ? item.pay_component_id === Number(identifier)
-            : index === identifier;
-
-          if (shouldUpdate) {
-            let updatedItem = { ...item };
-            const payComponent = componentOptions?.find(
-              (comp) =>
-                comp.id ===
-                Number(field === "pay_component_id" ? value : identifier)
-            );
-
-            switch (field) {
-              case "amount":
-                updatedItem.amount = Number(value);
-                break;
-              case "currency_id":
-                updatedItem.currency_id = Number(value);
-                break;
-              case "pay_component_id":
-                updatedItem.pay_component_id = Number(value);
-                if (payComponent) {
-                  updatedItem.component_name = payComponent.component_name;
-                  updatedItem.component_code = payComponent.component_code;
-                  updatedItem.component_type = "O";
-                  updatedItem.amount = payComponent.amount || 0;
-                  updatedItem.auto_fill = payComponent.auto_fill;
-                  updatedItem.is_taxable = payComponent.is_taxable;
-                  updatedItem.is_statutory = payComponent.is_statutory;
-                  updatedItem.is_recurring = payComponent.is_recurring;
-                  updatedItem.is_advance = payComponent.is_advance;
-                  updatedItem.is_grossable = payComponent.is_grossable;
-                  updatedItem.type_value = payComponent.type_value;
-                  updatedItem.is_overtime_related =
-                    payComponent.is_overtime_related;
-                  updatedItem.is_worklife_related =
-                    payComponent.is_worklife_related;
-                  updatedItem.unpaid_leave = payComponent.unpaid_leave;
-                  updatedItem.contributes_to_nssf =
-                    payComponent.contributes_to_nssf;
-                  updatedItem.contributes_to_paye =
-                    payComponent.contributes_to_paye;
-                  updatedItem.gl_account_id = payComponent.gl_account_id;
-                  updatedItem.project_id = payComponent.project_id;
-                  updatedItem.tax_code_id = payComponent.tax_code_id;
-                  updatedItem.payable_glaccount_id =
-                    payComponent.payable_glaccount_id;
-                  updatedItem.factor = payComponent.factor;
-                  updatedItem.execution_order = payComponent.execution_order;
-                  updatedItem.formula_editable = payComponent.formula_editable;
-                  updatedItem.default_formula = payComponent.default_formula;
-                  updatedItem.cost_center1_id = payComponent.cost_center1_id;
-                  updatedItem.cost_center2_id = payComponent.cost_center2_id;
-                  updatedItem.cost_center3_id = payComponent.cost_center3_id;
-                  updatedItem.cost_center4_id = payComponent.cost_center4_id;
-                  updatedItem.cost_center5_id = payComponent.cost_center5_id;
-                  updatedItem.cost_center1_name =
-                    payComponent.pay_component_cost_center1?.name;
-                  updatedItem.cost_center2_name =
-                    payComponent.pay_component_cost_center2?.name;
-                  updatedItem.cost_center3_name =
-                    payComponent.pay_component_cost_center3?.name;
-                  updatedItem.cost_center4_name =
-                    payComponent.pay_component_cost_center4?.name;
-                  updatedItem.cost_center5_name =
-                    payComponent.pay_component_cost_center5?.name;
-                  updatedItem.project_name =
-                    payComponent.pay_component_project?.name;
-                  updatedItem.tax_code_name =
-                    payComponent.pay_component_tax?.name;
-                  updatedItem.column_order = payComponent.column_order;
-                }
-                break;
-              default:
-                updatedItem[field] = value;
-            }
-            return updatedItem;
+            : idx === identifier;
+          if (!match) return item;
+          let updated = { ...item };
+          if (
+            field === "amount" ||
+            field === "currency_id" ||
+            field === "pay_component_id"
+          ) {
+            updated[field] = Number(value);
+          } else {
+            updated[field] = value;
           }
-          return item;
-        });
-      });
+          if (field === "pay_component_id") {
+            const comp = componentOptions?.find((c) => c.id === Number(value));
+            if (comp) {
+              Object.assign(updated, {
+                component_name: comp.component_name,
+                component_code: comp.component_code,
+                component_type: "O",
+                amount: comp.amount || 0,
+                auto_fill: comp.auto_fill,
+                is_taxable: comp.is_taxable,
+                is_statutory: comp.is_statutory,
+                is_recurring: comp.is_recurring,
+                is_advance: comp.is_advance,
+                is_grossable: comp.is_grossable,
+                type_value: comp.type_value,
+                is_overtime_related: comp.is_overtime_related,
+                is_worklife_related: comp.is_worklife_related,
+                unpaid_leave: comp.unpaid_leave,
+                contributes_to_nssf: comp.contributes_to_nssf,
+                contributes_to_paye: comp.contributes_to_paye,
+                gl_account_id: comp.gl_account_id,
+                project_id: comp.project_id,
+                tax_code_id: comp.tax_code_id,
+                payable_glaccount_id: comp.payable_glaccount_id,
+                factor: comp.factor,
+                execution_order: comp.execution_order,
+                formula_editable: comp.formula_editable,
+                default_formula: comp.default_formula,
+                cost_center1_id: comp.cost_center1_id,
+                cost_center2_id: comp.cost_center2_id,
+                cost_center3_id: comp.cost_center3_id,
+                cost_center4_id: comp.cost_center4_id,
+                cost_center5_id: comp.cost_center5_id,
+                cost_center1_name: comp.pay_component_cost_center1?.name,
+                cost_center2_name: comp.pay_component_cost_center2?.name,
+                cost_center3_name: comp.pay_component_cost_center3?.name,
+                cost_center4_name: comp.pay_component_cost_center4?.name,
+                cost_center5_name: comp.pay_component_cost_center5?.name,
+                project_name: comp.pay_component_project?.name,
+                tax_code_name: comp.pay_component_tax?.name,
+                column_order: comp.column_order,
+              });
+            }
+          }
+          return updated;
+        })
+      );
     },
     [componentOptions]
   );
 
+  // Delete row
   const handleDeleteBasicSalary = useCallback(() => {
     setBasicSalaryData((prev) =>
-      prev.filter((item, index) =>
+      prev.filter((item, idx) =>
         item.pay_component_id
           ? item.pay_component_id !== showDeleteModal
-          : index !== showDeleteModal
+          : idx !== showDeleteModal
       )
     );
     setShowDeleteModal(null);
     toast.success("Pay Component deleted successfully");
   }, [showDeleteModal]);
 
+  // Table columns
   const columns = useMemo(
     () => [
       {
         title: "Pay Component",
         dataIndex: "component_name",
         key: "component_name",
-        render: (_, record, index) => (
+        render: (_, record, idx) => (
           <AntdSelect
             options={[
               ...paycomponentList,
@@ -367,35 +331,42 @@ const AddEditModal = ({
                   ]
                 : []),
             ]}
-            style={{ width: "250px" }}
-            value={record.pay_component_id || undefined}
+            style={{ width: 250 }}
+            value={
+              record.pay_component_id
+                ? {
+                    value: record.pay_component_id,
+                    label: record.component_name,
+                  }
+                : undefined
+            }
             placeholder="Select Component"
-            onChange={(value) =>
+            onChange={(val) =>
               handleChangeBasicSalary(
-                record.pay_component_id || index,
+                record.pay_component_id || idx,
                 "pay_component_id",
-                value
+                val
               )
             }
           />
         ),
-        width: "250px",
+        width: 250,
       },
       {
         title: "Currency",
         dataIndex: "currency_id",
         key: "currency_id",
-        render: (_, record, index) => (
+        render: (_, record, idx) => (
           <AntdSelect
             options={currencyList}
-            style={{ width: "200px" }}
+            style={{ width: 200 }}
             value={record.currency_id || undefined}
             placeholder="Select Currency"
-            onChange={(value) =>
+            onChange={(val) =>
               handleChangeBasicSalary(
-                record.pay_component_id || index,
+                record.pay_component_id || idx,
                 "currency_id",
-                value
+                val
               )
             }
           />
@@ -405,16 +376,16 @@ const AddEditModal = ({
         title: "Amount",
         dataIndex: "amount",
         key: "amount",
-        render: (_, record, index) => (
+        render: (_, record, idx) => (
           <input
             type="number"
             className="form-control form-control-sm"
-            style={{ width: "150px" }}
+            style={{ width: 150 }}
             placeholder="0.00"
             value={record.amount || ""}
             onChange={(e) =>
               handleChangeBasicSalary(
-                record.pay_component_id || index,
+                record.pay_component_id || idx,
                 "amount",
                 e.target.value
               )
@@ -422,49 +393,18 @@ const AddEditModal = ({
           />
         ),
       },
-      // {
-      //   title: "Code",
-      //   dataIndex: "component_code",
-      //   key: "component_code",
-      //   render: (text) => text || "-",
-      // },
-
       {
         title: "Taxable",
         dataIndex: "is_taxable",
         key: "is_taxable",
         render: (text) => (text === "Y" ? "Yes" : "No"),
       },
-      // {
-      //   title: "Is Statutory?",
-      //   dataIndex: "is_statutory",
-      //   key: "is_statutory",
-      //   render: (text) => (text === "Y" ? "Yes" : "No"),
-      // },
-      // {
-      //   title: "Is Recurring?",
-      //   dataIndex: "is_recurring",
-      //   key: "is_recurring",
-      //   render: (text) => (text === "Y" ? "Yes" : "No"),
-      // },
-      // {
-      //   title: "Is Advance?",
-      //   dataIndex: "is_advance",
-      //   key: "is_advance",
-      //   render: (text) => (text === "Y" ? "Yes" : "No"),
-      // },
       {
         title: "Grossable",
         dataIndex: "is_grossable",
         key: "is_grossable",
         render: (text) => (text === "Y" ? "Yes" : "No"),
       },
-      // {
-      //   title: "Is Overtime Related?",
-      //   dataIndex: "is_overtime_related",
-      //   key: "is_overtime_related",
-      //   render: (text) => (text === "Y" ? "Yes" : "No"),
-      // },
       {
         title: "Type",
         dataIndex: "component_type",
@@ -477,30 +417,12 @@ const AddEditModal = ({
         key: "type_value",
         render: (text) => text || "-",
       },
-      // {
-      //   title: "Is Worklife Related?",
-      //   dataIndex: "is_worklife_related",
-      //   key: "is_worklife_related",
-      //   render: (text) => (text === "Y" ? "Yes" : "No"),
-      // },
-      // {
-      //   title: "Is Unpaid Leave?",
-      //   dataIndex: "unpaid_leave",
-      //   key: "unpaid_leave",
-      //   render: (text) => (text === "Y" ? "Yes" : "No"),
-      // },
       {
         title: "NSSF",
         dataIndex: "contributes_to_nssf",
         key: "contributes_to_nssf",
         render: (text) => (text === "Y" ? "Yes" : "No"),
       },
-      // {
-      //   title: "Is Contributes to PayE?",
-      //   dataIndex: "contributes_to_paye",
-      //   key: "contributes_to_paye",
-      //   render: (text) => (text === "Y" ? "Yes" : "No"),
-      // },
       {
         title: "GL Account",
         dataIndex: "gl_account_id",
@@ -529,7 +451,8 @@ const AddEditModal = ({
         title: "Pay or Deduct",
         dataIndex: "pay_or_deduct",
         key: "pay_or_deduct",
-        render: (text) => (text === "P" ? "Pay" : "Deduct") || "-",
+        render: (text) =>
+          text === "P" ? "Pay" : text === "D" ? "Deduct" : "-",
       },
       {
         title: "Factor",
@@ -537,119 +460,92 @@ const AddEditModal = ({
         key: "factor",
         render: (text) => text || "-",
       },
-      {
-        title: "Cost Center 1",
-        dataIndex: "cost_center1_name",
-        key: "cost_center1_name",
+      ...[1, 2, 3, 4, 5].map((n) => ({
+        title: `Cost Center ${n}`,
+        dataIndex: `cost_center${n}_name`,
+        key: `cost_center${n}_name`,
         render: (text) => text || "-",
-      },
-      {
-        title: "Cost Center 2",
-        dataIndex: "cost_center2_name",
-        key: "cost_center2_name",
-        render: (text) => text || "-",
-      },
-      {
-        title: "Cost Center 3",
-        dataIndex: "cost_center3_name",
-        key: "cost_center3_name",
-        render: (text) => text || "-",
-      },
-      {
-        title: "Cost Center 4",
-        dataIndex: "cost_center4_name",
-        key: "cost_center4_name",
-        render: (text) => text || "-",
-      },
-      {
-        title: "Cost Center 5",
-        dataIndex: "cost_center5_name",
-        key: "cost_center5_name",
-        render: (text) => text || "-",
-      },
+      })),
       {
         title: "Action",
         dataIndex: "action",
         key: "action",
-        render: (_, record, index) => (
+        render: (_, record, idx) => (
           <button
             type="button"
             className="btn btn-sm btn-danger"
-            onClick={() => {
-              setShowDeleteModal(record.pay_component_id || index);
-            }}
+            onClick={() => setShowDeleteModal(record.pay_component_id || idx)}
           >
             Delete
           </button>
         ),
       },
     ],
-    [
-      paycomponentList,
-      currencyList,
-      handleChangeBasicSalary,
-      handleDeleteBasicSalary,
-    ]
+    [paycomponentList, currencyList, handleChangeBasicSalary]
   );
 
+  // Form submit
   const onSubmit = useCallback(
-    (data) => {
-      const closeButton = document.getElementById(
+    async (data) => {
+      if (basicSalaryData.length === 0) {
+        toast.error("Please add at least one pay component");
+        return;
+      }
+
+      if (basicSalaryData.every((i) => !i.pay_component_id)) {
+        toast.error("Please select a pay component");
+        return;
+      }
+
+      if (basicSalaryData.every((i) => !i.currency_id)) {
+        toast.error("Please select a currency");
+        return;
+      }
+
+      if (basicSalaryData.every((i) => !i.amount)) {
+        toast.error("Please enter an amount");
+        return;
+      }
+
+      const closeBtn = document.getElementById(
         "close_btn_add_edit_basic_salary"
       );
-
       try {
         const submitData = {
           ...data,
           payLineData: JSON.stringify(
-            basicSalaryData.filter((item) => item.pay_component_id)
+            basicSalaryData.filter((i) => i.pay_component_id)
           ),
         };
-
         let result;
-
         if (!initialData) {
-          result = dispatch(createBasicSalary(submitData));
-        } else if (initialData) {
-          result = dispatch(
+          result = await dispatch(createBasicSalary(submitData));
+        } else {
+          result = await dispatch(
             updateBasicSalary({
               id: initialData.id,
               basicSalaryData: submitData,
             })
           );
         }
-
-        if (result.meta.requestStatus === "fulfilled") {
-          closeButton?.click();
+        if (result?.meta?.requestStatus === "fulfilled") {
+          closeBtn?.click();
           handleModalClose();
-        } else {
-          toast.error(
-            `Failed to ${!initialData ? "create" : "update"} Component Assignment`
-          );
         }
       } catch (error) {
-        console.log("Form submission error:", error);
+        console.error("Form submission error:", error);
       }
     },
-    [basicSalaryData, dispatch, initialData, mode, handleModalClose]
+    [basicSalaryData, dispatch, initialData, handleModalClose]
   );
 
+  // Offcanvas close event
   useEffect(() => {
-    const offcanvasElement = document.getElementById(
-      "offcanvas_add_edit_basic_salary"
-    );
-    if (offcanvasElement) {
-      offcanvasElement.addEventListener(
-        "hidden.bs.offcanvas",
-        handleModalClose
-      );
-      return () => {
-        offcanvasElement.removeEventListener(
-          "hidden.bs.offcanvas",
-          handleModalClose
-        );
-      };
-    }
+    const el = document.getElementById("offcanvas_add_edit_basic_salary");
+    if (!el) return;
+    const handler = handleModalClose;
+    el.addEventListener("hidden.bs.offcanvas", handler);
+    return () => el.removeEventListener("hidden.bs.offcanvas", handler);
   }, [handleModalClose]);
 
   return (
@@ -672,7 +568,6 @@ const AddEditModal = ({
           <i className="ti ti-x" />
         </button>
       </div>
-
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row mb-4">
@@ -703,7 +598,6 @@ const AddEditModal = ({
                 )}
               </div>
             )}
-
             <div className="col-md-4 mb-3">
               <label className="form-label">Department</label>
               <Controller
@@ -712,30 +606,25 @@ const AddEditModal = ({
                 render={({ field }) => (
                   <DepartmentSelect
                     {...field}
-                    isDisabled={true}
+                    isDisabled
                     value={department_id || Number(employeeData?.department_id)}
                   />
                 )}
               />
             </div>
-
             <div className="col-md-4 mb-3">
               <label className="form-label">Position</label>
               <Controller
                 name="position_id"
                 control={control}
-                render={({ field }) => {
-                  return (
-                    <DesignationSelect
-                      {...field}
-                      placeholder="-- Select --"
-                      isDisabled={true}
-                      value={
-                        position_id || Number(employeeData?.designation_id)
-                      }
-                    />
-                  );
-                }}
+                render={({ field }) => (
+                  <DesignationSelect
+                    {...field}
+                    placeholder="-- Select --"
+                    isDisabled
+                    value={position_id || Number(employeeData?.designation_id)}
+                  />
+                )}
               />
             </div>
             <div className="col-md-4 mb-3">
@@ -787,9 +676,7 @@ const AddEditModal = ({
                     isDisabled={!payGradeList.length}
                     classNamePrefix="react-select"
                     className="select2"
-                    onChange={(option) => {
-                      field.onChange(option?.value || "");
-                    }}
+                    onChange={(option) => field.onChange(option?.value || "")}
                     value={payGradeList.find(
                       (option) =>
                         String(option.value) === String(watch("pay_grade_id"))
@@ -803,7 +690,6 @@ const AddEditModal = ({
                 </div>
               )}
             </div>
-
             <div className="col-md-4 mb-3">
               <label className="form-label">
                 Pay Grade Level <span className="text-danger">*</span>
@@ -820,9 +706,7 @@ const AddEditModal = ({
                     isDisabled={!payGradeLevelList.length}
                     classNamePrefix="react-select"
                     className="select2"
-                    onChange={(option) => {
-                      field.onChange(option?.value || "");
-                    }}
+                    onChange={(option) => field.onChange(option?.value || "")}
                     value={payGradeLevelList.find(
                       (option) =>
                         String(option.value) ===
@@ -837,7 +721,6 @@ const AddEditModal = ({
                 </div>
               )}
             </div>
-
             <div className="col-md-4 mb-3">
               <label className="form-label">
                 Allowance Group <span className="text-danger">*</span>
@@ -854,9 +737,7 @@ const AddEditModal = ({
                     isDisabled={!allowanceGroupList.length}
                     classNamePrefix="react-select"
                     className="select2"
-                    onChange={(option) => {
-                      field.onChange(option?.value || "");
-                    }}
+                    onChange={(option) => field.onChange(option?.value || "")}
                     value={allowanceGroupList.find(
                       (option) =>
                         String(option.value) ===
@@ -871,7 +752,6 @@ const AddEditModal = ({
                 </div>
               )}
             </div>
-
             <div className="col-md-4 mb-3">
               <label className="form-label">
                 Work Life Entry <span className="text-danger">*</span>
@@ -891,9 +771,7 @@ const AddEditModal = ({
                     isDisabled={!workLifeEventLogList.length}
                     classNamePrefix="react-select"
                     className="select2"
-                    onChange={(option) => {
-                      field.onChange(option?.value || "");
-                    }}
+                    onChange={(option) => field.onChange(option?.value || "")}
                     value={workLifeEventLogList.find(
                       (option) =>
                         String(option.value) ===
@@ -921,14 +799,17 @@ const AddEditModal = ({
                     {...field}
                     className="form-control"
                     placeholderText="Select Effective From"
-                    selected={field.value}
                     value={
                       field.value
                         ? moment(field.value).format("DD-MM-YYYY")
-                        : ""
+                        : null
                     }
                     onChange={field.onChange}
-                    minDate={watch("effective_from")}
+                    minDate={
+                      watch("effective_from")
+                        ? new Date(watch("effective_from"))
+                        : null
+                    }
                   />
                 )}
               />
@@ -951,14 +832,17 @@ const AddEditModal = ({
                     {...field}
                     className="form-control"
                     placeholderText="Select Effective To"
-                    selected={field.value}
                     value={
                       field.value
                         ? moment(field.value).format("DD-MM-YYYY")
-                        : ""
+                        : null
                     }
                     onChange={field.onChange}
-                    minDate={watch("effective_from")}
+                    minDate={
+                      watch("effective_from")
+                        ? new Date(watch("effective_from"))
+                        : null
+                    }
                   />
                 )}
               />
@@ -983,9 +867,7 @@ const AddEditModal = ({
                     placeholder="Choose Status"
                     classNamePrefix="react-select"
                     className="select2"
-                    onChange={(option) => {
-                      field.onChange(option?.value || "");
-                    }}
+                    onChange={(option) => field.onChange(option?.value || "")}
                     value={
                       statusList.find(
                         (option) => String(option.value) === String(field.value)
@@ -1016,7 +898,6 @@ const AddEditModal = ({
               />
             </div>
           </div>
-
           <div className="col-12">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <Button
@@ -1030,7 +911,7 @@ const AddEditModal = ({
             </div>
             <div className="table-responsive custom-table">
               <Table
-                dataSource={basicSalaryData || []}
+                dataSource={basicSalaryData}
                 columns={columns}
                 loading={loading}
                 className="table-bordered"
@@ -1040,7 +921,6 @@ const AddEditModal = ({
               />
             </div>
           </div>
-
           <div className="d-flex justify-content-end gap-2 pt-3 border-top">
             <button
               type="button"
@@ -1074,36 +954,14 @@ const AddEditModal = ({
         onDelete={handleDeleteBasicSalary}
         label="Pay Component"
       />
-
       <style>{`
         input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-
-        input[type="number"] {
-          -moz-appearance: textfield;
-        }
-
-        .custom-table .ant-table-cell {
-          padding: 8px 12px !important;
-        }
-
-        .custom-table .ant-table-thead > tr > th {
-          background-color: #f8f9fa;
-          font-weight: 600;
-        }
-
-        .react-select__control {
-          min-height: 38px;
-          border-color: #ced4da;
-        }
-
-        .react-select__control:hover {
-          border-color: #86b7fe;
-        }
-
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        .custom-table .ant-table-cell { padding: 8px 12px !important; }
+        .custom-table .ant-table-thead > tr > th { background-color: #f8f9fa; font-weight: 600; }
+        .react-select__control { min-height: 38px; border-color: #ced4da; }
+        .react-select__control:hover { border-color: #86b7fe; }
         .react-select__control--is-focused {
           border-color: #86b7fe;
           box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
