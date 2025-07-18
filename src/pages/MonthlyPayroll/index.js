@@ -361,6 +361,24 @@ const MonthlyPayroll = () => {
     setIsCalculated(false);
   }, [reset]);
 
+  const handlePreviewFn = () => {
+    dispatch(
+      fetchMonthlyPayrollPreview({
+        paymonth: watch("payroll_month") || 7,
+        payyear: watch("payroll_year") || 2025,
+        empidfrom: watch("employee_from") || 15,
+        empidto: watch("employee_to") || 41,
+        positionidfrom: watch("department_from") || 12,
+        positionidto: watch("department_to") || 9,
+        dptfrom: watch("position_from") || 3,
+        dptto: watch("position_to") || 2,
+        branchfrom: watch("branch_from") || 1,
+        branchto: watch("branch_to") || 1,
+        loanflag: watch("loanflag") || 1,
+        grade: "",
+      })
+    );
+  };
   const handleSelectAll = useCallback((e) => {
     setPayroll((prev) =>
       prev.map((item) => ({ ...item, is_selected: e.target.checked }))
@@ -541,7 +559,6 @@ const MonthlyPayroll = () => {
 
   const handleClose = () => {
     reset();
-    setPayroll([]);
     setInputValues({});
     setIsCalculated(false);
   };
@@ -559,8 +576,8 @@ const MonthlyPayroll = () => {
 
     try {
       await dispatch(createMonthlyPayroll(selectedEmployees)).unwrap();
-      toast.success("Monthly payroll generated successfully!");
       handleClose();
+      handlePreviewFn();
     } catch (e) {
       console.error("Error creating monthly payroll", e);
     }
@@ -569,22 +586,7 @@ const MonthlyPayroll = () => {
   const handlePreview = () => {
     setIsCalculated(false);
     setInputValues({});
-    dispatch(
-      fetchMonthlyPayrollPreview({
-        paymonth: watch("payroll_month") || 7,
-        payyear: watch("payroll_year") || 2025,
-        empidfrom: watch("employee_from") || 15,
-        empidto: watch("employee_to") || 41,
-        positionidfrom: watch("department_from") || 12,
-        positionidto: watch("department_to") || 9,
-        dptfrom: watch("position_from") || 3,
-        dptto: watch("position_to") || 2,
-        branchfrom: watch("branch_from") || 1,
-        branchto: watch("branch_to") || 1,
-        loanflag: watch("loanflag") || 1,
-        grade: "",
-      })
-    );
+    handlePreviewFn();
   };
 
   return (

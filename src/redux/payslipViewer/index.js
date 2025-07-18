@@ -12,8 +12,15 @@ export const fetchpayslip = createAsyncThunk(
       if (datas?.search) params.search = datas?.search;
       if (datas?.page) params.page = datas?.page;
       if (datas?.size) params.size = datas?.size;
+      if (datas?.startDate) params.startDate = datas?.startDate;
+      if (datas?.endDate) params.endDate = datas?.endDate;
+      if (datas?.year) params.year = datas?.year;
+      if (datas?.month) params.month = datas?.month;
+      if (datas?.employee_id) params.employee_id = datas?.employee_id;
 
-      const response = await apiClient.get("/v1/payslip", { params });
+      const response = await apiClient.get("/v1/generated-monthly-payroll", {
+        params,
+      });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
