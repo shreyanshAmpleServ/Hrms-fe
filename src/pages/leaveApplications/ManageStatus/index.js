@@ -103,7 +103,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                 )}
               </div>
             </div>
-            {watch("status") === "Rejected" && (
+            {watch("status") === "R" && (
               <div className="row">
                 <div className="col-md-12">
                   <label className="form-label">
@@ -114,7 +114,7 @@ const ManageStatus = ({ open, setOpen, selected }) => {
                     control={control}
                     rules={{
                       required:
-                        watch("status") === "Rejected"
+                        watch("status") === "R"
                           ? "Rejection Reason is required"
                           : false,
                     }}

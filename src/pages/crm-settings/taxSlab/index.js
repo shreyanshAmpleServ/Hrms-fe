@@ -27,22 +27,22 @@ const TaxSlab = () => {
     },
 
     {
-      title: "Slab Min",
+      title: "Salary From",
       dataIndex: "slab_min",
       sorter: (a, b) => (a.slab_min || "").localeCompare(b.slab_min || ""),
     },
     {
-      title: "Slab Max",
+      title: "Salary To",
       dataIndex: "slab_max",
       sorter: (a, b) => a.slab_max.localeCompare(b.slab_max),
     },
     {
-      title: "Rate",
+      title: "Tax Parcent",
       dataIndex: "rate",
       sorter: (a, b) => (a.rate || "").localeCompare(b.rate || ""),
     },
     {
-      title: "Flat Amount",
+      title: "Fixed Amount",
       dataIndex: "flat_amount",
       sorter: (a, b) =>
         (a.flat_amount || "").localeCompare(b.flat_amount || ""),

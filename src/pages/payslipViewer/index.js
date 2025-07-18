@@ -10,15 +10,25 @@ import DateRangePickerComponent from "../../components/datatable/DateRangePicker
 import { fetchpayslip } from "../../redux/payslipViewer";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddEditModal from "./modal/AddEditModal.js";
+import EmployeeSelect from "../../components/common/EmployeeSelect/index.js";
+import { Controller } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import ReactSelect from "react-select";
+const payslipMonthOptions = Array.from({ length: 12 }, (_, i) => ({
+  value: i + 1,
+  label: new Date(0, i).toLocaleString("default", { month: "long" }),
+}));
 
 const PayslipViewer = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedpayslip, setSelectedpayslip] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedDateRange, setSelectedDateRange] = useState({
     startDate: moment().subtract(30, "days"),
-    endDate: moment(),
+    endDate: moment().endOf("month"),
   });
   const dispatch = useDispatch();
 
@@ -70,6 +80,8 @@ const PayslipViewer = () => {
   const isUpdate = isAdmin || allPermissions?.update;
   const isDelete = isAdmin || allPermissions?.delete;
 
+  console.log(selectedYear);
+
   const columns = [
     {
       title: "Employee",
@@ -83,22 +95,14 @@ const PayslipViewer = () => {
     {
       title: "Month",
       dataIndex: "month",
-      render: (text) => <div>{text}</div>, // You can use moment if it's a date
+      render: (text) => <div>{text}</div>,
       sorter: (a, b) => (a.month || "").localeCompare(b.month || ""),
     },
     {
       title: "Year",
       dataIndex: "year",
       render: (text) => <div>{text?.split("-")[0]}</div>,
-      sorter: (a, b) => (a.Year || "").localeCompare(b.Year || ""),
-    },
-
-    {
-      title: <span className="text-nowrap">Net Salary</span>,
-      dataIndex: "net_salary",
-      render: (text) => `₹ ${parseFloat(text).toFixed(2)}`,
-
-      sorter: (a, b) => parseFloat(a.net_salary) - parseFloat(b.net_salary),
+      sorter: (a, b) => (a.year || "").localeCompare(b.year || ""),
     },
     {
       title: "Gross Salary",
@@ -112,18 +116,6 @@ const PayslipViewer = () => {
       render: (text) => `₹ ${parseFloat(text).toFixed(2)}`,
       sorter: (a, b) =>
         parseFloat(a.total_earnings) - parseFloat(b.total_earnings),
-    },
-    {
-      title: "Total Deduction",
-      dataIndex: "total_deductions",
-      render: (text) => `₹ ${parseFloat(text).toFixed(2)}`,
-      sorter: (a, b) =>
-        parseFloat(a.total_deductions) - parseFloat(b.total_deductions),
-    },
-    {
-      title: <span className="text-nowrap">Pay Summary</span>,
-      dataIndex: "pay_component_summary",
-      render: (text) => <div>{text}</div>,
     },
     {
       title: "Tax Deduction",
@@ -147,11 +139,28 @@ const PayslipViewer = () => {
         parseFloat(a.other_adjustments) - parseFloat(b.other_adjustments),
     },
     {
+      title: "Total Deduction",
+      dataIndex: "total_deductions",
+      render: (text) => `₹ ${parseFloat(text).toFixed(2)}`,
+      sorter: (a, b) =>
+        parseFloat(a.total_deductions) - parseFloat(b.total_deductions),
+    },
+    {
+      title: <span className="text-nowrap">Net Salary</span>,
+      dataIndex: "net_salary",
+      render: (text) => `₹ ${parseFloat(text).toFixed(2)}`,
+      sorter: (a, b) => parseFloat(a.net_salary) - parseFloat(b.net_salary),
+    },
+    {
+      title: <span className="text-nowrap">Pay Summary</span>,
+      dataIndex: "pay_component_summary",
+      render: (text) => <div>{text}</div>,
+    },
+    {
       title: "Remarks",
       dataIndex: "remarks",
       render: (text) => <div>{text}</div>,
     },
-
     {
       title: "Pay Slip",
       dataIndex: "pdf_path",
@@ -165,11 +174,10 @@ const PayslipViewer = () => {
           title="View or Download PDF"
         >
           <i className="ti ti-file-type-pdf fs-5"></i>
-          <span>View </span>
+          <span>View</span>
         </a>
       ),
     },
-
     ...(isDelete || isUpdate
       ? [
           {
@@ -178,7 +186,7 @@ const PayslipViewer = () => {
               <div className="dropdown table-action">
                 <Link
                   to="#"
-                  className="action-icon "
+                  className="action-icon"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
@@ -196,7 +204,6 @@ const PayslipViewer = () => {
                       <i className="ti ti-edit text-blue" /> Edit
                     </Link>
                   )}
-
                   {isDelete && (
                     <Link
                       className="dropdown-item"
@@ -267,7 +274,7 @@ const PayslipViewer = () => {
                         />
                       </div>
                     </div>
-                    {isCreate && (
+                    {/* {isCreate && (
                       <div className="col-sm-8">
                         <div className="text-sm-end">
                           <Link
@@ -282,21 +289,50 @@ const PayslipViewer = () => {
                           </Link>
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
 
                 <div className="card-body">
                   <>
                     {/* Filter */}
-                    <div className="d-flex align-items-center justify-content-end flex-wrap mb-4 row-gap-2">
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="mx-2">
-                          <DateRangePickerComponent
-                            selectedDateRange={selectedDateRange}
-                            setSelectedDateRange={setSelectedDateRange}
+                    <div className="d-flex row align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
+                      <div className="d-flex align-items-center justify-content-start col-md-6 gap-2">
+                        <div className="d-flex align-items-center justify-content-start col-md-6">
+                          <EmployeeSelect placeholder={"Select Employee"} />
+                        </div>
+                        <div className="d-flex align-items-center justify-content-start col-md-3">
+                          <ReactSelect
+                            options={payslipMonthOptions}
+                            value={selectedMonth}
+                            className="Select"
+                            onChange={(e) => setSelectedMonth(e.value)}
+                            placeholder="Select Month"
+                            classNamePrefix="react-select"
                           />
                         </div>
+                        <div className="d-flex align-items-center justify-content-start col-md-3">
+                          <DatePicker
+                            className="form-control"
+                            placeholderText="Select Year"
+                            showYearPicker
+                            dateFormat="yyyy"
+                            selected={
+                              selectedYear ? new Date(selectedYear, 0, 1) : null
+                            }
+                            onChange={(date) => {
+                              if (date) {
+                                setSelectedYear(date.getFullYear());
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-center justify-content-end col-md-6">
+                        <DateRangePickerComponent
+                          selectedDateRange={selectedDateRange}
+                          setSelectedDateRange={setSelectedDateRange}
+                        />
                       </div>
                     </div>
                   </>

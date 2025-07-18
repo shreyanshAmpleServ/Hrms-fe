@@ -433,7 +433,18 @@ const AddEditModal = ({
         title: "Type",
         dataIndex: "component_type",
         key: "component_type",
-        render: (text) => text || "-",
+        render: (text) =>
+          text?.slice(0, 1) === "E"
+            ? "EARNING"
+            : text?.slice(0, 1) === "D"
+              ? "DEDUCTION"
+              : text?.slice(0, 1) === "A"
+                ? "ALLOWANCE"
+                : text?.slice(0, 1) === "B"
+                  ? "BONUS"
+                  : text?.slice(0, 1) === "O"
+                    ? "OVERTIME"
+                    : "-",
       },
       {
         title: "Type Value",

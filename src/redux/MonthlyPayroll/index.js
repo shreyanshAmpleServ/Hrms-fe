@@ -129,6 +129,7 @@ export const fetchMonthlyPayrollById = createAsyncThunk(
     }
   }
 );
+
 export const fetchMonthlyPayrollPreview = createAsyncThunk(
   "monthlyPayroll/fetchMonthlyPayrollPreview",
   async (params, thunkAPI) => {
@@ -145,6 +146,35 @@ export const fetchMonthlyPayrollPreview = createAsyncThunk(
   }
 );
 
+export const fetchComponentsFn = createAsyncThunk(
+  "monthlyPayroll/fetchComponentsFn",
+  async (params, thunkAPI) => {
+    try {
+      const response = await apiClient.get("/v1/components", {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch monthly payroll preview"
+      );
+    }
+  }
+);
+export const fetchTaxAmountFn = async (params) => {
+  try {
+    const response = await apiClient.get("/v1/tax-calculation", {
+      params,
+    });
+    return {
+      tax_payee: Number(response.data?.data?.[0]?.TaxPayee) || 0,
+      employee_id: params?.employee_id,
+    };
+  } catch (error) {
+    throw error.response?.data;
+  }
+};
+
 const monthlyPayrollSlice = createSlice({
   name: "monthlyPayroll",
   initialState: {
@@ -154,6 +184,8 @@ const monthlyPayrollSlice = createSlice({
     error: null,
     success: null,
     monthlyPayrollPreview: null,
+    componentNames: null,
+    taxAmount: null,
   },
   reducers: {
     // Clear success and error messages
@@ -266,6 +298,18 @@ const monthlyPayrollSlice = createSlice({
         state.monthlyPayrollPreview = action.payload.data;
       })
       .addCase(fetchMonthlyPayrollPreview.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchComponentsFn.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchComponentsFn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.componentNames = action.payload.data;
+      })
+      .addCase(fetchComponentsFn.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

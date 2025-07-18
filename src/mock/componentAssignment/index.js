@@ -1,7 +1,6 @@
 export const allowanceGroupList = [
   { value: "", label: "-- Select --" },
   { value: "1", label: "Standard Allowance" },
-  { value: "1", label: "Standard Allowance" },
   { value: "2", label: "Executive Allowance" },
   { value: "3", label: "Managerial Allowance" },
   { value: "4", label: "Field Staff Allowance" },

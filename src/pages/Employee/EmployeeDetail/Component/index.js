@@ -189,6 +189,7 @@ const EmployeeComponent = ({ employeeDetail }) => {
 
       <AddEditModal
         mode={mode}
+        setMode={setMode}
         initialData={selected}
         setSelected={setSelected}
         employee_id={employeeDetail?.id}

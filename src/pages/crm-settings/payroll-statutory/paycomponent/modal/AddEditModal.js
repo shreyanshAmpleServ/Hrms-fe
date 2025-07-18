@@ -1,21 +1,25 @@
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import Select from "react-select";
+import { fetchCostCenter } from "../../../../../redux/costCenter";
 import {
   addpay_component,
   updatepay_component,
 } from "../../../../../redux/pay-component";
 import { fetchProjects } from "../../../../../redux/projects";
 import { fetchTaxSlab } from "../../../../../redux/taxSlab";
-import { fetchCostCenter } from "../../../../../redux/costCenter";
 
+export const componentTypeOptions = [
+  { value: "E", label: "Earning" },
+  { value: "D", label: "Deduction" },
+  { value: "A", label: "Allowance" },
+  { value: "B", label: "Bonus" },
+  { value: "O", label: "Overtime" },
+];
 const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   const { loading } = useSelector((state) => state.payComponent);
-
   const { taxSlab } = useSelector((state) => state.taxSlab);
-
   const { projects } = useSelector((state) => state.projects);
   const { costCenter } = useSelector((state) => state.costCenter);
 
@@ -35,14 +39,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   } = useForm();
 
   const dispatch = useDispatch();
-
-  const componentTypeOptions = [
-    { value: "E", label: "Earning" },
-    { value: "D", label: "Deduction" },
-    { value: "A", label: "Allowance" },
-    { value: "B", label: "Bonus" },
-    { value: "O", label: "Overtime" },
-  ];
 
   const payOrDeductOptions = [
     { value: "", label: "-- Select --" },
@@ -79,7 +75,9 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       cost_center5_id: initialData?.cost_center5_id || "",
       contributes_to_nssf: initialData?.contributes_to_nssf || "N",
       contributes_to_paye: initialData?.contributes_to_paye || "N",
+      contribution_of_employee: initialData?.contribution_of_employee || "N",
       default_formula: initialData?.default_formula || "",
+      employer_default_formula: initialData?.employer_default_formula || "",
       execution_order: initialData?.execution_order || "",
       factor: initialData?.factor || "",
       formula_editable: initialData?.formula_editable || "N",
@@ -102,12 +100,12 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     });
   }, [mode, initialData, reset]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
 
     let result;
     if (mode === "add") {
-      result = dispatch(
+      result = await dispatch(
         addpay_component({
           ...data,
           column_order: Number(data?.column_order),
@@ -115,7 +113,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
         })
       );
     } else if (mode === "edit" && initialData) {
-      result = dispatch(
+      result = await dispatch(
         updatepay_component({
           id: initialData?.id,
           pay_componentData: data,
@@ -131,7 +129,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
 
   return (
     <div
-      className="offcanvas offcanvas-end offcanvas-large"
+      className="offcanvas offcanvas-end offcanvas-larger"
       id="offcanvas_add"
       role="dialog"
     >
@@ -155,7 +153,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">
                   Component Code <span className="text-danger">*</span>
@@ -180,7 +178,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
-            <div className="mb-3 col-md-6">
+            <div className="mb-3 col-md-4">
               <label className="col-form-label">
                 Component Name <span className="text-danger">*</span>
               </label>
@@ -203,7 +201,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               )}
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">
                   Component Type <span className="text-danger">*</span>
@@ -240,7 +238,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Pay or Deduct</label>
                 <Controller
@@ -266,7 +264,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">GL Account</label>
                 <Controller
@@ -285,7 +283,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 />
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Payable GL Account</label>
                 <Controller
@@ -305,7 +303,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Tax Code</label>
                 <Controller
@@ -335,7 +333,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 />
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Project</label>
                 <Controller
@@ -366,7 +364,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Execution Order</label>
                 <input
@@ -387,7 +385,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Column Order</label>
                 <input
@@ -399,7 +397,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Factor</label>
                 <input
@@ -411,7 +409,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 />
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Cost Center 1</label>
                 <Controller
@@ -441,7 +439,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 />
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Cost Center 2</label>
                 <Controller
@@ -472,7 +470,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Cost Center 3</label>
                 <Controller
@@ -502,7 +500,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 />
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Cost Center 4</label>
                 <Controller
@@ -532,7 +530,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 />
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <div className="mb-3">
                 <label className="col-form-label">Cost Center 5</label>
                 <Controller
@@ -574,6 +572,21 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               </div>
             </div>
 
+            {watch("contribution_of_employee") === "Y" && (
+              <div className="col-md-12">
+                <div className="mb-3">
+                  <label className="col-form-label">
+                    Employer Default Formula
+                  </label>
+                  <textarea
+                    rows={3}
+                    className="form-control"
+                    placeholder="Enter Default Formula"
+                    {...register("employer_default_formula")}
+                  />
+                </div>
+              </div>
+            )}
             <div className="col-md-4">
               <div className="mb-3 form-check form-switch">
                 <label className="col-form-label">Is Taxable</label>
@@ -800,6 +813,28 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             </div>
             <div className="col-md-4">
               <div className="mb-3 form-check form-switch">
+                <label className="col-form-label">
+                  Contribution to Employee
+                </label>
+                <Controller
+                  name="contribution_of_employee"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={field.value === "Y" ? true : false}
+                      onChange={(e) =>
+                        field.onChange(e.target.checked ? "Y" : "N")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="mb-3 form-check form-switch">
                 <label className="col-form-label">Formula Editable</label>
                 <Controller
                   name="formula_editable"
@@ -895,9 +930,13 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           </div>
 
           <div className="d-flex py-3 align-items-center justify-content-end m-0">
-            <Link to="#" className="btn btn-light me-2" data-bs-dismiss="modal">
+            <button
+              type="button"
+              data-bs-dismiss="offcanvas"
+              className="btn btn-light me-2"
+            >
               Cancel
-            </Link>
+            </button>
             <button
               disabled={loading}
               type="submit"

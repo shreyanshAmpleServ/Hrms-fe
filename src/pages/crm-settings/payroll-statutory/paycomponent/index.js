@@ -33,21 +33,58 @@ const Paycomponent = () => {
     {
       title: "Name",
       dataIndex: "component_name",
-      render: (text) => text || "-",
+      render: (text, record) =>
+        (
+          <Link
+            to="#"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvas_add"
+            onClick={() => {
+              setSelected(record);
+              setMode("edit");
+            }}
+          >
+            {text}
+          </Link>
+        ) || "-",
       sorter: (a, b) =>
         (a.component_name || "").localeCompare(b.component_name || ""),
     },
     {
       title: "Code",
       dataIndex: "component_code",
-      render: (text) => text || "-",
+      render: (text, record) =>
+        (
+          <Link
+            to="#"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvas_add"
+            onClick={() => {
+              setSelected(record);
+              setMode("edit");
+            }}
+          >
+            {text}
+          </Link>
+        ) || "-",
       sorter: (a, b) =>
         (a.component_code || "").localeCompare(b.component_code || ""),
     },
     {
       title: "Type",
       dataIndex: "component_type",
-      render: (text) => text || "-",
+      render: (text) =>
+        text?.slice(0, 1) === "E"
+          ? "EARNING"
+          : text?.slice(0, 1) === "D"
+            ? "DEDUCTION"
+            : text?.slice(0, 1) === "A"
+              ? "ALLOWANCE"
+              : text?.slice(0, 1) === "B"
+                ? "BONUS"
+                : text?.slice(0, 1) === "O"
+                  ? "OVERTIME"
+                  : "-",
       sorter: (a, b) =>
         (a.component_type || "").localeCompare(b.component_type || ""),
     },
@@ -135,6 +172,15 @@ const Paycomponent = () => {
         ),
     },
     {
+      title: "Contribution to Employee",
+      dataIndex: "contribution_of_employee",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) =>
+        (a.contribution_of_employee || "").localeCompare(
+          b.contribution_of_employee || ""
+        ),
+    },
+    {
       title: "GL Account",
       dataIndex: "gl_account_id",
       render: (text) => text || "-",
@@ -197,7 +243,15 @@ const Paycomponent = () => {
       sorter: (a, b) =>
         (a.default_formula || "").localeCompare(b.default_formula || ""),
     },
-
+    {
+      title: "Employer Default Formula",
+      dataIndex: "employer_default_formula",
+      render: (text) => text || "-",
+      sorter: (a, b) =>
+        (a.employer_default_formula || "").localeCompare(
+          b.employer_default_formula || ""
+        ),
+    },
     {
       title: "Cost Center 1",
       dataIndex: "pay_component_cost_center1",
@@ -243,7 +297,6 @@ const Paycomponent = () => {
           b.pay_component_cost_center5?.name || ""
         ),
     },
-
     {
       title: "Is Active?",
       dataIndex: "is_active",

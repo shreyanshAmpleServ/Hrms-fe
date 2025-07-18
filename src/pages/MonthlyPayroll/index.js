@@ -1,10 +1,11 @@
-import { Select as AntSelect, Table } from "antd";
+import { Table } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { TbArrowBigRightFilled } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import ComponentSelect from "../../components/common/ComponentSelect";
+import { Link } from "react-router-dom";
 import SharedDatePicker from "../../components/common/SharedDatePicker";
 import SharedSelect from "../../components/common/SharedSelect";
 import { fetchCurrencies } from "../../redux/currency";
@@ -13,7 +14,9 @@ import { fetchdesignation } from "../../redux/designation";
 import { employeeOptionsFn } from "../../redux/Employee";
 import {
   createMonthlyPayroll,
+  fetchComponentsFn,
   fetchMonthlyPayrollPreview,
+  fetchTaxAmountFn,
 } from "../../redux/MonthlyPayroll";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
@@ -31,21 +34,21 @@ export const payrollWeekOptions = Array.from({ length: 4 }, (_, i) => ({
 
 const MonthlyPayroll = () => {
   const [payroll, setPayroll] = useState([]);
+  const [isCalculated, setIsCalculated] = useState(false);
+  const [inputValues, setInputValues] = useState({});
   const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
     reset,
-    setValue,
     watch,
     formState: { errors },
   } = useForm();
-  const { loading, monthlyPayrollPreview } = useSelector(
+
+  const { loading, monthlyPayrollPreview, componentNames } = useSelector(
     (s) => s.monthlyPayroll || {}
   );
-  const { currencies } = useSelector((s) => s.currencies);
   const { employeeOptions } = useSelector((s) => s.employee);
-
   const { department } = useSelector((state) => state.department);
   const { designation } = useSelector((state) => state.designation);
 
@@ -59,41 +62,254 @@ const MonthlyPayroll = () => {
     label: emnt.designation_name,
   }));
 
-  useEffect(() => {
-    if (monthlyPayrollPreview) {
-      setPayroll(monthlyPayrollPreview);
-    }
-  }, [monthlyPayrollPreview]);
+  const getInputKey = (employeeId, componentCode) =>
+    `${employeeId}-${componentCode}`;
 
-  console.log(payroll, "mkxx");
-  const currencyList = useMemo(
-    () =>
-      currencies?.data?.map((item) => ({
-        value: item.id,
-        label: `${item.currency_name} (${item.currency_code})`,
-        currency_name: item.currency_name,
-        currency_code: item.currency_code,
-      })) || [],
-    [currencies]
+  const handleComponentValueChange = useCallback(
+    (employeeId, componentCode, newValue) => {
+      const key = getInputKey(employeeId, componentCode);
+      const numValue = parseFloat(newValue) || 0;
+
+      setInputValues((prev) => ({
+        ...prev,
+        [key]: newValue,
+      }));
+
+      setPayroll((prev) =>
+        prev.map((item) => {
+          if (item.employee_id === employeeId) {
+            const updatedComponents = item.components.map((comp) => {
+              if (comp.component_code === componentCode) {
+                return {
+                  ...comp,
+                  component_value: numValue,
+                };
+              }
+              return comp;
+            });
+            return {
+              ...item,
+              components: updatedComponents,
+            };
+          }
+          return item;
+        })
+      );
+
+      setIsCalculated(false);
+    },
+    []
   );
-  const getCurrencyNameById = (id) => {
-    const c = currencyList.find((c) => String(c.value) === String(id));
-    return c ? `${c.currency_name} (${c.currency_code})` : "";
-  };
-  const getCurrencyCodeById = (id) => {
-    const c = currencyList.find((c) => String(c.value) === String(id));
-    return c ? `${c.currency_code} (${c.currency_name})` : "";
+
+  useEffect(() => {
+    if (monthlyPayrollPreview && componentNames?.length > 0) {
+      const formattedPayroll = monthlyPayrollPreview.map((item) => {
+        const components = [];
+        const employeeDetails = {};
+
+        for (const [key, value] of Object.entries(item)) {
+          if (/^\d+$/.test(key)) {
+            const compMeta = componentNames.find(
+              (c) => String(c.component_code) === key
+            );
+
+            const component_value = parseFloat(value) || 0;
+            const isPayable = compMeta?.pay_or_deduct === "P";
+            const isTaxable = compMeta?.is_taxable === "Y";
+            const isNSSF = compMeta?.contributes_to_nssf === "Y";
+            const isEmployeeContribution =
+              compMeta?.contribution_of_employee === "Y";
+            const defaultFormula = compMeta?.default_formula;
+            const employeeDefaultFormula = compMeta?.employer_default_formula;
+
+            components.push({
+              component_code: key,
+              component_name: compMeta?.component_name,
+              component_value: component_value,
+              isPayable,
+              isTaxable,
+              defaultFormula,
+              employeeDefaultFormula,
+              isEmployeeContribution,
+              isNSSF,
+            });
+          } else {
+            employeeDetails[key] = item[key];
+          }
+        }
+
+        return {
+          ...employeeDetails,
+          components,
+          total_earnings: 0,
+          total_deductions: 0,
+          net_pay: 0,
+          TaxableIncome: 0,
+          TaxPayee: 0,
+          is_selected: false,
+        };
+      });
+
+      setPayroll(formattedPayroll);
+      setIsCalculated(false);
+      setInputValues({});
+    }
+  }, [monthlyPayrollPreview, componentNames]);
+
+  const performCalculations = useCallback(
+    (payrollData) => {
+      return payrollData.map((item) => {
+        let total_earnings = 0;
+        let total_deductions = 0;
+        let total_net_earnings = 0;
+        let total_net_deductions = 0;
+        let TaxableIncome = 0;
+
+        const baseValues = {};
+
+        item.components.forEach((comp) => {
+          const val = parseFloat(comp.component_value) || 0;
+          baseValues[comp.component_code] = val;
+
+          if (comp.isPayable && comp.isTaxable) {
+            total_earnings += val;
+          } else if (!comp.isPayable && comp.isTaxable) {
+            total_deductions += val;
+          }
+
+          if (comp.isPayable) {
+            total_net_earnings += val;
+          } else {
+            total_net_deductions += val;
+          }
+        });
+
+        TaxableIncome = total_earnings - total_deductions;
+        const NetPay =
+          total_net_earnings - total_net_deductions - item.TaxPayee;
+
+        const calculatedValues = {
+          "Taxable Income": TaxableIncome.toFixed(2),
+          "Tax Payee": (item.TaxPayee || 0).toFixed(2),
+          "Net Pay": NetPay.toFixed(2),
+          "Total Earnings": total_net_earnings.toFixed(2),
+          "Total Deductions": total_net_deductions.toFixed(2),
+        };
+
+        const updatedComponents = item.components.map((comp) => {
+          let finalValue = parseFloat(comp.component_value) || 0;
+
+          if (comp.defaultFormula) {
+            try {
+              let formula = componentNames.reduce((f, meta) => {
+                const code = meta.component_code;
+                const name = meta.component_name;
+                const val = baseValues[code] ?? 0;
+                return f.replaceAll(`[${name}]`, val);
+              }, comp.defaultFormula);
+
+              formula = Object.entries(calculatedValues).reduce(
+                (f, [name, val]) => {
+                  return f.replaceAll(`[${name}]`, val);
+                },
+                formula
+              );
+
+              const result = Function(
+                '"use strict"; return (' + formula + ")"
+              )();
+              finalValue = isNaN(result) ? 0 : result;
+            } catch (e) {
+              console.error("Error evaluating default formula:", e);
+              finalValue = 0;
+            }
+          }
+
+          return {
+            ...comp,
+            component_value: finalValue,
+          };
+        });
+
+        return {
+          ...item,
+          components: updatedComponents,
+          total_earnings: total_net_earnings.toFixed(2),
+          total_deductions: total_net_deductions.toFixed(2),
+          net_pay: NetPay.toFixed(2),
+          TaxableIncome: TaxableIncome.toFixed(2),
+        };
+      });
+    },
+    [componentNames]
+  );
+
+  const handleCalculateNet = async (payrollData) => {
+    try {
+      const selectedRows = payrollData.filter((item) => item.is_selected);
+
+      if (selectedRows.length === 0) {
+        toast.error("Please select at least one employee to calculate.");
+        return;
+      }
+
+      const calculatedSelectedRows = await performCalculations(selectedRows);
+
+      const response = await Promise.all(
+        calculatedSelectedRows.map((i) =>
+          fetchTaxAmountFn({
+            employee_id: i.employee_id,
+            taxable_amount: i.TaxableIncome,
+          })
+        )
+      );
+
+      const updatedSelectedRows = calculatedSelectedRows.map((i, index) => ({
+        ...i,
+        TaxPayee: response[index]?.tax_payee ?? 0,
+      }));
+
+      const finalCalculatedRows = performCalculations(updatedSelectedRows);
+
+      setPayroll((prevPayroll) =>
+        prevPayroll.map((item) => {
+          if (item.is_selected) {
+            const calculatedRow = finalCalculatedRows.find(
+              (calcRow) => calcRow.employee_id === item.employee_id
+            );
+            return calculatedRow || item;
+          }
+          return item;
+        })
+      );
+
+      const newInputValues = { ...inputValues };
+      finalCalculatedRows.forEach((item) => {
+        item.components.forEach((comp) => {
+          const key = getInputKey(item.employee_id, comp.component_code);
+          newInputValues[key] = comp.component_value.toString();
+        });
+      });
+      setInputValues(newInputValues);
+
+      setIsCalculated(true);
+      toast.success(
+        `Calculations completed successfully for ${selectedRows.length} selected employee(s)!`
+      );
+    } catch (error) {
+      console.error("Error calculating net pay:", error);
+      toast.error("Error performing calculations");
+    }
   };
 
-  // Fetch initial data
   useEffect(() => {
     dispatch(fetchCurrencies({ is_active: true }));
     dispatch(employeeOptionsFn());
     dispatch(fetchdepartment({ is_active: true }));
     dispatch(fetchdesignation({ is_active: true }));
+    dispatch(fetchComponentsFn());
   }, [dispatch]);
 
-  // Reset form on mount and when midMonthPayroll changes
   useEffect(() => {
     reset({
       payroll_month: DEFAULT_PAYROLL_MONTH,
@@ -108,49 +324,15 @@ const MonthlyPayroll = () => {
       doc_date: new Date(),
     });
     setPayroll([]);
-    // eslint-disable-next-line
-  }, [reset, currencyList]);
+    setInputValues({});
+    setIsCalculated(false);
+  }, [reset]);
 
-  // Handlers
   const handleSelectAll = useCallback((e) => {
     setPayroll((prev) =>
       prev.map((item) => ({ ...item, is_selected: e.target.checked }))
     );
   }, []);
-
-  const handleChangeComponent = useCallback((e, a) => {
-    setPayroll((prev) =>
-      prev.map((item) =>
-        item.id === a.id ? { ...item, is_selected: e.target.checked } : item
-      )
-    );
-  }, []);
-  const handleNetPayChange = useCallback((value, idx) => {
-    setPayroll((prev) =>
-      prev.map((item, i) =>
-        i === idx ? { ...item, advance_amount: value } : item
-      )
-    );
-  }, []);
-  const handleEmployeeCurrencyChange = useCallback(
-    (currencyValue, idx) => {
-      setPayroll((prev) =>
-        prev.map((item, i) =>
-          i === idx
-            ? {
-                ...item,
-                pay_currency: currencyValue,
-                currency_name: getCurrencyNameById(currencyValue),
-                currency_code: getCurrencyCodeById(currencyValue),
-              }
-            : item
-        )
-      );
-    },
-    [currencyList]
-  );
-
-  // Prepare selected employees for submission
 
   const selectedEmployees = useMemo(() => {
     return payroll
@@ -175,7 +357,71 @@ const MonthlyPayroll = () => {
       });
   }, [payroll, watch]);
 
-  // Table columns
+  const handleChangeComponent = (e, r) => {
+    setPayroll((prev) =>
+      prev.map((item) =>
+        item.employee_id === r.employee_id
+          ? { ...item, is_selected: e.target.checked }
+          : item
+      )
+    );
+    setIsCalculated(false);
+  };
+
+  const components = useMemo(() => {
+    return (
+      componentNames?.map((component) => {
+        const { component_code, component_name, pay_or_deduct } = component;
+        const isPayable = pay_or_deduct === "P";
+
+        return {
+          title: component_name,
+          dataIndex: component_code,
+          isPayable: isPayable,
+          render: (_, record) => {
+            const comp = record.components?.find(
+              (c) => c.component_code === String(component_code)
+            );
+
+            const inputKey = getInputKey(record.employee_id, component_code);
+            const displayValue =
+              inputValues[inputKey] !== undefined
+                ? inputValues[inputKey]
+                : comp?.component_value || 0;
+
+            return (
+              <div style={{ minWidth: "80px", height: "30px" }}>
+                {record.is_selected ? (
+                  <input
+                    type="number"
+                    className="form-control form-control-sm"
+                    value={displayValue}
+                    onChange={(e) => {
+                      setInputValues((prev) => ({
+                        ...prev,
+                        [inputKey]: e.target.value,
+                      }));
+                    }}
+                    onBlur={(e) => {
+                      handleComponentValueChange(
+                        record.employee_id,
+                        component_code,
+                        e.target.value
+                      );
+                    }}
+                    step="0.01"
+                  />
+                ) : (
+                  <span>{comp?.component_value || 0}</span>
+                )}
+              </div>
+            );
+          },
+        };
+      }) || []
+    );
+  }, [componentNames, handleComponentValueChange, inputValues]);
+
   const columns = [
     {
       title: (
@@ -189,166 +435,122 @@ const MonthlyPayroll = () => {
           />
         </div>
       ),
-      dataIndex: "id",
+      dataIndex: "employee_id",
       render: (_, r) => (
         <input
           type="checkbox"
           className="form-check-input"
           style={{ width: 20, height: 20 }}
-          checked={r.is_selected}
+          checked={r.is_selected || false}
           onChange={(e) => handleChangeComponent(e, r)}
-          aria-label={`Select component ${r.component_id}`}
+          aria-label={`Select employee ${r.employee_id}`}
         />
       ),
-      width: 80,
+      width: 40,
     },
     {
-      title: "Row No",
-      dataIndex: "row_no",
-      render: (text) => <span>{text}</span>,
+      title: "RowNo",
+      dataIndex: "RowNo",
     },
     {
-      title: "Employee ID",
-      dataIndex: "employee_id",
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Currency",
-      dataIndex: "currency",
-      render: (text) => <span>{text}</span>,
+      title: "Employee Code",
+      dataIndex: "employee_code",
+      render: (text, record) => (
+        <Link
+          className="d-flex gap-1 align-items-center"
+          target="_blank"
+          to={`/employee/${record.employee_id}`}
+        >
+          <TbArrowBigRightFilled color="#fdbe35" size={20} />
+          {text}
+        </Link>
+      ),
     },
     {
       title: "Employee Name",
       dataIndex: "employee_name",
-      render: (text) => <span>{text}</span>,
     },
     {
-      title: "Ext Emp No",
-      dataIndex: "ext_emp_no",
-      render: (text) => <span>{text}</span>,
+      title: "Component Assit ID",
+      dataIndex: "component_assit_id",
     },
-    ...[
-      // dynamic columns for payroll components like BASIC PAY, HOUSING, etc.
-      "basic_pay",
-      "housing_allowance",
-      "lunch_allowance",
-      "transport_allowance",
-      "education_allowance",
-      "medical_allowance",
-      "directors_bonus",
-      "entertainment_allowance",
-      "exgratia_payment",
-      "gratuity",
-      "leave_compensation",
-      "overtime_normal",
-      "overtime_holiday",
-      "watch_person_allowance",
-      "reimbursement",
-      "arrears",
-      "payment_in_kind",
-      "taxable_income",
-      "napsa",
-      "personal_levy",
-      "salary_advance",
-      "deduction",
-      "nhima",
-      "absenteeism_deduction",
-      "sdl",
-      "loan",
-      "recovery",
-    ].map((key) => ({
-      title: key.replace(/_/g, " ").toUpperCase(),
-      dataIndex: key,
-      render: (text) => <span>{Number(text).toFixed(4)}</span>,
-    })),
+    {
+      title: "Currency",
+      dataIndex: "Currency",
+    },
+    ...components,
     {
       title: "Tax Payee",
-      dataIndex: "tax_payee",
-      render: (text) => <span>{Number(text).toFixed(4)}</span>,
+      dataIndex: "TaxPayee",
+      render: (value) => value || 0,
     },
     {
-      title: "Net Salary",
-      dataIndex: "net_salary",
-      render: (text) => <span>{Number(text).toFixed(4)}</span>,
+      title: "Taxable Income",
+      dataIndex: "TaxableIncome",
+      render: (value) => value || 0,
     },
     {
-      title: "Jet Transaction ID",
-      dataIndex: "jet_transaction_id",
-      render: (text) => <span>{text}</span>,
+      title: "Net Pay",
+      dataIndex: "net_pay",
+      render: (value) => value || 0,
     },
     {
-      title: "Series",
-      dataIndex: "series",
-      render: (text) => <span>{text}</span>,
+      title: "Total Deductions",
+      dataIndex: "total_deductions",
+      render: (value) => value || 0,
     },
     {
-      title: "Total Deduction",
-      dataIndex: "total_deduction",
-      render: (text) => <span>{Number(text).toFixed(4)}</span>,
-    },
-    {
-      title: "Total Payment",
-      dataIndex: "total_payment",
-      render: (text) => <span>{Number(text).toFixed(4)}</span>,
-    },
-    {
-      title: "Project",
-      dataIndex: "project",
-      render: (text) => <span>{text}</span>,
+      title: "Total Earnings",
+      dataIndex: "total_earnings",
+      render: (value) => value || 0,
     },
   ];
 
   const handleClose = () => {
     reset();
-    setPayroll((prev) =>
-      prev.map((item) => ({
-        ...item,
-        is_selected: false,
-        advance_amount: 0,
-        pay_currency: watch("pay_currency") || "",
-        currency_name: getCurrencyNameById(watch("pay_currency") || ""),
-        currency_code: getCurrencyCodeById(watch("pay_currency") || ""),
-      }))
-    );
+    setPayroll([]);
+    setInputValues({});
+    setIsCalculated(false);
   };
 
-  // onSubmit: validate and dispatch
   const onSubmit = async () => {
-    if (!selectedEmployees.length)
+    if (!isCalculated) {
       return toast.error(
-        "Please select at least one employee and enter Amount."
+        "Please calculate the payroll first before generating."
       );
-    if (
-      selectedEmployees.some(
-        (emp) =>
-          !emp.advance_amount ||
-          isNaN(emp.advance_amount) ||
-          Number(emp.advance_amount) <= 0
-      )
-    )
-      return toast.error(
-        "Please enter a valid Amount (greater than 0) for all selected employees."
-      );
+    }
+
+    if (!selectedEmployees.length) {
+      return toast.error("Please select at least one employee.");
+    }
 
     try {
       await dispatch(createMonthlyPayroll(selectedEmployees)).unwrap();
+      toast.success("Monthly payroll generated successfully!");
       handleClose();
     } catch (e) {
-      console.error("Error creating mid month payroll", e);
+      console.error("Error creating monthly payroll", e);
+      toast.error("Error creating monthly payroll");
     }
   };
 
   const handlePreview = () => {
+    setIsCalculated(false);
+    setInputValues({});
     dispatch(
       fetchMonthlyPayrollPreview({
-        payroll_month: watch("payroll_month"),
-        payroll_year: watch("payroll_year"),
-        employee_from: watch("employee_from"),
-        employee_to: watch("employee_to"),
-        department_from: watch("department_from"),
-        department_to: watch("department_to"),
-        position_from: watch("position_from"),
-        position_to: watch("position_to"),
+        paymonth: watch("payroll_month") || 7,
+        payyear: watch("payroll_year") || 2025,
+        empidfrom: watch("employee_from") || 15,
+        empidto: watch("employee_to") || 41,
+        positionidfrom: watch("department_from") || 12,
+        positionidto: watch("department_to") || 9,
+        dptfrom: watch("position_from") || 3,
+        dptto: watch("position_to") || 2,
+        branchfrom: watch("branch_from") || 1,
+        branchto: watch("branch_to") || 1,
+        loanflag: watch("loanflag") || 1,
+        grade: "",
       })
     );
   };
@@ -369,16 +571,6 @@ const MonthlyPayroll = () => {
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 <div>
                   <div className="row">
-                    {/* <div className="col-md-3">
-                      <SharedSelect
-                        name="payroll_week"
-                        label="Payroll Week"
-                        control={control}
-                        options={payrollWeekOptions}
-                        required={true}
-                        errors={errors}
-                      />
-                    </div> */}
                     <div className="col-md-3">
                       <SharedSelect
                         name="payroll_month"
@@ -398,7 +590,6 @@ const MonthlyPayroll = () => {
                           <span className="form-icon">
                             <i className="ti ti-calendar-check" />
                           </span>
-
                           <Controller
                             name="payroll_year"
                             control={control}
@@ -438,45 +629,6 @@ const MonthlyPayroll = () => {
                         dateFormat="dd-MM-yyyy"
                       />
                     </div>
-                    {/* <div className="col-md-3 mb-3">
-                      <label className="col-form-label" htmlFor="component_id">
-                        Pay Component <span className="text-danger">*</span>
-                      </label>
-                      <Controller
-                        name="component_id"
-                        rules={{ required: "Pay Component is required!" }}
-                        control={control}
-                        render={({ field }) => (
-                          <ComponentSelect
-                            {...field}
-                            is_advance={true}
-                            value={field.value}
-                            onChange={(i) => {
-                              field.onChange(i.value);
-                              setValue("component_name", i.label);
-                            }}
-                          />
-                        )}
-                      />
-                      {errors.component_id && (
-                        <small className="text-danger">
-                          {errors.component_id.message}
-                        </small>
-                      )}
-                    </div> */}
-                    {/* <div className="col-md-3">
-                      <SharedSelect
-                        name="pay_currency"
-                        label="Currency"
-                        control={control}
-                        options={currencyList}
-                        errors={errors}
-                        onChange={(o) => {
-                          setValue("currency_name", o?.currency_name || "");
-                          setValue("currency_code", o?.currency_code || "");
-                        }}
-                      />
-                    </div> */}
                   </div>
 
                   <div className="row">
@@ -556,32 +708,64 @@ const MonthlyPayroll = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div
-                    className="col-md-12 mb-3"
-                    style={{ overflowX: "auto", maxHeight: "400px" }}
-                  >
-                    <Table
-                      columns={columns}
-                      dataSource={payroll}
-                      loading={loading}
-                      pagination={false}
-                      rowKey="id"
-                      size="small"
-                      className="table-bordered"
-                      style={{ width: "100%" }}
-                      scroll={{ x: "max-content" }}
-                    />
+                  {payroll.length > 0 ? (
+                    <>
+                      <div
+                        className="col-md-12 mb-3"
+                        style={{ overflowX: "auto", maxHeight: "400px" }}
+                      >
+                        <Table
+                          columns={columns}
+                          dataSource={payroll}
+                          loading={loading}
+                          pagination={false}
+                          rowKey="employee_id"
+                          size="small"
+                          className="table-bordered"
+                          style={{ width: "100%" }}
+                          scroll={{ x: "max-content" }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <div
+                        className="col-md-12 mb-3 card"
+                        style={{
+                          height: "200px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <p className="text-center">
+                          No data found, please select employee and preview
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {payroll.length > 0 && (
+                  <div className="d-flex text-nowrap align-items-center gap-2 justify-content-end">
+                    <button
+                      type="button"
+                      style={{ width: "150px" }}
+                      onClick={() => handleCalculateNet(payroll)}
+                      className="btn btn-success"
+                      disabled={loading || isCalculated}
+                    >
+                      {isCalculated ? "Calculated" : "Calculate Net"}
+                    </button>
+                    <button
+                      style={{ width: "100px" }}
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={!isCalculated || loading}
+                    >
+                      Generate
+                    </button>
                   </div>
-                </div>
-                <div className="d-flex align-items-center justify-content-end">
-                  <button
-                    style={{ width: "100px" }}
-                    type="submit"
-                    className="btn btn-primary"
-                  >
-                    Generate
-                  </button>
-                </div>
+                )}
               </form>
             </div>
           </div>
