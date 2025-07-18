@@ -5,7 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { TbArrowBigRightFilled } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SharedDatePicker from "../../components/common/SharedDatePicker";
 import SharedSelect from "../../components/common/SharedSelect";
 import { fetchCurrencies } from "../../redux/currency";
@@ -100,6 +100,13 @@ const MonthlyPayroll = () => {
     },
     []
   );
+  const location = useLocation();
+  useEffect(() => {
+    
+    setPayroll([]);
+    setInputValues({});
+    setIsCalculated(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (monthlyPayrollPreview && componentNames?.length > 0) {
