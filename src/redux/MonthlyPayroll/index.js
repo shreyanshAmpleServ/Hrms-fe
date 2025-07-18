@@ -36,7 +36,7 @@ export const createMonthlyPayroll = createAsyncThunk(
   async (monthlyPayrollData, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.post("/v1/monthly-payroll", monthlyPayrollData),
+        apiClient.post("/v1/generate-monthly-payroll", monthlyPayrollData),
         {
           loading: "Creating monthly payroll...",
           success: (res) =>

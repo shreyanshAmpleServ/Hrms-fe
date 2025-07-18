@@ -30,7 +30,19 @@ const BasicSalary = () => {
     {
       title: "Employee",
       dataIndex: "hrms_d_employee",
-      render: (text) => <div>{text?.full_name}</div>,
+      render: (text, record) => (
+        <Link
+          to="#"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvas_add_edit_basic_salary"
+          onClick={() => {
+            setMode("edit");
+            setSelected(record);
+          }}
+        >
+          {text?.full_name}
+        </Link>
+      ),
       sorter: (a, b) =>
         (a?.hrms_d_employee?.full_name || "").localeCompare(
           b?.hrms_d_employee?.full_name || ""
@@ -39,7 +51,19 @@ const BasicSalary = () => {
     {
       title: "Employee Code",
       dataIndex: "hrms_d_employee",
-      render: (text) => <div>{text?.employee_code}</div>,
+      render: (text, record) => (
+        <Link
+          to="#"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvas_add_edit_basic_salary"
+          onClick={() => {
+            setMode("edit");
+            setSelected(record);
+          }}
+        >
+          {text?.employee_code}
+        </Link>
+      ),
       sorter: (a, b) =>
         (a?.hrms_d_employee?.employee_code || "").localeCompare(
           b?.hrms_d_employee?.employee_code || ""

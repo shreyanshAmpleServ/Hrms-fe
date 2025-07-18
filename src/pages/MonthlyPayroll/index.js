@@ -229,6 +229,33 @@ const MonthlyPayroll = () => {
               console.error("Error evaluating default formula:", e);
               finalValue = 0;
             }
+          } else if (
+            comp.isEmployeeContribution &&
+            comp.employeeDefaultFormula
+          ) {
+            try {
+              let formula = componentNames.reduce((f, meta) => {
+                const code = meta.component_code;
+                const name = meta.component_name;
+                const val = baseValues[code] ?? 0;
+                return f.replaceAll(`[${name}]`, val);
+              }, comp.employeeDefaultFormula);
+
+              formula = Object.entries(calculatedValues).reduce(
+                (f, [name, val]) => {
+                  return f.replaceAll(`[${name}]`, val);
+                },
+                formula
+              );
+
+              const result = Function(
+                '"use strict"; return (' + formula + ")"
+              )();
+              finalValue = isNaN(result) ? 0 : result;
+            } catch (e) {
+              console.error("Error evaluating employee default formula:", e);
+              finalValue = 0;
+            }
           }
 
           return {
@@ -339,24 +366,26 @@ const MonthlyPayroll = () => {
       prev.map((item) => ({ ...item, is_selected: e.target.checked }))
     );
   }, []);
-
   const selectedEmployees = useMemo(() => {
     return payroll
       .filter((item) => item.is_selected)
       .map((item) => ({
+        ...item,
         employee_id: item.employee_id,
         payroll_month: watch("payroll_month"),
         payroll_year: watch("payroll_year"),
         payroll_week: watch("payroll_week") || 1,
         status: "Pending",
-        execution_date: watch("doc_date"),
-        doc_date: watch("doc_date"),
+        execution_date: new Date(watch("doc_date")).toISOString(),
+        doc_date: new Date(watch("doc_date")).toISOString(),
+        Currency: item.Currency === "TZS" ? 23 : item.Currency,
         employee_email: item.employee_email || "",
-        components: item.components?.reduce((acc, comp) => {
+        ...item.components?.reduce((acc, comp) => {
           acc[comp.component_code] = comp.component_value;
           return acc;
         }, {}),
-      }));
+      }))
+      .map(({ is_selected, components, ...item }) => item);
   }, [payroll, watch]);
 
   console.log(selectedEmployees);
@@ -394,7 +423,7 @@ const MonthlyPayroll = () => {
                 : comp?.component_value || 0;
 
             return (
-              <div style={{ minWidth: "80px", height: "30px" }}>
+              <div style={{ height: "30px", width: "120px" }}>
                 {record.is_selected ? (
                   <input
                     type="number"
@@ -534,7 +563,6 @@ const MonthlyPayroll = () => {
       handleClose();
     } catch (e) {
       console.error("Error creating monthly payroll", e);
-      toast.error("Error creating monthly payroll");
     }
   };
 
