@@ -21,18 +21,29 @@ const EmployeeComponent = ({ employeeDetail }) => {
     {
       title: "Pay Grade",
       dataIndex: "pay_grade_id",
-      render: (text) =>
-        text === 1
-          ? "Grade A - ₹15,000 to ₹25,000"
-          : text === 2
-            ? "Grade B - ₹25,001 to ₹40,000"
-            : text === 3
-              ? "Grade C - ₹40,001 to ₹60,000"
-              : text === 4
-                ? "Grade D - ₹60,001 to ₹90,000"
-                : text === 5
-                  ? "Grade E - ₹90,001 and above"
-                  : "-",
+      render: (text, record) => (
+        <Link
+          to="#"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvas_add_edit_basic_salary"
+          onClick={() => {
+            setMode("edit");
+            setSelected(record);
+          }}
+        >
+          {text === 1
+            ? "Grade A - ₹15,000 to ₹25,000"
+            : text === 2
+              ? "Grade B - ₹25,001 to ₹40,000"
+              : text === 3
+                ? "Grade C - ₹40,001 to ₹60,000"
+                : text === 4
+                  ? "Grade D - ₹60,001 to ₹90,000"
+                  : text === 5
+                    ? "Grade E - ₹90,001 and above"
+                    : "-"}
+        </Link>
+      ),
     },
     {
       title: "Pay Grade Level",

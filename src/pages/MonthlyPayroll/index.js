@@ -102,7 +102,6 @@ const MonthlyPayroll = () => {
   );
   const location = useLocation();
   useEffect(() => {
-    
     setPayroll([]);
     setInputValues({});
     setIsCalculated(false);
@@ -350,19 +349,20 @@ const MonthlyPayroll = () => {
           payroll_month: watch("payroll_month"),
           payroll_year: watch("payroll_year"),
           payroll_week: watch("payroll_week") || 1,
-          pay_currency: item.pay_currency,
-          component_id: watch("component_id"),
           status: "Pending",
           execution_date: watch("doc_date"),
-          advance_amount: item.advance_amount || 0,
           doc_date: watch("doc_date"),
           employee_email: item.employee_email || "",
-          remarks: "",
-          processed: "Y",
+          ...item,
+          ...item.components?.flatMap((comp) => ({
+            [comp.component_code]: comp.component_value,
+          })),
         };
         return filtered;
       });
   }, [payroll, watch]);
+
+  console.log(selectedEmployees);
 
   const handleChangeComponent = (e, r) => {
     setPayroll((prev) =>
