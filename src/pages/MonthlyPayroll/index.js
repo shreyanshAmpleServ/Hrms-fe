@@ -343,23 +343,20 @@ const MonthlyPayroll = () => {
   const selectedEmployees = useMemo(() => {
     return payroll
       .filter((item) => item.is_selected)
-      .map((item) => {
-        const filtered = {
-          employee_id: item.employee_id,
-          payroll_month: watch("payroll_month"),
-          payroll_year: watch("payroll_year"),
-          payroll_week: watch("payroll_week") || 1,
-          status: "Pending",
-          execution_date: watch("doc_date"),
-          doc_date: watch("doc_date"),
-          employee_email: item.employee_email || "",
-          ...item,
-          ...item.components?.flatMap((comp) => ({
-            [comp.component_code]: comp.component_value,
-          })),
-        };
-        return filtered;
-      });
+      .map((item) => ({
+        employee_id: item.employee_id,
+        payroll_month: watch("payroll_month"),
+        payroll_year: watch("payroll_year"),
+        payroll_week: watch("payroll_week") || 1,
+        status: "Pending",
+        execution_date: watch("doc_date"),
+        doc_date: watch("doc_date"),
+        employee_email: item.employee_email || "",
+        components: item.components?.reduce((acc, comp) => {
+          acc[comp.component_code] = comp.component_value;
+          return acc;
+        }, {}),
+      }));
   }, [payroll, watch]);
 
   console.log(selectedEmployees);
