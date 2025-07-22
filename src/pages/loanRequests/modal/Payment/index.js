@@ -47,6 +47,8 @@ const Payment = ({
   const loanRequest = loanRequestDetail;
   const status = loanRequest?.status;
   const loanRequestId = loanRequest?.id;
+  const totalPendingAmount = loanRequest?.total_pending_amount;
+  const totalReceivedAmount = loanRequest?.total_received_amount;
 
   useEffect(() => {
     reset({
@@ -55,19 +57,6 @@ const Payment = ({
       credit_account: employee?.account_number || "",
       start_date: loanRequest?.start_date || new Date().toISOString(),
       end_date: new Date().toISOString(),
-      loanStatus: {
-        value: status,
-        label:
-          status === "P"
-            ? "Pending"
-            : status === "A"
-              ? "Approved"
-              : status === "R"
-                ? "Rejected"
-                : status === "C"
-                  ? "Closed"
-                  : "Pending",
-      },
     });
   }, []);
 
@@ -85,82 +74,7 @@ const Payment = ({
     setAmount(unpaidAmount);
   }, [unpaidAmount]);
 
-  // Function to redistribute remaining amount across unpaid EMIs
-  const redistributeRemainingAmount = (paymentAmount) => {
-    const updatedSchedule = [...emiSchedule];
-    let remainingAmount = unpaidAmount - paymentAmount;
-
-    // Get unpaid EMIs
-    const unpaidEmis = updatedSchedule.filter((emi) => emi.status === "U");
-
-    if (unpaidEmis.length === 0 || remainingAmount <= 0) {
-      return updatedSchedule;
-    }
-
-    // Calculate new EMI amount per unpaid installment
-    const newEmiAmount = Math.round(remainingAmount / unpaidEmis.length);
-    const remainder = remainingAmount - newEmiAmount * unpaidEmis.length;
-
-    // Update unpaid EMIs with new amounts
-    let remainderDistributed = 0;
-    updatedSchedule.forEach((emi, index) => {
-      if (emi.status === "U") {
-        let adjustedAmount = newEmiAmount;
-
-        // Distribute remainder to first few EMIs
-        if (remainderDistributed < remainder) {
-          adjustedAmount += 1;
-          remainderDistributed += 1;
-        }
-
-        updatedSchedule[index] = {
-          ...emi,
-          emi_amount: adjustedAmount,
-        };
-      }
-    });
-
-    return updatedSchedule;
-  };
-
-  // Function to mark EMIs as paid based on payment amount
-  const markEmiAsPaid = (paymentAmount) => {
-    const updatedSchedule = [...emiSchedule];
-    let remainingPayment = paymentAmount;
-
-    // Sort unpaid EMIs by due date (assuming they are already sorted)
-    for (let i = 0; i < updatedSchedule.length && remainingPayment > 0; i++) {
-      if (updatedSchedule[i].status === "U") {
-        const emiAmount = updatedSchedule[i].emi_amount;
-
-        if (remainingPayment >= emiAmount) {
-          // Mark this EMI as paid
-          updatedSchedule[i] = {
-            ...updatedSchedule[i],
-            status: "P",
-          };
-          remainingPayment -= emiAmount;
-        } else {
-          // Partial payment - adjust this EMI amount
-          updatedSchedule[i] = {
-            ...updatedSchedule[i],
-            emi_amount: emiAmount - remainingPayment,
-          };
-          remainingPayment = 0;
-        }
-      }
-    }
-
-    // If there's still remaining payment, redistribute among unpaid EMIs
-    if (remainingPayment > 0) {
-      return redistributeRemainingAmount(paymentAmount - remainingPayment);
-    }
-
-    return updatedSchedule;
-  };
-
   const onSubmit = async (data) => {
-    // Update EMI schedule based on payment
     try {
       const addLoanCashPayementResponse = await dispatch(
         addLoanCashPayement({
@@ -179,7 +93,8 @@ const Payment = ({
               ...loanRequestDetail,
               emi_schedule: emiSchedule?.map((emi) => ({
                 ...emi,
-                emi_amount: newEmiAmount,
+                emi_amount: emi.status === "U" ? newEmiAmount : emi.emi_amount,
+                status: amount === unpaidAmount ? "P" : emi.status,
               })),
             },
           })
@@ -196,7 +111,6 @@ const Payment = ({
     }
   };
 
-  // Handle amount change with EMI preview
   const handleAmountChange = (newAmount) => {
     if (Number(newAmount) > unpaidAmount) {
       setAmount(unpaidAmount);
@@ -241,14 +155,13 @@ const Payment = ({
     }),
   };
 
-  // Calculate remaining amount after payment for display
   const remainingAfterPayment = unpaidAmount - amount;
   const unpaidEmisCount = emiSchedule.filter(
     (emi) => emi.status === "U"
   ).length;
   const newEmiAmount =
     unpaidEmisCount > 0
-      ? Math.round(remainingAfterPayment / unpaidEmisCount)
+      ? Number((remainingAfterPayment / unpaidEmisCount).toFixed(2))
       : 0;
 
   const columns = [
@@ -261,28 +174,29 @@ const Payment = ({
     {
       title: "Pay Date",
       dataIndex: "createdate",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : ""),
+      render: (text) => (text ? moment(text).calendar() : ""),
       sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
       width: "22%",
     },
     {
       title: "Starting Balance",
       dataIndex: "balance_amount",
+      render: (value) => Number(value)?.toFixed(2) || "0.00",
       width: "22%",
     },
     {
       title: "Payment Amount",
       dataIndex: "amount",
+      render: (value) => Number(value)?.toFixed(2) || "0.00",
       width: "22%",
     },
     {
       title: "Ending Balance",
       dataIndex: "pending_amount",
+      render: (value) => Number(value)?.toFixed(2) || "0.00",
       width: "22%",
     },
   ];
-
-  console.log("emiSchedule", emiSchedule);
 
   return (
     <>
@@ -390,48 +304,16 @@ const Payment = ({
                         </div>
                       </div>
 
-                      <div className="row mb-2">
-                        <label className="col-sm-4 col-form-label small">
-                          Loan Status:
-                        </label>
-                        <div className="col-sm-6">
-                          <Controller
-                            name="loanStatus"
-                            control={control}
-                            rules={{ required: "Loan status is required" }}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={loanStatusOptions}
-                                styles={selectStyles}
-                                placeholder="Select status..."
-                                isSearchable={false}
-                                isDisabled
-                                classNamePrefix="react-select"
-                                className={
-                                  errors.loanStatus ? "is-invalid" : ""
-                                }
-                              />
-                            )}
-                          />
-                          {errors.loanStatus && (
-                            <div className="invalid-feedback d-block">
-                              {errors.loanStatus.message}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
                       {/* Payment Summary */}
                       {amount > 0 && (
-                        <div className="row mb-2 p-0">
+                        <div className="row p-0">
                           <div className="col-10 p-0">
-                            <div className="alert alert-info py-0 py-2">
-                              <small>
+                            <div className="alert alert-info">
+                              <p>
                                 <strong>Payment Summary:</strong>
                                 <br />
-                                Payment: {amount} | Remaining:{" "}
-                                {remainingAfterPayment}
+                                Total Received Amount: {totalReceivedAmount} |
+                                Total Pending Amount: {totalPendingAmount}
                                 <br />
                                 {unpaidEmisCount > 0 &&
                                   remainingAfterPayment > 0 && (
@@ -440,7 +322,7 @@ const Payment = ({
                                       {unpaidEmisCount} months
                                     </>
                                   )}
-                              </small>
+                              </p>
                             </div>
                           </div>
                         </div>

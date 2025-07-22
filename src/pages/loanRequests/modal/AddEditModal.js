@@ -1,3 +1,4 @@
+import { Alert, Skeleton } from "antd";
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
 import DatePicker from "react-datepicker";
@@ -9,13 +10,12 @@ import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import { fetchCurrencies } from "../../../redux/currency";
 import {
   addLoanRequest,
-  fetchLoanRequestById,
-  updateLoanRequest,
-  updateLoanEmiScheduleStatus,
   fetchLoanRequest,
+  fetchLoanRequestById,
+  updateLoanEmiScheduleStatus,
+  updateLoanRequest,
 } from "../../../redux/loanRequests";
 import { fetchloan_type } from "../../../redux/loneType";
-import { Alert, Skeleton } from "antd";
 import Payment from "./Payment";
 
 /**
@@ -43,7 +43,6 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
     handleSubmit,
     watch,
     control,
-
     formState: { errors },
     reset,
   } = useForm();
@@ -68,13 +67,18 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
 
   const isUpdate = Boolean(selected);
 
-  const paidEmiCount = useMemo(() => {
+  const paidEMIs = useMemo(() => {
     return loanRequestDetail?.loan_emi_loan_request?.filter(
       (emi) => emi.status === "P"
-    ).length;
+    );
   }, [loanRequestDetail]);
+
+  const paidEmiCount = paidEMIs?.length;
+
   const totalPendingAmount = loanRequestDetail?.total_pending_amount;
-  const totalReceivedAmount = loanRequestDetail?.total_amount_received;
+
+  const totalReceivedAmountWithEMI =
+    loanRequestDetail?.total_received_amount_with_emi;
 
   useEffect(() => {
     const startDate = moment(watch("start_date"));
@@ -193,10 +197,11 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
 
   const handleClose = () => {
     setSelected(null);
+    setEmiSchedule([]);
     reset();
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     const loanRequestData = {
       ...data,
@@ -206,13 +211,18 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
       emi_schedule: emiSchedule,
     };
 
+    let response;
     if (mode === "add") {
-      dispatch(addLoanRequest(loanRequestData));
+      response = await dispatch(addLoanRequest(loanRequestData));
     } else if (mode === "edit" && selected) {
-      dispatch(updateLoanRequest({ id: selected.id, loanRequestData }));
+      response = await dispatch(
+        updateLoanRequest({ id: selected.id, loanRequestData })
+      );
     }
-    closeButton?.click();
-    handleClose();
+    if (response?.meta?.requestStatus === "fulfilled") {
+      closeButton?.click();
+      handleClose();
+    }
   };
 
   const columns = [
@@ -269,6 +279,15 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
     ?.filter((item) => item.status === "U")
     ?.reduce((acc, item) => acc + Number(item.emi_amount), 0);
 
+  useEffect(() => {
+    const el = document.getElementById("add_edit_loan_requests_modal");
+    if (el) {
+      el.addEventListener("hidden.bs.offcanvas", handleClose);
+      return () => {
+        el.removeEventListener("hidden.bs.offcanvas", handleClose);
+      };
+    }
+  }, [handleClose]);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -464,7 +483,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
             )}
           </div>
 
-          {isUpdate && totalReceivedAmount && totalPendingAmount && (
+          {isUpdate && !loading && (
             <>
               <div className="col-md-6 mb-3">
                 <Alert
@@ -472,7 +491,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
                     <div>
                       Total Amount Received:{" "}
                       <span className="font-weight-bold">
-                        {totalReceivedAmount?.toFixed(2)}
+                        {totalReceivedAmountWithEMI?.toFixed(2)}
                       </span>
                     </div>
                   }
@@ -547,11 +566,8 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
       <Payment
         open={openPayment}
         setOpen={setOpenPayment}
-        unpaidAmount={parseInt(unpaidAmount)}
+        unpaidAmount={unpaidAmount ? Number(unpaidAmount).toFixed(2) : "0.00"}
         emiSchedule={emiSchedule}
-        watch={watch}
-        control={control}
-        setEmiSchedule={setEmiSchedule}
         loanRequestDetail={loanRequestDetail}
       />
     </div>

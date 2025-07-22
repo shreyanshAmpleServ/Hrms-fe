@@ -188,6 +188,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                               ...leaveTypes,
                             ]}
                             isLoading={leaveTypeLoading}
+                            onChange={(i) => field.onChange(i?.value)}
                             value={selectedDeal || null}
                             classNamePrefix="react-select"
                           />
@@ -267,10 +268,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
                   <label className="col-form-label">
                     Encashment Amount<span className="text-danger">*</span>
                   </label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-currency-dollar" />
-                    </span>
+                  <div className="mb-3">
                     <Controller
                       name="encashment_amount"
                       control={control}
