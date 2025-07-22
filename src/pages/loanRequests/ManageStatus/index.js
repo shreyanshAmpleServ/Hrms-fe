@@ -9,6 +9,7 @@ const statusOptions = [
   { label: "Pending", value: "P" },
   { label: "Approved", value: "A" },
   { label: "Rejected", value: "R" },
+  { label: "Closed", value: "C" },
 ];
 const ManageStatus = ({ open, setOpen, selected }) => {
   const dispatch = useDispatch();

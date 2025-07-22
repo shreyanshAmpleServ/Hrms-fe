@@ -25,7 +25,7 @@ const DeleteAlert = ({ showModal, setShowModal, onDelete, label }) => {
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button
                       className="btn btn-light me-2"
-                      onClick={() => setShowModal(false)} // Close the modal without deleting
+                      onClick={() => setShowModal(null)} // Close the modal without deleting
                     >
                       Cancel
                     </button>

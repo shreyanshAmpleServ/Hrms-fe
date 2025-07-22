@@ -57,8 +57,20 @@ const LoanRequests = () => {
     {
       title: "Amount",
       dataIndex: "amount",
-      render: (value) => value || "0",
+      render: (value) => Number(value)?.toFixed(2) || "0.00",
       sorter: (a, b) => a.amount - b.amount,
+    },
+    {
+      title: "Received Amount",
+      dataIndex: "total_received_amount",
+      render: (value) => Number(value)?.toFixed(2) || "0.00",
+      sorter: (a, b) => a.total_received_amount - b.total_received_amount,
+    },
+    {
+      title: "Pending Amount",
+      dataIndex: "total_pending_amount",
+      render: (value) => Number(value)?.toFixed(2) || "0.00",
+      sorter: (a, b) => a.total_pending_amount - b.total_pending_amount,
     },
     {
       title: "EMI Months",

@@ -11,9 +11,12 @@ import {
   addLoanRequest,
   fetchLoanRequestById,
   updateLoanRequest,
+  updateLoanEmiScheduleStatus,
+  fetchLoanRequest,
 } from "../../../redux/loanRequests";
 import { fetchloan_type } from "../../../redux/loneType";
-import { Skeleton } from "antd";
+import { Alert, Skeleton } from "antd";
+import Payment from "./Payment";
 
 /**
  * AddEditModal component props
@@ -23,6 +26,7 @@ import { Skeleton } from "antd";
  */
 const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
   const dispatch = useDispatch();
+  const [openPayment, setOpenPayment] = React.useState(null);
   const { loading, loanRequestDetail } = useSelector(
     (state) => state.loan_requests
   );
@@ -39,9 +43,24 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
     handleSubmit,
     watch,
     control,
+
     formState: { errors },
     reset,
   } = useForm();
+
+  const handleEmiStatus = async (id, status, emi_amount) => {
+    try {
+      const response = await dispatch(
+        updateLoanEmiScheduleStatus({ id, status, emi_amount })
+      );
+      if (response?.meta?.requestStatus === "fulfilled") {
+        await dispatch(fetchLoanRequestById(selected.id));
+        await dispatch(fetchLoanRequest());
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchloan_type({ is_active: true }));
@@ -54,6 +73,8 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
       (emi) => emi.status === "P"
     ).length;
   }, [loanRequestDetail]);
+  const totalPendingAmount = loanRequestDetail?.total_pending_amount;
+  const totalReceivedAmount = loanRequestDetail?.total_amount_received;
 
   useEffect(() => {
     const startDate = moment(watch("start_date"));
@@ -75,7 +96,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
           }
         });
 
-        const remainingAmount = amount - totalPaidAmount;
+        const remainingAmount = Number(totalPendingAmount);
         const remainingMonths = emi_months - paidEmiCount;
         const emiPerMonth =
           remainingMonths > 0 ? remainingAmount / remainingMonths : 0;
@@ -90,7 +111,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
             due_year: String(emiDate.year()),
             emi_amount:
               existingEmi?.status === "P"
-                ? existingEmi.emi_amount
+                ? Number(existingEmi?.emi_amount)?.toFixed(2)
                 : emiPerMonth.toFixed(2),
             status: existingEmi?.status || "U",
           });
@@ -119,7 +140,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
           id: "",
           due_month: emiDate.format("MMMM"),
           due_year: String(emiDate.year()),
-          emi_amount: emi_months ? (amount / emi_months).toFixed(2) : "0.00",
+          emi_amount: emi_months ? (amount / emi_months).toFixed(2) : "0",
           status: "U",
         });
       }
@@ -198,7 +219,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
     {
       title: "Month",
       dataIndex: "due_month",
-      render: (text) => <span>{text ? text : "0.00"} </span>,
+      render: (text) => <span>{text ? text : "0"} </span>,
     },
     {
       title: "Year",
@@ -207,14 +228,46 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
     {
       title: "Amount",
       dataIndex: "emi_amount",
-      render: (text) => <span>{text ? text : "0.00"} </span>,
+      render: (text) => <span>{text ? text : "0"} </span>,
     },
     {
       title: "Status",
       dataIndex: "status",
-      render: (text) => <span>{text === "P" ? "Paid" : "Unpaid"} </span>,
+      render: (text) => (
+        <span>
+          {text === "P" ? (
+            <span className="badge bg-success">Paid</span>
+          ) : (
+            <span className="badge bg-danger">Unpaid</span>
+          )}{" "}
+        </span>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (text, record) => (
+        <span>
+          <button
+            type="primary"
+            className="btn btn-primary btn-sm"
+            onClick={() =>
+              handleEmiStatus(
+                record.id,
+                record.status === "P" ? "U" : "P",
+                record.emi_amount
+              )
+            }
+          >
+            {record.status === "P" ? "Mark as Unpaid" : "Mark as Paid"}
+          </button>
+        </span>
+      ),
     },
   ];
+  const unpaidAmount = emiSchedule
+    ?.filter((item) => item.status === "U")
+    ?.reduce((acc, item) => acc + Number(item.emi_amount), 0);
 
   return (
     <div
@@ -236,8 +289,8 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
           <i className="ti ti-x" />
         </button>
       </div>
-      <div className="offcanvas-body">
-        <form onSubmit={handleSubmit(onSubmit)} className="row">
+      <form onSubmit={handleSubmit(onSubmit)} className="offcanvas-body">
+        <div className="row">
           <div className="col-md-6 mb-3">
             <label className="col-form-label">
               Employee <span className="text-danger">*</span>
@@ -411,6 +464,39 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
             )}
           </div>
 
+          {isUpdate && totalReceivedAmount && totalPendingAmount && (
+            <>
+              <div className="col-md-6 mb-3">
+                <Alert
+                  message={
+                    <div>
+                      Total Amount Received:{" "}
+                      <span className="font-weight-bold">
+                        {totalReceivedAmount?.toFixed(2)}
+                      </span>
+                    </div>
+                  }
+                  type="success"
+                  showIcon
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <Alert
+                  message={
+                    <div>
+                      Total Pending Amount:{" "}
+                      <span className="font-weight-bold">
+                        {totalPendingAmount?.toFixed(2)}
+                      </span>
+                    </div>
+                  }
+                  type="warning"
+                  showIcon
+                />
+              </div>
+            </>
+          )}
+
           <div className="col-md-12 mb-3">
             {loading ? (
               <div className="d-flex justify-content-center">
@@ -432,6 +518,16 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
             >
               Cancel
             </button>
+
+            {mode !== "add" && (
+              <button
+                type="button"
+                className="btn btn-success me-2"
+                onClick={() => setOpenPayment(true)}
+              >
+                Pay Now
+              </button>
+            )}
             <button
               type="submit"
               className="btn btn-primary"
@@ -446,8 +542,18 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
                   : "Update"}
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
+      <Payment
+        open={openPayment}
+        setOpen={setOpenPayment}
+        unpaidAmount={parseInt(unpaidAmount)}
+        emiSchedule={emiSchedule}
+        watch={watch}
+        control={control}
+        setEmiSchedule={setEmiSchedule}
+        loanRequestDetail={loanRequestDetail}
+      />
     </div>
   );
 };

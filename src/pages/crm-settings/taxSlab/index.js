@@ -1,76 +1,53 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
-import Table from "../../../components/common/dataTable/index";
-import DeleteAlert from "./alert/DeleteAlert";
-
-import moment from "moment";
-
-import { Helmet } from "react-helmet-async";
+import Table from "../../../components/common/dataTableNew/index";
 import usePermissions from "../../../components/common/Permissions.js";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 import { deleteTaxSlab, fetchTaxSlab } from "../../../redux/taxSlab";
+import DeleteAlert from "./alert/DeleteAlert";
 import ManageTaxModal from "./modal/ManageTaxModal";
 
 const TaxSlab = () => {
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const [mode, setMode] = useState("");
+  const [paginationData, setPaginationData] = useState({
+    currentPage: 1,
+    pageSize: 10,
+    totalPage: 0,
+    totalCount: 0,
+  });
   const { isView, isCreate, isUpdate, isDelete } = usePermissions("Tax Slab");
 
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "Rule Type",
-      dataIndex: "rule_type",
-      sorter: (a, b) => (a.rule_type || "").localeCompare(b.rule_type || ""),
+      title: "Name",
+      dataIndex: "name",
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
     {
-      title: "Salary From",
-      dataIndex: "slab_min",
-      sorter: (a, b) => (a.slab_min || "").localeCompare(b.slab_min || ""),
+      title: "Code",
+      dataIndex: "code",
+      sorter: (a, b) => (a.code || "").localeCompare(b.code || ""),
     },
     {
-      title: "Salary To",
-      dataIndex: "slab_max",
-      sorter: (a, b) => a.slab_max.localeCompare(b.slab_max),
-    },
-    {
-      title: "Tax Parcent",
-      dataIndex: "rate",
-      sorter: (a, b) => (a.rate || "").localeCompare(b.rate || ""),
-    },
-    {
-      title: "Fixed Amount",
-      dataIndex: "flat_amount",
-      sorter: (a, b) =>
-        (a.flat_amount || "").localeCompare(b.flat_amount || ""),
+      title: "Component",
+      dataIndex: "tax_slab_pay_component",
+      render: (text) => <span>{text.component_name}</span>,
     },
     {
       title: "Formula Text",
       dataIndex: "formula_text",
       sorter: (a, b) =>
         (a.formula_text || "").localeCompare(b.formula_text || ""),
-    },
-    {
-      title: "Effective From",
-      dataIndex: "effective_from",
-      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
-      sorter: (a, b) => new Date(a.validFrom) - new Date(b.validFrom),
-    },
-    {
-      title: "Effective To",
-      dataIndex: "effective_to",
-      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
-      sorter: (a, b) => new Date(a.effective_from) - new Date(b.effective_from),
-    },
-
-    {
-      title: "Created Date",
-      dataIndex: "createdate",
-      render: (text) => <span>{moment(text).format("DD-MM-YYYY")}</span>,
-      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
     },
     {
       title: "Status",
@@ -104,9 +81,10 @@ const TaxSlab = () => {
                       className="dropdown-item edit-popup"
                       to="#"
                       data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvas_add_edit_tax_setup"
+                      data-bs-target="#offcanvas_add"
                       onClick={() => {
                         setSelectedTax(record);
+                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit
@@ -135,8 +113,29 @@ const TaxSlab = () => {
     dispatch(fetchTaxSlab());
   }, [dispatch]);
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: taxs?.currentPage,
+      totalPage: taxs?.totalPages,
+      totalCount: taxs?.totalCount,
+      pageSize: taxs?.size,
+    });
+  }, [taxs]);
+
+  const handleTableChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchTaxSlab({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -212,7 +211,7 @@ const TaxSlab = () => {
                   <SearchBar
                     searchText={searchText}
                     handleSearch={handleSearch}
-                    label="Search Tax"
+                    label="Search Tax Slab"
                   />
                   {isCreate && (
                     <div className="col-8">
@@ -221,8 +220,12 @@ const TaxSlab = () => {
                           to="#"
                           className="btn btn-primary"
                           data-bs-toggle="offcanvas"
-                          data-bs-target={`#offcanvas_add_edit_tax_setup`}
+                          data-bs-target="#offcanvas_add"
                           style={{ width: "100px" }}
+                          onClick={() => {
+                            setSelectedTax(null);
+                            setMode("add");
+                          }}
                         >
                           <i className="ti ti-square-rounded-plus me-2" />
                           Create
@@ -248,6 +251,8 @@ const TaxSlab = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                    paginationData={paginationData}
+                    onPageChange={handleTableChange}
                   />
                 </div>
               </div>
@@ -256,12 +261,16 @@ const TaxSlab = () => {
         </div>
       </div>
 
-      <ManageTaxModal tax={selectedTax} setTax={setSelectedTax} />
+      <ManageTaxModal
+        setMode={setMode}
+        mode={mode}
+        selected={selectedTax}
+        setSelected={setSelectedTax}
+      />
       <DeleteAlert
         label="Tax Slab"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedTax={selectedTax}
         onDelete={deleteData}
       />
     </div>
