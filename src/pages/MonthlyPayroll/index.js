@@ -18,6 +18,7 @@ import {
   fetchMonthlyPayrollPreview,
   fetchTaxAmountFn,
 } from "../../redux/MonthlyPayroll";
+import { fetchTaxSlab } from "../../redux/taxSlab";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
@@ -51,6 +52,7 @@ const MonthlyPayroll = () => {
   const { employeeOptions } = useSelector((s) => s.employee);
   const { department } = useSelector((state) => state.department);
   const { designation } = useSelector((state) => state.designation);
+  const { taxSlab } = useSelector((state) => state.taxSlab);
 
   const departmentOptions = department?.data?.map((emnt) => ({
     value: emnt.id,
@@ -100,6 +102,7 @@ const MonthlyPayroll = () => {
     },
     []
   );
+
   const location = useLocation();
   useEffect(() => {
     setPayroll([]);
@@ -251,7 +254,7 @@ const MonthlyPayroll = () => {
               const result = Function(
                 '"use strict"; return (' + formula + ")"
               )();
-              finalValue = isNaN(result) ? 0 : result;
+              finalValue = isNaN(result) ? 0 : finalValue + result;
             } catch (e) {
               console.error("Error evaluating employee default formula:", e);
               finalValue = 0;
@@ -277,7 +280,72 @@ const MonthlyPayroll = () => {
     [componentNames]
   );
 
-  const handleCalculateNet = async (payrollData) => {
+  const fetchTaxSlabByComponent = useCallback(
+    (component) => {
+      const t = taxSlab?.data?.find((i) =>
+        i.formula_text.includes(component?.component_name)
+      );
+
+      const componentHaveUpdated = t?.tax_slab_pay_component?.component_name;
+
+      const taxSlabRule = t?.hrms_m_tax_slab_rule1?.find(
+        (i) => i.slab_min <= component?.value && i.slab_max >= component?.value
+      );
+      const rate = parseFloat(taxSlabRule?.rate);
+      const flat_amount = parseFloat(taxSlabRule?.flat_amount);
+
+      if (rate) {
+        return { rate, flat_amount: 0, componentHaveUpdated };
+      }
+      return { rate: 0, flat_amount: flat_amount || 0, componentHaveUpdated };
+    },
+    [taxSlab]
+  );
+
+  // Helper function to calculate default formula value for a component
+  const calculateDefaultFormulaValue = useCallback(
+    (targetComponent, baseValues, calculatedValues) => {
+      let defaultFormulaValue = 0;
+
+      if (
+        targetComponent.defaultFormula ||
+        (targetComponent.isEmployeeContribution &&
+          targetComponent.employeeDefaultFormula)
+      ) {
+        try {
+          const formulaToUse =
+            targetComponent.defaultFormula ||
+            targetComponent.employeeDefaultFormula;
+
+          let formula = componentNames.reduce((f, meta) => {
+            const code = meta.component_code;
+            const name = meta.component_name;
+            const val = baseValues[code] ?? 0;
+            return f.replaceAll(`[${name}]`, val);
+          }, formulaToUse);
+
+          formula = Object.entries(calculatedValues).reduce(
+            (f, [name, val]) => {
+              return f.replaceAll(`[${name}]`, val);
+            },
+            formula
+          );
+
+          const result = Function('"use strict"; return (' + formula + ")")();
+          defaultFormulaValue = isNaN(result) ? 0 : result;
+        } catch (e) {
+          console.error("Error evaluating formula:", e);
+          defaultFormulaValue = 0;
+        }
+      }
+
+      return defaultFormulaValue;
+    },
+    [componentNames]
+  );
+
+  // COMBINED CALCULATION FUNCTION - This replaces both handleCalculateNetWithTax and calculateAndUpdateTaxComponents
+  const handleCompleteCalculation = async (payrollData) => {
     try {
       const selectedRows = payrollData.filter((item) => item.is_selected);
 
@@ -286,8 +354,91 @@ const MonthlyPayroll = () => {
         return;
       }
 
-      const calculatedSelectedRows = await performCalculations(selectedRows);
+      // Step 1: Apply tax calculations first
+      const updatedPayrollWithTax = payrollData.map((payrollItem) => {
+        if (!payrollItem.is_selected) {
+          return payrollItem;
+        }
 
+        const updatedItem = { ...payrollItem };
+        const updatedComponents = [...payrollItem.components];
+
+        // Prepare base values for formula calculations
+        const baseValues = {};
+        updatedComponents.forEach((comp) => {
+          baseValues[comp.component_code] =
+            parseFloat(comp.component_value) || 0;
+        });
+
+        // Prepare calculated values for formula calculations
+        const calculatedValues = {
+          "Taxable Income": parseFloat(payrollItem.TaxableIncome) || 0,
+          "Tax Payee": parseFloat(payrollItem.TaxPayee) || 0,
+          "Net Pay": parseFloat(payrollItem.net_pay) || 0,
+          "Total Earnings": parseFloat(payrollItem.total_earnings) || 0,
+          "Total Deductions": parseFloat(payrollItem.total_deductions) || 0,
+        };
+
+        updatedComponents.forEach((component) => {
+          const taxCalculation = fetchTaxSlabByComponent({
+            component_name: component.component_name,
+            value: component.component_value,
+          });
+
+          if (taxCalculation.componentHaveUpdated) {
+            const taxComponentIndex = updatedComponents.findIndex(
+              (comp) =>
+                comp.component_name === taxCalculation.componentHaveUpdated
+            );
+
+            if (taxComponentIndex !== -1) {
+              let taxAmount = 0;
+
+              // Calculate tax amount based on rate or flat amount
+              if (taxCalculation.rate > 0) {
+                taxAmount =
+                  (component.component_value * taxCalculation.rate) / 100;
+              } else if (taxCalculation.flat_amount > 0) {
+                taxAmount = taxCalculation.flat_amount;
+              }
+
+              const targetComponent = updatedComponents[taxComponentIndex];
+
+              // Calculate default formula value if exists
+              const defaultFormulaValue = calculateDefaultFormulaValue(
+                targetComponent,
+                baseValues,
+                calculatedValues
+              );
+              console.log(defaultFormulaValue);
+
+              // Add tax amount + default formula value
+              const finalValue = taxAmount + defaultFormulaValue;
+
+              console.log("finalValue", finalValue);
+
+              // Update the target component
+              updatedComponents[taxComponentIndex] = {
+                ...updatedComponents[taxComponentIndex],
+                component_value: finalValue,
+              };
+            }
+          }
+        });
+
+        return {
+          ...updatedItem,
+          components: updatedComponents,
+        };
+      });
+
+      // Step 2: Perform initial calculations
+      const selectedRowsWithTax = updatedPayrollWithTax.filter(
+        (item) => item.is_selected
+      );
+      const calculatedSelectedRows = performCalculations(selectedRowsWithTax);
+
+      // Step 3: Fetch tax amounts from API
       const response = await Promise.all(
         calculatedSelectedRows.map((i) =>
           fetchTaxAmountFn({
@@ -297,13 +448,16 @@ const MonthlyPayroll = () => {
         )
       );
 
+      // Step 4: Update with API tax amounts
       const updatedSelectedRows = calculatedSelectedRows.map((i, index) => ({
         ...i,
         TaxPayee: response[index]?.tax_payee ?? 0,
       }));
 
+      // Step 5: Final calculations with updated tax amounts
       const finalCalculatedRows = performCalculations(updatedSelectedRows);
 
+      // Step 6: Update payroll state
       setPayroll((prevPayroll) =>
         prevPayroll.map((item) => {
           if (item.is_selected) {
@@ -316,6 +470,7 @@ const MonthlyPayroll = () => {
         })
       );
 
+      // Step 7: Update input values
       const newInputValues = { ...inputValues };
       finalCalculatedRows.forEach((item) => {
         item.components.forEach((comp) => {
@@ -324,13 +479,13 @@ const MonthlyPayroll = () => {
         });
       });
       setInputValues(newInputValues);
-
       setIsCalculated(true);
+
       toast.success(
-        `Calculations completed successfully for ${selectedRows.length} selected employee(s)!`
+        `Complete calculations (including tax) completed successfully for ${selectedRows.length} selected employee(s)!`
       );
     } catch (error) {
-      console.error("Error calculating net pay:", error);
+      console.error("Error performing complete calculation:", error);
       toast.error("Error performing calculations");
     }
   };
@@ -341,6 +496,7 @@ const MonthlyPayroll = () => {
     dispatch(fetchdepartment({ is_active: true }));
     dispatch(fetchdesignation({ is_active: true }));
     dispatch(fetchComponentsFn());
+    dispatch(fetchTaxSlab());
   }, [dispatch]);
 
   useEffect(() => {
@@ -379,11 +535,13 @@ const MonthlyPayroll = () => {
       })
     );
   };
+
   const handleSelectAll = useCallback((e) => {
     setPayroll((prev) =>
       prev.map((item) => ({ ...item, is_selected: e.target.checked }))
     );
   }, []);
+
   const selectedEmployees = useMemo(() => {
     return payroll
       .filter((item) => item.is_selected)
@@ -405,8 +563,6 @@ const MonthlyPayroll = () => {
       }))
       .map(({ is_selected, components, ...item }) => item);
   }, [payroll, watch]);
-
-  console.log(selectedEmployees);
 
   const handleChangeComponent = (e, r) => {
     setPayroll((prev) =>
@@ -446,7 +602,7 @@ const MonthlyPayroll = () => {
                   <input
                     type="number"
                     className="form-control form-control-sm"
-                    value={displayValue}
+                    value={Number(displayValue)?.toFixed(2)}
                     onChange={(e) => {
                       setInputValues((prev) => ({
                         ...prev,
@@ -784,12 +940,13 @@ const MonthlyPayroll = () => {
                     <button
                       type="button"
                       style={{ width: "150px" }}
-                      onClick={() => handleCalculateNet(payroll)}
+                      onClick={() => handleCompleteCalculation(payroll)}
                       className="btn btn-success"
                       disabled={loading || isCalculated}
                     >
                       {isCalculated ? "Calculated" : "Calculate Net"}
                     </button>
+
                     <button
                       style={{ width: "100px" }}
                       type="submit"

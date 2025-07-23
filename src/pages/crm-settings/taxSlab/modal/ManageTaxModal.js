@@ -108,27 +108,30 @@ const AddEditModal = ({
   }, []);
 
   const handleRowChange = useCallback((index, field, value) => {
-    setChildTaxSlabs((prev) => {
-      const newRows = [...prev];
-      newRows[index] = { ...newRows[index], [field]: value };
-      return newRows;
-    });
+    if (field === "rate") {
+      setChildTaxSlabs((prev) => {
+        const newRows = [...prev];
+        newRows[index] = { ...newRows[index], ["flat_amount"]: 0 };
+        newRows[index] = { ...newRows[index], ["rate"]: value };
+        return newRows;
+      });
+    } else if (field === "flat_amount") {
+      setChildTaxSlabs((prev) => {
+        const newRows = [...prev];
+        newRows[index] = { ...newRows[index], ["rate"]: 0 };
+        newRows[index] = { ...newRows[index], ["flat_amount"]: value };
+        return newRows;
+      });
+    } else {
+      setChildTaxSlabs((prev) => {
+        const newRows = [...prev];
+        newRows[index] = { ...newRows[index], [field]: value };
+        return newRows;
+      });
+    }
   }, []);
 
   const columns = [
-    {
-      title: "Rule Type",
-      dataIndex: "rule_type",
-      render: (text, record, index) => (
-        <input
-          className="form-control form-control-sm"
-          style={{ minWidth: "200px" }}
-          value={record.rule_type}
-          onChange={(e) => handleRowChange(index, "rule_type", e.target.value)}
-          placeholder="Rule Type"
-        />
-      ),
-    },
     {
       title: "Effective From",
       dataIndex: "effective_from",
@@ -380,13 +383,10 @@ const AddEditModal = ({
               )}
             </div>
             <div className="col-md-6 mb-3">
-              <label className="form-label">
-                Component <span className="text-danger">*</span>
-              </label>
+              <label className="form-label">Component</label>
               <Controller
                 name="pay_component_id"
                 control={control}
-                rules={{ required: "Component is required!" }}
                 render={({ field }) => (
                   <ComponentSelect
                     {...field}
@@ -395,11 +395,6 @@ const AddEditModal = ({
                   />
                 )}
               />
-              {errors.pay_component_id && (
-                <div className="invalid-feedback d-block">
-                  {errors.pay_component_id.message}
-                </div>
-              )}
             </div>
             <div className="col-md-6 mb-3">
               <label className="form-label">
@@ -432,7 +427,7 @@ const AddEditModal = ({
               )}
             </div>
             <div className="col-12 mb-3">
-              <label className="form-label">Tax Formula</label>
+              <label className="form-label">Formula Text</label>
               <Controller
                 name="formula_text"
                 control={control}

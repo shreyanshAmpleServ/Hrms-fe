@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller, useForm } from "react-hook-form";
-import Select from "react-select";
+import { useDispatch, useSelector } from "react-redux";
 import Table from "../../../../components/common/dataTableNew/index";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import {
   addLoanCashPayement,
   fetchLoanRequest,
@@ -45,7 +43,6 @@ const Payment = ({
   } = useForm();
   const employee = loanRequestDetail?.loan_req_employee;
   const loanRequest = loanRequestDetail;
-  const status = loanRequest?.status;
   const loanRequestId = loanRequest?.id;
   const totalPendingAmount = loanRequest?.total_pending_amount;
   const totalReceivedAmount = loanRequest?.total_received_amount;
@@ -61,14 +58,6 @@ const Payment = ({
   }, []);
 
   const [amount, setAmount] = useState(0);
-
-  // Loan status options for React Select
-  const loanStatusOptions = [
-    { label: "Pending", value: "P" },
-    { label: "Approved", value: "A" },
-    { label: "Rejected", value: "R" },
-    { label: "Closed", value: "C" },
-  ];
 
   useEffect(() => {
     setAmount(unpaidAmount);
@@ -117,42 +106,6 @@ const Payment = ({
     } else {
       setAmount(newAmount);
     }
-  };
-
-  const selectStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: "31px",
-      height: "31px",
-      fontSize: "14px",
-      borderColor: state.isFocused ? "#80bdff" : "#ced4da",
-      boxShadow: state.isFocused
-        ? "0 0 0 0.2rem rgba(0, 123, 255, 0.25)"
-        : null,
-      "&:hover": {
-        borderColor: state.isFocused ? "#80bdff" : "#adb5bd",
-      },
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      height: "31px",
-      padding: "0 6px",
-    }),
-    input: (provided) => ({
-      ...provided,
-      margin: "0px",
-    }),
-    indicatorSeparator: () => ({
-      display: "none",
-    }),
-    indicatorsContainer: (provided) => ({
-      ...provided,
-      height: "31px",
-    }),
-    menu: (provided) => ({
-      ...provided,
-      fontSize: "14px",
-    }),
   };
 
   const remainingAfterPayment = unpaidAmount - amount;

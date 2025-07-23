@@ -30,12 +30,40 @@ const TaxSlab = () => {
     {
       title: "Name",
       dataIndex: "name",
+      render: (text, record) => (
+        <Link
+          className="dropdown-item edit-popup"
+          to="#"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvas_add"
+          onClick={() => {
+            setSelectedTax(record);
+            setMode("edit");
+          }}
+        >
+          {text}
+        </Link>
+      ),
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
     },
 
     {
       title: "Code",
       dataIndex: "code",
+      render: (text, record) => (
+        <Link
+          className="dropdown-item edit-popup"
+          to="#"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvas_add"
+          onClick={() => {
+            setSelectedTax(record);
+            setMode("edit");
+          }}
+        >
+          {text}
+        </Link>
+      ),
       sorter: (a, b) => (a.code || "").localeCompare(b.code || ""),
     },
     {
