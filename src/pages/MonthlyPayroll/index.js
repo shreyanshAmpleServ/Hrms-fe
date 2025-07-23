@@ -82,6 +82,7 @@ const MonthlyPayroll = () => {
           if (item.employee_id === employeeId) {
             const updatedComponents = item.components.map((comp) => {
               if (comp.component_code === componentCode) {
+                // Instead of replacing, add to the value if already present
                 return {
                   ...comp,
                   component_value: numValue,
@@ -347,6 +348,7 @@ const MonthlyPayroll = () => {
   // COMBINED CALCULATION FUNCTION - This replaces both handleCalculateNetWithTax and calculateAndUpdateTaxComponents
   const handleCompleteCalculation = async (payrollData) => {
     try {
+      // Step 1: Filter selected employees
       const selectedRows = payrollData.filter((item) => item.is_selected);
 
       if (selectedRows.length === 0) {
@@ -354,23 +356,41 @@ const MonthlyPayroll = () => {
         return;
       }
 
-      // Step 1: Apply tax calculations first
-      const updatedPayrollWithTax = payrollData.map((payrollItem) => {
-        if (!payrollItem.is_selected) {
-          return payrollItem;
-        }
+      // Step 2: Perform initial calculations for selected employees
+      let calculatedRows = performCalculations(selectedRows);
+
+      // Step 3: Fetch tax amounts from API for each selected employee
+      const taxResponses = await Promise.all(
+        calculatedRows.map((row) =>
+          fetchTaxAmountFn({
+            employee_id: row.employee_id,
+            taxable_amount: row.TaxableIncome,
+          })
+        )
+      );
+
+      // Step 4: Update calculatedRows with tax amounts from API
+      calculatedRows = calculatedRows.map((row, idx) => ({
+        ...row,
+        TaxPayee: taxResponses[idx]?.tax_payee ?? 0,
+      }));
+
+      // Step 5: Recalculate with updated tax amounts
+      calculatedRows = performCalculations(calculatedRows);
+
+      // Step 6: For each selected employee, update tax-related components if needed
+      calculatedRows = calculatedRows.map((payrollItem) => {
+        if (!payrollItem.is_selected) return payrollItem;
 
         const updatedItem = { ...payrollItem };
         const updatedComponents = [...payrollItem.components];
 
-        // Prepare base values for formula calculations
+        // Prepare base and calculated values for formula calculations
         const baseValues = {};
         updatedComponents.forEach((comp) => {
-          baseValues[comp.component_code] =
-            parseFloat(comp.component_value) || 0;
+          baseValues[comp.component_code] = parseFloat(comp.component_value) || 0;
         });
 
-        // Prepare calculated values for formula calculations
         const calculatedValues = {
           "Taxable Income": parseFloat(payrollItem.TaxableIncome) || 0,
           "Tax Payee": parseFloat(payrollItem.TaxPayee) || 0,
@@ -387,8 +407,7 @@ const MonthlyPayroll = () => {
 
           if (taxCalculation.componentHaveUpdated) {
             const taxComponentIndex = updatedComponents.findIndex(
-              (comp) =>
-                comp.component_name === taxCalculation.componentHaveUpdated
+              (comp) => comp.component_name === taxCalculation.componentHaveUpdated
             );
 
             if (taxComponentIndex !== -1) {
@@ -396,8 +415,7 @@ const MonthlyPayroll = () => {
 
               // Calculate tax amount based on rate or flat amount
               if (taxCalculation.rate > 0) {
-                taxAmount =
-                  (component.component_value * taxCalculation.rate) / 100;
+                taxAmount = (component.component_value * taxCalculation.rate) / 100;
               } else if (taxCalculation.flat_amount > 0) {
                 taxAmount = taxCalculation.flat_amount;
               }
@@ -410,12 +428,9 @@ const MonthlyPayroll = () => {
                 baseValues,
                 calculatedValues
               );
-              console.log(defaultFormulaValue);
 
               // Add tax amount + default formula value
               const finalValue = taxAmount + defaultFormulaValue;
-
-              console.log("finalValue", finalValue);
 
               // Update the target component
               updatedComponents[taxComponentIndex] = {
@@ -432,47 +447,22 @@ const MonthlyPayroll = () => {
         };
       });
 
-      // Step 2: Perform initial calculations
-      const selectedRowsWithTax = updatedPayrollWithTax.filter(
-        (item) => item.is_selected
-      );
-      const calculatedSelectedRows = performCalculations(selectedRowsWithTax);
-
-      // Step 3: Fetch tax amounts from API
-      const response = await Promise.all(
-        calculatedSelectedRows.map((i) =>
-          fetchTaxAmountFn({
-            employee_id: i.employee_id,
-            taxable_amount: i.TaxableIncome,
-          })
-        )
-      );
-
-      // Step 4: Update with API tax amounts
-      const updatedSelectedRows = calculatedSelectedRows.map((i, index) => ({
-        ...i,
-        TaxPayee: response[index]?.tax_payee ?? 0,
-      }));
-
-      // Step 5: Final calculations with updated tax amounts
-      const finalCalculatedRows = performCalculations(updatedSelectedRows);
-
-      // Step 6: Update payroll state
+      // Step 7: Update the main payroll state with the new calculated values
       setPayroll((prevPayroll) =>
         prevPayroll.map((item) => {
           if (item.is_selected) {
-            const calculatedRow = finalCalculatedRows.find(
+            const updated = calculatedRows.find(
               (calcRow) => calcRow.employee_id === item.employee_id
             );
-            return calculatedRow || item;
+            return updated || item;
           }
           return item;
         })
       );
 
-      // Step 7: Update input values
+      // Step 8: Update input values for UI
       const newInputValues = { ...inputValues };
-      finalCalculatedRows.forEach((item) => {
+      calculatedRows.forEach((item) => {
         item.components.forEach((comp) => {
           const key = getInputKey(item.employee_id, comp.component_code);
           newInputValues[key] = comp.component_value.toString();
@@ -485,7 +475,7 @@ const MonthlyPayroll = () => {
         `Complete calculations (including tax) completed successfully for ${selectedRows.length} selected employee(s)!`
       );
     } catch (error) {
-      console.error("Error performing complete calculation:", error);
+      console.log("Error performing complete calculation:", error);
       toast.error("Error performing calculations");
     }
   };
