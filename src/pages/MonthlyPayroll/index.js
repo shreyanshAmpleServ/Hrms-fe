@@ -345,7 +345,6 @@ const MonthlyPayroll = () => {
     [componentNames]
   );
 
-  // COMBINED CALCULATION FUNCTION - This replaces both handleCalculateNetWithTax and calculateAndUpdateTaxComponents
   const handleCompleteCalculation = async (payrollData) => {
     try {
       // Step 1: Filter selected employees
@@ -388,7 +387,8 @@ const MonthlyPayroll = () => {
         // Prepare base and calculated values for formula calculations
         const baseValues = {};
         updatedComponents.forEach((comp) => {
-          baseValues[comp.component_code] = parseFloat(comp.component_value) || 0;
+          baseValues[comp.component_code] =
+            parseFloat(comp.component_value) || 0;
         });
 
         const calculatedValues = {
@@ -407,7 +407,8 @@ const MonthlyPayroll = () => {
 
           if (taxCalculation.componentHaveUpdated) {
             const taxComponentIndex = updatedComponents.findIndex(
-              (comp) => comp.component_name === taxCalculation.componentHaveUpdated
+              (comp) =>
+                comp.component_name === taxCalculation.componentHaveUpdated
             );
 
             if (taxComponentIndex !== -1) {
@@ -415,7 +416,8 @@ const MonthlyPayroll = () => {
 
               // Calculate tax amount based on rate or flat amount
               if (taxCalculation.rate > 0) {
-                taxAmount = (component.component_value * taxCalculation.rate) / 100;
+                taxAmount =
+                  (component.component_value * taxCalculation.rate) / 100;
               } else if (taxCalculation.flat_amount > 0) {
                 taxAmount = taxCalculation.flat_amount;
               }

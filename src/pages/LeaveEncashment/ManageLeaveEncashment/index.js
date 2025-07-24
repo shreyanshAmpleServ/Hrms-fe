@@ -93,20 +93,14 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
   };
 
   useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_add");
-    if (offcanvasElement) {
+    const el = document.getElementById("offcanvas_add");
+    if (el) {
       const handleModalClose = () => {
         setLeaveEncashment(null);
       };
-      offcanvasElement.addEventListener(
-        "hidden.bs.offcanvas",
-        handleModalClose
-      );
+      el.addEventListener("hidden.bs.offcanvas", handleModalClose);
       return () => {
-        offcanvasElement.removeEventListener(
-          "hidden.bs.offcanvas",
-          handleModalClose
-        );
+        el.removeEventListener("hidden.bs.offcanvas", handleModalClose);
       };
     }
   }, [setLeaveEncashment]);
@@ -343,6 +337,7 @@ const ManageLeaveEncashment = ({ setLeaveEncashment, leaveEncashment }) => {
               >
                 Cancel
               </button>
+
               <button type="submit" className="btn btn-primary">
                 {leaveEncashment
                   ? loading

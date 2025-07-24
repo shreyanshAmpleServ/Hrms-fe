@@ -18,6 +18,7 @@ const EmployeeSelect = ({
   value,
   onChange,
   placeholder = "-- Select --",
+  size = "medium",
   ...props
 }) => {
   const dispatch = useDispatch();

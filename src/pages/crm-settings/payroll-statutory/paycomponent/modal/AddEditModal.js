@@ -691,6 +691,26 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
             </div>
             <div className="col-md-4">
               <div className="mb-3 form-check form-switch">
+                <label className="col-form-label">Is Basic</label>
+                <Controller
+                  name="is_basic"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={field.value === "Y" ? true : false}
+                      onChange={(e) =>
+                        field.onChange(e.target.checked ? "Y" : "N")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="mb-3 form-check form-switch">
                 <label className="col-form-label">Is Overtime Related</label>
                 <Controller
                   name="is_overtime_related"

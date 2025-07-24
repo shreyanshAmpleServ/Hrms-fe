@@ -11,9 +11,11 @@ import { fetchLeaveEncashment } from "../../redux/LeaveEncashment";
 import DeleteConfirmation from "./DeleteConfirmation";
 import ManageLeaveEncashment from "./ManageLeaveEncashment";
 import ManageStatus from "./ManageStatus/index.js";
+import Payment from "./Payment";
 
 const LeaveEncashment = () => {
   const [open, setOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
   const [mode, setMode] = React.useState("add");
   const [searchValue, setSearchValue] = useState("");
@@ -256,6 +258,20 @@ const LeaveEncashment = () => {
                           <Link
                             to="#"
                             className="btn btn-primary"
+                            onClick={() => setIsOpen(true)}
+                          >
+                            <i className="ti ti-square-rounded-plus me-2" />
+                            Create
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                    {/* {isCreate && (
+                      <div className="col-sm-8">
+                        <div className="text-sm-end">
+                          <Link
+                            to="#"
+                            className="btn btn-primary"
                             data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvas_add"
                           >
@@ -264,7 +280,7 @@ const LeaveEncashment = () => {
                           </Link>
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
 
@@ -321,6 +337,7 @@ const LeaveEncashment = () => {
         leaveEncashmentId={selectedLeaveEncashment?.id}
       />
       <ManageStatus selected={selected} open={open} setOpen={setOpen} />
+      <Payment open={isOpen} setOpen={setIsOpen} />
     </>
   );
 };

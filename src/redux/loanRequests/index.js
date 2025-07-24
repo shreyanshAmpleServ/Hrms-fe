@@ -252,7 +252,7 @@ const loanRequestSlice = createSlice({
         state.loading = false;
         state.loanRequestDetail = action.payload.data;
       })
-      .addCase(fetchLoanRequestById.rejected, (state, action) => {
+      .addCase(fetchLoanRequestById.rejected, (state) => {
         state.loading = false;
       })
       .addCase(addLoanCashPayement.pending, (state) => {

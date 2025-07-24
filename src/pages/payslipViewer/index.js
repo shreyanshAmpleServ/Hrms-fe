@@ -8,14 +8,13 @@ import ReactSelect from "react-select";
 import CollapseHeader from "../../components/common/collapse-header.js";
 import Table from "../../components/common/dataTableNew/index.js";
 import EmployeeSelect from "../../components/common/EmployeeSelect/index.js";
+import usePermissions from "../../components/common/Permissions.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
+import { fetchComponentsFn } from "../../redux/MonthlyPayroll/index.js";
 import { fetchpayslip } from "../../redux/payslipViewer";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddEditModal from "./modal/AddEditModal.js";
-import { fetchComponentsFn } from "../../redux/MonthlyPayroll/index.js";
-import { TbArrowBigRightFilled } from "react-icons/tb";
-import usePermissions from "../../components/common/Permissions.js";
 const payslipMonthOptions = Array.from({ length: 12 }, (_, i) => ({
   value: i + 1,
   label: new Date(0, i).toLocaleString("default", { month: "long" }),
@@ -168,15 +167,15 @@ const PayslipViewer = () => {
       dataIndex: "hrms_monthly_payroll_employee",
       render: (text) => text?.full_name || "--",
     },
-    {
-      title: "Component Assit ID",
-      dataIndex: "component_assit_id",
-      render: (text) => text || "--",
-    },
+    // {
+    //   title: "Component Assit ID",
+    //   dataIndex: "component_assit_id",
+    //   render: (text) => text || "--",
+    // },
     {
       title: "Currency",
-      dataIndex: "pay_currency",
-      render: (text) => text || "--",
+      dataIndex: "hrms_monthly_payroll_currency",
+      render: (text) => text?.currency_code || "--",
     },
     ...components,
     {
