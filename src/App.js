@@ -97,7 +97,7 @@ const App = () => {
           />
         </Routes>
       </Router>
-      <Toaster />
+      <Toaster style={{ zIndex: 99999 }} />
     </HelmetProvider>
   );
 };

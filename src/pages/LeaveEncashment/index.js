@@ -11,19 +11,18 @@ import { fetchLeaveEncashment } from "../../redux/LeaveEncashment";
 import DeleteConfirmation from "./DeleteConfirmation";
 import ManageLeaveEncashment from "./ManageLeaveEncashment";
 import ManageStatus from "./ManageStatus/index.js";
-import Payment from "./Payment";
+import LeaveEncashmentManager from "./LeaveEncashmentManager";
 
 const LeaveEncashment = () => {
   const [open, setOpen] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState("add");
   const [searchValue, setSearchValue] = useState("");
   const [selectedLeaveEncashment, setSelectedLeaveEncashment] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();
@@ -167,7 +166,7 @@ const LeaveEncashment = () => {
                             : "Manage Status"}
                     </Link>
                   )}
-                  {isUpdate && (
+                  {/* {isUpdate && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
@@ -175,12 +174,11 @@ const LeaveEncashment = () => {
                       data-bs-target="#offcanvas_add"
                       onClick={() => {
                         setSelected(record);
-                        setMode("edit");
                       }}
                     >
                       <i className="ti ti-edit text-blue"></i> Edit
                     </Link>
-                  )}
+                  )} */}
                   {isDelete && (
                     <Link
                       className="dropdown-item"
@@ -337,7 +335,7 @@ const LeaveEncashment = () => {
         leaveEncashmentId={selectedLeaveEncashment?.id}
       />
       <ManageStatus selected={selected} open={open} setOpen={setOpen} />
-      <Payment open={isOpen} setOpen={setIsOpen} />
+      <LeaveEncashmentManager open={isOpen} setOpen={setIsOpen} />
     </>
   );
 };

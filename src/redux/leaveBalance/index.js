@@ -9,14 +9,32 @@ export const fetchLeaveBalanceByEmployee = createAsyncThunk(
   "leaveBalance/fetchLeaveBalanceByEmployee",
   async (datas, thunkAPI) => {
     try {
-      let params = {};
-      if (datas?.employeeId) params.employeeId = datas?.employeeId;
-      if (datas?.leaveTypeId) params.leaveTypeId = datas?.leaveTypeId;
+      let params = { employeeId: datas?.employeeId };
       if (datas?.is_active) params.is_active = datas?.is_active;
 
       const response = await apiClient.get("/v1/leave-balance-by-employee", {
         params,
       });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch leave balance"
+      );
+    }
+  }
+);
+
+/**
+ * Fetch leave balance by employee.
+ */
+export const fetchLeaveBalanceByEmployeeId = createAsyncThunk(
+  "leaveBalance/fetchLeaveBalanceByEmployeeId",
+  async (datas, thunkAPI) => {
+    const employeeId = datas?.employeeId;
+    try {
+      const response = await apiClient.get(
+        `/v1/leave-balance-by-employee/${employeeId}`
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -129,6 +147,7 @@ const leaveBalanceSlice = createSlice({
     leaveBalance: {},
     leaveBalanceDetail: null,
     leaveBalanceByEmployee: [],
+    leaveBalanceByEmployeeId: null,
     loading: false,
     error: null,
     success: null,
@@ -221,6 +240,18 @@ const leaveBalanceSlice = createSlice({
         state.leaveBalanceDetail = action.payload;
       })
       .addCase(fetchLeaveBalanceById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchLeaveBalanceByEmployeeId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchLeaveBalanceByEmployeeId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.leaveBalanceByEmployeeId = action.payload;
+      })
+      .addCase(fetchLeaveBalanceByEmployeeId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });

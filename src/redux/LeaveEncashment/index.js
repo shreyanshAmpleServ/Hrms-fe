@@ -41,7 +41,8 @@ export const createLeaveEncashment = createAsyncThunk(
           loading: "Creating leave encashment...",
           success: (res) =>
             res.data.message || "Leave encashment created successfully!",
-          error: "Failed to create leave encashment",
+          error: (error) =>
+            error.response?.data.message || "Failed to create leave encashment",
         }
       );
       return response.data; // Returns the newly created leave encashment

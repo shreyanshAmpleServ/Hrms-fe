@@ -122,6 +122,12 @@ const Paycomponent = () => {
       sorter: (a, b) => (a.is_advance || "").localeCompare(b.is_advance || ""),
     },
     {
+      title: "Is Basic Salary?",
+      dataIndex: "is_basic",
+      render: (text) => (text === "Y" ? "Yes" : "No") || "-",
+      sorter: (a, b) => (a.is_basic || "").localeCompare(b.is_basic || ""),
+    },
+    {
       title: "Is Grossable?",
       dataIndex: "is_grossable",
       render: (text) => (text === "Y" ? "Yes" : "No") || "-",
@@ -468,6 +474,9 @@ const Paycomponent = () => {
                         data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvas_add"
                         style={{ width: "100px" }}
+                        onClick={() => {
+                          setMode("add");
+                        }}
                       >
                         <i className="ti ti-square-rounded-plus me-2" /> Create
                       </Link>
@@ -503,6 +512,7 @@ const Paycomponent = () => {
 
       <AddEditModal
         mode={mode}
+        setMode={setMode}
         initialData={selected}
         setSelected={setSelected}
       />

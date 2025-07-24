@@ -17,7 +17,25 @@ export const componentTypeOptions = [
   { value: "B", label: "Bonus" },
   { value: "O", label: "Overtime" },
 ];
-const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
+
+const reliefType = [
+  "Personal Relief",
+  "Insurance Relief",
+  "Disability Relief",
+  "Dependent Child Relief",
+];
+
+const reliefTypeOptions = reliefType.map((item) => ({
+  value: item,
+  label: item,
+}));
+
+const AddEditModal = ({
+  mode = "add",
+  setMode,
+  initialData = null,
+  setSelected,
+}) => {
   const { loading } = useSelector((state) => state.payComponent);
   const { taxSlab } = useSelector((state) => state.taxSlab);
   const { projects } = useSelector((state) => state.projects);
@@ -79,6 +97,9 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       default_formula: initialData?.default_formula || "",
       employer_default_formula: initialData?.employer_default_formula || "",
       execution_order: initialData?.execution_order || "",
+      is_basic: initialData?.is_basic || "N",
+      relief_amount: initialData?.relief_amount || "",
+      relief_type: initialData?.relief_type || "",
       factor: initialData?.factor || "",
       formula_editable: initialData?.formula_editable || "N",
       gl_account_id: initialData?.gl_account_id || "",
@@ -100,9 +121,15 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     });
   }, [mode, initialData, reset]);
 
-  const onSubmit = async (data) => {
+  const handleClose = () => {
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    setSelected(null);
+    setMode("add");
+    reset();
+    closeButton?.click();
+  };
 
+  const onSubmit = async (data) => {
     let result;
     if (mode === "add") {
       result = await dispatch(
@@ -121,11 +148,17 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       );
     }
     if (result?.meta?.requestStatus === "fulfilled") {
-      reset();
-      closeButton?.click();
-      setSelected(null);
+      handleClose();
     }
   };
+
+  // Offcanvas close event
+  useEffect(() => {
+    const el = document.getElementById("offcanvas_add");
+    if (!el) return;
+    el.addEventListener("hidden.bs.offcanvas", handleClose);
+    return () => el.removeEventListener("hidden.bs.offcanvas", handleClose);
+  }, [handleClose]);
 
   return (
     <div
@@ -560,6 +593,47 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 />
               </div>
             </div>
+            <div className="col-md-4">
+              <div className="mb-3">
+                <label className="col-form-label">Relief Type</label>
+                <Controller
+                  name="relief_type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={[
+                        { value: "", label: "-- Select --" },
+                        ...reliefTypeOptions,
+                      ]}
+                      classNamePrefix="react-select"
+                      placeholder="-- Select --"
+                      value={
+                        reliefTypeOptions?.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            {watch("relief_type") && (
+              <div className="col-md-4">
+                <div className="mb-3">
+                  <label className="col-form-label">Relief Amount</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter Relief Amount"
+                    {...register("relief_amount")}
+                  />
+                </div>
+              </div>
+            )}
             <div className="col-md-12">
               <div className="mb-3">
                 <label className="col-form-label">Default Formula</label>

@@ -591,8 +591,6 @@ const AddEditModal = ({
     return () => el.removeEventListener("hidden.bs.offcanvas", handler);
   }, [handleModalClose]);
 
-  console.log(initialData?.position_id, "mkx");
-
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-larger"

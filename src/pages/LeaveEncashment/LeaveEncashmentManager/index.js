@@ -2,14 +2,14 @@ import React, { useEffect, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { employeeOptionsFn } from "../../../redux/Employee";
+import ReactSelect from "react-select";
 import EmployeeSelect from "../../../components/common/EmployeeSelect";
 import { fetchBasicSalary } from "../../../redux/BasicSalary";
-import ReactSelect from "react-select";
-import { fetchLeaveBalanceByEmployee } from "../../../redux/leaveBalance";
-import { fetchLeaveType } from "../../../redux/LeaveType";
+import { fetchLeaveBalanceByEmployeeId } from "../../../redux/leaveBalance";
 import { createLeaveEncashment } from "../../../redux/LeaveEncashment";
+import { fetchLeaveType } from "../../../redux/LeaveType";
 
 const statusOptions = [
   { label: "Pending", value: "P" },
@@ -19,11 +19,13 @@ const statusOptions = [
 
 const LeaveEncashmentManager = ({ open, setOpen }) => {
   const [amount, setAmount] = React.useState(0);
+  const [leaveDetail, setLeaveDetail] = React.useState(0);
   const {
     control,
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -31,29 +33,40 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
   const { basicSalary, loading: basicSalaryLoading } = useSelector(
     (state) => state.basicSalary
   );
+
   const components =
     basicSalary?.data?.[0]?.hrms_d_employee_pay_component_assignment_line;
 
-  const componentsOptions = components?.map((component) => ({
-    value: component.pay_component_for_line?.id,
-    label: component?.pay_component_for_line?.component_name,
-    amount: component.amount,
-  }));
-  useEffect(() => {
-    dispatch(fetchLeaveType({ is_active: true }));
-  }, [dispatch]);
-  const { leaveBalanceByEmployee } = useSelector((state) => state.leaveBalance);
+  const componentsOptions = components
+    ?.filter((component) => component?.pay_component_for_line?.is_basic === "Y")
+    ?.map((component) => {
+      return {
+        value: component.pay_component_for_line?.id,
+        label: component?.pay_component_for_line?.component_name,
+        amount: component.amount,
+      };
+    });
+
+  const { leaveBalanceByEmployeeId, loading: leaveBalanceLoading } =
+    useSelector((state) => state.leaveBalance);
+
   const { loading } = useSelector((state) => state.leaveEncashment || {});
 
-  const leaveBalance = leaveBalanceByEmployee?.data?.leave_balance;
+  const leaveType = leaveBalanceByEmployeeId?.data?.leaveBalances;
 
-  const leaveType = useSelector((state) => state.leaveType.leaveType);
+  useEffect(() => {
+    if (leaveDetail) {
+      setValue("leave_days", leaveDetail?.balance);
+    }
+  }, [leaveDetail]);
+
   const leaveTypeList =
     useMemo(
       () =>
-        leaveType?.data?.map((item) => ({
-          value: item.id,
-          label: item.leave_type,
+        leaveType?.map((item) => ({
+          value: item.leave_balance_details_LeaveType?.id,
+          label: item.leave_balance_details_LeaveType?.leave_type,
+          record: item,
         })) || []
     ) || [];
 
@@ -63,24 +76,17 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
       status: "P",
       employee_id: "",
       leave_type_id: "",
+      leave_days: 0,
       component_id: "",
-      amount: "",
+      amount: 0,
     });
   }, []);
 
   useEffect(() => {
-    if (watch("employee_id") && watch("leave_type_id")) {
-      dispatch(
-        fetchLeaveBalanceByEmployee({
-          employeeId: watch("employee_id"),
-          leaveTypeId: watch("leave_type_id"),
-        })
-      );
-    }
-  }, [watch("employee_id"), watch("leave_type_id")]);
-
-  useEffect(() => {
     if (watch("employee_id")) {
+      dispatch(
+        fetchLeaveBalanceByEmployeeId({ employeeId: watch("employee_id") })
+      );
       dispatch(fetchBasicSalary({ employee_id: watch("employee_id") }));
     }
   }, [watch("employee_id")]);
@@ -89,15 +95,37 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
     reset();
     setOpen(false);
     setAmount(0);
+    setLeaveDetail(null);
   };
 
   const onSubmit = async (data) => {
+    if (!data.employee_id) {
+      toast.error("Employee is required");
+      return;
+    }
+    if (!data.component_id) {
+      toast.error("Basic Salary is required");
+      return;
+    }
+    if (!data.leave_type_id) {
+      toast.error("Leave Type is required");
+      return;
+    }
+    if (!data.leave_days || Number(data.leave_days) <= 0) {
+      toast.error("Leave Days must be greater than 0");
+      return;
+    }
+    if (!data.applied_date) {
+      toast.error("Applied Date is required");
+      return;
+    }
+
     const requestBody = {
       employee_id: data.employee_id,
       leave_type_id: data.leave_type_id,
-      leave_days: leaveBalance,
+      leave_days: data.leave_days,
       encashment_date: data.applied_date,
-      encashment_amount: ((amount / 30) * leaveBalance).toFixed(2),
+      encashment_amount: ((amount / 30) * data.leave_days).toFixed(2),
       approval_status: data.status,
     };
     try {
@@ -107,6 +135,15 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
       console.log(error);
     }
   };
+
+  const requested = 0;
+  const approved = 0;
+
+  const balanceBF = leaveDetail?.carried_forward || 0;
+  const entitled = leaveDetail?.no_of_leaves || 0;
+  const totalAvailable = balanceBF + entitled || 0;
+  const used = leaveDetail?.used_leaves || 0;
+  const balance = totalAvailable - used - approved || 0;
 
   const inputClass = "form-control form-control-sm";
   const selectStyles = {
@@ -155,7 +192,7 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
         width: "100vw",
         height: "100vh",
         overflow: "hidden",
-        zIndex: 999999,
+        zIndex: 9999,
       }}
     >
       <div className="modal-dialog modal modal-dialog-centered modal-xl">
@@ -165,7 +202,7 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
             <button
               type="button"
               className="btn-close"
-              onClick={() => setOpen(false)}
+              onClick={() => handleClose()}
             ></button>
           </div>
 
@@ -182,7 +219,6 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                       <Controller
                         name="employee_id"
                         control={control}
-                        rules={{ required: "Employee is required" }}
                         render={({ field }) => (
                           <EmployeeSelect
                             value={field.value}
@@ -203,20 +239,22 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                       <Controller
                         name="component_id"
                         control={control}
-                        rules={{ required: "Component is required" }}
                         render={({ field }) => (
                           <ReactSelect
                             classNamePrefix="react-select"
                             value={componentsOptions?.find(
-                              (i) => i.value === field.value
+                              (i) => i?.value === field?.value
                             )}
                             onChange={(e) => {
-                              field.onChange(e.value);
-                              setAmount(e.amount);
+                              field.onChange(e?.value);
+                              setAmount(e?.amount);
                             }}
                             isLoading={basicSalaryLoading}
                             placeholder="-- Select --"
-                            options={componentsOptions}
+                            options={[
+                              { label: "-- Select --", value: "" },
+                              ...(componentsOptions || []),
+                            ]}
                             styles={selectStyles}
                           />
                         )}
@@ -231,7 +269,6 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                       <Controller
                         name="leave_type_id"
                         control={control}
-                        rules={{ required: "Leave Type is required" }}
                         render={({ field }) => (
                           <ReactSelect
                             classNamePrefix="react-select"
@@ -240,12 +277,57 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                             )}
                             onChange={(e) => {
                               field.onChange(e.value);
+                              setLeaveDetail(e?.record);
                             }}
+                            isLoading={leaveBalanceLoading}
                             placeholder="-- Select --"
-                            options={leaveTypeList}
+                            options={[
+                              { label: "-- Select --", value: "" },
+                              ...(leaveTypeList || []),
+                            ]}
                             styles={selectStyles}
                           />
                         )}
+                      />
+                    </div>
+                  </div>
+                  <div className="row mb-2">
+                    <label className="col-4 col-form-label small">
+                      Leave Days:
+                    </label>
+                    <div className="col-7">
+                      <Controller
+                        name="leave_days"
+                        control={control}
+                        render={({ field }) => (
+                          <input
+                            type="text"
+                            className={inputClass}
+                            value={field.value}
+                            onChange={(e) => {
+                              if (e.target.value <= leaveDetail?.balance) {
+                                field.onChange(e.target.value);
+                              } else {
+                                toast.error(
+                                  "Leave Days cannot be greater than Leave Balance"
+                                );
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="row mb-2">
+                    <label className="col-4 col-form-label small">
+                      Amount:
+                    </label>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        className={inputClass}
+                        value={Number(amount || 0)?.toFixed(2) || 0}
+                        readOnly
                       />
                     </div>
                   </div>
@@ -255,11 +337,9 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                       <input
                         type="text"
                         className={inputClass}
-                        value={
-                          leaveBalance && amount
-                            ? `${amount}/30 * ${leaveBalance} = ${((amount / 30) * leaveBalance).toFixed(2) || 0}`
-                            : "0"
-                        }
+                        value={(
+                          (amount / 30) * watch("leave_days") || 0
+                        )?.toFixed(2)}
                         readOnly
                       />
                     </div>
@@ -274,7 +354,6 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                       <Controller
                         name="status"
                         control={control}
-                        rules={{ required: "Status is required" }}
                         render={({ field }) => (
                           <ReactSelect
                             classNamePrefix="react-select"
@@ -323,9 +402,9 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
               <div className="row px-3">
                 <div className="col-md-4">
                   {[
-                    ["Balance B/F", "0.0000"],
-                    ["Entitled", "0.0000"],
-                    ["Total Available", "0.0000"],
+                    ["Balance B/F", balanceBF],
+                    ["Entitled", entitled],
+                    ["Total Available", totalAvailable],
                   ].map(([label, value], idx) => (
                     <div className="row mb-2" key={idx}>
                       <label className="col-4 col-form-label small">
@@ -342,11 +421,12 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                     </div>
                   ))}
                 </div>
+
                 <div className="col-md-4">
                   {[
-                    ["Used", "0.0000"],
-                    ["Requested", "0.0000"],
-                    ["Approved", "0.0000"],
+                    ["Used", used],
+                    ["Requested", requested],
+                    ["Approved", approved],
                   ].map(([label, value], idx) => (
                     <div className="row mb-2" key={idx}>
                       <label className="col-4 col-form-label small">
@@ -373,7 +453,7 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
                       <input
                         type="text"
                         className={inputClass}
-                        value="0.0000"
+                        value={balance || "0"}
                         readOnly
                       />
                     </div>
@@ -386,7 +466,7 @@ const LeaveEncashmentManager = ({ open, setOpen }) => {
               <button
                 type="button"
                 className="btn btn-light"
-                onClick={() => setOpen(false)}
+                onClick={() => handleClose()}
               >
                 Cancel
               </button>

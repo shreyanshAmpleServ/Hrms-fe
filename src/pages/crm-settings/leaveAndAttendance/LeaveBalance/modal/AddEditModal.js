@@ -5,7 +5,7 @@ import { Col, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
+import EmployeeSelect from "../../../../../components/common/EmployeeSelect";
 import { fetchEmployee } from "../../../../../redux/Employee";
 import {
   createLeaveBalance,
@@ -24,14 +24,20 @@ const initialLeaveBalance = [
   },
 ];
 
-const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
-  const [leaveBalanceData, setLeaveBalanceData] = useState(initialLeaveBalance);
+const AddEditModal = ({
+  mode = "add",
+  initialData = null,
+  setSelected,
+  setMode,
+}) => {
+  const [leaveBalanceData, setLeaveBalanceData] = useState([]);
   const [selectedEmployeeData, setSelectedEmployeeData] = useState(null);
   const dispatch = useDispatch();
 
   const { loading, leaveBalanceDetail } = useSelector(
     (state) => state.leaveBalance
   );
+
   const { leaveType } = useSelector((state) => state.leaveType);
 
   useEffect(() => {
@@ -40,12 +46,6 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       dispatch(fetchLeaveBalanceById(initialData.id));
     }
   }, [mode, initialData]);
-
-  const handleModalClose = () => {
-    reset();
-    setSelected(null);
-    setLeaveBalanceData([]);
-  };
 
   const leaveTypeList = useMemo(() => {
     const usedLeaveTypeIds = leaveBalanceData.map((item) => item.leave_type_id);
@@ -60,15 +60,29 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
   }, [leaveType, leaveBalanceData]);
 
   useEffect(() => {
-    if (leaveBalanceDetail?.data?.leaveBalances) {
+    if (mode === "edit") {
+      if (leaveBalanceDetail?.data?.leaveBalances) {
+        setLeaveBalanceData(
+          leaveBalanceDetail?.data?.leaveBalances?.map((item) => ({
+            ...item,
+            used_leaves: Number(item.used_leaves),
+            balance: Number(item.balance),
+            no_of_leaves: Number(item.no_of_leaves),
+          })) || []
+        );
+      }
+    } else if (mode === "add") {
       setLeaveBalanceData(
-        leaveBalanceDetail?.data?.leaveBalances?.map((item) => ({
-          ...item,
-          used_leaves: item.no_of_leaves - item.balance,
+        leaveType?.data?.map((item) => ({
+          leave_type_id: item.id,
+          no_of_leaves: item.leave_qty,
+          used_leaves: 0,
+          balance: item.leave_qty,
+          leave_type_name: item.leave_type,
         })) || []
       );
     }
-  }, [leaveBalanceDetail?.data?.leaveBalances]);
+  }, [leaveBalanceDetail?.data?.leaveBalances, mode]);
 
   const {
     handleSubmit,
@@ -77,23 +91,14 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     control,
     watch,
     register,
+    setValue,
   } = useForm();
 
   useEffect(() => {
-    dispatch(fetchEmployee({ status: "Active" }));
+    dispatch(fetchEmployee({ status: "Active", size: 5000 }));
   }, []);
 
   const employee = useSelector((state) => state.employee.employee);
-
-  const employeeList = useMemo(
-    () =>
-      employee?.data?.map((item) => ({
-        value: item.id,
-        label: item.full_name,
-        data: item,
-      })) || [],
-    [employee]
-  );
 
   const handleAddLeaveBalance = () => {
     setLeaveBalanceData([...leaveBalanceData, initialLeaveBalance]);
@@ -241,18 +246,27 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
       ),
     },
   ];
+  const empId = watch("employee_id");
 
   useEffect(() => {
-    const empId = watch("employee_id");
     if (empId) {
-      const found = employee?.data?.find(
-        (item) => Number(item.id) === Number(empId)
-      );
+      const found = employee?.data?.find((item) => item.id === Number(empId));
       setSelectedEmployeeData(found || null);
+      if (found?.join_date) {
+        const joinDate = moment(found.join_date);
+        const currentYear = moment().year();
+        const isJoinedThisYear = joinDate.year() === currentYear;
+        const startDate = isJoinedThisYear
+          ? joinDate.toDate()
+          : moment().startOf("year").toDate();
+        const endDate = moment().endOf("year").toDate();
+        setValue("start_date", startDate.toISOString());
+        setValue("end_date", endDate.toISOString());
+      }
     } else {
       setSelectedEmployeeData(null);
     }
-  }, [watch, employee]);
+  }, [empId, employee]);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -272,13 +286,21 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
     }
   }, [mode, initialData, reset]);
 
-  const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_leave_balance"
-    );
+  const handleClose = () => {
+    const c = document.getElementById("close_btn_add_edit_leave_balance");
+    reset();
+    setSelected(null);
+    setLeaveBalanceData([]);
+    setMode("");
+    c?.click();
+  };
+
+  console.log("mode", mode);
+  const onSubmit = async (data) => {
+    let response = null;
     try {
       if (mode === "add") {
-        dispatch(
+        response = await dispatch(
           createLeaveBalance({
             employee_id: data.employee_id,
             employee_code: selectedEmployeeData?.employee_code,
@@ -297,7 +319,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           })
         );
       } else if (mode === "edit" && initialData) {
-        dispatch(
+        response = await dispatch(
           updateLeaveBalance({
             id: initialData.id,
             reqData: {
@@ -319,31 +341,23 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
           })
         );
       }
-      reset();
-      setSelected(null);
-      closeButton?.click();
+      if (response?.meta?.requestStatus === "fulfilled") {
+        handleClose();
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    const offcanvasElement = document.getElementById(
-      "offcanvas_add_edit_leave_balance"
-    );
-    if (offcanvasElement) {
-      offcanvasElement.addEventListener(
-        "hidden.bs.offcanvas",
-        handleModalClose
-      );
+    const el = document.getElementById("offcanvas_add_edit_leave_balance");
+    if (el) {
+      el.addEventListener("hidden.bs.offcanvas", handleClose);
       return () => {
-        offcanvasElement.removeEventListener(
-          "hidden.bs.offcanvas",
-          handleModalClose
-        );
+        el.removeEventListener("hidden.bs.offcanvas", handleClose);
       };
     }
-  }, [handleModalClose]);
+  }, [handleClose]);
 
   return (
     <div
@@ -377,23 +391,10 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
                 control={control}
                 rules={{ required: "Employee is required" }}
                 render={({ field }) => (
-                  <Select
+                  <EmployeeSelect
                     {...field}
-                    options={[
-                      { value: "", label: "-- Select --" },
-                      ...(Array.isArray(employeeList) ? employeeList : []),
-                    ]}
-                    classNamePrefix="react-select"
-                    placeholder="-- Select --"
-                    isDisabled={!employeeList.length}
-                    onChange={(option) => {
-                      field.onChange(option?.value || "");
-                      setSelectedEmployeeData(option?.data || null);
-                    }}
-                    value={employeeList.find(
-                      (option) =>
-                        String(option.value) === String(watch("employee_id"))
-                    )}
+                    onChange={(value) => field.onChange(value?.value)}
+                    value={field.value}
                   />
                 )}
               />
@@ -563,7 +564,7 @@ const AddEditModal = ({ mode = "add", initialData = null, setSelected }) => {
               data-bs-dismiss="offcanvas"
               className="btn btn-light me-2"
               id="close_btn_add_edit_leave_balance"
-              onClick={handleModalClose}
+              onClick={handleClose}
             >
               Cancel
             </button>

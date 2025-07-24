@@ -262,6 +262,7 @@ const LeaveBalance = () => {
 
       <AddEditModal
         mode={mode}
+        setMode={setMode}
         initialData={selected}
         setSelected={setSelected}
       />

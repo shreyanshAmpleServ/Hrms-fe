@@ -104,6 +104,8 @@ const MonthlyPayroll = () => {
     []
   );
 
+  console.log(payroll, "mkx");
+
   const location = useLocation();
   useEffect(() => {
     setPayroll([]);
@@ -135,6 +137,8 @@ const MonthlyPayroll = () => {
             components.push({
               component_code: key,
               component_name: compMeta?.component_name,
+              relief_amount: Number(compMeta?.relief_amount),
+              relief_type: compMeta?.relief_type,
               component_value: component_value,
               isPayable,
               isTaxable,
@@ -360,12 +364,17 @@ const MonthlyPayroll = () => {
 
       // Step 3: Fetch tax amounts from API for each selected employee
       const taxResponses = await Promise.all(
-        calculatedRows.map((row) =>
-          fetchTaxAmountFn({
+        calculatedRows.map((row) => {
+          const reliefAmount = row?.components.flatMap(
+            (comp) => comp?.relief_amount
+          );
+
+          return fetchTaxAmountFn({
             employee_id: row.employee_id,
             taxable_amount: row.TaxableIncome,
-          })
-        )
+            relief_amount: reliefAmount.reduce((acc, val) => acc + val, 0),
+          });
+        })
       );
 
       // Step 4: Update calculatedRows with tax amounts from API
@@ -384,7 +393,6 @@ const MonthlyPayroll = () => {
         const updatedItem = { ...payrollItem };
         const updatedComponents = [...payrollItem.components];
 
-        // Prepare base and calculated values for formula calculations
         const baseValues = {};
         updatedComponents.forEach((comp) => {
           baseValues[comp.component_code] =
@@ -414,7 +422,6 @@ const MonthlyPayroll = () => {
             if (taxComponentIndex !== -1) {
               let taxAmount = 0;
 
-              // Calculate tax amount based on rate or flat amount
               if (taxCalculation.rate > 0) {
                 taxAmount =
                   (component.component_value * taxCalculation.rate) / 100;
@@ -422,19 +429,19 @@ const MonthlyPayroll = () => {
                 taxAmount = taxCalculation.flat_amount;
               }
 
+              const reliefAmount = parseFloat(component.relief_amount) || 0;
+              const finalTaxAmount = Math.max(0, taxAmount - reliefAmount);
+
               const targetComponent = updatedComponents[taxComponentIndex];
 
-              // Calculate default formula value if exists
               const defaultFormulaValue = calculateDefaultFormulaValue(
                 targetComponent,
                 baseValues,
                 calculatedValues
               );
 
-              // Add tax amount + default formula value
-              const finalValue = taxAmount + defaultFormulaValue;
+              const finalValue = finalTaxAmount + defaultFormulaValue;
 
-              // Update the target component
               updatedComponents[taxComponentIndex] = {
                 ...updatedComponents[taxComponentIndex],
                 component_value: finalValue,
