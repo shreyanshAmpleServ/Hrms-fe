@@ -19,11 +19,11 @@ import {
   fetchTaxAmountFn,
 } from "../../redux/MonthlyPayroll";
 import { fetchTaxSlab } from "../../redux/taxSlab";
+import { fetchExitClearanceByIds } from "../../redux/ExitClearance";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
 export const DEFAULT_PAYROLL_YEAR = new Date().getFullYear();
-
 export const payrollMonthOptions = Array.from({ length: 12 }, (_, i) => ({
   value: i + 1,
   label: new Date(0, i).toLocaleString("default", { month: "long" }),
@@ -36,8 +36,10 @@ export const payrollWeekOptions = Array.from({ length: 4 }, (_, i) => ({
 const MonthlyPayroll = () => {
   const [payroll, setPayroll] = useState([]);
   const [isCalculated, setIsCalculated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [inputValues, setInputValues] = useState({});
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const {
     control,
     handleSubmit,
@@ -45,7 +47,6 @@ const MonthlyPayroll = () => {
     watch,
     formState: { errors },
   } = useForm();
-
   const { loading, monthlyPayrollPreview, componentNames } = useSelector(
     (s) => s.monthlyPayroll || {}
   );
@@ -53,6 +54,8 @@ const MonthlyPayroll = () => {
   const { department } = useSelector((state) => state.department);
   const { designation } = useSelector((state) => state.designation);
   const { taxSlab } = useSelector((state) => state.taxSlab);
+
+  console.log(isLoading);
 
   const departmentOptions = department?.data?.map((emnt) => ({
     value: emnt.id,
@@ -71,18 +74,15 @@ const MonthlyPayroll = () => {
     (employeeId, componentCode, newValue) => {
       const key = getInputKey(employeeId, componentCode);
       const numValue = parseFloat(newValue) || 0;
-
       setInputValues((prev) => ({
         ...prev,
         [key]: newValue,
       }));
-
       setPayroll((prev) =>
         prev.map((item) => {
           if (item.employee_id === employeeId) {
             const updatedComponents = item.components.map((comp) => {
               if (comp.component_code === componentCode) {
-                // Instead of replacing, add to the value if already present
                 return {
                   ...comp,
                   component_value: numValue,
@@ -98,31 +98,27 @@ const MonthlyPayroll = () => {
           return item;
         })
       );
-
       setIsCalculated(false);
     },
     []
   );
 
-  const location = useLocation();
   useEffect(() => {
     setPayroll([]);
     setInputValues({});
     setIsCalculated(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
   useEffect(() => {
     if (monthlyPayrollPreview && componentNames?.length > 0) {
       const formattedPayroll = monthlyPayrollPreview.map((item) => {
         const components = [];
         const employeeDetails = {};
-
         for (const [key, value] of Object.entries(item)) {
           if (/^\d+$/.test(key)) {
             const compMeta = componentNames.find(
               (c) => String(c.component_code) === key
             );
-
             const component_value = parseFloat(value) || 0;
             const isPayable = compMeta?.pay_or_deduct === "P";
             const isTaxable = compMeta?.is_taxable === "Y";
@@ -131,7 +127,6 @@ const MonthlyPayroll = () => {
               compMeta?.contribution_of_employee === "Y";
             const defaultFormula = compMeta?.default_formula;
             const employeeDefaultFormula = compMeta?.employer_default_formula;
-
             components.push({
               component_code: key,
               component_name: compMeta?.component_name,
@@ -149,7 +144,6 @@ const MonthlyPayroll = () => {
             employeeDetails[key] = item[key];
           }
         }
-
         return {
           ...employeeDetails,
           components,
@@ -161,7 +155,6 @@ const MonthlyPayroll = () => {
           is_selected: false,
         };
       });
-
       setPayroll(formattedPayroll);
       setIsCalculated(false);
       setInputValues({});
@@ -176,30 +169,24 @@ const MonthlyPayroll = () => {
         let total_net_earnings = 0;
         let total_net_deductions = 0;
         let TaxableIncome = 0;
-
         const baseValues = {};
-
         item.components.forEach((comp) => {
           const val = parseFloat(comp.component_value) || 0;
           baseValues[comp.component_code] = val;
-
           if (comp.isPayable && comp.isTaxable) {
             total_earnings += val;
           } else if (!comp.isPayable && comp.isTaxable) {
             total_deductions += val;
           }
-
           if (comp.isPayable) {
             total_net_earnings += val;
           } else {
             total_net_deductions += val;
           }
         });
-
         TaxableIncome = total_earnings - total_deductions;
         const NetPay =
           total_net_earnings - total_net_deductions - item.TaxPayee;
-
         const calculatedValues = {
           "Taxable Income": TaxableIncome.toFixed(2),
           "Tax Payee": (item.TaxPayee || 0).toFixed(2),
@@ -207,10 +194,8 @@ const MonthlyPayroll = () => {
           "Total Earnings": total_net_earnings.toFixed(2),
           "Total Deductions": total_net_deductions.toFixed(2),
         };
-
         const updatedComponents = item.components.map((comp) => {
           let finalValue = parseFloat(comp.component_value) || 0;
-
           if (comp.defaultFormula) {
             try {
               let formula = componentNames.reduce((f, meta) => {
@@ -226,7 +211,6 @@ const MonthlyPayroll = () => {
                 },
                 formula
               );
-
               const result = Function(
                 '"use strict"; return (' + formula + ")"
               )();
@@ -253,7 +237,6 @@ const MonthlyPayroll = () => {
                 },
                 formula
               );
-
               const result = Function(
                 '"use strict"; return (' + formula + ")"
               )();
@@ -263,13 +246,11 @@ const MonthlyPayroll = () => {
               finalValue = 0;
             }
           }
-
           return {
             ...comp,
             component_value: finalValue,
           };
         });
-
         return {
           ...item,
           components: updatedComponents,
@@ -305,7 +286,6 @@ const MonthlyPayroll = () => {
     [taxSlab]
   );
 
-  // Helper function to calculate default formula value for a component
   const calculateDefaultFormulaValue = useCallback(
     (targetComponent, baseValues, calculatedValues) => {
       let defaultFormulaValue = 0;
@@ -357,6 +337,7 @@ const MonthlyPayroll = () => {
         return;
       }
 
+      setIsLoading(true);
       // Step 2: Perform initial calculations for selected employees
       let calculatedRows = performCalculations(selectedRows);
 
@@ -454,7 +435,151 @@ const MonthlyPayroll = () => {
         };
       });
 
-      // Step 7: Update the main payroll state with the new calculated values
+      // Step 7: Check the employee is exist in exit clearance
+      const calculatedRowsEmployeeIds = calculatedRows?.map(
+        (item) => item.employee_id
+      );
+
+      const exitClearanceBulk = await dispatch(
+        fetchExitClearanceByIds({
+          employee_ids: calculatedRowsEmployeeIds,
+          month: watch("payroll_month") || DEFAULT_PAYROLL_MONTH,
+          year: watch("payroll_year") || DEFAULT_PAYROLL_YEAR,
+        })
+      ).unwrap();
+
+      // Step 8: Update calculatedRows with exit clearance component values
+      if (exitClearanceBulk?.data && exitClearanceBulk.data.length > 0) {
+        calculatedRows = calculatedRows.map((payrollRow) => {
+          // Find exit clearance data for this employee
+          const exitClearanceData = exitClearanceBulk.data.find(
+            (exitData) => exitData.employee_id === payrollRow.employee_id
+          );
+
+          if (!exitClearanceData || !exitClearanceData.hrms_d_exit_clearance1) {
+            return payrollRow;
+          }
+
+          // Update components with exit clearance values
+          const updatedComponents = payrollRow.components.map((component) => {
+            // Find matching exit clearance component by pay_component_id
+            const exitComponent = exitClearanceData.hrms_d_exit_clearance1.find(
+              (exitComp) =>
+                exitComp.exit_clearance_pay &&
+                String(exitComp.exit_clearance_pay.component_code) ===
+                  String(component.component_code)
+            );
+
+            if (exitComponent) {
+              // Calculate the exit clearance amount
+              const exitAmount = parseFloat(exitComponent.amount) || 0;
+              const currentValue = parseFloat(component.component_value) || 0;
+
+              // Add exit clearance amount to current component value
+              return {
+                ...component,
+                component_value: currentValue + exitAmount,
+                has_exit_clearance: true,
+                exit_clearance_amount: exitAmount,
+                exit_clearance_days: exitComponent.no_of_days || 0,
+                exit_clearance_remarks: exitComponent.remarks || "",
+              };
+            }
+
+            return component;
+          });
+
+          // Recalculate totals with updated component values
+          let total_earnings = 0;
+          let total_deductions = 0;
+          let total_net_earnings = 0;
+          let total_net_deductions = 0;
+          let TaxableIncome = 0;
+
+          updatedComponents.forEach((comp) => {
+            const val = parseFloat(comp.component_value) || 0;
+
+            if (comp.isPayable && comp.isTaxable) {
+              total_earnings += val;
+            } else if (!comp.isPayable && comp.isTaxable) {
+              total_deductions += val;
+            }
+
+            if (comp.isPayable) {
+              total_net_earnings += val;
+            } else {
+              total_net_deductions += val;
+            }
+          });
+
+          TaxableIncome = total_earnings - total_deductions;
+          const NetPay =
+            total_net_earnings -
+            total_net_deductions -
+            (payrollRow.TaxPayee || 0);
+
+          return {
+            ...payrollRow,
+            components: updatedComponents,
+            total_earnings: total_net_earnings.toFixed(2),
+            total_deductions: total_net_deductions.toFixed(2),
+            net_pay: NetPay.toFixed(2),
+            TaxableIncome: TaxableIncome.toFixed(2),
+            has_exit_clearance: true,
+            exit_clearance_id: exitClearanceData.id,
+          };
+        });
+
+        // Optional: Recalculate tax if exit clearance affects taxable income
+        if (calculatedRows.some((row) => row.has_exit_clearance)) {
+          // Re-fetch tax amounts for employees with exit clearance
+          const taxResponsesForExitClearance = await Promise.all(
+            calculatedRows
+              .filter((row) => row.has_exit_clearance)
+              .map((row) => {
+                const reliefAmount = row?.components.flatMap(
+                  (comp) => comp?.relief_amount
+                );
+
+                return fetchTaxAmountFn({
+                  employee_id: row.employee_id,
+                  taxable_amount: row.TaxableIncome,
+                  relief_amount: reliefAmount.reduce(
+                    (acc, val) => acc + val,
+                    0
+                  ),
+                });
+              })
+          );
+
+          // Update tax for employees with exit clearance
+          let taxIndex = 0;
+          calculatedRows = calculatedRows.map((row) => {
+            if (row.has_exit_clearance) {
+              const newTaxPayee =
+                taxResponsesForExitClearance[taxIndex]?.tax_payee ??
+                row.TaxPayee;
+              taxIndex++;
+
+              // Recalculate net pay with new tax
+              const total_net_earnings = parseFloat(row.total_earnings) || 0;
+              const total_net_deductions =
+                parseFloat(row.total_deductions) || 0;
+              const NetPay =
+                total_net_earnings - total_net_deductions - newTaxPayee;
+
+              return {
+                ...row,
+                TaxPayee: newTaxPayee,
+                net_pay: NetPay.toFixed(2),
+              };
+            }
+            return row;
+          });
+        }
+      }
+
+      // Step 9: Update the main payroll state with the new calculated values
       setPayroll((prevPayroll) =>
         prevPayroll.map((item) => {
           if (item.is_selected) {
@@ -467,7 +592,7 @@ const MonthlyPayroll = () => {
         })
       );
 
-      // Step 8: Update input values for UI
+      // Step 10: Update input values for UI
       const newInputValues = { ...inputValues };
       calculatedRows.forEach((item) => {
         item.components.forEach((comp) => {
@@ -477,7 +602,7 @@ const MonthlyPayroll = () => {
       });
       setInputValues(newInputValues);
       setIsCalculated(true);
-
+      setIsLoading(false);
       toast.success(
         `Complete calculations (including tax) completed successfully for ${selectedRows.length} selected employee(s)!`
       );
@@ -517,16 +642,16 @@ const MonthlyPayroll = () => {
   const handlePreviewFn = () => {
     dispatch(
       fetchMonthlyPayrollPreview({
-        paymonth: watch("payroll_month") || 7,
-        payyear: watch("payroll_year") || 2025,
-        empidfrom: watch("employee_from") || 15,
-        empidto: watch("employee_to") || 41,
-        positionidfrom: watch("department_from") || 12,
-        positionidto: watch("department_to") || 9,
-        dptfrom: watch("position_from") || 3,
-        dptto: watch("position_to") || 2,
-        branchfrom: watch("branch_from") || 1,
-        branchto: watch("branch_to") || 1,
+        paymonth: watch("payroll_month") || DEFAULT_PAYROLL_MONTH,
+        payyear: watch("payroll_year") || DEFAULT_PAYROLL_YEAR,
+        empidfrom: watch("employee_from") || 0,
+        empidto: watch("employee_to") || 9999,
+        positionidfrom: watch("department_from") || 0,
+        positionidto: watch("department_to") || 9999,
+        dptfrom: watch("position_from") || 0,
+        dptto: watch("position_to") || 9999,
+        branchfrom: watch("branch_from") || 0,
+        branchto: watch("branch_to") || 9999,
         loanflag: watch("loanflag") || 1,
         grade: "",
       })
@@ -577,7 +702,6 @@ const MonthlyPayroll = () => {
       componentNames?.map((component) => {
         const { component_code, component_name, pay_or_deduct } = component;
         const isPayable = pay_or_deduct === "P";
-
         return {
           title: component_name,
           dataIndex: component_code,
@@ -586,13 +710,11 @@ const MonthlyPayroll = () => {
             const comp = record.components?.find(
               (c) => c.component_code === String(component_code)
             );
-
             const inputKey = getInputKey(record.employee_id, component_code);
             const displayValue =
               inputValues[inputKey] !== undefined
                 ? inputValues[inputKey]
                 : comp?.component_value || 0;
-
             return (
               <div style={{ height: "30px", width: "120px" }}>
                 {record.is_selected ? (
@@ -616,7 +738,7 @@ const MonthlyPayroll = () => {
                     step="0.01"
                   />
                 ) : (
-                  <span>{comp?.component_value || 0}</span>
+                  <span>{Number(comp?.component_value)?.toFixed(2) || 0}</span>
                 )}
               </div>
             );
@@ -941,7 +1063,11 @@ const MonthlyPayroll = () => {
                       className="btn btn-success"
                       disabled={loading || isCalculated}
                     >
-                      {isCalculated ? "Calculated" : "Calculate Net"}
+                      {isLoading
+                        ? "Calculating..."
+                        : isCalculated
+                          ? "Calculated"
+                          : "Calculate Net"}
                     </button>
 
                     <button

@@ -131,11 +131,32 @@ export const fetchExitClearanceById = createAsyncThunk(
   }
 );
 
+/**
+ * Fetch multiple exit clearance by IDs.
+ */
+export const fetchExitClearanceByIds = createAsyncThunk(
+  "exitClearance/fetchExitClearanceByIds",
+  async (ids, thunkAPI) => {
+    try {
+      const response = await apiClient.post(
+        `/v1/exit-clearance/exit-clearance-bulk`,
+        ids
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch exit clearance"
+      );
+    }
+  }
+);
+
 const exitClearanceSlice = createSlice({
   name: "exitClearance",
   initialState: {
     exitClearance: {},
     exitClearanceDetail: null,
+    exitClearanceBulk: null,
     loading: false,
     error: null,
     success: null,
@@ -237,6 +258,18 @@ const exitClearanceSlice = createSlice({
         state.exitClearanceDetail = action.payload.data;
       })
       .addCase(fetchExitClearanceById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchExitClearanceByIds.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchExitClearanceByIds.fulfilled, (state, action) => {
+        state.loading = false;
+        state.exitClearanceBulk = action.payload.data;
+      })
+      .addCase(fetchExitClearanceByIds.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });
