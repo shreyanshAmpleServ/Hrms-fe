@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -12,6 +12,7 @@ import { fetchCurrencies } from "../../redux/currency";
 import { fetchdepartment } from "../../redux/department";
 import { fetchdesignation } from "../../redux/designation";
 import { employeeOptionsFn } from "../../redux/Employee";
+import { fetchExitClearanceByIds } from "../../redux/ExitClearance";
 import {
   createMonthlyPayroll,
   fetchComponentsFn,
@@ -19,7 +20,6 @@ import {
   fetchTaxAmountFn,
 } from "../../redux/MonthlyPayroll";
 import { fetchTaxSlab } from "../../redux/taxSlab";
-import { fetchExitClearanceByIds } from "../../redux/ExitClearance";
 
 export const DEFAULT_PAYROLL_MONTH = new Date().getMonth() + 1;
 export const DEFAULT_PAYROLL_WEEK = 1;
@@ -112,40 +112,65 @@ const MonthlyPayroll = () => {
   useEffect(() => {
     if (monthlyPayrollPreview && componentNames?.length > 0) {
       const formattedPayroll = monthlyPayrollPreview.map((item) => {
+        /* ---------- 1.  How many days is this person paid for? ---------- */
+        let payrollDays = 30; // full month (default)
+
+        const joinDate = new Date(item.join_date);
+        const joiningMonth = joinDate.getMonth() + 1; // 1-based
+        const joiningYear = joinDate.getFullYear();
+
+        const currentMonth = watch("payroll_month") || DEFAULT_PAYROLL_MONTH;
+        const currentYear = watch("payroll_year") || DEFAULT_PAYROLL_YEAR;
+
+        if (joiningMonth === currentMonth && joiningYear === currentYear) {
+          const joiningDay = joinDate.getDate(); // 1 … 31
+          payrollDays = 30 - joiningDay + 1; // e.g. joined on 6th ⇒ 25 days
+        }
+
+        /* ---------- 2.  Build the component list, prorating every value ---------- */
         const components = [];
         const employeeDetails = {};
+        const prorationFactor = payrollDays / 30; // e.g. 25/30 = 0.8333…
+
         for (const [key, value] of Object.entries(item)) {
           if (/^\d+$/.test(key)) {
+            /* it is a pay-component column */
             const compMeta = componentNames.find(
               (c) => String(c.component_code) === key
             );
-            const component_value = parseFloat(value) || 0;
+
+            const originalValue = parseFloat(value) || 0; // full-month amount
+            const proratedValue = originalValue * prorationFactor; // <-  NEW LINE
+
             const isPayable = compMeta?.pay_or_deduct === "P";
             const isTaxable = compMeta?.is_taxable === "Y";
             const isNSSF = compMeta?.contributes_to_nssf === "Y";
             const isEmployeeContribution =
               compMeta?.contribution_of_employee === "Y";
-            const defaultFormula = compMeta?.default_formula;
-            const employeeDefaultFormula = compMeta?.employer_default_formula;
+
             components.push({
               component_code: key,
               component_name: compMeta?.component_name,
               relief_amount: Number(compMeta?.relief_amount),
               relief_type: compMeta?.relief_type,
-              component_value: component_value,
+              component_value: proratedValue, // <-  NOW THE PRORATED FIGURE
+              original_value: originalValue, //    (keep full-month value if you need it)
               isPayable,
               isTaxable,
-              defaultFormula,
-              employeeDefaultFormula,
+              defaultFormula: compMeta?.default_formula,
+              employeeDefaultFormula: compMeta?.employer_default_formula,
               isEmployeeContribution,
               isNSSF,
             });
           } else {
+            /* normal employee column */
             employeeDetails[key] = item[key];
           }
         }
+
         return {
           ...employeeDetails,
+          payroll_days: payrollDays, // handy if you want to show it in the UI
           components,
           total_earnings: 0,
           total_deductions: 0,
@@ -155,11 +180,13 @@ const MonthlyPayroll = () => {
           is_selected: false,
         };
       });
+
       setPayroll(formattedPayroll);
       setIsCalculated(false);
       setInputValues({});
     }
-  }, [monthlyPayrollPreview, componentNames]);
+    /* include `watch` so the effect reruns when month / year changes */
+  }, [monthlyPayrollPreview, componentNames, watch]);
 
   const performCalculations = useCallback(
     (payrollData) => {
@@ -263,6 +290,8 @@ const MonthlyPayroll = () => {
     },
     [componentNames]
   );
+
+  console.log("Payroll Data:", payroll);
 
   const fetchTaxSlabByComponent = useCallback(
     (component) => {
