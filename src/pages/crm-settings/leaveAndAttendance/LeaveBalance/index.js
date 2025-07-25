@@ -17,7 +17,7 @@ import DeleteAlert from "./alert/DeleteAlert.js";
 import AddEditModal from "./modal/AddEditModal.js";
 
 const LeaveBalance = () => {
-  const [mode, setMode] = useState("add");
+  const [mode, setMode] = useState("");
   const [selected, setSelected] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [searchText, setSearchText] = useState("");

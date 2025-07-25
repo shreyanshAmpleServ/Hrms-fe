@@ -1,7 +1,5 @@
 import { Select as AntdSelect, Button } from "antd";
-import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +8,11 @@ import Table from "../../../components/common/dataTableNew";
 import DepartmentSelect from "../../../components/common/DepartmentSelect";
 import DesignationSelect from "../../../components/common/DesignationSelect";
 import EmployeeSelect from "../../../components/common/EmployeeSelect";
+import {
+  allowanceGroupList,
+  payGradeLevelList,
+  payGradeList,
+} from "../../../mock/componentAssignment";
 import {
   createBasicSalary,
   fetchBasicSalaryById,
@@ -23,12 +26,6 @@ import {
 } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
-import {
-  allowanceGroupList,
-  payGradeLevelList,
-  payGradeList,
-} from "../../../mock/componentAssignment";
-import { LogarithmicScale } from "chart.js";
 
 const initialComponent = [
   {
@@ -93,7 +90,6 @@ const AddEditModal = ({
     reset,
     control,
     watch,
-    setValue,
   } = useForm();
 
   // Memoized lists
@@ -231,8 +227,6 @@ const AddEditModal = ({
       );
     }
   }, [mode, basicSalaryDetail, componentOptions]);
-
-  console.log(basicSalaryData);
 
   // Modal close handler
   const handleModalClose = useCallback(() => {

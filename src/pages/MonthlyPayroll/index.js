@@ -104,8 +104,6 @@ const MonthlyPayroll = () => {
     []
   );
 
-  console.log(payroll, "mkx");
-
   const location = useLocation();
   useEffect(() => {
     setPayroll([]);

@@ -61,7 +61,7 @@ const AddEditModal = ({
 
   useEffect(() => {
     if (mode === "edit") {
-      if (leaveBalanceDetail?.data?.leaveBalances) {
+      if (leaveBalanceDetail) {
         setLeaveBalanceData(
           leaveBalanceDetail?.data?.leaveBalances?.map((item) => ({
             ...item,
@@ -82,7 +82,7 @@ const AddEditModal = ({
         })) || []
       );
     }
-  }, [leaveBalanceDetail?.data?.leaveBalances, mode]);
+  }, [leaveBalanceDetail, mode]);
 
   const {
     handleSubmit,
@@ -247,13 +247,15 @@ const AddEditModal = ({
     },
   ];
   const empId = watch("employee_id");
+  const selectedEmployee = employee?.data?.find((i) => i.id === Number(empId));
+
+  const gender = selectedEmployee?.gender;
 
   useEffect(() => {
     if (empId) {
-      const found = employee?.data?.find((item) => item.id === Number(empId));
-      setSelectedEmployeeData(found || null);
-      if (found?.join_date) {
-        const joinDate = moment(found.join_date);
+      setSelectedEmployeeData(selectedEmployee || null);
+      if (selectedEmployee?.join_date) {
+        const joinDate = moment(selectedEmployee.join_date);
         const currentYear = moment().year();
         const isJoinedThisYear = joinDate.year() === currentYear;
         const startDate = isJoinedThisYear
@@ -262,6 +264,19 @@ const AddEditModal = ({
         const endDate = moment().endOf("year").toDate();
         setValue("start_date", startDate.toISOString());
         setValue("end_date", endDate.toISOString());
+        setLeaveBalanceData(
+          leaveType?.data
+            ?.filter((item) =>
+              item.for_gender === "B" ? true : item.for_gender === gender
+            )
+            ?.map((item) => ({
+              leave_type_id: item.id,
+              no_of_leaves: item.leave_qty,
+              used_leaves: 0,
+              balance: item.leave_qty,
+              leave_type_name: item.leave_type,
+            })) || []
+        );
       }
     } else {
       setSelectedEmployeeData(null);
@@ -295,7 +310,6 @@ const AddEditModal = ({
     c?.click();
   };
 
-  console.log("mode", mode);
   const onSubmit = async (data) => {
     let response = null;
     try {
@@ -537,7 +551,7 @@ const AddEditModal = ({
           </Row>
           <div className="table-responsive mb-3 custom-table">
             <Table
-              dataSource={leaveBalanceData || []}
+              dataSource={leaveBalanceData}
               columns={columns}
               loading={loading}
               className="mkx"

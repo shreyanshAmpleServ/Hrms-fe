@@ -78,9 +78,15 @@ const ExitClearance = () => {
       dataIndex: "exit_clearance_employee",
       render: (text) => text?.full_name || "-",
     },
+
     {
       title: "Remarks",
       dataIndex: "remarks",
+      render: (text) => text || "-",
+    },
+    {
+      title: "Reason",
+      dataIndex: "reason",
       render: (text) => text || "-",
     },
     {
@@ -89,9 +95,9 @@ const ExitClearance = () => {
       render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
     },
     {
-      title: "Cleared On",
-      dataIndex: "createdate",
-      render: (text) => (text ? moment(text).format("DD-MM-YYYY") : "-"),
+      title: "Cleared By",
+      dataIndex: "exit_clearance_by_user",
+      render: (text) => text?.full_name || "-",
     },
     ...(isDelete || isUpdate
       ? [
@@ -260,6 +266,7 @@ const ExitClearance = () => {
       <DeleteConfirmation
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
+        setExitClearance={setSelectedExitClearance}
         exitClearanceId={selectedExitClearance?.id}
       />
     </>

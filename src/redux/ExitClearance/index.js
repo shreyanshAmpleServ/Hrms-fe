@@ -41,7 +41,8 @@ export const createExitClearance = createAsyncThunk(
           loading: "Creating exit clearance...",
           success: (res) =>
             res.data.message || "Exit clearance created successfully!",
-          error: "Failed to create exit clearance",
+          error: (error) =>
+            error.response?.data?.message || "Failed to create exit clearance",
         }
       );
       return response.data; // Returns the newly created exit clearance
@@ -66,7 +67,8 @@ export const updateExitClearance = createAsyncThunk(
           loading: "Updating exit clearance...",
           success: (res) =>
             res.data.message || "Exit clearance updated successfully!",
-          error: "Failed to update exit clearance",
+          error: (error) =>
+            error.response?.data?.message || "Failed to update exit clearance",
         }
       );
       return response.data; // Returns the updated exit clearance

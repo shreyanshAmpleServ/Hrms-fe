@@ -1,12 +1,18 @@
 import { useDispatch } from "react-redux";
 import { deleteExitClearance } from "../../../redux/ExitClearance";
 
-const DeleteConfirmation = ({ showModal, setShowModal, exitClearanceId }) => {
+const DeleteConfirmation = ({
+  showModal,
+  setShowModal,
+  exitClearanceId,
+  setExitClearance,
+}) => {
   const dispatch = useDispatch();
   const handleDeleteExitClearance = () => {
     if (exitClearanceId) {
       dispatch(deleteExitClearance(exitClearanceId));
       setShowModal(false);
+      setExitClearance(null);
     }
   };
 
