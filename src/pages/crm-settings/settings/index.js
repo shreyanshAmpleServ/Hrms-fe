@@ -12,6 +12,7 @@ import {
   FaSave,
   FaUpload,
   FaTimes,
+  FaEdit,
 } from "react-icons/fa";
 
 const Settings = () => {
@@ -39,6 +40,8 @@ const Settings = () => {
 
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
+  const [signaturePreview, setSignaturePreview] = useState(null);
+  const [signatureFile, setSignatureFile] = useState(null);
 
   const onSubmit = (data) => {
     console.log("Form submitted:", { ...data, logo: logoFile });
@@ -72,18 +75,51 @@ const Settings = () => {
     document.getElementById("logoInput").value = "";
   };
 
+  const handleSignatureChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        message.error("Please select an image file");
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        message.error("Image size should be less than 2MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSignaturePreview(e.target.result);
+        setSignatureFile(file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeSignature = () => {
+    setSignaturePreview(null);
+    setSignatureFile(null);
+    document.getElementById("signatureInput").value = "";
+  };
+
   return (
     <div className="page-wrapper">
       <div className="container p-4">
         {/* Header */}
-        <div className="mb-4">
-          <h2 className="fw-bold text-dark mb-2">
-            <FaBuilding className="me-2 text-primary" />
-            Company Settings
-          </h2>
-          <p className="text-muted mb-0">
-            Configure your company information and preferences
-          </p>
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="mb-4">
+            <h2 className="fw-bold text-dark mb-2">
+              <FaBuilding className="me-2 text-primary" />
+              Company Settings
+            </h2>
+            <p className="text-muted mb-0">
+              Configure your company information and preferences
+            </p>
+          </div>
+          <button type="submit" className="btn btn-primary">
+            <FaSave className="me-2" />
+            Save Settings
+          </button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -92,52 +128,119 @@ const Settings = () => {
             <div className="card-body">
               <h5 className="card-title fw-semibold mb-3">
                 <FaBuilding className="me-2 text-primary" />
-                Company Logo
+                Company Logo & Signature
               </h5>
-              <div className="row align-items-center">
-                <div className="col-md-3 col-sm-4 mb-3 mb-md-0">
-                  <div
-                    className="border rounded p-3 text-center bg-light position-relative"
-                    style={{ minHeight: "120px" }}
-                  >
-                    {logoPreview ? (
-                      <div className="position-relative">
-                        <img
-                          src={logoPreview}
-                          alt="Company Logo"
-                          className="img-fluid"
-                          style={{ maxHeight: "100px", maxWidth: "100%" }}
-                        />
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-danger position-absolute top-0 end-0"
-                          style={{ transform: "translate(50%, -50%)" }}
-                          onClick={removeLogo}
-                        >
-                          <FaTimes size={12} />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="d-flex flex-column align-items-center justify-content-center h-100">
-                        <FaUpload className="mb-2 text-muted" size={24} />
-                        <small className="text-muted">Upload Logo</small>
-                      </div>
-                    )}
+
+              {/* Logo Section */}
+              <div className="mb-4">
+                <h6 className="fw-medium mb-3">Company Logo</h6>
+                <div className="row align-items-center">
+                  <div className="col-md-3 col-sm-4 mb-3 mb-md-0">
+                    <div
+                      className="border rounded p-3 text-center bg-light position-relative"
+                      style={{ minHeight: "120px" }}
+                    >
+                      {logoPreview ? (
+                        <div className="position-relative">
+                          <img
+                            src={logoPreview}
+                            alt="Company Logo"
+                            className="img-fluid"
+                            style={{ maxHeight: "100px", maxWidth: "100%" }}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                            style={{ transform: "translate(50%, -50%)" }}
+                            onClick={removeLogo}
+                          >
+                            <FaTimes size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="d-flex flex-column align-items-center justify-content-center h-100">
+                          <FaUpload className="mb-2 text-muted" size={24} />
+                          <small className="text-muted">Upload Logo</small>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-9 col-sm-8">
+                    <div className="mb-3">
+                      <input
+                        id="logoInput"
+                        type="file"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={handleLogoChange}
+                      />
+                    </div>
+                    <small className="text-muted">
+                      Recommended: PNG or JPG format, max 2MB
+                    </small>
                   </div>
                 </div>
-                <div className="col-md-9 col-sm-8">
-                  <div className="mb-3">
-                    <input
-                      id="logoInput"
-                      type="file"
-                      className="form-control"
-                      accept="image/*"
-                      onChange={handleLogoChange}
-                    />
+              </div>
+
+              <hr />
+
+              {/* Signature Section */}
+              <div>
+                <h6 className="fw-medium mb-3">Digital Signature</h6>
+                <div className="row align-items-center">
+                  <div className="col-md-3 col-sm-4 mb-3 mb-md-0">
+                    <div
+                      className="border rounded h-100 flex-column d-flex align-items-center justify-content-center text-center position-relative"
+                      style={{ minHeight: "120px", backgroundColor: "#ffffff" }}
+                    >
+                      {signaturePreview ? (
+                        <div className="position-relative p-3">
+                          <img
+                            src={signaturePreview}
+                            alt="Digital Signature"
+                            className="img-fluid"
+                            style={{
+                              maxHeight: "100px",
+                              maxWidth: "100%",
+                              backgroundColor: "#ffffff",
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger position-absolute"
+                            style={{
+                              transform: "translate(50%, -50%)",
+                              right: "15px",
+                              top: "3px",
+                            }}
+                            onClick={removeSignature}
+                          >
+                            <FaTimes size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="d-flex flex-column align-items-center justify-content-center">
+                          <FaEdit className="mb-2 text-muted" size={24} />
+                          <small className="text-muted">Upload Signature</small>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <small className="text-muted">
-                    Recommended: PNG or JPG format, max 2MB
-                  </small>
+                  <div className="col-md-9 col-sm-8">
+                    <div className="mb-3">
+                      <input
+                        id="signatureInput"
+                        type="file"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={handleSignatureChange}
+                      />
+                    </div>
+                    <small className="text-muted">
+                      Recommended: PNG format with transparent background, max
+                      1MB
+                    </small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -404,12 +507,7 @@ const Settings = () => {
           {/* Action Buttons */}
           <div className="card shadow-sm">
             <div className="card-body">
-              <div className="d-flex justify-content-end gap-2">
-                <button type="submit" className="btn btn-primary btn-lg">
-                  <FaSave className="me-2" />
-                  Save Settings
-                </button>
-              </div>
+              <div className="d-flex justify-content-end gap-2"></div>
             </div>
           </div>
         </form>

@@ -15,6 +15,7 @@ import { fetchComponentsFn } from "../../redux/MonthlyPayroll/index.js";
 import { fetchpayslip } from "../../redux/payslipViewer";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddEditModal from "./modal/AddEditModal.js";
+import { FilePdfFilled } from "@ant-design/icons";
 const payslipMonthOptions = Array.from({ length: 12 }, (_, i) => ({
   value: i + 1,
   label: new Date(0, i).toLocaleString("default", { month: "long" }),
@@ -202,6 +203,19 @@ const PayslipViewer = () => {
       title: "Total Earnings",
       dataIndex: "total_earnings",
       render: (value) => value || 0,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      align: "center",
+      render: (_, record) => (
+        <Link
+          to={`${process.env.REACT_APP_API_BASE_URL}/v1/monthly-payroll-download/download?payroll_year=${record?.payroll_year}&payroll_month=${record?.payroll_month}&employee_id=${record?.hrms_monthly_payroll_employee?.id}`}
+          className="btn btn-primary btn-sm"
+        >
+          <FilePdfFilled /> <span className="ms-2"> Download</span>
+        </Link>
+      ),
     },
   ];
 
