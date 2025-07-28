@@ -165,6 +165,7 @@ import OverTimePayroll from "../pages/OverTimePayroll";
 import LoanEmi from "../pages/LoanEmi";
 import LoanMaster from "../pages/LoanMaster";
 import OverTimeMaster from "../pages/overTimeMaster";
+import Settings from "../pages/crm-settings/settings";
 export { Dashboard, Login };
 const route = all_routes;
 
@@ -1159,6 +1160,12 @@ export const privateRoutes = [
     element: <MedicalRecord />,
     route: Route,
     title: "Medical Record",
+  },
+  {
+    path: route.settings,
+    element: <Settings />,
+    route: Route,
+    title: "Settings",
   },
 ];
 

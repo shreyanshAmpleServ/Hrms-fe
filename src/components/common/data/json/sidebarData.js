@@ -137,12 +137,12 @@ export const SidebarData = (userType) => {
               showSubRoute: false,
               submenu: false,
             },
-            {
-              label: "Arrear Adjustments",
-              link: route.arrearAdjustments,
-              showSubRoute: false,
-              submenu: false,
-            },
+            // {
+            //   label: "Arrear Adjustments",
+            //   link: route.arrearAdjustments,
+            //   showSubRoute: false,
+            //   submenu: false,
+            // },
             {
               label: "Loan Requests",
               link: route.loanRequests,
@@ -156,12 +156,12 @@ export const SidebarData = (userType) => {
               showSubRoute: false,
               submenu: false,
             },
-            {
-              label: "WPS File Generator",
-              link: route.wpsFileGenerator,
-              showSubRoute: false,
-              submenu: false,
-            },
+            // {
+            //   label: "WPS File Generator",
+            //   link: route.wpsFileGenerator,
+            //   showSubRoute: false,
+            //   submenu: false,
+            // },
           ],
         },
         {
@@ -667,6 +667,14 @@ export const SidebarData = (userType) => {
           label: "Modules",
           link: route.modules,
           icon: "ti ti-align-box-left-middle",
+          showSubRoute: false,
+          submenu: false,
+        },
+
+        {
+          label: "Settings",
+          link: route.settings,
+          icon: "fa-solid fa-gears",
           showSubRoute: false,
           submenu: false,
         },
