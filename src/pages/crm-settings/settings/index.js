@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { message } from "antd";
+import { useDispatch } from "react-redux";
 import {
   FaBuilding,
   FaEnvelope,
@@ -14,39 +15,63 @@ import {
   FaTimes,
   FaEdit,
 } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { fetchSettings } from "../../../redux/Settings";
 
 const Settings = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      companyName: "Ampleserv Technologies",
-      email: "info@ampleserv.com",
-      phone: "+1 (555) 123-4567",
-      website: "https://www.ampleserv.comm",
-      address: "G-37, Sector 3, Noida",
-      city: "Noida",
-      state: "Uttar Pradesh",
-      zipCode: "201301",
-      country: "India",
-      gstNumber: "GST123456789",
-      panNumber: "ABCDE1234F",
-      taxId: "TAX987654321",
-      description: "Leading technology solutions provider",
-    },
-  });
-
+  const dispatch = useDispatch();
+  const { settings: settingsData } = useSelector((state) => state.settings);
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
   const [signaturePreview, setSignaturePreview] = useState(null);
   const [signatureFile, setSignatureFile] = useState(null);
+  console.log("settings", settingsData);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const settings = settingsData?.data?.[0];
+
+  useEffect(() => {
+    if (settings) {
+      reset({
+        companyName: settings.company_name || "",
+        email: settings.email || "",
+        phone: settings.phone_number || "",
+        website: settings.website || "",
+        address: settings.street_address || "",
+        city: settings.city || "",
+        state: settings.default_configuration_state?.name || "",
+        zipCode: settings.zip_code || "",
+        country: settings.default_configuration_country?.name || "",
+        gstNumber: settings.gst_number || "",
+        panNumber: settings.pan_number || "",
+        taxId: settings.tax_id || "",
+        description: settings.description || "",
+      });
+
+      // Optional: load logo and signature preview if stored as URLs
+      if (settings.company_logo) {
+        setLogoPreview(settings.company_logo); // if it's a URL
+      }
+      if (settings.company_signature) {
+        setSignaturePreview(settings.company_signature);
+      }
+    }
+  }, [settings, reset]);
 
   const onSubmit = (data) => {
     console.log("Form submitted:", { ...data, logo: logoFile });
     message.success("Company settings saved successfully!");
   };
+
+  useEffect(() => {
+    dispatch(fetchSettings());
+  }, [dispatch]);
 
   const handleLogoChange = (event) => {
     const file = event.target.files[0];
@@ -140,10 +165,10 @@ const Settings = () => {
                       className="border rounded p-3 text-center bg-light position-relative"
                       style={{ minHeight: "120px" }}
                     >
-                      {logoPreview ? (
+                      {logoPreview || settings?.company_logo ? (
                         <div className="position-relative">
                           <img
-                            src={logoPreview}
+                            src={logoPreview || settings?.company_logo}
                             alt="Company Logo"
                             className="img-fluid"
                             style={{ maxHeight: "100px", maxWidth: "100%" }}
