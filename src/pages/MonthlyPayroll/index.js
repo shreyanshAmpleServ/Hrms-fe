@@ -55,8 +55,6 @@ const MonthlyPayroll = () => {
   const { designation } = useSelector((state) => state.designation);
   const { taxSlab } = useSelector((state) => state.taxSlab);
 
-  console.log(isLoading);
-
   const departmentOptions = department?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.department_name,
@@ -290,8 +288,6 @@ const MonthlyPayroll = () => {
     },
     [componentNames]
   );
-
-  console.log("Payroll Data:", payroll);
 
   const fetchTaxSlabByComponent = useCallback(
     (component) => {

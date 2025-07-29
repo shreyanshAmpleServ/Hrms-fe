@@ -212,6 +212,7 @@ const PayslipViewer = () => {
         <Link
           to={`${process.env.REACT_APP_API_BASE_URL}/v1/monthly-payroll-download/download?payroll_year=${record?.payroll_year}&payroll_month=${record?.payroll_month}&employee_id=${record?.hrms_monthly_payroll_employee?.id}`}
           className="btn btn-primary btn-sm"
+          target="_blank"
         >
           <FilePdfFilled /> <span className="ms-2"> Download</span>
         </Link>

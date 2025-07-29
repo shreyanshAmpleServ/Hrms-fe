@@ -2,6 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import apiClient from "../../utils/axiosConfig";
 
+/**
+ * Fetch default configuration settings
+ * @function fetchSettings
+ * @returns {Promise} Promise that resolves to settings data
+ */
 export const fetchSettings = createAsyncThunk(
   "settings/fetchSettings",
   async (_, thunkAPI) => {
@@ -9,34 +14,44 @@ export const fetchSettings = createAsyncThunk(
       const response = await apiClient.get("/v1/default-configuration");
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch settings"
-      );
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
+/**
+ * Update default configuration settings
+ * @function updateSettings
+ * @param {Object} reqData - Request data
+ * @returns {Promise} Promise that resolves to settings data
+ */
 export const updateSettings = createAsyncThunk(
   "settings/updateSettings",
-  async (datas, thunkAPI) => {
+  async (reqData, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.post(`/v1/default-configuration-upsert`, datas.reqData),
+        apiClient.post(`/v1/default-configuration-upsert`, reqData),
         {
           loading: "Updating settings...",
-          success: (res) =>
-            res.data.message || "Settings updated successfully!",
+          success: (res) => res.data.message,
           error: (error) => error.response?.data?.message,
         }
       );
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update settings"
-      );
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   }
 );
+
+/**
+ * Settings reducer
+ * @typedef {Object} SettingsState
+ * @property {Object} settings - Settings data
+ * @property {boolean} loading - Is loading
+ * @property {string|null} error - Error message
+ * @property {string|null} success - Success message
+ */
 const settingsSlice = createSlice({
   name: "settings",
   initialState: {
@@ -46,6 +61,10 @@ const settingsSlice = createSlice({
     success: null,
   },
   reducers: {
+    /**
+     * Clear error and success messages
+     * @function clearMessages
+     */
     clearMessages(state) {
       state.error = null;
       state.success = null;
@@ -71,7 +90,7 @@ const settingsSlice = createSlice({
       })
       .addCase(updateSettings.fulfilled, (state, action) => {
         state.loading = false;
-        state.settings = action.payload.data;
+        // state.settings = action.payload.data;
       })
       .addCase(updateSettings.rejected, (state, action) => {
         state.loading = false;
@@ -79,5 +98,11 @@ const settingsSlice = createSlice({
       });
   },
 });
+
+/**
+ * Exports
+ * @exports {Object} settingsSlice - Settings reducer
+ * @exports {Function} clearMessages - Clear error and success messages
+ */
 export const { clearMessages } = settingsSlice.actions;
 export default settingsSlice.reducer;
