@@ -45,8 +45,6 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
   );
   const { employeeOptions } = useSelector((state) => state.employee || {});
 
-  logger.info(approvalSetupByRequestType);
-
   useEffect(() => {
     dispatch(employeeOptionsFn());
   }, []);
@@ -58,6 +56,11 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
         approvalSetupList?.map((item) => item?.approver_id) || [];
       const available = employeeOptions
         .filter((option) => !selectedEmployeeIds.includes(option?.value))
+        .filter((option) =>
+          option?.label
+            ?.toLowerCase()
+            .includes(watch("searchQuery").toLowerCase())
+        )
         .map((option) => ({
           approver_id: option.value,
           name: option.label,
@@ -67,7 +70,7 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
         }));
       setAvailableEmployees(available);
     }
-  }, [employeeOptions, approvalSetupList]);
+  }, [employeeOptions, approvalSetupList, watch("searchQuery")]);
 
   useEffect(() => {
     setApprovalSetupList(
@@ -97,6 +100,7 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
     if (approvalSetup) {
       reset({
         request_type: approvalSetup?.request_type || "",
+        searchQuery: "",
         no_of_approvers: approvalSetup?.no_of_approvers || 1,
         is_active: approvalSetup?.is_active || "Y",
       });
@@ -115,6 +119,7 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
     } else {
       reset({
         request_type: "",
+        searchQuery: "",
         no_of_approvers: 1,
         is_active: "Y",
       });
@@ -250,16 +255,34 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
     return (
       <div className="col-md-6 position-relative">
         <div className="card mb-0 h-100">
-          <div className="card-header">
-            <h6 className="mb-0 d-flex align-items-center">
-              Available Employees
-              <span className="badge bg-secondary ms-2">
-                {availableEmployees?.length || 0}
-              </span>
-            </h6>
-            <small className="text-muted">
-              Drag employees to add as approvers
-            </small>
+          <div className="card-header row">
+            <div className="col-md-6">
+              <h6 className="mb-0">
+                Available Employees
+                <span className="badge bg-secondary ms-2">
+                  {availableEmployees?.length || 0}
+                </span>
+              </h6>
+              <small className="text-muted">
+                Drag employees to add as approvers
+              </small>
+            </div>
+            <div className="col-md-6 d-flex align-items-center">
+              <Controller
+                name="searchQuery"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="text"
+                    className="form-control"
+                    placeholder="Search employees..."
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
           </div>
           <div
             className="card-body p-0"

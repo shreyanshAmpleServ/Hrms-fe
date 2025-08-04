@@ -126,36 +126,6 @@ const ApprovalReports = () => {
       width: 150,
     },
     {
-      title: "Request Description",
-      key: "request_description",
-      render: (text, record) => {
-        const requestData = record?.request_approval_request?.request_data;
-        if (!requestData) return "-";
-
-        // If it's a string, display it directly (truncated if too long)
-        if (typeof requestData === "string") {
-          return requestData.length > 100 ? (
-            <span title={requestData}>{requestData.substring(0, 100)}...</span>
-          ) : (
-            requestData
-          );
-        }
-
-        // If it's an object, convert to readable format
-        if (typeof requestData === "object") {
-          const description = JSON.stringify(requestData, null, 2);
-          return description.length > 100 ? (
-            <span title={description}>{description.substring(0, 100)}...</span>
-          ) : (
-            description
-          );
-        }
-
-        return requestData.toString();
-      },
-      width: 250,
-    },
-    {
       title: "Sequence",
       dataIndex: "sequence",
       key: "sequence",
@@ -170,13 +140,15 @@ const ApprovalReports = () => {
       render: (value) => (
         <div
           className={`text-capitalize badge ${
-            value === "R"
+            value === "P"
               ? "bg-warning text-dark"
               : value === "A"
                 ? "bg-success"
                 : value === "P"
                   ? "bg-danger"
-                  : "bg-secondary"
+                  : value === "R"
+                    ? "bg-danger"
+                    : "bg-secondary"
           }`}
         >
           {value === "P"

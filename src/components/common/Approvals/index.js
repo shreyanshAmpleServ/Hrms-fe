@@ -21,11 +21,6 @@ const ApprovalSidebarItem = () => {
 
   const approvals = requests || [];
 
-  const handleClose = () => {
-    const element = document.getElementById("close-button");
-    element?.click();
-  };
-
   const showDrawer = () => {
     setIsOpen(true);
   };
@@ -112,19 +107,22 @@ const ApprovalSidebarItem = () => {
               {approvals.map((item) => {
                 const requestType =
                   item.reference?.leave_types?.leave_type ||
+                  item.reference?.loan_types?.loan_name ||
                   item.request_type
                     .replace("_", " ")
                     .replace(/^\w/, (c) => c.toUpperCase());
                 const requesterName =
                   item.requests_employee?.full_name || "Unknown";
                 const reason = item.reference?.reason || "N/A";
-                const timeAgo = moment(item.createdate).calendar();
+                const timeAgo = moment(item.createdate).format("DD-MM-YYYY");
 
                 return (
                   <div
+                    style={{ paddingRight: "0" }}
                     className="list-group-item card mb-0 border-0 border-bottom"
                     key={item.id}
                   >
+                    {/* Leave Request UI */}
                     {item.request_type === "leave_request" && (
                       <div className="d-flex align-items-start">
                         <div className="flex-shrink-0 me-3">
@@ -137,6 +135,8 @@ const ApprovalSidebarItem = () => {
                                 src={item.requests_employee?.profile_pic}
                                 alt="User"
                                 className="rounded-circle"
+                                width="40"
+                                height="40"
                               />
                             ) : (
                               requesterName?.[0]?.toUpperCase()
@@ -144,22 +144,33 @@ const ApprovalSidebarItem = () => {
                           </div>
                         </div>
 
-                        <div className="flex-grow-1">
-                          <div className="d-flex justify-content-between">
-                            <p className="mb-1 fw-semibold text-dark">
+                        <div
+                          className="d-flex flex-column"
+                          style={{ width: "100%" }}
+                        >
+                          <div className="d-flex justify-content-between gap-4">
+                            <p
+                              style={{ width: "80%" }}
+                              className="mb-1 text-dark"
+                            >
                               <strong>{requesterName}</strong> requested{" "}
-                              <span className="text-primary">
+                              <strong className="text-primary">
                                 {requestType}
-                              </span>
+                              </strong>
                             </p>
-                            <small className="text-muted">{timeAgo}</small>
+                            <small
+                              style={{ width: "20%" }}
+                              className="text-muted"
+                            >
+                              {timeAgo}
+                            </small>
                           </div>
 
                           <p className="mb-1 small text-muted">
                             Reason: {reason}
                           </p>
                           <p className="mb-2 small text-muted">
-                            Leave Days :{" "}
+                            Leave Days:{" "}
                             {moment(item.reference?.start_date).format(
                               "DD-MM-YYYY"
                             )}{" "}
@@ -175,25 +186,109 @@ const ApprovalSidebarItem = () => {
                             )
                           </p>
 
-                          <div className="d-flex gap-2">
+                          <div className="d-flex gap-2 mt-2">
                             <button
                               className="btn btn-sm btn-success rounded"
                               style={{ width: "80px" }}
                               onClick={() => {
                                 setOpen(item);
                                 setStatus("A");
-                                handleClose();
                               }}
                             >
                               Approve
                             </button>
                             <button
-                              style={{ width: "80px" }}
                               className="btn btn-sm btn-danger rounded"
+                              style={{ width: "80px" }}
                               onClick={() => {
                                 setOpen(item);
                                 setStatus("R");
-                                handleClose();
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Loan Request UI */}
+                    {item.request_type === "loan_request" && (
+                      <div className="d-flex align-items-start">
+                        <div className="flex-shrink-0 me-3">
+                          <div
+                            className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                            style={{ width: "40px", height: "40px" }}
+                          >
+                            {item.requests_employee?.profile_pic ? (
+                              <img
+                                src={item.requests_employee?.profile_pic}
+                                alt="User"
+                                className="rounded-circle"
+                                width="40"
+                                height="40"
+                              />
+                            ) : (
+                              item.requests_employee?.full_name?.[0]?.toUpperCase()
+                            )}
+                          </div>
+                        </div>
+
+                        <div
+                          className="d-flex flex-column"
+                          style={{ width: "100%" }}
+                        >
+                          <div className="d-flex justify-content-between gap-4">
+                            <p
+                              style={{ width: "80%" }}
+                              className="mb-1 fw-semibold text-dark"
+                            >
+                              <strong>
+                                {item.requests_employee?.full_name}
+                              </strong>{" "}
+                              has requested for{" "}
+                              <strong className="text-primary">
+                                {item.reference?.loan_types?.loan_name}
+                              </strong>{" "}
+                              for{" "}
+                              <strong className="text-primary">
+                                {item.reference?.emi_months} EMI
+                                {item.reference?.emi_months > 1 ? "s" : ""}
+                              </strong>{" "}
+                              of amount{" "}
+                              <strong className="text-primary">
+                                {
+                                  item.reference?.loan_req_currency
+                                    ?.currency_code
+                                }{" "}
+                                ₹{item.reference?.amount}
+                              </strong>
+                            </p>
+                            <small
+                              style={{ width: "20%" }}
+                              className="text-muted text-end"
+                            >
+                              {timeAgo}
+                            </small>
+                          </div>
+
+                          <div className="d-flex gap-2 mt-2">
+                            <button
+                              className="btn btn-sm btn-success rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("A");
+                              }}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="btn btn-sm btn-danger rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("R");
                               }}
                             >
                               Reject

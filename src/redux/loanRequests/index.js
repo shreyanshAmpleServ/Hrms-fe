@@ -41,14 +41,13 @@ export const addLoanRequest = createAsyncThunk(
         {
           loading: "Adding loan request...",
           success: "Loan request added successfully",
-          error: "Failed to add loan request",
+          error: (error) =>
+            error.response?.data?.message || "Failed to add loan request",
         }
       );
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add loan request"
-      );
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   }
 );
@@ -62,7 +61,8 @@ export const updateLoanRequest = createAsyncThunk(
         {
           loading: "Updating loan request...",
           success: "Loan request updated successfully",
-          error: "Failed to update loan request",
+          error: (error) =>
+            error.response?.data?.message || "Failed to update loan request",
         }
       );
       return response.data;
@@ -86,7 +86,8 @@ export const deleteLoanRequest = createAsyncThunk(
         {
           loading: "Deleting loan request...",
           success: "Loan request deleted successfully",
-          error: "Failed to delete loan request",
+          error: (error) =>
+            error.response?.data?.message || "Failed to delete loan request",
         }
       );
 
