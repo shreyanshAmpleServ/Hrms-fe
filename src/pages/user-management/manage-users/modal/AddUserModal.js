@@ -6,6 +6,7 @@ import Select from "react-select";
 import { fetchEmployee } from "../../../../redux/Employee";
 import { addUser } from "../../../../redux/manage-user";
 import { fetchRoles } from "../../../../redux/roles";
+import EmployeeSelect from "../../../../components/common/EmployeeSelect";
 
 const AddUserModal = () => {
   const dispatch = useDispatch();
@@ -49,10 +50,10 @@ const AddUserModal = () => {
 
   useEffect(() => {
     if (showEmployeeDetails && selectedEmployee) {
-      setValue("full_name", `${selectedEmployee.full_name || ""}`);
-      setValue("email", selectedEmployee.email || "");
-      setValue("phone", selectedEmployee.phone_number || "");
-      setValue("address", selectedEmployee.address || "");
+      setValue("full_name", `${selectedEmployee?.full_name || ""}`);
+      setValue("email", selectedEmployee?.meta?.email || "");
+      setValue("phone", selectedEmployee?.meta?.phone_number || "");
+      setValue("address", selectedEmployee?.meta?.address || "");
     }
     if (!showEmployeeDetails) {
       setSelectedEmployee(null);
@@ -181,34 +182,21 @@ const AddUserModal = () => {
                 </label>
                 <Controller
                   name="employee_id"
-                  control={control}
-                  rules={
-                    showEmployeeDetails && { required: "Employee is required" }
-                  }
-                  render={() => {
-                    return (
-                      <Select
-                        options={employees}
-                        isLoading={employeeLoading}
-                        onChange={(empOption) => {
-                          setValue("employee_id", empOption?.value);
-                          setSelectedEmployee(empOption.data);
-                        }}
-                        placeholder="Choose Employee"
-                        className="employee_id"
-                        menuPortalTarget={document.body}
-                        styles={{
-                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                        }}
-                      />
-                    );
+                  rules={{
+                    required: showEmployeeDetails && "Employee is required",
                   }}
+                  control={control}
+                  render={({ field }) => (
+                    <EmployeeSelect
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e.value);
+                        setSelectedEmployee(e);
+                      }}
+                      value={field.value}
+                    />
+                  )}
                 />
-                {errors.employee_id && (
-                  <small className="text-danger">
-                    {errors.employee_id.message}
-                  </small>
-                )}
               </div>
             ) : (
               <div className="col-md-6">
@@ -222,9 +210,11 @@ const AddUserModal = () => {
                     placeholder="Full Name"
                     {...register(
                       "full_name",
-                      !showEmployeeDetails && {
-                        required: "Full Name is required",
-                      }
+                      showEmployeeDetails
+                        ? {}
+                        : {
+                            required: "Full Name is required",
+                          }
                     )}
                     readOnly={showEmployeeDetails}
                   />
@@ -287,11 +277,9 @@ const AddUserModal = () => {
                   type="number"
                   className="form-control"
                   placeholder="Phone Number"
-                  disabled={showEmployeeDetails}
                   {...register("phone", {
                     required: "Phone number is required",
                   })}
-                  readOnly={showEmployeeDetails}
                 />
                 {errors.phone && (
                   <small className="text-danger">{errors.phone.message}</small>

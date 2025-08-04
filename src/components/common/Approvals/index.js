@@ -205,6 +205,17 @@ const ApprovalSidebarItem = () => {
                   </div>
                 );
               })}
+              <div className="d-flex justify-content-center mt-2">
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={() => {
+                    navigate("report/approvals");
+                    onClose();
+                  }}
+                >
+                  View Approval History
+                </button>
+              </div>
             </div>
           )}
         </div>
