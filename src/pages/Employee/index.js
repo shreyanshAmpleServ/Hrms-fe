@@ -120,6 +120,23 @@ const EmployeeList = () => {
         a.hrms_employee_designation?.designation_name -
         b?.hrms_employee_designation?.designation_name,
     },
+    {
+      title: "Join Date",
+      dataIndex: "join_date",
+      render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+      sorter: (a, b) => a.join_date.length - b.join_date.length,
+    },
+    {
+      title: "Currency",
+      dataIndex: "employee_currency",
+      render: (text) =>
+        text?.currency_name
+          ? `${text?.currency_name} (${text?.currency_code})`
+          : "--",
+      sorter: (a, b) =>
+        a.employee_currency?.currency_name -
+        b?.employee_currency?.currency_name,
+    },
 
     {
       title: "Status",

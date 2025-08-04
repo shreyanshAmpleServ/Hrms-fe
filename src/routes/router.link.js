@@ -166,6 +166,8 @@ import LoanEmi from "../pages/LoanEmi";
 import LoanMaster from "../pages/LoanMaster";
 import OverTimeMaster from "../pages/overTimeMaster";
 import Settings from "../pages/crm-settings/settings";
+import ApprovalSetup from "../pages/crm-settings/settings/ApprovalSetup";
+import ApprovalReports from "../pages/Reports/ApprovalReports";
 export { Dashboard, Login };
 const route = all_routes;
 
@@ -725,6 +727,12 @@ export const privateRoutes = [
     title: "Companies Settings",
   },
   {
+    path: route.approvalSetup,
+    element: <ApprovalSetup />,
+    route: Route,
+    title: "Approval Setup",
+  },
+  {
     path: route.language,
     element: <Language />,
     route: Route,
@@ -1166,6 +1174,12 @@ export const privateRoutes = [
     element: <Settings />,
     route: Route,
     title: "Settings",
+  },
+  {
+    path: route.approvalReports,
+    element: <ApprovalReports />,
+    route: Route,
+    title: "Approval Reports",
   },
 ];
 

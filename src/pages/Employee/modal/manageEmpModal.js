@@ -21,6 +21,7 @@ import { createEmployee, updateEmployee } from "../../../redux/Employee";
 import { fetchemploymentType } from "../../../redux/employee-type";
 import { fetchShift } from "../../../redux/Shift";
 import ManageAddress from "./createAddress";
+import logger from "../../../utils/logger";
 
 const initialAddress = [
   {
@@ -97,6 +98,7 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
         resign_date: employeeData?.resign_date || null,
         bank_id: employeeData?.bank_id || "",
         account_number: employeeData?.account_number || null,
+        currency_id: employeeData?.currency_id || 23,
         work_location: employeeData?.work_location || "",
         email: employeeData?.email || "",
         phone_number: employeeData?.phone_number || "",
@@ -150,12 +152,21 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
   const { employmentType } = useSelector((state) => state.employmentType);
   const { shift } = useSelector((state) => state.shift);
 
+  const { currencies } = useSelector((state) => state.currencies);
+  logger.info(currencies);
+
   const { designation } = useSelector((state) => state.designation);
 
   const employmentOptions =
     employmentType?.data?.map((emnt) => ({
       value: emnt.id,
       label: emnt.type_name,
+    })) || [];
+
+  const currencyOptions =
+    currencies?.data?.map((emnt) => ({
+      value: emnt.id,
+      label: emnt.currency_name + " (" + emnt.currency_code + ")",
     })) || [];
 
   const designationOptions =
@@ -744,6 +755,35 @@ const ManageEmpModal = ({ employeeData, setEmployeeData }) => {
                       </div>
                     </div>
 
+                    <div className="col-md-4">
+                      <div className="mb-3">
+                        <label className="col-form-label">Currency</label>
+                        <Controller
+                          name="currency_id"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={[
+                                { value: "", label: "-- Select --" },
+                                ...currencyOptions,
+                              ]}
+                              placeholder="-- Select --"
+                              classNamePrefix="react-select"
+                              value={
+                                currencyOptions?.find(
+                                  (option) =>
+                                    option.value === watch("currency_id")
+                                ) || ""
+                              }
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                              }}
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
                     <div className="col-md-4">
                       <div className="mb-3">
                         <label className="col-form-label">Bank</label>

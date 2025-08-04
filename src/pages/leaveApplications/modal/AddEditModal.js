@@ -12,6 +12,7 @@ import {
 } from "../../../redux/leaveApplication";
 import { fetchLeaveBalanceByEmployee } from "../../../redux/leaveBalance";
 import { fetchLeaveType } from "../../../redux/LeaveType";
+import { getAllRequests } from "../../../redux/Request";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.leave_Applications);
@@ -93,8 +94,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     }
   }, [mode, initialData, reset]);
 
-  const onSubmit = (data) => {
-    const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+  const leaveBalance = leaveBalanceByEmployee?.data?.filter(
+    (item) => item.leave_type_id === Number(watch("leave_type_id"))
+  )?.[0];
+
+  const onSubmit = async (data) => {
+    const closeButton = document.getElementById(
+      "close_btn_add_edit_leave_application_modal"
+    );
     const resumeFile = data.document_attachment?.[0];
 
     const formData = new FormData();
@@ -116,16 +123,16 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     });
 
     if (mode === "add") {
-      dispatch(addleave_application(formData));
+      await dispatch(addleave_application(formData)).unwrap();
     } else if (mode === "edit" && initialData) {
-      dispatch(
+      await dispatch(
         updateleave_application({
           id: initialData.id,
           leave_applicationData: formData,
         })
-      );
+      ).unwrap();
     }
-
+    dispatch(getAllRequests());
     reset();
     closeButton?.click();
   };
@@ -156,13 +163,14 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">
-          {contact ? "Update" : "Add"} Leave Applications
+          {mode === "edit" ? "Update" : "Add"} Leave Applications
         </h5>
 
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
+          id="close_btn_add_edit_leave_application_modal"
           aria-label="Close"
         >
           <i className="ti ti-x" />
@@ -171,7 +179,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
           <div className="col-md-12 mb-3">
-            {leaveBalanceByEmployee?.data?.leave_balance ? (
+            {leaveBalance ? (
               leaveBalanceLoading ? (
                 <Placeholder as="span" animation="glow">
                   <Placeholder
@@ -186,9 +194,8 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
                 </Placeholder>
               ) : (
                 <div className="alert alert-success">
-                  Available Balance for{" "}
-                  {leaveBalanceByEmployee?.data?.leave_type}:{" "}
-                  {leaveBalanceByEmployee?.data?.leave_balance}
+                  Available Balance for {leaveBalance?.leave_type}:{" "}
+                  {leaveBalance?.leave_balance}
                 </div>
               )
             ) : null}

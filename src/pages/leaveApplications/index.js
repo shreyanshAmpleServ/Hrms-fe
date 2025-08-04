@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header";
 import Table from "../../components/common/dataTableNew/index";
+import usePermissions from "../../components/common/Permissions.js";
 import SearchBar from "../../components/datatable/SearchBar";
 import SortDropdown from "../../components/datatable/SortDropDown";
 import {
@@ -13,9 +14,8 @@ import {
   fetchleave_application,
 } from "../../redux/leaveApplication";
 import DeleteAlert from "./alert/DeleteAlert";
-import AddEditModal from "./modal/AddEditModal";
-import usePermissions from "../../components/common/Permissions.js";
 import ManageStatus from "./ManageStatus";
+import AddEditModal from "./modal/AddEditModal";
 
 const LeaveApplications = () => {
   const [open, setOpen] = React.useState(false);

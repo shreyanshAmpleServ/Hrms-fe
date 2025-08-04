@@ -55,7 +55,6 @@ const DepartmentSelect = ({
     [options, value]
   );
 
-  console.log(selectedOption, options);
   return (
     <Select
       className="w-100"

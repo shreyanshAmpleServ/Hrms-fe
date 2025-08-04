@@ -12,6 +12,8 @@ import { employeeOptionsFn } from "../../../redux/Employee";
  * @param {Object} props - Props passed to the component.
  * @param {string|number} props.value - The selected employee value.
  * @param {function} props.onChange - Callback when selection changes.
+ * @param {function} props.placeholder - Callback when selection changes.
+ * @param {function} props.size - Callback when selection changes.
  * @returns {JSX.Element} The EmployeeSelect component.
  */
 const EmployeeSelect = ({

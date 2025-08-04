@@ -673,8 +673,39 @@ export const SidebarData = (userType) => {
 
         {
           label: "Settings",
-          link: route.settings,
           icon: "fa-solid fa-gears",
+          showSubRoute: false,
+          submenu: true,
+          submenuItems: [
+            {
+              label: "Company Settings",
+              link: route.settings,
+              icon: "ti ti-settings",
+              showSubRoute: false,
+              submenu: false,
+            },
+            {
+              label: "Approval Setup",
+              link: route.approvalSetup,
+              icon: "ti ti-approval",
+              showSubRoute: false,
+              submenu: false,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Reports",
+      submenuOpen: true,
+      submenuHdr: "Reports",
+      submenu: false,
+      showSubRoute: false,
+      submenuItems: [
+        {
+          label: "Approvals",
+          link: route.approvalReports,
+          icon: "ti ti-file-invoice",
           showSubRoute: false,
           submenu: false,
         },

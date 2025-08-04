@@ -1,20 +1,21 @@
-import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import ImageWithBasePath from "../imageWithBasePath";
-import { all_routes } from "../../../routes/all_routes";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
+import hrmsLogo from "../../../assets/hrmsLogo.png";
+import { logoutUser } from "../../../redux/auth/authSlice";
 import {
   setExpandMenu,
   setMiniSidebar,
   setMobileSidebar,
 } from "../../../redux/common/commonSlice";
-import { logoutUser } from "../../../redux/auth/authSlice";
+import { all_routes } from "../../../routes/all_routes";
+import ImageWithBasePath from "../imageWithBasePath";
 import Logo from "../logo";
-import ChangePassword from "./ChangePassword";
 import { ModuleOptions } from "../selectoption/selectoption";
-import Select from "react-select";
-import { Controller, useForm } from "react-hook-form";
-import hrmsLogo from "../../../assets/hrmsLogo.png";
+import ChangePassword from "./ChangePassword";
+import ApprovalSidebarItem from "../Approvals";
 
 const Header = () => {
   const route = all_routes;
@@ -58,17 +59,15 @@ const Header = () => {
   };
   const handleLogout = async () => {
     try {
-      // Dispatch logoutUser thunk
-      await dispatch(logoutUser()).unwrap(); // Ensures proper error handling
+      await dispatch(logoutUser()).unwrap();
       localStorage.clear();
-      navigate(route?.login); // Redirect to login page
+      navigate(route?.login);
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
   const handleSelect = (selectedOption) => {
     if (selectedOption) {
-      console.log("Navigating to:", selectedOption.path);
       navigate(selectedOption.path);
     }
   };
@@ -166,7 +165,7 @@ const Header = () => {
             {/* Nav List */}
             <li className="nav-item nav-list">
               <ul className="nav">
-                <li className="dark-mode-list">
+                {/* <li className="dark-mode-list">
                   <Link
                     to="#"
                     className={`dark-mode-toggle ${layoutBs ? "" : "active"}`}
@@ -187,7 +186,7 @@ const Header = () => {
                       onClick={LayoutDark}
                     ></i>
                   </Link>
-                </li>
+                </li> */}
                 <li className="nav-item dropdown">
                   <Link
                     to="#"
@@ -339,28 +338,11 @@ const Header = () => {
                     </div>
                   </div>
                 </li>
-                {/* <li className="nav-item">
-                  <Link to={route.faq} className="btn btn-help">
-                    <i className="ti ti-help-hexagon" />
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="#" className="btn btn-chart-pie">
-                    <i className="ti ti-chart-pie" />
-                  </Link>
-                </li> */}
               </ul>
             </li>
-            {/* /Nav List */}
-            {/* Email */}
-            {/* <li className="nav-item nav-item-email nav-item-box">
-              <Link to={route.email}>
-                <i className="ti ti-message-circle-exclamation" />
-                <span className="badge rounded-pill">14</span>
-              </Link>
-            </li> */}
-            {/* /Email */}
-            {/* Notifications */}
+            <li className="nav-item dropdown nav-item-box">
+              <ApprovalSidebarItem />
+            </li>
             <li className="nav-item dropdown nav-item-box">
               <Link to="#" className="nav-link" data-bs-toggle="dropdown">
                 <i className="ti ti-bell" />

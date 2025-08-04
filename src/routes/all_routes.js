@@ -218,7 +218,11 @@ export const all_routes = {
   // SETTINGS - OTHER
   banIpAddrress: "/other-settings/ban-ip-address",
   storage: "/other-settings/storage",
-  settings: "/configurations",
+  settings: "/settings/configurations",
+  approvalSetup: "/settings/approval-setup",
+
+  // REPORTS
+  approvalReports: "report/approvals",
 
   // MISCELLANEOUS
   meetingType: "/meeting-type",

@@ -194,7 +194,7 @@ const Settings = () => {
         </div>
 
         {/* Company Logo Card */}
-        <div className="card shadow-sm mb-4">
+        <div className="card shadow-sm mb-4 p-3">
           <div className="card-body">
             <h5 className="card-title fw-semibold mb-3">
               <FaBuilding className="me-2 text-primary" />
@@ -320,7 +320,7 @@ const Settings = () => {
         </div>
 
         {/* Basic Information Card */}
-        <div className="card shadow-sm mb-4">
+        <div className="card shadow-sm mb-4 p-3">
           <div className="card-body">
             <h5 className="card-title fw-semibold mb-3">
               <FaBuilding className="me-2 text-primary" />
@@ -421,7 +421,7 @@ const Settings = () => {
         </div>
 
         {/* Address Information Card */}
-        <div className="card shadow-sm mb-4">
+        <div className="card shadow-sm mb-4 p-3">
           <div className="card-body">
             <h5 className="card-title fw-semibold mb-3">
               <FaMapMarkerAlt className="me-2 text-primary" />
@@ -543,7 +543,7 @@ const Settings = () => {
         </div>
 
         {/* Tax & Legal Information Card */}
-        <div className="card shadow-sm mb-4">
+        <div className="card shadow-sm mb-4 p-3">
           <div className="card-body">
             <h5 className="card-title fw-semibold mb-3">
               <FaFileInvoiceDollar className="me-2 text-primary" />
@@ -595,13 +595,6 @@ const Settings = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <div className="d-flex justify-content-end gap-2"></div>
           </div>
         </div>
       </form>

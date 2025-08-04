@@ -32,7 +32,8 @@ export const addleave_application = createAsyncThunk(
           success: "Leave application added successfully",
           error: (error) => {
             return (
-              error.response.data.message || "Failed to add leave application"
+              error?.response?.data?.message ||
+              "Failed to add leave application"
             );
           },
         }

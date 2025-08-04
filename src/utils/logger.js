@@ -1,4 +1,14 @@
+/**
+ * Logger utility for consistent console logging with different log levels and styles.
+ *
+ * @namespace logger
+ */
 const logger = {
+  /**
+   * Logs a debug message to the console.
+   * @param {string|object} message - The message or object to log.
+   * @param {...any} args - Additional arguments to log.
+   */
   debug: (message, ...args) => {
     if (typeof message === "object") {
       console.log("%c[DEBUG]", "color: #666", message, ...args);
@@ -7,6 +17,11 @@ const logger = {
     }
   },
 
+  /**
+   * Logs an info message to the console.
+   * @param {string|object} message - The message or object to log.
+   * @param {...any} args - Additional arguments to log.
+   */
   info: (message, ...args) => {
     if (typeof message === "object") {
       console.log(
@@ -25,6 +40,11 @@ const logger = {
     }
   },
 
+  /**
+   * Logs a success message to the console.
+   * @param {string|object} message - The message or object to log.
+   * @param {...any} args - Additional arguments to log.
+   */
   success: (message, ...args) => {
     if (typeof message === "object") {
       console.log(
@@ -43,6 +63,34 @@ const logger = {
     }
   },
 
+  /**
+   * Logs a general message to the console.
+   * @param {string|object} message - The message or object to log.
+   * @param {...any} args - Additional arguments to log.
+   */
+  log: (message, ...args) => {
+    if (typeof message === "object") {
+      console.log(
+        "%c[LOG]",
+        "color: #ffffff; font-weight: bold",
+        message,
+        ...args
+      );
+    } else {
+      console.log(
+        "%c[LOG]",
+        "color: #ffffff; font-weight: bold",
+        message,
+        ...args
+      );
+    }
+  },
+
+  /**
+   * Logs a warning message to the console.
+   * @param {string|object} message - The message or object to log.
+   * @param {...any} args - Additional arguments to log.
+   */
   warn: (message, ...args) => {
     if (typeof message === "object") {
       console.log(
@@ -61,6 +109,11 @@ const logger = {
     }
   },
 
+  /**
+   * Logs an error message to the console.
+   * @param {string|object} message - The message or object to log.
+   * @param {...any} args - Additional arguments to log.
+   */
   error: (message, ...args) => {
     if (typeof message === "object") {
       console.log(

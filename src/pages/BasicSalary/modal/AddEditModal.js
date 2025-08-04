@@ -26,6 +26,7 @@ import {
 } from "../../../redux/pay-component";
 import { fetchWorkLifeEventLog } from "../../../redux/WorkLifeEventLog";
 import DeleteAlert from "../alert/DeleteAlert";
+import logger from "../../../utils/logger";
 
 const initialComponent = [
   {
@@ -315,6 +316,17 @@ const AddEditModal = ({
     },
     [componentOptions]
   );
+
+  useEffect(() => {
+    setBasicSalaryData((prevData) => {
+      return prevData.map((item) => {
+        return {
+          ...item,
+          currency_id: employeeData?.currency_id,
+        };
+      });
+    });
+  }, [employeeData, watch("employee_id")]);
 
   // Delete row
   const handleDeleteBasicSalary = useCallback(() => {
