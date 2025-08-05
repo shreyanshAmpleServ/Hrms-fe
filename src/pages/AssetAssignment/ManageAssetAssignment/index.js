@@ -30,7 +30,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
       serial_number: assetAssignment?.serial_number || "",
       issued_on: assetAssignment?.issued_on || new Date(),
       returned_on: assetAssignment?.returned_on || "",
-      status: assetAssignment?.status || "Pending",
+      status: assetAssignment?.status || "Available",
     });
   }, [assetAssignment, reset]);
 

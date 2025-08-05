@@ -81,10 +81,7 @@ const ApprovalSidebarItem = () => {
           />
         </div>
 
-        <div
-          className="p-1"
-          style={{ backgroundColor: "#f8f9fa", height: "100%" }}
-        >
+        <div className="p-1" style={{ backgroundColor: "#f8f9fa" }}>
           {approvals.length === 0 ? (
             <div className="d-flex flex-column align-items-center justify-content-center p-5 text-center">
               <i className="ti ti-clipboard-check display-1 mb-3 text-muted opacity-50"></i>
@@ -153,24 +150,24 @@ const ApprovalSidebarItem = () => {
                               style={{ width: "80%" }}
                               className="mb-1 text-dark"
                             >
-                              <strong>{requesterName}</strong> requested{" "}
+                              <strong>{requesterName}</strong> has requested{" "}
                               <strong className="text-primary">
                                 {requestType}
                               </strong>
                             </p>
                             <small
                               style={{ width: "20%" }}
-                              className="text-muted"
+                              className="text-muted px-2 text-end"
                             >
                               {timeAgo}
                             </small>
                           </div>
 
                           <p className="mb-1 small text-muted">
-                            Reason: {reason}
+                            Reason : {reason}
                           </p>
                           <p className="mb-2 small text-muted">
-                            Leave Days:{" "}
+                            Leave Days :{" "}
                             {moment(item.reference?.start_date).format(
                               "DD-MM-YYYY"
                             )}{" "}
@@ -261,16 +258,103 @@ const ApprovalSidebarItem = () => {
                                   item.reference?.loan_req_currency
                                     ?.currency_code
                                 }{" "}
-                                ₹{item.reference?.amount}
+                                {item.reference?.amount}
                               </strong>
                             </p>
                             <small
                               style={{ width: "20%" }}
-                              className="text-muted text-end"
+                              className="text-muted px-2 text-end"
                             >
                               {timeAgo}
                             </small>
                           </div>
+
+                          <div className="d-flex gap-2 mt-2">
+                            <button
+                              className="btn btn-sm btn-success rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("A");
+                              }}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="btn btn-sm btn-danger rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("R");
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Advance Request UI */}
+                    {item.request_type === "advance_request" && (
+                      <div className="d-flex align-items-start">
+                        <div className="flex-shrink-0 me-3">
+                          <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                            {item.requests_employee?.profile_pic ? (
+                              <img
+                                src={item.requests_employee?.profile_pic}
+                                alt="User"
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  objectFit: "cover",
+                                }}
+                                className="rounded-circle "
+                              />
+                            ) : (
+                              item.requests_employee?.full_name?.[0]?.toUpperCase()
+                            )}
+                          </div>
+                        </div>
+
+                        <div
+                          className="d-flex flex-column"
+                          style={{ width: "100%" }}
+                        >
+                          <div className="d-flex justify-content-between gap-4">
+                            <p
+                              style={{ width: "80%" }}
+                              className="mb-1 text-dark"
+                            >
+                              <strong>
+                                {item.requests_employee?.full_name}
+                              </strong>{" "}
+                              has requested{" "}
+                              <strong className="text-primary">
+                                Advance Payment
+                              </strong>{" "}
+                              of amount{" "}
+                              <strong className="text-primary">
+                                {item.reference?.amount_requested}
+                              </strong>
+                            </p>
+                            <small
+                              style={{ width: "20%" }}
+                              className="text-muted px-2 text-end"
+                            >
+                              {timeAgo}
+                            </small>
+                          </div>
+
+                          <p className="mb-1 small text-muted">
+                            Reason : {item.reference?.reason || "N/A"}
+                          </p>
+                          <p className="mb-2 small text-muted">
+                            Repayment Schedule :{" "}
+                            {moment(item.reference?.repayment_schedule).format(
+                              "DD-MM-YYYY"
+                            )}
+                          </p>
 
                           <div className="d-flex gap-2 mt-2">
                             <button
@@ -308,7 +392,8 @@ const ApprovalSidebarItem = () => {
                     onClose();
                   }}
                 >
-                  View Approval History
+                  <i className="ti ti-file-report me-2" />
+                  View Approval Reports
                 </button>
               </div>
             </div>

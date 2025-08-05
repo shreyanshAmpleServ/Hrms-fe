@@ -8,6 +8,7 @@ import {
   createAdvancePayment,
   updateAdvancePayment,
 } from "../../../redux/AdvancePayment";
+import { getAllRequests } from "../../../redux/Request";
 
 const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
               amount_approved: data.amount_requested,
             })
           ).unwrap();
+      dispatch(getAllRequests());
       closeButton.click();
       reset();
       setAdvancePayment(null);

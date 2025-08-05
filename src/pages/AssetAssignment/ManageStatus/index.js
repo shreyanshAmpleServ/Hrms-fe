@@ -1,21 +1,16 @@
+import moment from "moment";
 import React, { useEffect } from "react";
 import { Button, CloseButton, Modal } from "react-bootstrap";
+import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import Select from "react-select";
 import { updateAssetAssignment } from "../../../redux/AssetAssignment";
-import DatePicker from "react-datepicker";
-import moment from "moment";
 
 const statusOptions = [
-  { value: "A", label: "Available" },
-  { value: "Assigned", label: "Assigned" },
-  { value: "In Use", label: "In Use" },
-  { value: "Under Maintenance", label: "Under Maintenance" },
-  { value: "D", label: "Damaged" },
-  { value: "L", label: "Lost" },
-  { value: "Disposed", label: "Disposed" },
-  { value: "R", label: "Returned" },
+  { value: "P", label: "Pending" },
+  { value: "A", label: "Approved" },
+  { value: "R", label: "Rejected" },
 ];
 const ManageStatus = ({ open, setOpen, selected }) => {
   const dispatch = useDispatch();

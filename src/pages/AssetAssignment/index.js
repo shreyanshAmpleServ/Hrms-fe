@@ -122,42 +122,16 @@ const AssetAssignment = () => {
       render: (value) => (
         <div
           className={`text-capitalize badge ${
-            value === "A"
-              ? "bg-primary"
-              : value === "Assigned"
-                ? "bg-info"
-                : value === "In Use"
-                  ? "bg-secondary"
-                  : value === "Under Maintenance"
-                    ? "bg-warning"
-                    : value === "D"
-                      ? "bg-danger"
-                      : value === "L"
-                        ? "bg-dark"
-                        : value === "Disposed"
-                          ? "bg-secondary"
-                          : value === "R"
-                            ? "bg-success"
-                            : "bg-secondary"
+            value === "P"
+              ? "bg-warning"
+              : value === "A"
+                ? "bg-success"
+                : value === "R"
+                  ? "bg-danger"
+                  : "bg-danger"
           }`}
         >
-          {value === "A"
-            ? "Available"
-            : value === "Assigned"
-              ? "Assigned"
-              : value === "In Use"
-                ? "In Use"
-                : value === "Under Maintenance"
-                  ? "Under Maintenance"
-                  : value === "D"
-                    ? "Damaged"
-                    : value === "L"
-                      ? "Lost"
-                      : value === "Disposed"
-                        ? "Disposed"
-                        : value === "R"
-                          ? "Returned"
-                          : value || "—"}
+          {value === "P" ? "Pending" : value === "A" ? "Approved" : "Rejected"}
         </div>
       ),
       sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
@@ -189,13 +163,7 @@ const AssetAssignment = () => {
                       }}
                     >
                       <i className="ti ti-settings text-blue"></i>
-                      {record.status === "I"
-                        ? "Pending/Progress"
-                        : record.status === "P"
-                          ? "Pending/Completed"
-                          : record.status === "C"
-                            ? "Pending/Completed"
-                            : "Manage Status"}
+                      Manage Status
                     </Link>
                   )}
                   {isUpdate && (

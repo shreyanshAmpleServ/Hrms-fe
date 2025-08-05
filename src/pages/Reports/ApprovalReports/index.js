@@ -418,7 +418,7 @@ const ApprovalReports = () => {
                           />
                         </div>
                       </div>
-                      <div className="d-flex align-items-center justify-content-end px-3 flex-wrap row-gap-2 col-md-4">
+                      <div className="d-flex align-items-center justify-content-end flex-wrap row-gap-2 col-md-4">
                         <DateRangePickerComponent
                           selectedDateRange={selectedDateRange}
                           setSelectedDateRange={setSelectedDateRange}
