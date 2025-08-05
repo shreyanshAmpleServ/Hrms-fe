@@ -86,11 +86,11 @@ const AdvancePayment = () => {
       dataIndex: "amount_requested",
       render: (text) => <p className="text-capitalize">{text}</p> || "-",
     },
-    {
-      title: "Amount Approved",
-      dataIndex: "amount_approved",
-      render: (text) => <p className="text-capitalize">{text}</p> || "-",
-    },
+    // {
+    //   title: "Amount Approved",
+    //   dataIndex: "amount_approved",
+    //   render: (text) => <p className="text-capitalize">{text}</p> || "-",
+    // },
     {
       title: "Due Date",
       dataIndex: "repayment_schedule",

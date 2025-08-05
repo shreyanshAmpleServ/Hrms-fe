@@ -25,8 +25,8 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
       reset({
         employee_id: advancePayment?.employee_id,
         request_date: advancePayment?.request_date || moment().toISOString(),
-        amount_requested: advancePayment?.amount_requested,
-        amount_approved: advancePayment?.amount_approved || "",
+        amount_requested: advancePayment?.amount_requested || 0,
+        amount_approved: advancePayment?.amount_approved || 0,
         approval_status: advancePayment?.approval_status || "pending",
         reason: advancePayment?.reason,
         approval_date: advancePayment.approval_date || moment().toISOString(),
@@ -40,8 +40,8 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
         request_date: moment().toISOString(),
         repayment_schedule: moment().add(1, "month").toISOString(),
         approval_status: "pending",
-        amount_requested: "",
-        amount_approved: "",
+        amount_requested: 0,
+        amount_approved: 0,
         reason: "",
         approval_date: moment().toISOString(),
         employee_id: "",
@@ -59,7 +59,12 @@ const ManageAdvancePayment = ({ setAdvancePayment, advancePayment }) => {
               advancePaymentData: { ...data },
             })
           ).unwrap()
-        : await dispatch(createAdvancePayment({ ...data })).unwrap();
+        : await dispatch(
+            createAdvancePayment({
+              ...data,
+              amount_approved: data.amount_requested,
+            })
+          ).unwrap();
       closeButton.click();
       reset();
       setAdvancePayment(null);

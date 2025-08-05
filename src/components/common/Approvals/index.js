@@ -241,7 +241,7 @@ const ApprovalSidebarItem = () => {
                           <div className="d-flex justify-content-between gap-4">
                             <p
                               style={{ width: "80%" }}
-                              className="mb-1 fw-semibold text-dark"
+                              className="mb-1 text-dark"
                             >
                               <strong>
                                 {item.requests_employee?.full_name}

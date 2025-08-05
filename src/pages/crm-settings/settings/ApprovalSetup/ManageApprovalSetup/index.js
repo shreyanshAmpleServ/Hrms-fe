@@ -59,7 +59,7 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
         .filter((option) =>
           option?.label
             ?.toLowerCase()
-            .includes(watch("searchQuery").toLowerCase())
+            .includes(watch("searchQuery")?.toLowerCase() || "")
         )
         .map((option) => ({
           approver_id: option.value,
@@ -286,7 +286,7 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
           </div>
           <div
             className="card-body p-0"
-            style={{ maxHeight: "400px", overflowY: "auto" }}
+            style={{ maxHeight: "430px", overflowY: "auto" }}
           >
             <Droppable droppableId="available-employees">
               {(provided, snapshot) => (
@@ -482,7 +482,7 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
           </div>
           <div
             className="card-body p-0"
-            style={{ maxHeight: "400px", overflowY: "auto" }}
+            style={{ maxHeight: "430px", overflowY: "auto" }}
           >
             <Droppable droppableId="approvers">
               {(provided, snapshot) => (
@@ -822,7 +822,7 @@ const ManageApprovalSetup = ({ setApprovalSetup, approvalSetup }) => {
               </div>
             )}
 
-            <div className="d-flex align-items-center justify-content-end mt-4">
+            <div className="d-flex align-items-center justify-content-end mt-2">
               <button
                 type="button"
                 data-bs-dismiss="offcanvas"
