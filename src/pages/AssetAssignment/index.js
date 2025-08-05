@@ -153,7 +153,7 @@ const AssetAssignment = () => {
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
+                  {isUpdate && record.status === "P" && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
@@ -166,7 +166,7 @@ const AssetAssignment = () => {
                       Manage Status
                     </Link>
                   )}
-                  {isUpdate && (
+                  {isUpdate && record.status === "P" && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"

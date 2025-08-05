@@ -7,6 +7,7 @@ import bolls from "../../assets/bolls.png";
 import ImageWithBasePath from "../../components/common/imageWithBasePath";
 import FlashMessage from "../../components/common/modals/FlashMessage";
 import { AllRoutes } from "../../config/AllRoute";
+import hrmsLogo from "../../assets/hrmsLogo.png";
 import { loginUser } from "../../redux/auth/authSlice";
 
 const Login = () => {
@@ -18,21 +19,11 @@ const Login = () => {
   const { loading, error } = useSelector((state) => state.auth);
   const [errMsg, setErrMsg] = useState("");
 
-  // Sync initial error state to errMsg
   useEffect(() => {
     if (error?.message) {
       setErrMsg(error.message);
     }
   }, [error]);
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   const result = await dispatch(loginUser({ email: username, password }));
-  //   // const result = await dispatch(registerUser({ email:username, password }));
-
-  //   if (loginUser.fulfilled.match(result)) {
-  //     navigate("/dashboard");
-  //   }
-  // };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -41,7 +32,6 @@ const Login = () => {
 
     if (loginUser.fulfilled.match(result)) {
       const role = result.payload.data.role;
-
       if (role === "admin") {
         navigate("/dashboard");
       } else {
@@ -115,7 +105,7 @@ const Login = () => {
               <div className="mx-auto mw-450">
                 <div className="text-center mb-4">
                   <ImageWithBasePath
-                    src="assets/img/logo/logo-2.png"
+                    src={hrmsLogo}
                     className="img-fluid  "
                     style={{ height: "70px", width: "90px" }}
                     alt="Logo"
@@ -196,18 +186,7 @@ const Login = () => {
                     {loading ? "Signing In..." : "Sign In"}
                   </button>
                 </div>
-                <div className="mb-3">
-                  <h6>
-                    New on our platform?
-                    <Link
-                      to={route.register}
-                      className="text-purple link-hover"
-                    >
-                      {" "}
-                      Create an account
-                    </Link>
-                  </h6>
-                </div>
+
                 <div className="text-center">
                   <p className="fw-medium text-gray">
                     Copyright © 2025 - HRMS

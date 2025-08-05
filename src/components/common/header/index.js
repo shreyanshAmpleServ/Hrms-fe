@@ -107,7 +107,6 @@ const Header = () => {
         </Link>
         <div className="header-user">
           <ul className="nav user-menu">
-            {/* Search */}
             <li className="nav-item nav-search-inputs me-auto">
               <div className="top-nav-search">
                 <Link to="#" className="responsive-search">
@@ -115,11 +114,6 @@ const Header = () => {
                 </Link>
                 <form className="dropdown">
                   <div className="searchinputs" id="dropdownMenuClickable">
-                    {/* <input option={ModuleOptions} placeholder="Search" className={layoutBs === "dark" ? "text-light" : "text-dark"} /> */}
-                    {/* <select onChange={handleChange} placeholder="Search" className={layoutBs === "dark" ? "text-light" : "text-dark"}  >
-                    {ModuleOptions?.map((item)=><option value={item?.value}  >{item.name}</option>)}
-                    </select> */}
-
                     <div id="searchs">
                       <Controller
                         name="Select"
@@ -161,36 +155,12 @@ const Header = () => {
                 </form>
               </div>
             </li>
-            {/* /Search */}
-            {/* Nav List */}
             <li className="nav-item nav-list">
               <ul className="nav">
-                {/* <li className="dark-mode-list">
-                  <Link
-                    to="#"
-                    className={`dark-mode-toggle ${layoutBs ? "" : "active"}`}
-                    id="dark-mode-toggle"
-                  >
-                    <i
-                      className={`ti ti-sun light-mode ${
-                        layoutBs === "dark" ? "" : "active"
-                      }`}
-                      onClick={LayoutLight}
-                    >
-                      {" "}
-                    </i>
-                    <i
-                      className={`ti ti-moon dark-mode ${
-                        layoutBs === "dark" ? "active" : ""
-                      }`}
-                      onClick={LayoutDark}
-                    ></i>
-                  </Link>
-                </li> */}
                 <li className="nav-item dropdown">
                   <Link
                     to="#"
-                    className="btn btn-header-list"
+                    className="btn rounded bg-light"
                     data-bs-toggle="dropdown"
                   >
                     <i className="ti ti-layout-grid-add" />
@@ -200,53 +170,53 @@ const Header = () => {
                       <div className="col-md-6">
                         <ul className="menu-list">
                           <li>
-                            <Link to={route.contactList}>
+                            <Link to={route.employee}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-violet">
                                   <i className="ti ti-user-up" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Contacts</p>
-                                  <span>Add New Contact</span>
+                                  <p>Employee</p>
+                                  <span>Add New Employee</span>
                                 </div>
                               </div>
                             </Link>
                           </li>
                           <li>
-                            <Link to={route.pipeline}>
+                            <Link to={route.candidates}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-green">
-                                  <i className="ti ti-timeline-event-exclamation" />
+                                  <i className="ti ti-user-up" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Pipline</p>
-                                  <span>Add New Pipline</span>
+                                  <p>Candidates</p>
+                                  <span>Add New Candidate</span>
                                 </div>
                               </div>
                             </Link>
                           </li>
                           <li>
-                            <Link to={route.activities}>
+                            <Link to={route.appraisalEntries}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-pink">
-                                  <i className="ti ti-bounce-right" />
+                                  <i className="ti ti-list" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Activities</p>
-                                  <span>Add New Activity</span>
+                                  <p>Appraisals</p>
+                                  <span>Process Appraisals</span>
                                 </div>
                               </div>
                             </Link>
                           </li>
                           <li>
-                            <Link to={route.analytics}>
+                            <Link to={route.assetAssignment}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-info">
-                                  <i className="ti ti-analyze" />
+                                  <i className="ti ti-box" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Analytics</p>
-                                  <span>Shows All Information</span>
+                                  <p>Asset Assignment</p>
+                                  <span>Manage Assets</span>
                                 </div>
                               </div>
                             </Link>
@@ -269,66 +239,66 @@ const Header = () => {
                       <div className="col-md-6">
                         <ul className="menu-list">
                           <li>
-                            <Link to={route.deals}>
+                            <Link to={route.leaveApplications}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-info">
-                                  <i className="ti ti-medal" />
+                                  <i className="ti ti-clipboard-list" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Deals</p>
-                                  <span>Add New Deals</span>
+                                  <p>Leave Applications</p>
+                                  <span>Add Leave Application</span>
                                 </div>
                               </div>
                             </Link>
                           </li>
                           <li>
-                            <Link to={route.leads}>
+                            <Link to={route.monthlyPayroll}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-secondary">
-                                  <i className="ti ti-chart-arcs" />
+                                  <i className="ti ti-receipt" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Leads</p>
-                                  <span>Add New Leads</span>
+                                  <p>Monthly Payroll</p>
+                                  <span>Process Monthly Payroll</span>
                                 </div>
                               </div>
                             </Link>
                           </li>
                           <li>
-                            <Link to={route.companies}>
+                            <Link to={route.approvalSetup}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-tertiary">
-                                  <i className="ti ti-building-community" />
-                                </span>
-                                <div className="menu-details-content">
-                                  <p>Company</p>
-                                  <span>Add New Company</span>
-                                </div>
-                              </div>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to={`${route.activities}/Task`}>
-                              <div className="menu-details">
-                                <span className="menu-list-icon bg-success">
                                   <i className="ti ti-list-check" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Tasks</p>
-                                  <span>Add New Task</span>
+                                  <p>Approvals Setup</p>
+                                  <span>Manage Approvals Setup</span>
                                 </div>
                               </div>
                             </Link>
                           </li>
                           <li>
-                            <Link to={route.campaign}>
+                            <Link to={`${route.timeSheet}`}>
+                              <div className="menu-details">
+                                <span className="menu-list-icon bg-success">
+                                  <i className="ti ti-clock" />
+                                </span>
+                                <div className="menu-details-content">
+                                  <p>Time Sheet</p>
+                                  <span>Add New Time Sheet</span>
+                                </div>
+                              </div>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to={route.helpdeskTicket}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-purple">
                                   <i className="ti ti-brand-campaignmonitor" />
                                 </span>
                                 <div className="menu-details-content">
-                                  <p>Campaign</p>
-                                  <span>Add New Campaign</span>
+                                  <p>Helpdesk Ticket</p>
+                                  <span>Add New Helpdesk Ticket</span>
                                 </div>
                               </div>
                             </Link>
@@ -343,7 +313,7 @@ const Header = () => {
             <li className="nav-item dropdown nav-item-box">
               <ApprovalSidebarItem />
             </li>
-            <li className="nav-item dropdown nav-item-box">
+            {/* <li className="nav-item dropdown nav-item-box">
               <Link to="#" className="nav-link" data-bs-toggle="dropdown">
                 <i className="ti ti-bell" />
                 <span className="badge rounded-pill">13</span>
@@ -445,7 +415,7 @@ const Header = () => {
                   </Link>
                 </div>
               </div>
-            </li>
+            </li> */}
             {/* /Notifications */}
             {/* Profile Dropdown */}
             <li className="nav-item dropdown has-arrow main-drop">

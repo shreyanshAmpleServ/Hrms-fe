@@ -155,7 +155,7 @@ const AdvancePayment = () => {
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
+                  {isUpdate && record.approval_status === "pending" && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
@@ -165,16 +165,16 @@ const AdvancePayment = () => {
                       }}
                     >
                       <i className="ti ti-settings text-blue"></i>
-                      {record.approval_status === "P"
+                      {record.approval_status === "pending"
                         ? "Approve/Reject"
-                        : record.approval_status === "R"
+                        : record.approval_status === "approved"
                           ? "Pending/Approve"
-                          : record.approval_status === "A"
+                          : record.approval_status === "rejected"
                             ? "Reject/Pending"
                             : "Manage Status"}
                     </Link>
                   )}
-                  {isUpdate && (
+                  {isUpdate && record.approval_status === "pending" && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"

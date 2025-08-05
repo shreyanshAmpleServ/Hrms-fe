@@ -99,6 +99,9 @@ ChartJS.register(
 const AdminDashboard = () => {
   const dispatch = useDispatch();
 
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { requests, loadingAll } = useSelector((state) => state.request);
+
   const { attendanceCount } = useSelector((state) => state.dashboardsCount);
   const { employeeByDepartment } = useSelector(
     (state) => state.employeeByDepartment
@@ -191,8 +194,8 @@ const AdminDashboard = () => {
         <div className="content">
           <div className="row">
             <div className="col-md-12">
-              <div className="">
-                <div className="col-md-12">
+              <div className="pt-2">
+                {/* <div className="col-md-12">
                   <div className="page-header mb-0">
                     <div className="row align-items-center">
                       <div className="col-sm-4">
@@ -207,7 +210,7 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="card shadow-sm">
                   <div className="card-body">
@@ -215,7 +218,7 @@ const AdminDashboard = () => {
                       <div className="d-flex align-items-center mb-2">
                         <div className="avatar avatar-xl rounded online online-sm me-3 flex-shrink-0">
                           <img
-                            src={image1}
+                            src={user?.profile_img}
                             alt="Company Logo"
                             className="preview rounded-circle"
                           />
@@ -223,13 +226,13 @@ const AdminDashboard = () => {
                         </div>
                         <div>
                           <h4 className="mb-2 text-capitalize">
-                            Welcome Back, Admin
+                            Welcome Back, {user?.full_name}
                           </h4>
                           <p
                             style={{ fontSize: "14px" }}
                             className="mb-0 text-capitalize"
                           >
-                            You have 21 Pending Approvals & 14 Leave Requests
+                            You have {requests?.length ?? 0} Pending Approvals.
                           </p>
                         </div>
                       </div>
@@ -304,7 +307,7 @@ const AdminDashboard = () => {
                   upcomingBirthdays={upcomingBirthdays}
                   upcomingAnniversaries={upcomingAnniversaries}
                 />
-                <div className="col-lg-12">
+                {/* <div className="col-lg-12">
                   <div className="card shadow-sm w-100">
                     <div className="d-flex flex-column">
                       <div className="row d-flex align-items-center p-3">
@@ -341,7 +344,7 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

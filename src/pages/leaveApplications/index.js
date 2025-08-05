@@ -156,7 +156,7 @@ const LeaveApplications = () => {
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
+                  {isUpdate && record.status === "P" && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"
@@ -166,16 +166,16 @@ const LeaveApplications = () => {
                       }}
                     >
                       <i className="ti ti-settings text-blue"></i>
-                      {record.status === "Pending"
+                      {record.status === "P"
                         ? "Approve/Reject"
-                        : record.status === "Rejected"
+                        : record.status === "R"
                           ? "Pending/Approve"
-                          : record.status === "Approved"
+                          : record.status === "A"
                             ? "Reject/Pending"
                             : "Manage Status"}
                     </Link>
                   )}
-                  {isUpdate && (
+                  {isUpdate && record.status === "P" && (
                     <Link
                       className="dropdown-item edit-popup"
                       to="#"

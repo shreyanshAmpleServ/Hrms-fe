@@ -12,7 +12,7 @@ const ApprovalSidebarItem = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("A");
-  const { requests, loadingAll } = useSelector((state) => state.request);
+  const { requests } = useSelector((state) => state.request);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,13 +21,9 @@ const ApprovalSidebarItem = () => {
 
   const approvals = requests || [];
 
-  const showDrawer = () => {
-    setIsOpen(true);
-  };
+  const showDrawer = () => setIsOpen(true);
 
-  const onClose = () => {
-    setIsOpen(false);
-  };
+  const onClose = () => setIsOpen(false);
 
   return (
     <>
@@ -183,7 +179,7 @@ const ApprovalSidebarItem = () => {
                             )
                           </p>
 
-                          <div className="d-flex gap-2 mt-2">
+                          <div className="d-flex gap-2 mt-1">
                             <button
                               className="btn btn-sm btn-success rounded"
                               style={{ width: "80px" }}
@@ -269,7 +265,7 @@ const ApprovalSidebarItem = () => {
                             </small>
                           </div>
 
-                          <div className="d-flex gap-2 mt-2">
+                          <div className="d-flex gap-2 mt-1">
                             <button
                               className="btn btn-sm btn-success rounded"
                               style={{ width: "80px" }}
@@ -335,6 +331,11 @@ const ApprovalSidebarItem = () => {
                               </strong>{" "}
                               of amount{" "}
                               <strong className="text-primary">
+                                {
+                                  item.reference
+                                    ?.hrms_advance_payement_entry_employee
+                                    ?.employee_currency?.currency_code
+                                }{" "}
                                 {item.reference?.amount_requested}
                               </strong>
                             </p>
@@ -356,7 +357,98 @@ const ApprovalSidebarItem = () => {
                             )}
                           </p>
 
-                          <div className="d-flex gap-2 mt-2">
+                          <div className="d-flex gap-2 mt-1">
+                            <button
+                              className="btn btn-sm btn-success rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("A");
+                              }}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="btn btn-sm btn-danger rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("R");
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Asset Request UI */}
+                    {item.request_type === "asset_request" && (
+                      <div className="d-flex align-items-start">
+                        <div className="flex-shrink-0 me-3">
+                          <div
+                            className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                            style={{ width: "40px", height: "40px" }}
+                          >
+                            {item.requests_employee?.profile_pic ? (
+                              <img
+                                src={item.requests_employee?.profile_pic}
+                                alt="User"
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  objectFit: "cover",
+                                }}
+                                className="rounded-circle"
+                              />
+                            ) : (
+                              item.requests_employee?.full_name?.[0]?.toUpperCase()
+                            )}
+                          </div>
+                        </div>
+
+                        <div
+                          className="d-flex flex-column"
+                          style={{ width: "100%" }}
+                        >
+                          <div className="d-flex justify-content-between gap-4">
+                            <p
+                              style={{ width: "80%" }}
+                              className="mb-1 text-dark"
+                            >
+                              <strong>
+                                {item.requests_employee?.full_name}
+                              </strong>{" "}
+                              has requested{" "}
+                              <strong className="text-primary">
+                                Asset Assignment
+                              </strong>{" "}
+                              for{" "}
+                              <strong className="text-primary">
+                                {item.reference?.asset_name}
+                              </strong>
+                            </p>
+                            <small
+                              style={{ width: "20%" }}
+                              className="text-muted px-2 text-end"
+                            >
+                              {timeAgo}
+                            </small>
+                          </div>
+
+                          <p className="mb-1 small text-muted">
+                            Asset Type :{" "}
+                            {
+                              item.reference?.asset_assignment_type
+                                ?.asset_type_name
+                            }
+                          </p>
+                          <p className="mb-1 small text-muted">
+                            Serial Number : {item.reference?.serial_number}
+                          </p>
+
+                          <div className="d-flex gap-2 mt-1">
                             <button
                               className="btn btn-sm btn-success rounded"
                               style={{ width: "80px" }}
@@ -384,17 +476,16 @@ const ApprovalSidebarItem = () => {
                   </div>
                 );
               })}
-              <div className="d-flex justify-content-center mt-2">
-                <button
-                  className="btn btn-outline-primary"
+              <div className="d-flex justify-content-center text-center card py-2 px-1">
+                <Link
+                  to="report/approvals"
                   onClick={() => {
-                    navigate("report/approvals");
                     onClose();
                   }}
                 >
                   <i className="ti ti-file-report me-2" />
                   View Approval Reports
-                </button>
+                </Link>
               </div>
             </div>
           )}
