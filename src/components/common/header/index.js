@@ -160,7 +160,7 @@ const Header = () => {
                 <li className="nav-item dropdown">
                   <Link
                     to="#"
-                    className="btn rounded bg-light"
+                    className="nav-link position-relative px-3 d-flex align-items-center justify-content-center"
                     data-bs-toggle="dropdown"
                   >
                     <i className="ti ti-layout-grid-add" />
@@ -298,7 +298,7 @@ const Header = () => {
                                 </span>
                                 <div className="menu-details-content">
                                   <p>Helpdesk Ticket</p>
-                                  <span>Add New Helpdesk Ticket</span>
+                                  <span>Add Helpdesk Ticket</span>
                                 </div>
                               </div>
                             </Link>
