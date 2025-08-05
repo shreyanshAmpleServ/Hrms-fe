@@ -19,7 +19,7 @@ const ProbationReview = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();
@@ -151,21 +151,21 @@ const ProbationReview = () => {
       render: (value) => (
         <div
           className={`text-capitalize badge ${
-            value === "C"
+            value === "A"
               ? "bg-success"
-              : value === "E"
+              : value === "P"
                 ? "bg-warning"
-                : value === "T"
+                : value === "R"
                   ? "bg-danger"
                   : "bg-secondary"
           }`}
         >
-          {value === "C"
-            ? "Confirmed"
-            : value === "E"
-              ? "Extended"
-              : value === "T"
-                ? "Terminated"
+          {value === "A"
+            ? "Approved"
+            : value === "P"
+              ? "Pending"
+              : value === "R"
+                ? "Rejected"
                 : value || "—"}
         </div>
       ),
@@ -201,13 +201,7 @@ const ProbationReview = () => {
                       }}
                     >
                       <i className="ti ti-settings text-blue"></i>
-                      {record.status === "P"
-                        ? "Approve/Reject"
-                        : record.status === "C"
-                          ? "Pending/Approve"
-                          : record.status === "A"
-                            ? "Reject/Pending"
-                            : "Manage Status"}
+                      Manage Status
                     </Link>
                   )}
                   {isUpdate && (

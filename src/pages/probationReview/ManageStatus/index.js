@@ -6,9 +6,9 @@ import Select from "react-select";
 import { updateprobationReview } from "../../../redux/ProbationReview";
 
 const statusOptions = [
-  { label: "Confirmed", value: "C" },
-  { label: "Extended", value: "E" },
-  { label: "Terminated", value: "T" },
+  { label: "Pending", value: "P" },
+  { label: "Approved", value: "A" },
+  { label: "Rejected", value: "R" },
 ];
 const ManageStatus = ({ open, setOpen, selected }) => {
   const dispatch = useDispatch();

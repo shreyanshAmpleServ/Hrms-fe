@@ -9,6 +9,7 @@ import {
   createprobationReview,
   updateprobationReview,
 } from "../../../redux/ProbationReview";
+import { getAllRequests } from "../../../redux/Request";
 
 const ManageProbationReview = ({ setprobationReview, probationReview }) => {
   const dispatch = useDispatch();
@@ -98,6 +99,7 @@ const ManageProbationReview = ({ setprobationReview, probationReview }) => {
       } else {
         await dispatch(createprobationReview({ ...data })).unwrap();
       }
+      dispatch(getAllRequests());
       closeButton?.click();
       reset();
       setprobationReview(null);

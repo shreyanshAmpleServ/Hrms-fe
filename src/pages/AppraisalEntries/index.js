@@ -1,11 +1,12 @@
 import { Rate } from "antd";
-import Table from "../../components/common/dataTableNew/index.js";
 import moment from "moment";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header.js";
+import Table from "../../components/common/dataTableNew/index.js";
+import usePermissions from "../../components/common/Permissions.js";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js/index.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchAppraisalEntries } from "../../redux/AppraisalsEntries/index.js";
@@ -18,7 +19,7 @@ const AppraisalEntries = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();
@@ -63,15 +64,8 @@ const AppraisalEntries = () => {
 
   const data = appraisalEntries?.data;
 
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Appraisal Entries"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Appraisal Entries");
 
   const columns = [
     {
@@ -99,6 +93,23 @@ const AppraisalEntries = () => {
       dataIndex: "reviewer_comments",
       render: (text) => text || "-",
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (text) => (
+        <span
+          className={`badge ${
+            text === "P"
+              ? "bg-warning"
+              : text === "A"
+                ? "bg-success"
+                : "bg-danger"
+          }`}
+        >
+          {text === "P" ? "Pending" : text === "A" ? "Approved" : "Rejected"}
+        </span>
+      ),
+    },
     ...(isDelete || isUpdate
       ? [
           {
@@ -114,7 +125,7 @@ const AppraisalEntries = () => {
                   <i className="fa fa-ellipsis-v"></i>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">
-                  {isUpdate && (
+                  {isUpdate && a?.status === "P" && (
                     <Link
                       className="dropdown-item"
                       to="#"

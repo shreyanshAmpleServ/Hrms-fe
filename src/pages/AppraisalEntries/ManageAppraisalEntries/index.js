@@ -6,6 +6,7 @@ import {
   createAppraisalEntries,
   updateAppraisalEntries,
 } from "../../../redux/AppraisalsEntries";
+import { getAllRequests } from "../../../redux/Request";
 
 const ManageAppraisalEntries = ({ setSelected, selected }) => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
       employee_id: "",
       review_period: "",
       rating: "",
+      status: "P",
       reviewer_comments: "",
     },
   });
@@ -31,6 +33,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
         employee_id: selected.employee_id || "",
         review_period: selected.review_period || "",
         rating: selected.rating || "",
+        status: selected.status || "P",
         reviewer_comments: selected.reviewer_comments || "",
       });
     } else {
@@ -38,6 +41,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
         employee_id: "",
         review_period: "",
         rating: "",
+        status: "P",
         reviewer_comments: "",
       });
     }
@@ -59,6 +63,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
               rating: Number(data.rating),
             })
           ).unwrap();
+      dispatch(getAllRequests());
       closeButton.click();
       reset();
       setSelected(null);

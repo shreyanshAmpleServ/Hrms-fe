@@ -18,6 +18,7 @@ export const requestTypeOptions = [
   { label: "Asset Request", value: "asset_request" },
   { label: "Probation Review", value: "probation_review" },
   { label: "Appraisal Review", value: "appraisal_review" },
+  { label: "Leave Encashment", value: "leave_encashment" },
 ];
 
 const statusOptions = [
