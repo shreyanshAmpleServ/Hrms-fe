@@ -33,7 +33,7 @@ const SalesInvoice = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();
@@ -41,7 +41,7 @@ const SalesInvoice = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Sales Invoice",
+    (i) => i?.module_name === "Sales Invoice"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -199,7 +199,7 @@ const SalesInvoice = () => {
     dispatch(fetchSalesInvoice({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
   const { salesInvoices, loading, error, success } = useSelector(
-    (state) => state.salesInvoices,
+    (state) => state.salesInvoices
   );
   useEffect(() => {
     setPaginationData({
@@ -222,7 +222,7 @@ const SalesInvoice = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -280,7 +280,7 @@ const SalesInvoice = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        }),
+        })
       ),
       startY: 20,
     });

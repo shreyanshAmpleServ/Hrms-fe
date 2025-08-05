@@ -18,7 +18,7 @@ const RecognitionAwards = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData, setPaginationData] = useState({});
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();

@@ -38,13 +38,13 @@ const DocumentLists = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Documents",
+    (i) => i?.module_name === "Documents"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -268,7 +268,7 @@ const DocumentLists = () => {
                       .pop()
                       .split("?")[0]
                       .split("#")[0]
-                      .toLowerCase(),
+                      .toLowerCase()
                   ) ? (
                     <div
                       className="dropdown-item"
@@ -300,7 +300,7 @@ const DocumentLists = () => {
       : []),
   ];
   const { attachments, loading, error, success } = useSelector(
-    (state) => state.attachments,
+    (state) => state.attachments
   );
 
   React.useEffect(() => {
@@ -309,7 +309,7 @@ const DocumentLists = () => {
         filteredType,
         search: searchText,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, filteredType, searchText, selectedDateRange]);
 
@@ -335,7 +335,7 @@ const DocumentLists = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -383,7 +383,7 @@ const DocumentLists = () => {
     doc.autoTable({
       head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))],
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ),
       startY: 20,
     });

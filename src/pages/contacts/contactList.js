@@ -327,7 +327,7 @@ const ContactList = () => {
   //   startDate: selectedDateRange.startDate,
   //   endDate: selectedDateRange.endDate,
   //   ranges: {
-  //     "Last 30 Days": [moment().subtract(30, "days"), moment()],
+  //     "Last 30 Days": [moment().subtract(365, "days"), moment()],
   //     "Last 7 Days": [moment().subtract(7, "days"), moment()],
   //     "Last Month": [
   //       moment().subtract(1, "months").startOf("month"),

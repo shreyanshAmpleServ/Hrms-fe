@@ -24,7 +24,7 @@ const Company = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending");
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const [selectedCompany, setSelectedCompany] = useState(null);

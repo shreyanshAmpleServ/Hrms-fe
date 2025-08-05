@@ -33,7 +33,7 @@ const PurchaseOrders = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();
@@ -41,7 +41,7 @@ const PurchaseOrders = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Purchase Order",
+    (i) => i?.module_name === "Purchase Order"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -217,7 +217,7 @@ const PurchaseOrders = () => {
     dispatch(fetchPurchaseOrders({ search: searchText, ...selectedDateRange }));
   }, [dispatch, searchText, selectedDateRange]);
   const { purchaseOrders, loading, error, success } = useSelector(
-    (state) => state.purchaseOrders,
+    (state) => state.purchaseOrders
   );
   useEffect(() => {
     setPaginationData({
@@ -240,7 +240,7 @@ const PurchaseOrders = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -298,7 +298,7 @@ const PurchaseOrders = () => {
             return moment(row.createdate).format("DD-MM-YYYY") || "";
           }
           return row[col.dataIndex] || "";
-        }),
+        })
       ),
       startY: 20,
     });

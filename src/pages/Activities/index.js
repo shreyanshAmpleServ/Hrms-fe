@@ -31,13 +31,13 @@ const Activities = () => {
   const [activity, setActivity] = useState();
   const [paginationData, setPaginationData] = useState();
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();
 
   const { activities, loading, error, success } = useSelector(
-    (state) => state.activities || {},
+    (state) => state.activities || {}
   );
   React.useEffect(() => {
     dispatch(fetchActivityTypes());
@@ -50,7 +50,7 @@ const Activities = () => {
         ...selectedDateRange,
         filter: filter,
         filter2: newFilter,
-      }),
+      })
     );
   }, [dispatch, searchValue, selectedDateRange, filter, newFilter]);
 
@@ -77,7 +77,7 @@ const Activities = () => {
         filter2: newFilter,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
 
@@ -93,7 +93,7 @@ const Activities = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Activities",
+    (i) => i?.module_name === "Activities"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;

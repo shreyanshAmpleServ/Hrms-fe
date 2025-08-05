@@ -28,7 +28,7 @@ const ProjectList = () => {
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending");
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const [selectedProject, setSelectedProject] = useState(null);

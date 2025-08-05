@@ -33,7 +33,7 @@ const PipelineList = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [paginationData, setPaginationData] = useState();
   const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: moment().subtract(30, "days"),
+    startDate: moment().subtract(365, "days"),
     endDate: moment(),
   });
   const dispatch = useDispatch();
@@ -53,7 +53,7 @@ const PipelineList = () => {
 
   const permissions = JSON?.parse(localStorage.getItem("permissions"));
   const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Pipeline",
+    (i) => i?.module_name === "Pipeline"
   )?.[0]?.permissions;
   const isAdmin = localStorage.getItem("role")?.includes("admin");
   const isView = isAdmin || allPermissions?.view;
@@ -156,7 +156,7 @@ const PipelineList = () => {
   ];
   // Get pipelines data from Redux store
   const { pipelines, loading, error, success } = useSelector(
-    (state) => state.pipelines,
+    (state) => state.pipelines
   );
   React.useEffect(() => {
     dispatch(
@@ -164,7 +164,7 @@ const PipelineList = () => {
         search: searchText,
         status: selectedStatus,
         ...selectedDateRange,
-      }),
+      })
     );
   }, [dispatch, searchText, selectedStatus, selectedDateRange]);
 
@@ -190,7 +190,7 @@ const PipelineList = () => {
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
-      }),
+      })
     );
   };
   // Memoized filtered data
@@ -199,11 +199,11 @@ const PipelineList = () => {
 
     if (sortOrder === "ascending") {
       data = [...data].sort(
-        (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
+        (a, b) => new Date(a.createdDate) - new Date(b.createdDate)
       );
     } else if (sortOrder === "descending") {
       data = [...data].sort(
-        (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
+        (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
       );
     }
     return data;
@@ -227,7 +227,7 @@ const PipelineList = () => {
     doc.autoTable({
       head: [columns.map((col) => (col.title !== "Actions" ? col.title : ""))], // Extract column headers
       body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
+        columns.map((col) => row[col.dataIndex] || "")
       ), // Extract row data
       startY: 20,
     });
