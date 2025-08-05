@@ -206,6 +206,98 @@ const ApprovalSidebarItem = () => {
                       </div>
                     )}
 
+                    {/* Leave-Encashment Request UI */}
+                    {item.request_type === "leave_encashment" && (
+                      <div className="d-flex align-items-start">
+                        {/* avatar */}
+                        <div className="flex-shrink-0 me-3">
+                          <div
+                            className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                            style={{ width: "40px", height: "40px" }}
+                          >
+                            {item.requests_employee?.profile_pic ? (
+                              <img
+                                src={item.requests_employee?.profile_pic}
+                                alt="User"
+                                width="40"
+                                height="40"
+                                className="rounded-circle"
+                              />
+                            ) : (
+                              item.requests_employee?.full_name?.[0]?.toUpperCase()
+                            )}
+                          </div>
+                        </div>
+
+                        {/* body */}
+                        <div
+                          className="d-flex flex-column"
+                          style={{ width: "100%" }}
+                        >
+                          {/* title row */}
+                          <div className="d-flex justify-content-between gap-4">
+                            <p
+                              style={{ width: "80%" }}
+                              className="mb-1 text-dark"
+                            >
+                              <strong>
+                                {item.requests_employee?.full_name}
+                              </strong>{" "}
+                              has requested&nbsp;
+                              <strong className="text-primary">
+                                Leave Encashment
+                              </strong>
+                            </p>
+                            <small
+                              style={{ width: "20%" }}
+                              className="text-muted px-2 text-end"
+                            >
+                              {moment(item.createdate).format("DD-MM-YYYY")}
+                            </small>
+                          </div>
+
+                          {/* details */}
+                          <p className="mb-1 small text-muted">
+                            Leave Type&nbsp;:&nbsp;
+                            {item.reference?.encashment_leave_types
+                              ?.leave_type || "N/A"}
+                          </p>
+                          <p className="mb-1 small text-muted">
+                            Leave Days&nbsp;:&nbsp;
+                            {item.reference?.leave_days || "0"}
+                          </p>
+                          <p className="mb-2 small text-muted">
+                            Encashment Amount&nbsp;:&nbsp;
+                            {item.reference?.encashment_amount || "0.00"}
+                          </p>
+
+                          {/* action buttons */}
+                          <div className="d-flex gap-2 mt-1">
+                            <button
+                              className="btn btn-sm btn-success rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("A");
+                              }}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="btn btn-sm btn-danger rounded"
+                              style={{ width: "80px" }}
+                              onClick={() => {
+                                setOpen(item);
+                                setStatus("R");
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Loan Request UI */}
                     {item.request_type === "loan_request" && (
                       <div className="d-flex align-items-start">

@@ -12,6 +12,12 @@ import {
   FaSave,
   FaTimes,
   FaUpload,
+  FaServer,
+  FaNetworkWired,
+  FaUser,
+  FaLock,
+  FaShieldAlt,
+  FaKey,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import ReactSelect from "react-select";
@@ -55,6 +61,14 @@ const Settings = () => {
         panNumber: settings.pan_number || "",
         taxId: settings.tax_id || "",
         description: settings.description || "",
+        // SMTP Configuration
+        smtpHost: settings.smtp_host || "",
+        smtpPort: settings.smtp_port || "",
+        smtpUsername: settings.smtp_username || "",
+        smtpPassword: settings.smtp_password || "",
+        smtpSecurity: settings.smtp_security || "tls",
+        smtpFromName: settings.smtp_from_name || "",
+        smtpFromEmail: settings.smtp_from_email || "",
       });
 
       if (settings.company_logo) {
@@ -84,6 +98,13 @@ const Settings = () => {
     formData.append("pan_number", data.panNumber);
     formData.append("tax_id", data.taxId);
     formData.append("description", data.description);
+
+    // SMTP Configuration
+    formData.append("smtp_host", data.smtpHost);
+    formData.append("smtp_port", data.smtpPort);
+    formData.append("smtp_username", data.smtpUsername);
+    formData.append("smtp_password", data.smtpPassword);
+
     await dispatch(updateSettings(formData)).unwrap();
     dispatch(fetchSettings());
   };
@@ -99,6 +120,13 @@ const Settings = () => {
     value: emnt.id,
     label: emnt.name,
   }));
+
+  // SMTP Security options
+  const smtpSecurityOptions = [
+    { value: "none", label: "None" },
+    { value: "tls", label: "TLS" },
+    { value: "ssl", label: "SSL" },
+  ];
 
   useEffect(() => {
     dispatch(fetchSettings());
@@ -207,7 +235,7 @@ const Settings = () => {
               <div className="row align-items-center">
                 <div className="col-md-3 col-sm-4 mb-3 mb-md-0">
                   <div
-                    className="border rounded p-3 text-center bg-light position-relative"
+                    className="border rounded h-100 flex-column d-flex align-items-center justify-content-center text-center position-relative"
                     style={{ minHeight: "120px" }}
                   >
                     {logoPreview ? (
@@ -541,7 +569,109 @@ const Settings = () => {
             </div>
           </div>
         </div>
-
+        {/* SMTP Configuration Card */}
+        <div className="card shadow-sm mb-4 p-3">
+          <div className="card-body">
+            <h5 className="card-title fw-semibold mb-3">
+              <FaServer className="me-2 text-primary" />
+              SMTP Configuration
+            </h5>
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label fw-medium">
+                  SMTP Host <span className="text-danger">*</span>
+                </label>
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <FaServer className="text-muted" />
+                  </span>
+                  <input
+                    type="text"
+                    className={`form-control ${errors.smtpHost ? "is-invalid" : ""}`}
+                    placeholder="smtp.gmail.com"
+                    {...register("smtpHost", {
+                      required: "SMTP host is required",
+                    })}
+                  />
+                  {errors.smtpHost && (
+                    <div className="invalid-feedback">
+                      {errors.smtpHost.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label fw-medium">
+                  SMTP Port <span className="text-danger">*</span>
+                </label>
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <FaNetworkWired className="text-muted" />
+                  </span>
+                  <input
+                    type="number"
+                    className={`form-control ${errors.smtpPort ? "is-invalid" : ""}`}
+                    placeholder="587"
+                    {...register("smtpPort", {
+                      required: "SMTP port is required",
+                    })}
+                  />
+                  {errors.smtpPort && (
+                    <div className="invalid-feedback">
+                      {errors.smtpPort.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label fw-medium">
+                  SMTP Username <span className="text-danger">*</span>
+                </label>
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <FaUser className="text-muted" />
+                  </span>
+                  <input
+                    type="text"
+                    className={`form-control ${errors.smtpUsername ? "is-invalid" : ""}`}
+                    placeholder="your-email@domain.com"
+                    {...register("smtpUsername", {
+                      required: "SMTP username is required",
+                    })}
+                  />
+                  {errors.smtpUsername && (
+                    <div className="invalid-feedback">
+                      {errors.smtpUsername.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label fw-medium">
+                  SMTP Password <span className="text-danger">*</span>
+                </label>
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <FaLock className="text-muted" />
+                  </span>
+                  <input
+                    type="password"
+                    className={`form-control ${errors.smtpPassword ? "is-invalid" : ""}`}
+                    placeholder="Enter SMTP password"
+                    {...register("smtpPassword", {
+                      required: "SMTP password is required",
+                    })}
+                  />
+                  {errors.smtpPassword && (
+                    <div className="invalid-feedback">
+                      {errors.smtpPassword.message}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         {/* Tax & Legal Information Card */}
         <div className="card shadow-sm mb-4 p-3">
           <div className="card-body">
@@ -561,25 +691,11 @@ const Settings = () => {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Enter GST number"
+                    placeholder="Enter registration number"
                     {...register("gstNumber")}
                   />
                 </div>
               </div>
-              {/* <div className="col-md-4 mb-3">
-                <label className="form-label fw-medium">PAN Number</label>
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <FaIdCard className="text-muted" />
-                  </span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter PAN number"
-                    {...register("panNumber")}
-                  />
-                </div>
-              </div> */}
               <div className="col-md-4 mb-3">
                 <label className="form-label fw-medium">Tax ID</label>
                 <div className="input-group">

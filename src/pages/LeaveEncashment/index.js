@@ -12,6 +12,7 @@ import DeleteConfirmation from "./DeleteConfirmation";
 import ManageLeaveEncashment from "./ManageLeaveEncashment";
 import ManageStatus from "./ManageStatus/index.js";
 import LeaveEncashmentManager from "./LeaveEncashmentManager";
+import usePermissions from "../../components/common/Permissions.js/index.js";
 
 const LeaveEncashment = () => {
   const [open, setOpen] = React.useState(false);
@@ -66,16 +67,8 @@ const LeaveEncashment = () => {
   };
 
   const data = leaveEncashment?.data;
-
-  const permissions = JSON?.parse(localStorage.getItem("permissions"));
-  const allPermissions = permissions?.filter(
-    (i) => i?.module_name === "Leave Encashment"
-  )?.[0]?.permissions;
-  const isAdmin = localStorage.getItem("role")?.includes("admin");
-  const isView = isAdmin || allPermissions?.view;
-  const isCreate = isAdmin || allPermissions?.create;
-  const isUpdate = isAdmin || allPermissions?.update;
-  const isDelete = isAdmin || allPermissions?.delete;
+  const { isView, isCreate, isUpdate, isDelete } =
+    usePermissions("Leave Encashment");
 
   const columns = [
     {
@@ -109,11 +102,11 @@ const LeaveEncashment = () => {
       render: (value) => (
         <div
           className={`text-capitalize badge ${
-            value === "R"
+            value === "P"
               ? "bg-warning"
               : value === "A"
                 ? "bg-success"
-                : value === "P"
+                : value === "R"
                   ? "bg-danger"
                   : "bg-secondary"
           }`}
