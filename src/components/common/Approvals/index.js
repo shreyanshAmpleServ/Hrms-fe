@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getAllRequests } from "../../../redux/Request";
+import { getPendingRequests } from "../../../redux/Request";
 import Confirmation from "./Confirmation";
 
 const ApprovalSidebarItem = () => {
@@ -12,14 +12,14 @@ const ApprovalSidebarItem = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("A");
-  const { requests } = useSelector((state) => state.request);
+  const { pendingRequests } = useSelector((state) => state.request);
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getAllRequests());
+    dispatch(getPendingRequests({ status: "P" }));
   }, [dispatch]);
 
-  const approvals = requests || [];
+  const approvals = pendingRequests?.data || [];
 
   const showDrawer = () => setIsOpen(true);
 
@@ -33,7 +33,9 @@ const ApprovalSidebarItem = () => {
         onClick={showDrawer}
       >
         <i className="ti ti-checklist" />
-        <span className="badge bg-danger rounded-pill">{approvals.length}</span>
+        <span className="badge bg-danger rounded-pill">
+          {pendingRequests?.totalCount}
+        </span>
       </Link>
 
       <Drawer
@@ -78,7 +80,7 @@ const ApprovalSidebarItem = () => {
         </div>
 
         <div className="p-1" style={{ backgroundColor: "#f8f9fa" }}>
-          {approvals.length === 0 ? (
+          {approvals?.length === 0 ? (
             <div className="d-flex flex-column align-items-center justify-content-center p-5 text-center">
               <i className="ti ti-clipboard-check display-1 mb-3 text-muted opacity-50"></i>
               <h6 className="text-dark">All Caught Up!</h6>

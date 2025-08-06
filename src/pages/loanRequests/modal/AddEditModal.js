@@ -16,8 +16,8 @@ import {
   updateLoanRequest,
 } from "../../../redux/loanRequests";
 import { fetchloan_type } from "../../../redux/loneType";
+import { getPendingRequests } from "../../../redux/Request";
 import Payment from "./Payment";
-import { getAllRequests } from "../../../redux/Request";
 
 /**
  * AddEditModal component props
@@ -220,7 +220,7 @@ const AddEditModal = ({ mode = "add", selected = null, setSelected }) => {
         updateLoanRequest({ id: selected.id, loanRequestData })
       );
     }
-    dispatch(getAllRequests());
+    dispatch(getPendingRequests());
     if (response?.meta?.requestStatus === "fulfilled") {
       closeButton?.click();
       handleClose();

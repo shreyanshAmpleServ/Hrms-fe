@@ -5,12 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import ReactSelect from "react-select";
 import CollapseHeader from "../../../components/common/collapse-header.js";
 import Table from "../../../components/common/dataTableNew";
+import EmployeeSelect from "../../../components/common/EmployeeSelect/index.js";
 import usePermissions from "../../../components/common/Permissions.js";
 import UnauthorizedImage from "../../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../../components/datatable/DateRangePickerComponent.js";
-import { fetchApprovalReports } from "../../../redux/ApprovalReports";
+import {
+  getAllRequests,
+  takeActionOnRequest,
+} from "../../../redux/Request/index.js";
 import { requestTypeOptions } from "../../crm-settings/settings/ApprovalSetup/ManageApprovalSetup";
-import EmployeeSelect from "../../../components/common/EmployeeSelect/index.js";
+import { Link } from "react-router-dom";
+import Confirmation from "../../../components/common/Approvals/Confirmation/index.js";
 const statusOptions = [
   { label: "Pending", value: "P" },
   { label: "Approved", value: "A" },
@@ -20,8 +25,10 @@ const ApprovalReports = () => {
   const [searchValue, setSearchValue] = useState("");
   const [paginationData, setPaginationData] = useState({});
   const [requestType, setRequestType] = useState({});
-  const [approverId, setApproverId] = useState({});
+  const [requesterId, setRequesterId] = useState({});
   const [status, setStatus] = useState("");
+  const [approvalStatus, setApprovalStatus] = useState("");
+  const [open, setOpen] = useState(false);
 
   const [selectedDateRange, setSelectedDateRange] = useState({
     startDate: moment().subtract(365, "days"),
@@ -29,17 +36,15 @@ const ApprovalReports = () => {
   });
   const dispatch = useDispatch();
 
-  const { approvalReports, loading } = useSelector(
-    (state) => state.approvalReports || {}
-  );
+  const { requests, loading } = useSelector((state) => state.request);
 
   React.useEffect(() => {
     dispatch(
-      fetchApprovalReports({
+      getAllRequests({
         search: searchValue,
         ...selectedDateRange,
         request_type: requestType,
-        approver_id: approverId,
+        requester_id: requesterId,
         status: status,
       })
     );
@@ -48,18 +53,18 @@ const ApprovalReports = () => {
     searchValue,
     selectedDateRange,
     requestType,
-    approverId,
+    requesterId,
     status,
   ]);
 
   React.useEffect(() => {
     setPaginationData({
-      currentPage: approvalReports?.currentPage,
-      totalPage: approvalReports?.totalPages,
-      totalCount: approvalReports?.totalCount,
-      pageSize: approvalReports?.size,
+      currentPage: requests?.currentPage,
+      totalPage: requests?.totalPages,
+      totalCount: requests?.totalCount,
+      pageSize: requests?.size,
     });
-  }, [approvalReports]);
+  }, [requests]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
@@ -68,73 +73,60 @@ const ApprovalReports = () => {
       pageSize,
     }));
     dispatch(
-      fetchApprovalReports({
+      getAllRequests({
         search: searchValue,
         ...selectedDateRange,
         page: currentPage,
         size: pageSize,
         request_type: requestType,
-        approver_id: approverId,
+        requester_id: requesterId,
         status: status,
       })
     );
   };
 
-  const data = approvalReports?.data;
+  const data = requests?.data;
 
   const { isView } = usePermissions("Approval Reports");
 
+  const safeSorter = (a, b, getValue) => {
+    const aValue = getValue(a) || "";
+    const bValue = getValue(b) || "";
+    return aValue.localeCompare(bValue);
+  };
+
   const columns = [
     {
-      title: "Approver Name",
-      key: "approver_name",
-      render: (text, record) =>
-        record?.request_approval_approver?.full_name || "-",
+      title: "Employee Name",
+      key: "employee_name",
+      render: (text, record) => record?.requests_employee?.full_name || "-",
       sorter: (a, b) =>
-        (a?.request_approval_approver?.full_name || "").localeCompare(
-          b?.request_approval_approver?.full_name || ""
-        ),
+        safeSorter(a, b, (record) => record?.requests_employee?.full_name),
       width: 180,
     },
     {
       title: "Employee Code",
       key: "employee_code",
-      render: (text, record) =>
-        record?.request_approval_approver?.employee_code || "-",
+      render: (text, record) => record?.requests_employee?.employee_code || "-",
       sorter: (a, b) =>
-        (a?.request_approval_approver?.employee_code || "").localeCompare(
-          b?.request_approval_approver?.employee_code || ""
-        ),
+        safeSorter(a, b, (record) => record?.requests_employee?.employee_code),
       width: 130,
     },
     {
       title: "Request Type",
       key: "request_type",
       render: (text, record) => {
-        const requestType =
-          record?.request_approval_request?.request_type || "-";
+        const requestType = record?.request_type || "-";
         return (
-          <span className="badge bg-info text-capitalize">
+          <span className="text-capitalize">
             {requestType.replace(/_/g, " ")}
           </span>
         );
       },
-      sorter: (a, b) =>
-        (a?.request_approval_request?.request_type || "").localeCompare(
-          b?.request_approval_request?.request_type || ""
-        ),
-      width: 150,
+      sorter: (a, b) => safeSorter(a, b, (record) => record?.request_type),
     },
     {
-      title: "Sequence",
-      dataIndex: "sequence",
-      key: "sequence",
-      render: (text) => text || "-",
-      sorter: (a, b) => (a.sequence || 0) - (b.sequence || 0),
-      width: 100,
-    },
-    {
-      title: "Status",
+      title: "Overall Status",
       dataIndex: "status",
       key: "status",
       render: (value) => (
@@ -144,11 +136,9 @@ const ApprovalReports = () => {
               ? "bg-warning text-dark"
               : value === "A"
                 ? "bg-success"
-                : value === "P"
+                : value === "R"
                   ? "bg-danger"
-                  : value === "R"
-                    ? "bg-danger"
-                    : "bg-secondary"
+                  : "bg-secondary"
           }`}
         >
           {value === "P"
@@ -160,157 +150,86 @@ const ApprovalReports = () => {
                 : value || "Unknown"}
         </div>
       ),
-      sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
-      width: 120,
+      sorter: (a, b) => safeSorter(a, b, (record) => record?.status),
     },
     {
-      title: "Action Date",
-      dataIndex: "action_at",
-      key: "action_at",
-      render: (text) => {
-        if (!text) return "-";
+      title: "Current Approver",
+      key: "current_approver",
+      render: (text, record) => {
+        const approvers = record?.request_approval_request || [];
+        const pendingApprover = [...approvers]
+          .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
+          .find((approver) => approver.status === "P");
+
+        if (!pendingApprover) return "-";
+
         return (
           <div>
-            <div>{moment(text).format("DD-MM-YYYY")}</div>
+            <div className="fw-semibold">
+              {pendingApprover.request_approval_approver?.full_name} (
+              {pendingApprover.request_approval_approver?.employee_code})
+            </div>
           </div>
         );
       },
-      sorter: (a, b) => {
-        if (!a.action_at && !b.action_at) return 0;
-        if (!a.action_at) return 1;
-        if (!b.action_at) return -1;
-        return new Date(a.action_at) - new Date(b.action_at);
-      },
-      width: 150,
     },
     {
-      title: "Remarks",
-      dataIndex: "remarks",
-      key: "remarks",
-      render: (text) => {
-        if (!text) return "-";
-        return text.length > 50 ? (
-          <span title={text}>{text.substring(0, 50)}...</span>
-        ) : (
-          text
-        );
-      },
-      width: 200,
-    },
-    {
-      title: "Created Date",
+      title: "Applied Date",
       dataIndex: "createdate",
       key: "createdate",
       render: (text) => {
         if (!text) return "-";
         return (
-          <div>
+          <>
             <div>{moment(text).format("DD-MM-YYYY")}</div>
-          </div>
-        );
-      },
-      sorter: (a, b) => new Date(a.createdate) - new Date(b.createdate),
-      width: 150,
-    },
-    {
-      title: "Updated Date",
-      dataIndex: "updatedate",
-      key: "updatedate",
-      render: (text) => {
-        if (!text) return "-";
-        return (
-          <div>
-            <div>{moment(text).format("DD-MM-YYYY")}</div>
-          </div>
+          </>
         );
       },
       sorter: (a, b) => {
-        if (!a.updatedate && !b.updatedate) return 0;
-        if (!a.updatedate) return 1;
-        if (!b.updatedate) return -1;
-        return new Date(a.updatedate) - new Date(b.updatedate);
+        if (!a.createdate && !b.createdate) return 0;
+        if (!a.createdate) return 1;
+        if (!b.createdate) return -1;
+        return new Date(a.createdate) - new Date(b.createdate);
       },
-      width: 150,
     },
-
-    // // Actions column (conditional based on permissions)
-    // ...(isUpdate || isDelete
-    //   ? [
-    //       {
-    //         title: "Actions",
-    //         key: "actions",
-    //         fixed: "right",
-    //         width: 120,
-    //         render: (text, record) => (
-    //           <div className="dropdown table-action">
-    //             <Link
-    //               to="#"
-    //               className="action-icon"
-    //               data-bs-toggle="dropdown"
-    //               aria-expanded="false"
-    //             >
-    //               <i className="fa fa-ellipsis-v"></i>
-    //             </Link>
-    //             <div className="dropdown-menu dropdown-menu-right">
-    //               {isUpdate && (
-    //                 <>
-    //                   <Link
-    //                     className="dropdown-item"
-    //                     to="#"
-    //                     onClick={() => {
-    //                       setSelected(record);
-    //                       setOpen(true);
-    //                     }}
-    //                   >
-    //                     <i className="ti ti-settings text-blue"></i>
-    //                     {record.status === "P"
-    //                       ? "Approve/Reject"
-    //                       : record.status === "R"
-    //                         ? "Pending/Approve"
-    //                         : record.status === "A"
-    //                           ? "Reject/Pending"
-    //                           : "Manage Status"}
-    //                   </Link>
-    //                   <Link
-    //                     className="dropdown-item"
-    //                     to="#"
-    //                     onClick={() => {
-    //                       setSelected(record);
-    //                       setIsOpen(true);
-    //                     }}
-    //                   >
-    //                     <i className="ti ti-edit text-blue"></i> Edit
-    //                   </Link>
-    //                 </>
-    //               )}
-    //               {isDelete && (
-    //                 <Link
-    //                   className="dropdown-item"
-    //                   to="#"
-    //                   onClick={() => handleDeleteApprovalReports(record)}
-    //                 >
-    //                   <i className="ti ti-trash text-danger"></i> Delete
-    //                 </Link>
-    //               )}
-    //               <div className="dropdown-divider"></div>
-    //               <Link
-    //                 className="dropdown-item"
-    //                 to="#"
-    //                 onClick={() => {
-    //                   console.log("View Details:", record);
-    //                 }}
-    //               >
-    //                 <i className="ti ti-eye text-info"></i> View Details
-    //               </Link>
-    //             </div>
-    //           </div>
-    //         ),
-    //       },
-    //     ]
-    //   : []),
+    {
+      title: "Action",
+      key: "action",
+      align: "center",
+      render: (text, record) => {
+        return (
+          <div className="d-flex align-items-center justify-content-center gap-2 mt-1">
+            {record?.status === "P" ? (
+              <>
+                <button
+                  className="btn btn-sm btn-success rounded"
+                  style={{ width: "80px" }}
+                  onClick={() => {
+                    setOpen(record);
+                    setApprovalStatus("A");
+                  }}
+                >
+                  Approve
+                </button>
+                <button
+                  className="btn btn-sm btn-danger rounded"
+                  style={{ width: "80px" }}
+                  onClick={() => {
+                    setOpen(record);
+                    setApprovalStatus("R");
+                  }}
+                >
+                  Reject
+                </button>
+              </>
+            ) : (
+              <p className="text-center">--</p>
+            )}
+          </div>
+        );
+      },
+    },
   ];
-
-  console.log("requestType", approverId);
 
   return (
     <>
@@ -331,9 +250,9 @@ const ApprovalReports = () => {
                 <div className="row align-items-center">
                   <div className="col-4">
                     <h4 className="page-title">
-                      Approval Reports
+                      Approvals
                       <span className="count-title">
-                        {approvalReports?.totalCount}
+                        {requests?.totalCount}
                       </span>
                     </h4>
                   </div>
@@ -357,7 +276,7 @@ const ApprovalReports = () => {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Search Approval Reports"
+                          placeholder="Search Approvals"
                           onChange={(e) => setSearchValue(e.target.value)}
                         />
                       </div>
@@ -386,7 +305,7 @@ const ApprovalReports = () => {
                     {/* Filter */}
                     <div className="d-flex align-items-center justify-content-between mb-4 row-gap-2">
                       <div className="d-flex col-md-8 gap-2 align-items-center">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <ReactSelect
                             options={[
                               ...[{ value: "", label: "All" }],
@@ -395,17 +314,17 @@ const ApprovalReports = () => {
                             value={requestType?.value}
                             classNamePrefix="react-select"
                             onChange={(e) => setRequestType(e.value)}
-                            placeholder="Select Request Type"
+                            placeholder="Request Type"
                           />
                         </div>
                         <div className="col-md-4">
                           <EmployeeSelect
-                            value={approverId}
-                            onChange={(e) => setApproverId(e.value)}
-                            placeholder="All Employee"
+                            value={requesterId}
+                            onChange={(e) => setRequesterId(e.value)}
+                            placeholder="All"
                           />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                           <ReactSelect
                             options={[
                               ...[{ value: "", label: "All" }],
@@ -414,11 +333,11 @@ const ApprovalReports = () => {
                             value={status?.value}
                             classNamePrefix="react-select"
                             onChange={(e) => setStatus(e.value)}
-                            placeholder="Select Status"
+                            placeholder="Status"
                           />
                         </div>
                       </div>
-                      <div className="d-flex align-items-center justify-content-end flex-wrap row-gap-2 col-md-4">
+                      <div className="d-flex align-items-center justify-content-end flex-wrap row-gap-2 col-md-">
                         <DateRangePickerComponent
                           selectedDateRange={selectedDateRange}
                           setSelectedDateRange={setSelectedDateRange}
@@ -455,6 +374,12 @@ const ApprovalReports = () => {
           </div>
         </div>
       </div>
+      <Confirmation
+        open={open}
+        setOpen={setOpen}
+        setStatus={setApprovalStatus}
+        status={approvalStatus}
+      />
     </>
   );
 };

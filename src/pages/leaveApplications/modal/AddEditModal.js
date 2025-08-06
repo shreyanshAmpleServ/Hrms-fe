@@ -12,7 +12,7 @@ import {
 } from "../../../redux/leaveApplication";
 import { fetchLeaveBalanceByEmployee } from "../../../redux/leaveBalance";
 import { fetchLeaveType } from "../../../redux/LeaveType";
-import { getAllRequests } from "../../../redux/Request";
+import { getAllRequests, getPendingRequests } from "../../../redux/Request";
 
 const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.leave_Applications);
@@ -132,7 +132,7 @@ const AddEditModal = ({ contact, mode = "add", initialData = null }) => {
         })
       ).unwrap();
     }
-    dispatch(getAllRequests());
+    dispatch(getPendingRequests());
     reset();
     closeButton?.click();
   };

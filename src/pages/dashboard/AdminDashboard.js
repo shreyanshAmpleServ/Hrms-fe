@@ -11,23 +11,18 @@ import {
 import React, { useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
-import image1 from "../../assets/avatar1.webp";
-import CollapseHeader from "../../components/common/collapse-header";
-import { all_routes } from "../../routes/all_routes";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAttendanceOverview } from "../../redux/Dashboards/AttendanceOverview";
+import { fetchEmployeeAttendanceCount } from "../../redux/Dashboards/DashboardsCount";
+import { fetchEmployeeByDepartment } from "../../redux/Dashboards/EmployeeByDepartment";
+import { fetchEmployeeByDesignations } from "../../redux/Dashboards/EmployeeByDesignations";
+import { fetchEmployeeByStatus } from "../../redux/Dashboards/EmployeeByStatus";
+import { fetchUpcomingAnniversaries } from "../../redux/Dashboards/UpcomingAnniversaries";
+import { fetchUpcomingBirthdays } from "../../redux/Dashboards/UpcomingBirthdays";
 import { ActBirth } from "./Components/Activities&Birthday";
 import { EmployeeDept } from "./Components/EmpDept";
 import { EmployeeByDesignations } from "./Components/EmployeeByDesignations";
 import { EmployeeByStatus } from "./Components/EmployeeByStatus";
-import { useDispatch } from "react-redux";
-import { fetchEmployeeAttendanceCount } from "../../redux/Dashboards/DashboardsCount";
-import { useSelector } from "react-redux";
-import { fetchEmployeeByDepartment } from "../../redux/Dashboards/EmployeeByDepartment";
-import { fetchEmployeeByDesignations } from "../../redux/Dashboards/EmployeeByDesignations";
-import { fetchEmployeeByStatus } from "../../redux/Dashboards/EmployeeByStatus";
-import { fetchUpcomingBirthdays } from "../../redux/Dashboards/UpcomingBirthdays";
-import { fetchUpcomingAnniversaries } from "../../redux/Dashboards/UpcomingAnniversaries";
-import { fetchAttendanceOverview } from "../../redux/Dashboards/AttendanceOverview";
 
 const notifications = [
   {
@@ -99,8 +94,8 @@ ChartJS.register(
 const AdminDashboard = () => {
   const dispatch = useDispatch();
 
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const { requests, loadingAll } = useSelector((state) => state.request);
+  const { user } = useSelector((state) => state.auth);
+  const { pendingRequests } = useSelector((state) => state.request);
 
   const { attendanceCount } = useSelector((state) => state.dashboardsCount);
   const { employeeByDepartment } = useSelector(
@@ -232,7 +227,8 @@ const AdminDashboard = () => {
                             style={{ fontSize: "14px" }}
                             className="mb-0 text-capitalize"
                           >
-                            You have {requests?.length ?? 0} Pending Approvals.
+                            You have {pendingRequests?.totalCount ?? 0} Pending
+                            Approvals.
                           </p>
                         </div>
                       </div>

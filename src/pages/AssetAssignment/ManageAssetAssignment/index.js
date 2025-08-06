@@ -10,7 +10,7 @@ import {
   updateAssetAssignment,
 } from "../../../redux/AssetAssignment";
 import { fetchassets_type } from "../../../redux/assetType";
-import { getAllRequests } from "../../../redux/Request";
+import { getAllRequests, getPendingRequests } from "../../../redux/Request";
 
 const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
   const dispatch = useDispatch();
@@ -60,7 +60,7 @@ const ManageAssetAssignment = ({ setAssetAssignment, assetAssignment }) => {
             })
           ).unwrap()
         : await dispatch(createAssetAssignment({ ...data })).unwrap();
-      dispatch(getAllRequests());
+      dispatch(getPendingRequests());
       closeButton.click();
       reset();
       setAssetAssignment(null);

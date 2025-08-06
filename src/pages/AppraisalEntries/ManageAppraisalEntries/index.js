@@ -6,7 +6,7 @@ import {
   createAppraisalEntries,
   updateAppraisalEntries,
 } from "../../../redux/AppraisalsEntries";
-import { getAllRequests } from "../../../redux/Request";
+import { getPendingRequests } from "../../../redux/Request";
 
 const ManageAppraisalEntries = ({ setSelected, selected }) => {
   const dispatch = useDispatch();
@@ -63,7 +63,7 @@ const ManageAppraisalEntries = ({ setSelected, selected }) => {
               rating: Number(data.rating),
             })
           ).unwrap();
-      dispatch(getAllRequests());
+      dispatch(getPendingRequests());
       closeButton.click();
       reset();
       setSelected(null);

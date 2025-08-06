@@ -1,22 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 import { toast } from "react-hot-toast";
-/**
- * Fetch a single request by request type.
- */
-export const fetchRequest = createAsyncThunk(
-  "request/fetchRequest",
+
+export const getAllRequests = createAsyncThunk(
+  "request/getAllRequests",
   async (params, thunkAPI) => {
     try {
-      const response = await apiClient.get(
-        `/v1/request-by-request-type-reference`,
-        {
-          params: {
-            request_type: params.requestType,
-            reference_id: params.referenceId,
-          },
-        }
-      );
+      const response = await apiClient.get(`/v1/requests-by-users`, {
+        params,
+      });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -25,12 +17,13 @@ export const fetchRequest = createAsyncThunk(
     }
   }
 );
-
-export const getAllRequests = createAsyncThunk(
-  "request/getAllRequests",
-  async (_, thunkAPI) => {
+export const getPendingRequests = createAsyncThunk(
+  "request/getPendingRequests",
+  async (params = { status: "P" }, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/requests-by-users`);
+      const response = await apiClient.get(`/v1/requests-by-users`, {
+        params,
+      });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -62,10 +55,10 @@ export const takeActionOnRequest = createAsyncThunk(
 const requestSlice = createSlice({
   name: "request",
   initialState: {
-    request: null,
     requests: null,
+    pendingRequests: null,
     loading: false,
-    loadingAll: false,
+    loadingPending: false,
     error: null,
     success: null,
   },
@@ -77,28 +70,28 @@ const requestSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchRequest.pending, (state) => {
+      .addCase(getAllRequests.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchRequest.fulfilled, (state, action) => {
-        state.loading = false;
-        state.request = action.payload.data;
-      })
-      .addCase(fetchRequest.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload.message;
-      })
-      .addCase(getAllRequests.pending, (state) => {
-        state.loadingAll = true;
-        state.error = null;
-      })
       .addCase(getAllRequests.fulfilled, (state, action) => {
-        state.loadingAll = false;
+        state.loading = false;
         state.requests = action.payload.data;
       })
       .addCase(getAllRequests.rejected, (state, action) => {
-        state.loadingAll = false;
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(getPendingRequests.pending, (state) => {
+        state.loadingPending = true;
+        state.error = null;
+      })
+      .addCase(getPendingRequests.fulfilled, (state, action) => {
+        state.loadingPending = false;
+        state.pendingRequests = action.payload.data;
+      })
+      .addCase(getPendingRequests.rejected, (state, action) => {
+        state.loadingPending = false;
         state.error = action.payload.message;
       })
       .addCase(takeActionOnRequest.pending, (state) => {
